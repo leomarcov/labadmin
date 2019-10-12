@@ -11,7 +11,7 @@ It's a tool useful for teachers and sysadmins.
     * Send heavy files using multiple modes (unicast, torrent or mulsticast).
     * Send and schedule messages to users
     * Config firewall settings.
-    * Send a disk partition imagin.
+    * Copy disk partition images.
     * Other administrative task, like software installation, user accounts, process management, Windows activation, etc. 
   * Monitorization of action execution status. If any error has ocurred in some host is noticed.
   * It's easy to create your own actions using Bash script or Powershell languages.
@@ -69,7 +69,7 @@ Set-Item wsman:\localhost\client\trustedhosts *
 ```
 
 # Usage
-  * Labadmin can operate in interactive or parametrized mode (use `labadmin -h` for more parameters info).
+  * Labadmin can operate in interactive or parametrized mode (use `labadmin -h` for parameter info).
   * Each execution has 5 stages: discover, host selection, action selection, action parametrization and action monitorization.
   
 ## Discover
