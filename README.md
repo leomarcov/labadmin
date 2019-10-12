@@ -11,13 +11,14 @@ It's a tool useful for teachers and sysadmins.
   * It's easy to create your own actions using Bash script or Powershell languages.
   
 ## Working schema
-  * Labadmin use a dedicated machine to admin the students hosts. Admin must be installed in a Linux OS. Susdents hosts can be Linux or Windows machines.
+  * Labadmin use a dedicated machine to admin the students hosts. Admin must be installed in a Linux OS. Susdents hosts can be Linux or Windows OS computers.
   * All machines must be placed in the same broadcast domain.
-  * Labadmin agent is installed in admin machine. Controlled hosts only are configured for remote access: SSH for Linux machines and WinRM for Windows machines, but no need specific labadmin software.
+  * Labadmin agent is installed in admin machine. Controlled hosts only are configured to allow secure remote access: SSH for Linux machines and WinRM for Windows machines, but no need specific labadmin software.
   * Each classroom must be defined in a config file. This file stores:
     * Authentication config to use (SSH and/or WinRM).
     * MAC address for each host and a identification number.
-    * Classroom distribution. Each host must be placed in a grid position.
+    * Classroom distribution: each id host must be placed in a grid position according the real position.
+  * When labadmin starts discover the computers in the classroom, show a map to select them and exec actions in all selected hosts.
 
 ![Labadmin schema](https://github.com/leomarcov/labadmin/blob/master/doc/images/schema.png?raw=true "Labadmin schema")
 
