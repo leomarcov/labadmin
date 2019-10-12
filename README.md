@@ -10,6 +10,7 @@ Labadmin is Linux Bash script capable to remotely admin a set of hosts (Linux or
   * It's easy to create your own actions using Bash script or Powershell languages.
   
 **Operating schema**
+
 Labadmin use one (or more) admin machine that control a set of node hosts. 
   * All machines must be placed in the same broadcast domain.
   * Labadmin agent is installed in admin machine. Controlled hosts only are configured for remote access: SSH for Linux machines and WinRM for Windows machines, but no need specific labadmin software.
