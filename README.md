@@ -2,7 +2,7 @@
 Labadmin is Linux Bash script for remotely admin Linux and Windows hosts in a computer laboratory environment. It's an approach similar to Ansible, but Labadmin is focused to educational environment and incorporates a full set of actions ready to use (currently 113 actions for Linux and 40 for Windows). 
 
 With labadmin you can:
-  * Discover the machines in set of computer classrooms (search by preconfigured MAC).
+  * Discover the machines in set of computer classrooms (search by MAC).
   * Show the status machine in a classrom map.
   * Select the machines to operate using flexible ranges.
   * Select an action to exec in all selected machines. 
