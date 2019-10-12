@@ -30,10 +30,10 @@ It's a tool useful for teachers and sysadmins.
 # Install
 Once downloaded or cloned the project, labadmin must be configured and installed in admin and each student host.
 
-## Create a config file for each classroom
+## Create a config files
   * Each classroom must be defined in a config file and placed in `labadmin/configs/` directory. This file is a Bash script where config variables are defined.
-  * You can use the provided [configs/test](labadmin) file as template.   
-  * Most important varialbes are:
+  * You can use the provided [configs/test](configs/test) file as template.   
+  * Most important config varialbes are:
     * `winrmuser` / `winrmpass` / `winrmport` for WinRM autentication and connection.
     * `sshuser` / `sshport` / `sshpubkey` / `sshprivatekey` for SSH autentication and connection.
     * `macs[]` array with the MAC address of hosts. The array is indexed by ID host, each host will be identificated with this number. Any number should be used, but it's recommended use simple numbers, for example use 32 for computer in a row 3 column 2.
@@ -42,20 +42,20 @@ Once downloaded or cloned the project, labadmin must be configured and installed
 
 ## Admin install
   * Admin must be installed in a Linux machine (Debian, Fedora or Ubuntu).
-  * Exec: `install -A -c config_file`, where config file is the name of the file located in `configs` directory to use as a default config when labadmin is open. Optionally you can use `ask` config file as default config. This config file ask in each labadmin execution what config file to use.
+  * Exec: `./install -A -c config_file`, where config file is the name of the file located in `configs` directory to use as a default config when labadmin is open. Optionally you can use `ask` config file as default config. This config file asks in each execution what config file to use.
 ```bash
 ./install -A test          # Install labadmin in admin machine using test as default classroom 
 ```
 
 ## Linux host install
-  * In Linux hosts installer only need to install all needed dependences and configure the remote SSH access method.
-  * Exec: `install.sh -H -c config_file`, where config file is the name of the file located in `configs` directory where the host is placed.
+  * Linux hosts installer only need to install all needed dependences and configure the remote SSH access method.
+  * Exec: `install.sh -H -c config_file`, where config file is the name of the file located in `configs` directory where the host is placed. It's important that SSH variables are correctly set in config file. 
 ```bash
-./install -H -c test       # Install labadmin in host machine using test configuration (SSH pubkey and iface) 
+./install -H -c test       # Install labadmin in host machine using test configuration
 ```  
   
 ## Windows host install
-  * In Windows 7 first install last version of Windows Management Framework: https://docs.microsoft.com/es-es/powershell/wmf/5.1/install-configure.
+  * In Windows 7 first install last version of Windows Management Framework: hhttps://www.microsoft.com/en-us/download/details.aspx?id=54616.
   * Then enable WinRM access executing these commands in a PowerShell:
  ```javascript
 Enable-PSRemoting -Force
