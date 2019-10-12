@@ -28,7 +28,7 @@ It's a tool useful for teachers and sysadmins.
 ![Labadmin schema](https://github.com/leomarcov/labadmin/blob/master/doc/images/schema.png?raw=true "Labadmin schema")
 
 # Install
-Once downloaded or cloned the project, labadmin must be configured and installed in admin and student hosts.
+Once downloaded or cloned the project, labadmin must be configured and installed in admin and each student hosts.
 
 ## Create a config file for each classroom
   * Each classroom must be defined in a config file and placed in `labadmin/configs/` directory.
