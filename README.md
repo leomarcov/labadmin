@@ -28,10 +28,10 @@ It's a tool useful for teachers and sysadmins.
 
 ![Labadmin schema](https://github.com/leomarcov/labadmin/blob/master/doc/images/schema.png?raw=true "Labadmin schema")
 
-## Install
+# Install
 Once downloaded or cloned the project labadmin must be configured and installed in admin and node hosts.
 
-### Create a config file for each classroom
+## Create a config file for each classroom
   * Each classroom must be defined in a config file and placed in `labadmin/configs/` directory.
   * Config file is a Bash script where config variables are defined.
   * You can use the priveded `configs/test` file as template.   
@@ -171,7 +171,7 @@ __ __ 13 12 11
 #map_color[11]="${S_I}"          
 #map_color[12]="${S_I}"  
 ```
-### Admin install
+## Admin install
   * Admin must be installed in a Linux machine (Debian, Fedora or Ubuntu).
   * 
 
@@ -180,14 +180,14 @@ __ __ 13 12 11
 ./install -A test          # Install labadmin in admin machine using test as default classroom 
 ```
 
-### Linux host install
+## Linux host install
   * In Linux hosts installer only need to install all needed dependences and configure the remote SSH access method.
   * Exec: `install.sh -H -c config_file`
 ```bash
 ./install -H -c test       # Install labadmin in host machine using test configuration (SSH pubkey and iface) 
 ```  
   
-### Windows host install
+## Windows host install
   * In Windows 7 first install last version of Windows Management Framework: https://docs.microsoft.com/es-es/powershell/wmf/5.1/install-configure.
   * Then enable WinRM access executing these commands in a PowerShell:
  ```javascript
@@ -200,9 +200,9 @@ Set-Item wsman:\localhost\client\trustedhosts *
 
 ```
 
-## Usage
+# Usage
   * Labadmin can operate in interactive or parametrized mode (use labadmin -h for more parameters info).
   * Each execution has 5 stages: discover, host selection, action selection, action parametrization and action monitorization.
   
-### Discover
+## Discover
 
