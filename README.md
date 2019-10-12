@@ -23,21 +23,21 @@ It's a tool useful for teachers and sysadmins.
     * Authentication config to use (SSH and/or WinRM).
     * MAC address for each host and a identification number.
     * Classroom distribution: each id host must be placed in a grid position according the real position.
-  * When labadmin starts discover the computers in the classroom, show a map to select them and exec actions in all selected hosts.
+  * When labadmin starts discover the computers configured in the classroom file, show a map to select them and exec actions in all selected hosts.
 
 ![Labadmin schema](https://github.com/leomarcov/labadmin/blob/master/doc/images/schema.png?raw=true "Labadmin schema")
 
 # Install
-Once downloaded or cloned the project labadmin must be configured and installed in admin and node hosts.
+Once downloaded or cloned the project, labadmin must be configured and installed in admin and student hosts.
 
 ## Create a config file for each classroom
   * Each classroom must be defined in a config file and placed in `labadmin/configs/` directory.
   * Config file is a Bash script where config variables are defined.
-  * You can use the priveded `configs/test` file as template.   
+  * You can use the provided `configs/test` file as template.   
   * Most important varialbes are:
     * `winrmuser` / `winrmpass` / `winrmport` for WinRM autentication and connection.
     * `sshuser` / `sshport` / `sshpubkey` / `sshprivatekey` for SSH autentication and connection.
-    * `macs[]` array
+    * `macs[]` array with the MAC address of hosts. The array is indexed by ID host, each host will be identificated with 
 ```bash
 #!/usr/bin/env bash
 #===================================================================================
