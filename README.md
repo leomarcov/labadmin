@@ -37,7 +37,8 @@ Once downloaded or cloned the project, labadmin must be configured and installed
   * Most important varialbes are:
     * `winrmuser` / `winrmpass` / `winrmport` for WinRM autentication and connection.
     * `sshuser` / `sshport` / `sshpubkey` / `sshprivatekey` for SSH autentication and connection.
-    * `macs[]` array with the MAC address of hosts. The array is indexed by ID host, each host will be identificated with 
+    * `macs[]` array with the MAC address of hosts. The array is indexed by ID host, each host will be identificated with this number. Any number should be used, but it's recommended use simple numbers, for example use 32 for computer in a row 3 column 2.
+    
 ```bash
 #!/usr/bin/env bash
 #===================================================================================
