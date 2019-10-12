@@ -34,3 +34,7 @@ sc.exe config winrm start= auto
 Set-Item wsman:\localhost\client\trustedhosts *
 
 ```
+
+## Usage
+  * Labadmin can operate in interactive or parametrized mode.
+  
