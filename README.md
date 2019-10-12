@@ -81,7 +81,7 @@ winrmport=5985
 
 
 #===============================================================================
-# LINNUX HOST AUTHENTICAION CONFIG
+# LINNUX AUTHENTICAION CONFIG
 #===============================================================================
 # SSH user admin for Linux hosts
 sshuser=root
