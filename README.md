@@ -28,11 +28,10 @@ It's a tool useful for teachers and sysadmins.
 ![Labadmin schema](https://github.com/leomarcov/labadmin/blob/master/doc/images/schema.png?raw=true "Labadmin schema")
 
 # Install
-Once downloaded or cloned the project, labadmin must be configured and installed in admin and each student hosts.
+Once downloaded or cloned the project, labadmin must be configured and installed in admin and each student host.
 
 ## Create a config file for each classroom
-  * Each classroom must be defined in a config file and placed in `labadmin/configs/` directory.
-  * Config file is a Bash script where config variables are defined.
+  * Each classroom must be defined in a config file and placed in `labadmin/configs/` directory. This file is a Bash script where config variables are defined.
   * You can use the provided [configs/test](labadmin) file as template.   
   * Most important varialbes are:
     * `winrmuser` / `winrmpass` / `winrmport` for WinRM autentication and connection.
@@ -50,7 +49,7 @@ Once downloaded or cloned the project, labadmin must be configured and installed
 
 ## Linux host install
   * In Linux hosts installer only need to install all needed dependences and configure the remote SSH access method.
-  * Exec: `install.sh -H -c config_file`
+  * Exec: `install.sh -H -c config_file`, where config file is the name of the file located in `configs` directory where the host is placed.
 ```bash
 ./install -H -c test       # Install labadmin in host machine using test configuration (SSH pubkey and iface) 
 ```  
