@@ -15,7 +15,7 @@ Labadmin schema use one (or more) admin hosts that control a set of node hosts. 
   * Download or clone the project.
   * Create a classrom config file and save it in `labadmin/configs` folder.
     * Config file is a Bash script where config variables are defined.
-    * You can use the test config file as template:
+    * You can use the priveded `configs/test` file as template. 
   * Exec: `install -A` 
 
 ### Linux host install
