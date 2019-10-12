@@ -38,6 +38,7 @@ Once downloaded or cloned the project, labadmin must be configured and installed
     * `winrmuser` / `winrmpass` / `winrmport` for WinRM autentication and connection.
     * `sshuser` / `sshport` / `sshpubkey` / `sshprivatekey` for SSH autentication and connection.
     * `macs[]` array with the MAC address of hosts. The array is indexed by ID host, each host will be identificated with this number. Any number should be used, but it's recommended use simple numbers, for example use 32 for computer in a row 3 column 2.
+    * `map` store the location of each host ID in the classroom. Each not number character is a column separator and each new line a row separator. 
     
 ```bash
 #!/usr/bin/env bash
@@ -171,11 +172,10 @@ __ __ 13 12 11
 #map_color[11]="${S_I}"          
 #map_color[12]="${S_I}"  
 ```
+
 ## Admin install
   * Admin must be installed in a Linux machine (Debian, Fedora or Ubuntu).
-  * 
-
-  * Exec: `install -A -c config_file` 
+  * Exec: `install -A -c config_file`, where config file is the name of the file located in `configs` directory to use as a default config when labadmin is open. Optionally you can use `ask` config file as default config. This config file ask in each labadmin execution what config file to use.
 ```bash
 ./install -A test          # Install labadmin in admin machine using test as default classroom 
 ```
