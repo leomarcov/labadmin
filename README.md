@@ -6,7 +6,13 @@ It's a tool useful for teachers and sysadmins.
   * Discover the network status hosts in a laboratory classroom by MAC address, working on DHCP networks.
   * Show the status of each machine in a map according the position in the classroom.
   * Flexible machine selection using ranges. Can select all machines, only a row, pairs or odd machines, a specific list, etc.
-  * A set of actions to exec in selected machines. Labadmin incorporate a full set of actions ready to use (currently 133 for Linux and 40 for Windows). There are actions for manage a restrictive environment in a exam time, send heavy files using multiple modes (unicast, torrent or mulsticast), send and schedule messages to users and others admin actions, like firewall settings, partition imagin, software installation, user accounts, process manage, Windows activation, etc. 
+  * A set of actions to exec in selected machines. Labadmin incorporate a full set of actions ready to use (currently 133 for Linux and 40 for Windows). Some key actions are:
+    * Config a restrictive environment in a exam time.
+    * Send heavy files using multiple modes (unicast, torrent or mulsticast).
+    * Send and schedule messages to users
+    * Config firewall settings.
+    * Send a disk partition imagin.
+    * Other administrative task, like software installation, user accounts, process management, Windows activation, etc. 
   * Monitorization of action execution status.
   * It's easy to create your own actions using Bash script or Powershell languages.
   
