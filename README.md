@@ -12,15 +12,21 @@ Labadmin schema use one (or more) admin hosts that control a set of node hosts. 
 ## Install
 ### Admin install
   * Admin must be installed in a Linux machine (Debian, Fedora or Ubuntu).
-  * Download or clone the project.
+  * Download or clone the project.c
   * Create a classrom config file and save it in `labadmin/configs` folder.
     * Config file is a Bash script where config variables are defined.
     * You can use the priveded `configs/test` file as template. 
-  * Exec: `install -A` 
+  * Exec: `install -A -c config_file` 
+```bash
+./install -A test          # Install labadmin in admin machine using test as default classroom 
+```
 
 ### Linux host install
   * In Linux host install only install all needed dependences and configure the remote SSH access method.
   * Exec: `install.sh -H -c config_file`
+```bash
+./install -H -c test       # Install labadmin in host machine using test configuration (SSH pubkey and iface) 
+```  
   
 ### Windows host install
   * In Windows 7 first install last version of Windows Management Framework: https://docs.microsoft.com/es-es/powershell/wmf/5.1/install-configure.
