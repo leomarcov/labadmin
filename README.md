@@ -33,13 +33,12 @@ Once downloaded or cloned the project, labadmin must be configured and installed
 ## Create a config file for each classroom
   * Each classroom must be defined in a config file and placed in `labadmin/configs/` directory.
   * Config file is a Bash script where config variables are defined.
-  * You can use the provided `configs/test` file as template.   
+  * You can use the provided `[configs/test](labadmin)` file as template.   
   * Most important varialbes are:
     * `winrmuser` / `winrmpass` / `winrmport` for WinRM autentication and connection.
     * `sshuser` / `sshport` / `sshpubkey` / `sshprivatekey` for SSH autentication and connection.
     * `macs[]` array with the MAC address of hosts. The array is indexed by ID host, each host will be identificated with this number. Any number should be used, but it's recommended use simple numbers, for example use 32 for computer in a row 3 column 2.
     * `map` store the location of each host ID in the classroom. Each not number character is a column separator and each new line a row separator. 
-    [Test config file](labadmin)
     
 
 ## Admin install
