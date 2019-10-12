@@ -19,7 +19,7 @@ It's a tool useful for teachers and sysadmins.
     * MAC address for each host and a identification number.
     * Classroom distribution. Each host must be placed in a grid position.
 
-![Labadmin schema](https://raw.githubusercontent.com/leomarcov/labadmin/master/doc/images/schema.png?token=AH2MXI3TFURKFWVHTW365Q25UIUH4 "Labadmin schema")
+![Labadmin schema](https://github.com/leomarcov/labadmin/blob/master/doc/images/schema.png?raw=true "Labadmin schema")
 
 ## Install
 Once downloaded or cloned the project labadmin must be configured and installed in admin and node hosts.
