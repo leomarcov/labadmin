@@ -27,3 +27,14 @@ Linux host install
   
 Windows host install
 ---------------------
+  * In Windows 7 first install last version of Windows Management Framework: https://docs.microsoft.com/es-es/powershell/wmf/5.1/install-configure.
+  * Them, for enable WinRM access exec these commands in a PowerShell:
+ ```javascript
+Enable-PSRemoting -Force
+winrm set winrm/config/service/auth '@{Basic="true"}'
+winrm set winrm/config/service '@{AllowUnencrypted="true"}'
+winrm set winrm/config/winrs '@{MaxMemoryPerShellMB="1024"}'
+sc.exe config winrm start= auto
+Set-Item wsman:\localhost\client\trustedhosts *
+
+```
