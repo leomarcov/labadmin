@@ -19,7 +19,6 @@ It's a tool useful for teachers and sysadmins.
 ## Working schema
   * Labadmin use a dedicated machine to admin the students hosts. Admin must be installed in a Linux OS. Students hosts can be Linux or Windows OS computers.
   * All machines must be placed in the same broadcast domain.
-  * Labadmin agent is installed in admin machine. Controlled hosts only are configured to allow secure remote access: SSH for Linux machines and WinRM for Windows machines, but no need specific labadmin software.
   * Each classroom must be defined in a config file. This file stores:
     * Authentication config to use (SSH and/or WinRM).
     * MAC address for each host and a identification number.
