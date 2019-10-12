@@ -19,13 +19,11 @@ Labadmin schema use one (or more) admin hosts that control a set of node hosts. 
     * You can use the test config file as template:
   * Exec: install -A 
 
-Linux host install
----------------------
+### Linux host install
   * In Linux host install only install all needed dependences and configure the remote SSH access method.
   * Exec: install.sh -H -c config_file
   
-Windows host install
----------------------
+### Windows host install
   * In Windows 7 first install last version of Windows Management Framework: https://docs.microsoft.com/es-es/powershell/wmf/5.1/install-configure.
   * Them, for enable WinRM access exec these commands in a PowerShell:
  ```javascript
