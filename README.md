@@ -18,6 +18,7 @@ It's a tool useful for teachers and sysadmins.
     * Authentication config to use (SSH and/or WinRM).
     * MAC address for each host and a identification number.
     * Classroom distribution. Each host must be placed in a grid position.
+
 ![Labadmin schema](https://raw.githubusercontent.com/leomarcov/labadmin/master/doc/images/schema.png?token=AH2MXI3TFURKFWVHTW365Q25UIUH4 "Labadmin schema")
 
 ## Install
