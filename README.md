@@ -13,7 +13,7 @@ It's a tool useful for teachers and sysadmins.
     * Config firewall settings.
     * Send a disk partition imagin.
     * Other administrative task, like software installation, user accounts, process management, Windows activation, etc. 
-  * Monitorization of action execution status.
+  * Monitorization of action execution status. If any error has ocurred in some host is noticed.
   * It's easy to create your own actions using Bash script or Powershell languages.
   
 ## Working schema
