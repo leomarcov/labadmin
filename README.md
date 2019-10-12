@@ -10,12 +10,15 @@ With labadmin you can:
 Labadmin schema use one (or more) admin hosts that control a set of node hosts. All machines must be placed in the same broadcast domain.
 
 ## Install
+### Create a config file for each classroom
+  * Each classroom must be defined in a config file and placed in `labadmin/configs/` directory.
+  * Config file is a Bash script where config variables are defined.
+  * You can use the priveded `configs/test` file as template.   
+  
 ### Admin install
   * Admin must be installed in a Linux machine (Debian, Fedora or Ubuntu).
-  * Download or clone the project.c
-  * Create a classrom config file and save it in `labadmin/configs` folder.
-    * Config file is a Bash script where config variables are defined.
-    * You can use the priveded `configs/test` file as template. 
+  * 
+
   * Exec: `install -A -c config_file` 
 ```bash
 ./install -A test          # Install labadmin in admin machine using test as default classroom 
