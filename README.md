@@ -15,6 +15,7 @@ Labadmin use one (or more) admin machine that control a set of node hosts.
   * All machines must be placed in the same broadcast domain.
   * Labadmin agent is installed in admin machine. Controlled hosts only are configured for remote access: SSH for Linux machines and WinRM for Windows machines, but no need specific labadmin software.
 
+![Labadmin schema](master/doc/images/schema.png?token=AH2MXI44OAD7TRFRKDCT6KK5UITPW?raw=true "Labadmin schema")
 
 ## Install
 Once downloaded or cloned the project labadmin must be configured and installed in admin and node hosts.
