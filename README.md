@@ -7,8 +7,7 @@ With labadmin you can:
   * Select an action to exec in all selected machines. 
   * Monitor the status of execution in each machine.
  
-Labadmin schema use one (or more) admin hosts that control a set of node hosts. All machines must be placed in the same network.
-
+Labadmin schema use one (or more) admin hosts that control a set of node hosts. All machines must be placed in the same broadcast domain.
 
 ## Install
 ### Admin install
