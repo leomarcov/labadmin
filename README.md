@@ -7,7 +7,10 @@ With labadmin you can:
   * Select an action to exec in all selected machines. 
   * Monitor the status of execution in each machine.
  
-Labadmin schema use one (or more) admin hosts that control a set of node hosts. All machines must be placed in the same broadcast domain.
+Labadmin schema use one (or more) admin hosts that control a set of node hosts. 
+  * All machines must be placed in the same broadcast domain.
+  * Labadmin agent is installed only in admin machine. Controlled hosts only are configured for remote access: SSH for Linux machines and WinRM for Windows machines, but no need specific labadmin software.
+
 
 ## Install
 ### Create a config file for each classroom
