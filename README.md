@@ -23,7 +23,7 @@ It's a tool useful for teachers and sysadmins.
     * Authentication config to use (SSH and/or WinRM).
     * MAC address for each host and a identification number.
     * Classroom distribution: each id host must be placed in a grid position according the real position.
-  * When labadmin starts discover the computers configured in the classroom file, show a map to select them and exec actions in all selected hosts.
+  * When labadmin starts discovers the computers configured in the classroom file, show a map to select them and exec actions in all selected hosts.
 
 ![Labadmin schema](https://github.com/leomarcov/labadmin/blob/master/doc/images/schema.png?raw=true "Labadmin schema")
 
