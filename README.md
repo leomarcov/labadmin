@@ -24,7 +24,7 @@ Labadmin schema use one (or more) admin hosts that control a set of node hosts. 
   
 ### Windows host install
   * In Windows 7 first install last version of Windows Management Framework: https://docs.microsoft.com/es-es/powershell/wmf/5.1/install-configure.
-  * Them, for enable WinRM access exec these commands in a PowerShell:
+  * Then enable WinRM access executing these commands in a PowerShell:
  ```javascript
 Enable-PSRemoting -Force
 winrm set winrm/config/service/auth '@{Basic="true"}'
