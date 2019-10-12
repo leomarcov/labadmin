@@ -14,6 +14,8 @@ Labadmin schema use one (or more) admin hosts that control a set of node hosts.
 
 
 ## Install
+Once download or clone the project labadmin must be configured and installed in admin and node hosts.
+
 ### Create a config file for each classroom
   * Each classroom must be defined in a config file and placed in `labadmin/configs/` directory.
   * Config file is a Bash script where config variables are defined.
