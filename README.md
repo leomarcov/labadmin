@@ -10,9 +10,8 @@ With labadmin you can:
 Labadmin schema use one (or more) admin hosts that control a set of node hosts. All machines must be placed in the same network.
 
 
-  
-Admin install
----------------------
+## Install
+### Admin install
   * Admin must be installed in a Linux machine (Debian, Fedora or Ubuntu).
   * Download or clone the project.
   * Create a classrom config file and save it con configs folder.
