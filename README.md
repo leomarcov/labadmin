@@ -3,7 +3,7 @@ Labadmin is Linux Bash script for remotely admin a set of Linux or Windows hosts
 
 With labadmin you can:
   * Discover the network hosts in a computer classroom (search by MAC).
-  * Show the status machine in a classrom map.
+  * Show the status of each machine in a classroom map.
   * Select the machines to operate using flexible ranges.
   * Select an action to exec in all selected machines. 
   * Monitor the status of execution in each machine.
