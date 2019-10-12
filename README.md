@@ -166,7 +166,7 @@ __ __ 13 12 11
 ```
 
 ### Linux host install
-  * In Linux host install only install all needed dependences and configure the remote SSH access method.
+  * In Linux hosts installer only need to install all needed dependences and configure the remote SSH access method.
   * Exec: `install.sh -H -c config_file`
 ```bash
 ./install -H -c test       # Install labadmin in host machine using test configuration (SSH pubkey and iface) 
