@@ -14,7 +14,11 @@ Labadmin schema use one (or more) admin hosts that control a set of node hosts. 
   * Each classroom must be defined in a config file and placed in `labadmin/configs/` directory.
   * Config file is a Bash script where config variables are defined.
   * You can use the priveded `configs/test` file as template.   
-  
+  * Most important varialbes are:
+    * `winrmuser` / `winrmpass` / `winrmport` for WinRM autentication and connection.
+    * `sshuser` / `sshport` / `sshpubkey` / `sshprivatekey` for SSH autentication and connection.
+    * `macs[]` array
+    
 ### Admin install
   * Admin must be installed in a Linux machine (Debian, Fedora or Ubuntu).
   * 
