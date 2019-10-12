@@ -72,4 +72,5 @@ Set-Item wsman:\localhost\client\trustedhosts *
   * Each execution has 5 stages: discover, host selection, action selection, action parametrization and action monitorization.
   
 ## Discover
-
+  * Discover stage search for each host MAC in config file the current IP associated and his state (OFF, ON and listening in SSH/WinRM port or ON but not listening in labadmin port).
+  * Once all network info has been 
