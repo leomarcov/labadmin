@@ -407,8 +407,9 @@ For create a new action only need:
   * Save the script file in ``scripts/ssh`` or ``scripts/winrm`` directory, and labadmin will recognize the file automatically when starts.
 
 For more info refer to:
-  * [doc/script_template](doc/script_template)
+  * Action script template: [doc/script_template](doc/script_template)
   * SSH sample: [scripts/ssh/user/add](scripts/ssh/user/add)
+  * SSH admin+local+admin sample: [scripts/ssh/file/torrent-local](scripts/ssh/file/torrent-local)
   * WinRM sampple: [scripts/winrm/user/add](scripts/winrm/user/add)
 
 &nbsp;  
