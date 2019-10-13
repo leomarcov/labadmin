@@ -173,22 +173,9 @@ If any error occurs labadmin shows at ending the machine list with errors.
 Labadmin has a lot of actions ready to use!
 
 ## Linux actions
-```json
-   // code for coloring
-```
-```html
-   // code for coloring
-```
-```js
-   // code for coloring
-```
-```css
-   // code for coloring
-```
-
 ```diff
-[clone/]          Manage partition image backups
-  [mbr-table/]      Manage MBR partition table
+[clone/]              Manage partition image backups
+  [mbr-table/]        Manage MBR partition table
     [add-part]        Create new partition
     [del-part]        Delete partition
     [resize-part]     Resize partition to grow until end of disk or next partition
@@ -196,60 +183,59 @@ Labadmin has a lot of actions ready to use!
     [save-table]      Backup remote partition table and bootloader (first MB) and save in local path
     [show-table]      Show MBR partition table
 	
-  [multicast/]      Manage partition image backups using multicast
+  [multicast/]        Manage partition image backups using multicast
     [restore-dd]      Restore remote partition or disk using dd
     [restore-part]    Restore remote partition from local partclone image using multicast
 
-  [unicast/]        Manage partition image backups using unicast
+  [unicast/]          Manage partition image backups using unicast
     [restore-dd]      Restore remote partition or disk using dd
     [restore-part]    Restore remote partition from local partclone image using unicast
     [save-part]       Clone remote partition and save to partclone image in local path using unicast
 
-[conf/]           System config tasks
-  [cron/]           Config root crontab file
+[conf/]               System config tasks
+  [cron/]             Config root crontab file
     [add]             Add line to root crontab
     [remove]          Remove line from root crontab
     [show]            Show root crontab config
 
-  [homeperm/]       Config home directories permissions to 0750
+  [homeperm/]         Config home directories permissions to 0750
     [set]             Set HOME directories permissions to rwxr-x--- and config adduser DIR_MODE=750
     [show]            Show HOME directories with permissive access
 
-  [networkmanager/] Prevent specific group can manage network-manager
+  [networkmanager/]   Prevent specific group can manage network-manager
     [disable]         Restrict network-manager to prevent specific group can manage it
     [restore]         Restore network-manager permissions to allow all users manage it
 
-  [sudoers/]        Config sudoers file
+  [sudoers/]          Config sudoers file
     [add]             Add new line in sudoers file
     [remove]          Remove line from sudoers file
     [show]            Show sudoers file
 
-  [time/]           Set system date/hour and show current time
+  [time/]             Set system date/hour and show current time
     [ntp]             Update system timedate using NTP
     [set]             Set system timedate
     [show]            Show system time
-  [guardian]        Install labadmin guardian for check and mail "stranger things" in hosts
-  [hostname]        Set hostname
-  [mail]            Install and config Postfix SMTP client for send mails (only root account)
+  [guardian]          Install labadmin guardian for check and mail "stranger things" in hosts
+  [hostname]          Set hostname
+  [mail]              Install and config Postfix SMTP client for send mails (only root account)
 
-[exam/]           Create restrictive environment for take exams
-  [backup/]         Manage exam backups autosaved when exam ends
+[exam/]               Create restrictive environment for take exams
+  [backup/]           Manage exam backups autosaved when exam ends
     [del]             Delete exam(s) backup
     [download]        Download exam backup to local machine
     [list]            List all exam saved and hidden in root account
     [show]            Show content of exam backup
+  [check]             Check if host is blocked for exam
+  [end]               Come back host to normal config when exam ends
+  [start]             Config host for restrictive exam environment
 
-  [check]           Check if host is blocked for exam
-  [end]             Come back host to normal config when exam ends
-  [start]           Config host for restrictive exam environment
-
-[exec/]           Exec commands in hosts
+[exec/]             Exec commands in hosts
   [com]             Exec commands in host
   [script]          Exec local script in host
   [win]             Open window in host X session
   [win-admin]       Open window in host X session with admin privileges
 
-[file/]           Transfer files to/from host
+[file/]             Transfer files to/from host
   [copyfrom]        Copy files or directory from host to admin
   [copyto]          Copy files or directory from admin to host
   [download]        Download URL resource in host
@@ -257,46 +243,46 @@ Labadmin has a lot of actions ready to use!
   [torrent]         Download torrent resource in host
   [torrent-local]   Send local files to hosts using torrent
 
-[labadmin/]       Manage Labadmin config in hosts
+[labadmin/]         Manage Labadmin config in hosts
   [conf]            Update labadmin host config (sshport and sshpubkey) from lab file config
   [dependencies]    Check and install host dependencies for Labadmin
 
-[misc/]           Miscellaneous actions
+[misc/]             Miscellaneous actions
   [screenshot/]     Take host screenshot and save or display it
-    [save]            Save multiple screenshot from host display
-    [show]            Show host display animation 
+    [save]          Save multiple screenshot from host display
+    [show]          Show host display animation 
   [music]           The best moeldies in your pcspeaker! :D
 
-[msg/]            Send msg to host users
+[msg/]              Send msg to host users
   [chat]            Starts text chat with logged user
   [login]           Show text message next time user login
   [msg-urls]        Config system for send notification when detect user is browsing in Chrome some urls
   [notify]          Send notify message to logged user
   [win]             Show text message in a terminal window
 
-[net/]            Network configs and tools
+[net/]              Network configs and tools
   [iptables/]       Restrict network access using IPTABLES
-    [allow]           Allow access to specific IP or domain in a whitelist
-    [blacklist]       Start blacklist (delete all rules and allow all ips but exceptions)
-    [delete]          Delete specific rule number
-    [deny]            Deny access to specific IP or domain in a blacklist
-    [flush]           Flush (clean) all rules
-    [list]            List all IPTABLES rules
-    [show]            Show all IPTABLES rules
-    [whitelist]       Start whitelist (delete all rules and deny all ips but exceptions)  
+    [allow]         Allow access to specific IP or domain in a whitelist
+    [blacklist]     Start blacklist (delete all rules and allow all ips but exceptions)
+    [delete]        Delete specific rule number
+    [deny]          Deny access to specific IP or domain in a blacklist
+    [flush]         Flush (clean) all rules
+    [list]          List all IPTABLES rules
+    [show]          Show all IPTABLES rules
+    [whitelist]     Start whitelist (delete all rules and deny all ips but exceptions)  
   [check-con]       Check network connectivity to gateway, Internet and DNS
   [force-1000]      Force negotiated speed to gigabit
   [speed-conf]      Show NIC card speed negotiated and poweroff slow hosts
   [speed-test]      Perform network speed test from admin to host
 
-[process/]        Manage logged user process
+[process/]          Manage logged user process
   [cont]            Continue all process of logged user
   [kill]            Kill all process of logged users
   [list]            List all process of logged users
   [stop]            Stop all process of logged users
   [term]            Term all process of logged users
 
-[service/]        Manage system services
+[service/]          Manage system services
   [disable]         Disable system service (no starts on startup)
   [enable]          Enable system service (starts on startup)
   [is-active]       Show if system service is active
@@ -308,15 +294,15 @@ Labadmin has a lot of actions ready to use!
   [status]          Show system service status
   [stop]            Stop system service
 
-[software/]       Automate software installation
+[software/]         Automate software installation
   [packages/]       Manage package repositories
-    [install]         Install a list of packages from repositories
-    [uninstall]       Uninstall a list of package(s)
-    [update]          Update package info from repositories
-    [upgrade]         Update all packages to latest version from repositories  
+    [install]       Install a list of packages from repositories
+    [uninstall]     Uninstall a list of package(s)
+    [update]        Update package info from repositories
+    [upgrade]       Update all packages to latest version from repositories  
   [vbox_extpack]    Update VirtualBox Extension Pack
 
-[user/]           Admin host users
+[user/]             Admin host users
   [add]             Add a user
   [del]             Delete user and his home directory
   [group]           Add/remove users from group
@@ -327,11 +313,11 @@ Labadmin has a lot of actions ready to use!
   [size]            Show users sorted by HOME directory size
   [unlock]          Unlock users
 
-[virtualbox/]     Manage VirtualBox using vboxmanage
+[virtualbox/]       Manage VirtualBox using vboxmanage
   [bridge/]         Allow or deny use bridged network
-    [disable]         Disable bridged network for all users
-    [enable]          Enable bridged network for all users
-    [status]          Show status of bridged network for all users  
+    [disable]       Disable bridged network for all users
+    [enable]        Enable bridged network for all users
+    [status]        Show status of bridged network for all users  
   [import]          Import .ova file
   [list]            List all machines
   [play]            Play machine
@@ -340,12 +326,12 @@ Labadmin has a lot of actions ready to use!
   [snap]            Create snapshot
   [stop]            Stop machine
 
-[poweroff]        Power OFF host
-[poweron]         Power ON host using network
-[reboot]          Reboot host
-[reboot-grub]     Reboot host
-[ssh]             Open SSH connection to host
-[sysreq]          Send system request signal
+[poweroff]          Power OFF host
+[poweron]           Power ON host using network
+[reboot]            Reboot host
+[reboot-grub]       Reboot host
+[ssh]               Open SSH connection to host
+[sysreq]            Send system request signal
 
 ```
 
