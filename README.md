@@ -169,6 +169,36 @@ If any error occurs labadmin shows at ending the machine list with errors.
 <p align="center"><img width="606" src="https://user-images.githubusercontent.com/32820131/66720795-a8730900-ee01-11e9-8146-0c625924fdc4.png"></p>
 
 &nbsp;  
+# Actions
+Labadmin has a lot of actions ready to use!
+
+## Linux actions
+```
+[clone/]          Manage partition image backups
+[conf/]           System config tasks
+[exam/]           Create restrictive environment for take exams
+[exec/]           Exec commands in hosts
+[file/]           Transfer files to/from host
+[labadmin/]       Manage Labadmin config in hosts
+[misc/]           Miscellaneous actions
+[msg/]            Send msg to host users
+[net/]            Network configs and tools
+[process/]        Manage logged user process
+[service/]        Manage system services
+[software/]       Automate software installation
+[user/]           Admin host users
+[virtualbox/]     Manage VirtualBox using vboxmanage
+[poweroff]        Power OFF host
+[poweron]         Power ON host using network
+[reboot]          Reboot host
+[reboot-grub]     Reboot host
+[ssh]             Open SSH connection to host
+[sysreq]          Send system request signal
+
+```
+
+
+&nbsp;  
 # Lincense
 License is [GPLv3](LICENSE)
 
