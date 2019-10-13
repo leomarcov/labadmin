@@ -158,7 +158,7 @@ labadmin -r a virtualbox/import -1 alumno -2 /home/e.ova
 
 ## Action monitorization
 On this stage labadmin exec action in each host and show output messages of each host execution.
-If any error has occurs labadmin shows on ending the machine list with errors.
+If any error occurs labadmin shows at ending the machine list with errors.
 
 <p align="center"><img width="606" src="https://user-images.githubusercontent.com/32820131/66720795-a8730900-ee01-11e9-8146-0c625924fdc4.png"></p>
 
