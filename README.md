@@ -23,6 +23,7 @@ Labadmin aims to be a tool useful for teachers and computer lab sysadmins.
   * It's easy to create your own actions using Bash script or Powershell languages.
 
 ## Demos
+You can see labadmin in action in these short animations:
   * [Poweron computers](https://user-images.githubusercontent.com/32820131/66718825-a5b7ea00-ede8-11e9-9047-5afdac835816.gif)
   * [Check network speed](https://user-images.githubusercontent.com/32820131/66718827-a94b7100-ede8-11e9-9eed-0f13c8b56ce3.gif)
   * [Add user](https://user-images.githubusercontent.com/32820131/66718830-a94b7100-ede8-11e9-8fbd-a738410d0ebb.gif)
