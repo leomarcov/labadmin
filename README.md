@@ -60,7 +60,7 @@ Once downloaded or cloned the project, labadmin must be configured for each lab 
 ## Windows controlled host install
   * In Windows 7 first install last version of Windows Management Framework: https://www.microsoft.com/en-us/download/details.aspx?id=54616.
   * Then enable WinRM access executing these commands in a PowerShell as Administrator:
- ```javascript
+ ```powershell
 Enable-PSRemoting -Force
 winrm set winrm/config/service/auth '@{Basic="true"}'
 winrm set winrm/config/service '@{AllowUnencrypted="true"}'
