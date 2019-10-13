@@ -21,7 +21,7 @@ It's a tool useful for teachers and sysadmins.
   * It's easy to create your own actions using Bash script or Powershell languages.
 
 ## Demos
-<img align="right" src="https://cdn4.iconfinder.com/data/icons/online-marketing-hand-drawn-vol-1/52/cinema__movie__reel__video__videoreel__film__media-512.png">
+<img align="right" src="https://cdn4.iconfinder.com/data/icons/online-marketing-hand-drawn-vol-1/52/cinema__movie__reel__video__videoreel__film__media-64.png">
 
   * [Poweron computers]()
   * [Check network speed](https://user-images.githubusercontent.com/32820131/66718827-a94b7100-ede8-11e9-9eed-0f13c8b56ce3.gif)
