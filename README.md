@@ -44,6 +44,7 @@ It's a tool useful for teachers and sysadmins.
     * Lab distribution: each id host must be placed in a grid position according the real position.
   * When labadmin starts discovers the computers configured in the lab file, show a map to select them and exec actions in all selected hosts.
 
+<img align="center" src="https://user-images.githubusercontent.com/32820131/66718797-596caa00-ede8-11e9-81fd-ed2d3af4e1b2.png">
 ![Labadmin schema](https://user-images.githubusercontent.com/32820131/66718797-596caa00-ede8-11e9-81fd-ed2d3af4e1b2.png)
 
 
