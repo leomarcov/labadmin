@@ -174,8 +174,8 @@ Labadmin has a lot of actions ready to use!
 
 ## Linux actions
 ```diff
-[clone/]          Manage partition image backups
-  [mbr-table/]      Manage MBR partition table
+#[clone/]          Manage partition image backups
+#  [mbr-table/]      Manage MBR partition table
     [add-part]        Create new partition
     [del-part]        Delete partition
     [resize-part]     Resize partition to grow until end of disk or next partition
@@ -183,7 +183,7 @@ Labadmin has a lot of actions ready to use!
     [save-table]      Backup remote partition table and bootloader (first MB) and save in local path
     [show-table]      Show MBR partition table
 	
-  [multicast/]      Manage partition image backups using multicast
+ # [multicast/]      Manage partition image backups using multicast
     [restore-dd]      Restore remote partition or disk using dd
     [restore-part]    Restore remote partition from local partclone image using multicast
 
