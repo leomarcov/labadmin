@@ -160,6 +160,8 @@ labadmin -r a virtualbox/import -1 alumno -2 /home/e.ova
 On this stage labadmin exec action in each host and show output messages of each host execution.
 If any error has occurs labadmin shows on ending the machine list with errors.
 
+<p align="center"><img width="606" src="https://user-images.githubusercontent.com/32820131/66720709-b7a58700-ee00-11e9-9d14-ccff30a3c2c2.png"></p>
+
 &nbsp;  
 # Lincense
 License is [GPLv3](LICENSE)
