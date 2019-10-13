@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 #===================================================================================
 #        FILE: ask
-# DESCRIPTION: Meta config file for ask user waht config file use
+# DESCRIPTION: Meta config file for ask user the config file to use
 #      AUTHOR: Leonardo Marco (labadmin@leonardomarco.com)
 #     LICENSE: GNU General Public License v3.0
 #=============================================================================
