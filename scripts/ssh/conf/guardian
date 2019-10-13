@@ -1,0 +1,245 @@
+#!/usr/bin/env bash
+#===================================================================================
+#     FILE: conf/guardian
+#   AUTHOR: Leonardo Marco (labadmin@leonardomarco.com)
+#  LICENSE: GNU General Public License v3.0
+#===================================================================================
+script_id="$(echo ${BASH_SOURCE[0]} | sed 's\^'"$scripts_path"'/*\\g')"		# Script filename with relative script path
+
+#=== LOAD INFO =====================================================================
+if [ "$1" = "--load-scriptinfo" ]; then
+	script_desc="Install labadmin guardian for check and mail \"stranger things\" in hosts"
+	script_type="ssh"
+	script_bg="sub"
+	script_admindeps=""
+	script_hostdeps=""
+	load_scriptinfo "$script_id" "$script_desc" "$script_type" "$script_bg" "$script_admindeps" "$script_hostdeps"
+	return
+
+#=== READ PARAMS ===================================================================
+elif [ "$1" = "--readparams" ]; then
+	# PARAM1: action (install/uninstall)
+	read_param "$script_id" 1 "Install/Uninstall (i/u/C)" "i" "^(i|u|c)$"
+	[ "${p1,,}" = "i" ] && read_param "$script_id" 2 "List of admins users" "" ""
+	[ "${p1,,}" = "i" ] && read_param "$script_id" 3 "Email admin" "" "."
+	return
+fi
+
+
+#=== EXEC SCRIPT ===================================================================
+
+#### CONFIG INSTALL-UNINSTALL
+opt="$1"
+guardian_admins="${2} root"	
+guardian_name="labadmin_guardian.sh"
+guardian_path="/usr/sbin/$guardian_name"
+guardian_email="${3}"
+guardian_cache="/var/cache/labadmin/guardian"
+guardian_cron="@daily	${guardian_path}   #LABADMIN-GUARDIAN"
+guardian_log="/var/log/labadmin_guardian"
+
+#### UNINSTALL
+case "${opt,,}" in
+u)
+	labadmin_info "Uninstalling $guardian_name"
+	rm -v "$guardian_path"
+	crontab -l 2>/dev/null | grep -vF "#LABADMIN-GUARDIAN" | crontab -
+	exit
+;;
+
+
+#### CHECK
+c)
+	error=0
+	labadmin_info "Checking file script exists"
+	ls -l "$guardian_path" || error="1"
+
+	labadmin_info "Checking CRON schedule"
+	crontab -l | grep "#LABADMIN-GUARDIAN" || { error="1"; echo "none"; }
+	exit "$error"
+esac
+
+
+#### INSTALL
+labadmin_info "Installing $guardian_name"
+
+# Add cron line (and delete previous)
+(crontab -l | grep -v "#LABADMIN-GUARDIAN"; echo "$guardian_cron") | crontab -
+
+echo '#!/usr/bin/env bash
+labadmin_sshuser="'"$labadmin_sshuser"'"
+guardian_admins="'"$guardian_admins"'"
+labadmin_nhost="'"$labadmin_nhost"'"
+guardian_email="'"$guardian_email"'"
+guardian_cache="'"$guardian_cache"'"
+guardian_log="'"$guardian_log"'"
+
+
+#=== FUNCTION ==================================================================
+#        NAME: log_file
+# DESCRIPTION: Save log event in log file 
+# PARAMETERS:
+#	$1	Event ID
+# 	$2	Event text to log
+#===============================================================================
+function log_file() {
+	local event_id="$1"
+	loacl event_msg="$2"
+	echo -e "[$(date "+%F %T")][${event_id}]\t${event_msg}" >> "$log_file"
+}
+
+
+#=== FUNCTION ==================================================================
+#        NAME: log_mail
+# DESCRIPTION: Send logs event to log email
+# PARAMETERS:
+#	$1	Event ID
+# 	$2	Event text to log
+#===============================================================================
+function log_email() {
+	local event_id="$1"
+	local event_msg="$2"
+	local event_hostname="$labadmin_nhost"
+	echo -e "#### LABADMIN-GUARDIAN ##############################
+Alert: ${event_id}
+Date:  $(date "+%Y/%m/%d")
+Time:  $(date "+%H:%M")
+Host:  ${nhost}
+### INFO ##############################
+${event_msg}
+" | mail -s "[labadmin] [$labadmin_nhost] [GUARDIAN-${event_id^^}]" -a "From: $(hostname) <$(labadmin_nhost)@carlos3.com>" "$guardian_email"
+}
+
+
+#=== FUNCTION ==================================================================
+#        NAME: log_event
+# DESCRIPTION: Save log event in log file and send to email
+# PARAMETERS:
+#	$1	Event ID
+# 	$2	Event text to log
+#===============================================================================
+function log_event() {
+	local event_id="$1"
+	local event_msg="$2"
+	log_file "$event_id" "$(echo -en "$event_msg" | sed -z "s/\n/ | /g")"
+	log_email "$event_id" "$event_msg"
+}
+
+
+#=== FUNCTION ==================================================================
+#        NAME: check_admins-perms
+# DESCRIPTION: Checks abnormal user permissions
+#===============================================================================
+function check_admins-perms() {
+	local issues=""
+
+	# FORBIDDEN ROOT: checks if root is locked and lock it
+	# if ! (passwd -S root | grep "^root L " &>/dev/null); then
+	# 	forbidden_root=$(grep "^root:" /etc/shadow)
+	# 	issues="${issues}${issues:+\n}FORBIDDEN ROOT UNLOCKED: ${forbidden_root}"
+	# 	passwd -l root
+	# fi
+
+
+	# FORBIDDEN ID0: search for users with ID=0 and lock them
+	forbidden_id0=$(cut -f1,3 -d: /etc/passwd | grep ":0$" | cut -f1 -d: | grep -v root)
+	if [ "$forbidden_id0" ]; then
+		issues="${issues}${issues:+\n}FORBIDDEN USER WITH ID=0:  ${forbidden_id0}"
+		for u in $forbidden_id0; do
+			passwd -l $u
+		done
+	fi
+
+	# FORBIDDEN SUDOERS: search for sudo users not in admins list and remove sudo
+	[ -f /etc/sudoers ] && for u in $(cut -f1 -d: /etc/passwd); do
+		sudo_output="$(su -l "$u" -c "sudo -nv" 2>&1)"
+	    if [ $? -eq 0 ] || (echo "$sudo_output" | grep -q "^sudo:"); then
+	        echo "$guardian_admins" | grep -qw "$u" && continue
+	        issues="${issues}${issues:+\n}FORBIDDEN USER WITH SUDO: $u"
+	        gpasswd -d "$u" sudo
+	    fi
+	done
+
+	# LOG EVENTS
+	if [ "$issues" ]; then
+		log_event "USER-PERMS" "$issues"
+	fi
+}
+
+
+#=== FUNCTION ==================================================================
+#        NAME: check_installed-pkgs
+# DESCRIPTION: Check if any package has been installed
+#===============================================================================
+function check_installed-pkgs() {
+	packages_inst="$((cat /var/log/dpkg.log.1 | grep "status installed" ; echo "$(date -d@"$last_date" "+%Y-%m-%d %H:%M:%S") status installed --------------------" )| sort -r | sed -e "/--------------------/,$ d")"
+	if [ "$packages_inst" ]; then		
+		log_event "PKG-INST" "$packages_inst"
+	fi
+}
+
+#=== FUNCTION ==================================================================
+#        NAME: check_auth-fail
+# DESCRIPTION: Check authentication failures
+#===============================================================================
+function check_auth-fail() {
+	not_sudo="$(journalctl --since "$(date -d@"$last_date" "+%Y-%m-%d %H:%M:%S")" --until "$(date -d@"$current_date" "+%Y-%m-%d %H:%M:%S")" | grep -i "user not in sudoers")"
+	if [ "$not_sudo" ]; then
+		log_event "AUTH-NOTSUDO" "$not_sudo"
+	fi
+
+	bad_pass="$(journalctl --since "$(date -d@"$last_date" "+%Y-%m-%d %H:%M:%S")" --until "$(date -d@"$current_date" "+%Y-%m-%d %H:%M:%S")" | grep -i "authentication failure" | grep -i "user=")"
+	if [ "$bad_pass" ]; then
+		log_event "AUTH-BADPASS" "$bad_pass"
+	fi	
+}
+
+
+#=== FUNCTION ==================================================================
+#        NAME: check_mountcount
+# DESCRIPTION: Check if / partition has been mounted by external system
+#===============================================================================
+function check_root-mount() {
+	root_part="$(findmnt -n -o SOURCE /)"
+	tune2fs_out="$(tune2fs -l "$root_part")"
+	current_mount="$(echo "$tune2fs_out" | grep -i "^mount count:" | cut -f2 -d: | tr -d " ")"
+	last_mount="$(grep "^last_mount=" "$guardian_cache" | cut -f2 -d=)"
+	sed -i "/^last_mount=/d" "$guardian_cache"
+	echo "last_mount=$current_mount" >> "$guardian_cache"
+
+	if [ "$current_mount" -gt 1 ] && [ "$last_mount" ] && [ "$(($current_mount-$last_mount))" -gt 1 ]; then
+		log_event "MOUNT-COUNT" "CURRENT_MOUNT=$current_mount | LAST_MOUNT=$last_mount"	
+	fi
+}
+
+
+
+### INIT FILES
+current_date="$(date +%s)"
+last_date="$(grep "^last_date=" "$guardian_cache" | cut -f2 -d=)"
+sed -i "/^last_date=/d" "$guardian_cache"
+echo "last_date=$current_date" >> "$guardian_cache"
+
+if [ ! -d "$(dirname "$guardian_cache")" ]; then
+	mkdir "$(dirname "$guardian_cache")"
+	chmod 770 "$(dirname "$guardian_cache")"
+fi
+if [ ! -f "$log_file" ]; then
+	touch "$log_file"
+	chmod 770 "$log_file"
+fi
+
+
+### EXEC CHECKS
+check_admins-perms
+check_installed-pkgs
+check_auth-fail
+check_root-mount
+
+
+' > "$guardian_path"
+chown root:root "$guardian_path"
+chmod 770 "$guardian_path" 
+
+
+

@@ -1,0 +1,49 @@
+#!/usr/bin/env bash
+#===================================================================================
+#     FILE: clone/mbr-table/add-part
+#   AUTHOR: Leonardo Marco (labadmin@leonardomarco.com)
+#  LICENSE: GNU General Public License v3.0
+#===================================================================================
+script_id="$(echo ${BASH_SOURCE[0]} | sed 's\^'"$scripts_path"'/*\\g')"		# Script filename with relative script path
+
+#=== LOAD INFO =====================================================================
+if [ "$1" = "--load-scriptinfo" ]; then
+	script_desc="Create new partition"
+    script_type="ssh"
+	script_bg="sub"
+	script_admindeps=""
+	script_hostdeps="fdisk"
+	load_scriptinfo "$script_id" "$script_desc" "$script_type" "$script_bg" "$script_admindeps" "$script_hostdeps"
+	return
+
+#=== READ PARAMS ===================================================================
+elif [ "$1" = "--readparams" ]; then
+    # PARAM1
+	read_param "$script_id" 1 "Remote disk file in /dev/ (sda, sdb,...)" "" "^[a-zA-Z]+$"
+	# PARAM2
+	read_param "$script_id" 2 "Partition number" "" "^[0-9]+$"
+    # PARAM3
+	read_param "$script_id" 3 "Partition start" "" ""
+    # PARAM4
+    read_param "$script_id" 4 "Partition end" "" ""
+    # PARAM5
+    read_param "$script_id" 5 "Partition type" "" ""
+	return
+fi
+
+#=== EXEC SCRIPT ===================================================================
+dev="/dev/${1}"
+pn="${2}"
+start="${3}"
+end="${4}"
+pt="${5}"
+
+[ ! -r "${dev}" ] && "\e[1m\e[91mCant locate dev file ${dev}" 1 
+
+
+# CREATE PARTITION
+t="$(fdisk -l /dev/sdb | grep "Disklabel type" | awk '{print $3}')"  # Get partition type: dos or gpt
+[ "$pt" ] && pt="t\n${pn}\n${pt}"
+
+echo -e "n\n$([ "$t" = "dos" ] && echo "p\n")${pn}\n${start}\n${end}\n${pt}\nw" | fdisk "$dev"
+fdisk -l "$dev"

@@ -1,0 +1,84 @@
+#!/usr/bin/env bash
+#===================================================================================
+#     FILE: clone/mbr-table/resize-part
+#   AUTHOR: Leonardo Marco (labadmin@leonardomarco.com)
+#  LICENSE: GNU General Public License v3.0
+#===================================================================================
+script_id="$(echo ${BASH_SOURCE[0]} | sed 's\^'"$scripts_path"'/*\\g')"		# Script filename with relative script path
+
+#=== LOAD INFO =====================================================================
+if [ "$1" = "--load-scriptinfo" ]; then
+	script_desc="Resize partition to grow until end of disk or next partition"
+    script_type="ssh"
+	script_bg="$([ ! "$DISPLAY" ] && echo "sub" || echo "win")"
+	script_admindeps=""
+	script_hostdeps="fdisk e2fsck ntfsresize"
+	load_scriptinfo "$script_id" "$script_desc" "$script_type" "$script_bg" "$script_admindeps" "$script_hostdeps"
+	return
+#=== READ PARAMS ===================================================================
+elif [ "$1" = "--readparams" ]; then
+    # PARAM1
+	read_param "$script_id" 1 "Remote disk file in /dev/ (sda, sdb,...)" "" "^[a-zA-Z]+$"
+	# PARAM2
+	read_param "$script_id" 2 "Partition number" "" "^[0-9]+$"
+	return
+fi
+
+#=== EXEC SCRIPT ===================================================================
+dev="/dev/${1}"
+pn="${2}"
+
+# CHECK
+[ ! -r "${dev}" ] && labadmin_error "Cant locate dev file ${dev}" 1 
+
+
+# GET FILESYSTEM TYPE
+labadmin_info "Getting filesystem type"
+fs=$(file -s "${dev}${pn}")
+if echo "$fs" | grep -iq ntfs ; then fs="ntfs"; elif echo "$fs" | grep -iq "ext[1-4]"; then fs="ext"; elif echo "$fs" | grep -iq "fat"; then fs="fat"; else fs=""; fi;
+echo "DETECTED FILESYSTEM: $fs"
+
+# UMOUNT
+umount "${dev}${pn}"
+mount | grep -q "${dev}${pn}" && labadmin_error "Can't umount ${dev}{$pn}" 1
+
+
+# CHECK FILESYSTEM
+case "$fs" in
+ext) 	e2fsck -p -f "${dev}${pn}"; e2fsck -p -f "${dev}${pn}" ;;		# Second fsck for check $?=0
+ntfs)	ntfsresize -i "${dev}${pn}"  ;;
+*)		labadmin_error "Unsupported filesystem ${fs}" 1	;;
+esac
+[ $? -ne 0 ] && labadmin_error "Error checking filesystem ${dev}${pn}" 1
+
+
+# DELETE PARTITION AND CREATE AGAIN
+labadmin_info "Resizing partition table"
+ps="$(fdisk -l "${dev}" | grep "${dev}${pn}" | awk '{print $2}')"	# ps -> partition start sector
+[ "$pn" -gt 4 ] && pt="l" || pt="p"									# pt -> partition type: logical or primary
+[ "$fs" = "ext" ] && pt_fs="83" || pt_fs="7"						# pt_fs -> partition type file system
+fdisk "$dev" <<EOF
+d
+${pn}
+n
+${pt}
+${pn}
+${ps}
+
+n
+t
+${pn}
+${pt_fs}
+w
+EOF
+
+# RESIZE FILESYSTEM
+labadmin_info "Resizing filesystem"
+case "$fs" in
+ntfs)
+	echo "y" | ntfsresize -P -s "$(($(blockdev --getsize64 ${dev}${pn})/(1024*1024)))M" "${dev}${pn}"
+;;
+ext)
+	resize2fs "${dev}${pn}"
+;;
+esac

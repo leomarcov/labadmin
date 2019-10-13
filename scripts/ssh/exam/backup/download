@@ -1,0 +1,52 @@
+#!/usr/bin/env bash
+#===================================================================================
+#     FILE: exam/backup/download
+#   AUTHOR: Leonardo Marco (labadmin@leonardomarco.com)
+#  LICENSE: GNU General Public License v3.0
+#===================================================================================
+script_id="$(echo ${BASH_SOURCE[0]} | sed 's\^'"$scripts_path"'/*\\g')"		# Script filename with relative script path
+
+#=== LOAD INFO =====================================================================
+if [ "$1" = "--load-scriptinfo" ]; then
+	script_desc="Download exam backup to local machine"
+	script_type="local"
+	script_bg="sub"
+	script_admindeps=""
+	script_hostdeps="7za(p7zip-full|p7zip) md5sum(coreutils)"
+	load_scriptinfo "$script_id" "$script_desc" "$script_type" "$script_bg" "$script_admindeps" "$script_hostdeps"
+	return
+
+#=== READ PARAMS ===================================================================
+elif [ "$1" = "--readparams" ]; then
+	# PARAM1: backup number
+	read_param "$script_id" 1 "Backup number" "" "^[0-9]+$"
+	read_param "$script_id" 2 "Destination path (default /tmp/)" "/tmp/" ""
+    return
+fi
+
+
+#=== EXEC SCRIPT ===================================================================
+enum="$1"
+dest="$(eval echo "$2")"								# Resolve scape characteres like \ ,*, etc.
+exam_backups="/root/labadmin_exam-backups/"             # Examen backups path
+
+# CHECK DEST
+[ ! -w "$dest" ] || [ ! -w "$dest" ] && labadmin_error "Can't write in local path $dest" 1
+
+# CHECK EXAM FILENAME
+efile="$(labdmin_ssh_host_comm "${labadmin_nhost}" "ls \"${exam_backups}\" | sed -n ${enum}p")"
+
+[ ! "$efile" ] && labadmin_error "Can't access backup number $enum ($exam_backups)" 1
+
+# DOWNLOAD FILE
+dest="$dest/labadmin-exam_HOST_${labadmin_nhost}_${efile}/"
+mkdir "$dest"
+labadmin_info "Destination: $dest"
+labdmin_ssh_host_comm "${labadmin_nhost}" "dd if=\"${exam_backups}/${efile}\" bs=1M" > "${dest}/${efile}"
+
+# UNZIP FILE
+bpass="$(echo "${exam_backups}/${efile}" | md5sum | cut -f1 -d" ")"
+( cd "$dest"
+  7za x "$efile" -p"${bpass}"
+  rm "$efile";
+)

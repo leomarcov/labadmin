@@ -1,0 +1,55 @@
+#!/usr/bin/env bash
+#===================================================================================
+#     FILE: exam/end
+#   AUTHOR: Leonardo Marco (labadmin@leonardomarco.com)
+#  LICENSE: GNU General Public License v3.0
+#===================================================================================
+script_id="$(echo ${BASH_SOURCE[0]} | sed 's\^'"$scripts_path"'/*\\g')"		# Script filename with relative script path
+
+#=== LOAD INFO =====================================================================
+if [ "$1" = "--load-scriptinfo" ]; then
+	script_desc="Come back host to normal config when exam ends"
+	script_type="ssh"
+	script_bg="sub"
+	script_admindeps=""
+	script_hostdeps="7za(p7zip-full|p7zip) setfacl(acl) xprintidle"
+	load_scriptinfo "$script_id" "$script_desc" "$script_type" "$script_bg" "$script_admindeps" "$script_hostdeps"
+	return
+
+#=== READ PARAMS ===================================================================
+elif [ "$1" = "--readparams" ]; then
+    # PARAM1: remove user
+    read_param "$script_id" 1 "Remove exam user [Y/n]" "y"  "^(y|n)$"
+    # PARAM2: change pass	
+    [ "${p1,,}" = "n" ] && read_param "$script_id" 2 "New user password (empty no change)" ""  ""
+    return
+fi
+
+
+#=== EXEC SCRIPT ===================================================================
+exam_end_script_path="/root/labadmin_exam-end.sh"   # Exam recovery script path
+remove_user="$1"
+new_pass="$2"
+
+
+### CHECK RECOVERY EXAM SCRIPT
+[ ! -f "$exam_end_script_path" ] && labadmin_error "ERROR: no exam in progress (script $exam_end_script_path no exists)" 1
+
+### CHECK ACTIVE USER
+if which xprintidle &>/dev/null; then
+	labadmin_info "Checking active users"
+	min_secs=20		# Minimum active seconds=20
+	u=$(labadmin_users-display | head -1)
+	d="$(echo $u | cut -f2 -d " ")"
+	u="$(echo $u | cut -f1 -d " ")"
+	if [ "$u" ]; then
+		idle_time=$(su "$u" -c "DISPLAY=$d xprintidle")
+		[ "$idle_time" -le "$((${min_secs}*1000))" ] && labadmin_error "RECOVERY CANCELLED: user $u is active in last ${min_secs} seconds" 1
+	fi
+else
+	labadmin_error "WARNING: unable to check if exam user is active (missing xprintidle dependence)"
+fi
+
+
+### EXEC EXAM RECOVERY SCRIPT
+bash "$exam_end_script_path" "${remove_user}" "${new_pass}"

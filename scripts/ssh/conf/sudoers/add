@@ -1,0 +1,41 @@
+#!/usr/bin/env bash
+#===================================================================================
+#     FILE: conf/sudoers/add
+#   AUTHOR: Leonardo Marco (labadmin@leonardomarco.com)
+#  LICENSE: GNU General Public License v3.0
+#===================================================================================
+script_id="$(echo ${BASH_SOURCE[0]} | sed 's\^'"$scripts_path"'/*\\g')"		# Script filename with relative script path
+
+#=== LOAD INFO =====================================================================
+if [ "$1" = "--load-scriptinfo" ]; then
+	script_desc="Add new line in sudoers file"
+	script_type="ssh"
+	script_bg="sub"
+	script_admindeps=""
+	script_hostdeps="visudo"
+	load_scriptinfo "$script_id" "$script_desc" "$script_type" "$script_bg" "$script_admindeps" "$script_hostdeps"
+	return
+
+#=== READ PARAMS ===================================================================
+elif [ "$1" = "--readparams" ]; then
+	# PARAM1: user or group
+	read_param "$script_id" 1 "User (or %group)"  "" "."
+	# PARAM2: command
+	read_param "$script_id" 2 "Command (default ALL)"  "ALL" "."
+	return
+fi
+
+
+#=== EXEC SCRIPT ===================================================================
+user="$1"
+cmd="$2"
+
+# CHECKS
+[ ! -f /etc/sudoers ] && labadmin_error "Cant find file /etc/sudoers"
+[ "${user:0:1}" = "%" ] && ! getent group "${user:1}" &>/dev/null && labadmin_error "Group $user not exist" 1
+[ "${user:0:1}" != "%" ] && ! getent passwd "$user" &>/dev/null && labadmin_error "User $user not exist" 1
+[ "$cmd" ] && [ "$cmd" != "ALL" ] && [ ! -x "$cmd" ] && labadmin_error "WARNING: the file $cmd no exist or not is executable file"
+
+echo -e "${user}\tALL=(ALL:ALL)\t${cmd}" | EDITOR='tee -a' visudo
+
+

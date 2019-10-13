@@ -1,0 +1,55 @@
+#!/usr/bin/env bash
+#===================================================================================
+#     FILE: clone/multicast/restore-dd
+#   AUTHOR: Leonardo Marco (labadmin@leonardomarco.com)
+#  LICENSE: GNU General Public License v3.0
+#===================================================================================
+script_id="$(echo ${BASH_SOURCE[0]} | sed 's\^'"$scripts_path"'/*\\g')"		# Script filename with relative script path
+
+#=== LOAD INFO =====================================================================
+if [ "$1" = "--load-scriptinfo" ]; then
+	script_desc="Restore remote partition or disk using dd"
+	script_type="ssh+admin"
+	script_bg="force win"
+	script_admindeps="udp-sender(udpcast)"
+	script_hostdeps="udp-receiver(udpcast)"
+	load_scriptinfo "$script_id" "$script_desc" "$script_type" "$script_bg" "$script_admindeps" "$script_hostdeps"
+	return
+
+#=== READ PARAMS ===================================================================
+elif [ "$1" = "--readparams" ]; then
+	# PARAM1: local path
+	read_param "$script_id" 1 "Source local backup file" "" "."
+	# PARAM2: remote dev
+	read_param "$script_id" 2 "Destination remote disk or partition file in /dev/ (sda, sda1,...)" "" "^[a-zA-Z]+[0-9]*$"
+	# PARAM3: start sector
+	read_param "$script_id" 3 "Start destination sector to restore (default 0)" "0" "^[0-9]+$"
+	return
+fi
+
+#=== EXEC SCRIPT ===================================================================
+src="$(eval echo "$1")"			# Resolve scape characteres like \ ,*, etc.
+dest="/dev/${2}"
+start="${3}"
+
+# REMOTE EXEC
+if [ "${labadmin_script_type}" = "ssh" ]; then
+	# CHECK DEST
+	if [ ! -w "$dest" ]; then
+		echo -e "\e[1m\e[91mCant write dev file "'"${dest}"'"\e[0m"
+		return 1
+	fi
+	killall -9 udp-receiver 2>/dev/null
+	udp-receiver --nokbd | dd bs=512 seek="${start}" of="${dest}"
+
+# LOCAL EXEC
+elif [ "${labadmin_script_type}" = "admin" ]; then
+	# CHECK SRC
+	if [ ! -f "$src" ] || [ ! -r "$src" ]; then
+		echo -e "\e[1m\e[91mCan't read local file $src\e[0m"
+		return 1
+	fi
+	killall -9 udp-sender 2>/dev/null
+	sleep 1
+	dd bs=1M if="$src" | udp-sender
+fi

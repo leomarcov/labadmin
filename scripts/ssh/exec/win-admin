@@ -1,0 +1,47 @@
+#!/usr/bin/env bash
+#===================================================================================
+#     FILE: exec/win-admin
+#   AUTHOR: Leonardo Marco (labadmin@leonardomarco.com)
+#  LICENSE: GNU General Public License v3.0
+#===================================================================================
+script_id="$(echo ${BASH_SOURCE[0]} | sed 's\^'"$scripts_path"'/*\\g')"		# Script filename with relative script path
+
+#=== LOAD INFO =====================================================================
+if [ "$1" = "--load-scriptinfo" ]; then
+	script_desc="Open window in host X session with admin privileges"
+	script_type="ssh"
+    script_bg="force sub"
+	script_admindeps=""
+	script_hostdeps="terminator"
+	load_scriptinfo "$script_id" "$script_desc" "$script_type" "$script_bg" "$script_admindeps" "$script_hostdeps"
+	return
+
+#=== READ PARAMS ===================================================================
+elif [ "$1" = "--readparams" ]; then
+    # PARAM1: command
+	read_param "$script_id" 1 "Command to open" "" "." ""
+	# PARAM2: terminal
+	read_param "$script_id" 2 "Run on terminal [y/N]" "n" "^(y|n)$"
+	return
+fi
+
+
+#=== EXEC SCRIPT ===================================================================
+com="$1"
+term="$2"
+
+# First logged user in X
+u=($(labadmin_users-display | head -1))
+
+# CHECK USERS
+[ ! "${u[0]}" ] && labadmin_error "No users logged" 1
+
+
+if [ "${term,,}" = "y" ]; then
+	labdmin_config_terminator "${u[0]}"
+	com="terminator -x bash -c \"$com\""
+fi
+
+su -l "${u[0]}" -c "DISPLAY=${u[1]} xhost si:localuser:$(id -un)" 
+
+DISPLAY=${u[1]} $com 2>/dev/null

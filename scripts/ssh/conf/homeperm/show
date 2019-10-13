@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+#===================================================================================
+#     FILE: conf/homeperm
+#   AUTHOR: Leonardo Marco (labadmin@leonardomarco.com)
+#  LICENSE: GNU General Public License v3.0
+#===================================================================================
+script_id="$(echo ${BASH_SOURCE[0]} | sed 's\^'"$scripts_path"'/*\\g')"		# Script filename with relative script path
+
+#=== LOAD INFO =====================================================================
+if [ "$1" = "--load-scriptinfo" ]; then
+	script_desc="Show HOME directories with permissive access"
+	script_type="ssh"
+	script_bg="sub"
+	script_admindeps=""
+	script_hostdeps=""
+	load_scriptinfo "$script_id" "$script_desc" "$script_type" "$script_bg" "$script_admindeps" "$script_hostdeps"
+	return
+
+#=== READ PARAMS ===================================================================
+elif [ "$1" = "--readparams" ]; then
+	return
+fi
+
+
+#=== EXEC SCRIPT ===================================================================
+# Show lines DIR_HOME from adduser.conf not containing 750
+[ -f /etc/adduser.conf  ] && grep -H "^DIR_MODE" /etc/adduser.conf | grep -v "^#" 
+
+# Show content from /home not containing --- in others column
+echo -ne "${C_G}"
+ls -l /home | tail -n +2 | grep "^.......---"
+
+echo
+echo -ne "${C_BR}"
+ls -l /home | tail -n +2 | grep -v "^.......---"
+echo -ne "${S_R}"
+

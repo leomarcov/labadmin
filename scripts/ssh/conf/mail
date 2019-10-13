@@ -1,0 +1,88 @@
+#!/usr/bin/env bash
+#===================================================================================
+#     FILE: conf/mail
+#   AUTHOR: Leonardo Marco (labadmin@leonardomarco.com)
+#  LICENSE: GNU General Public License v3.0
+#===================================================================================
+script_id="$(echo ${BASH_SOURCE[0]} | sed 's\^'"$scripts_path"'/*\\g')"		# Script filename with relative script path
+
+#=== LOAD INFO =====================================================================
+if [ "$1" = "--load-scriptinfo" ]; then
+	script_desc="Install and config Postfix SMTP client for send mails (only root account)"
+	script_type="ssh"
+	script_bg="$([ "$DISPLAY" ] && echo "win" || echo "sub" )"
+	script_admindeps=""
+	script_hostdeps="find(findutils) systemctl(systemd)"
+	load_scriptinfo "$script_id" "$script_desc" "$script_type" "$script_bg" "$script_admindeps" "$script_hostdeps"
+	return
+
+#=== READ PARAMS ===================================================================
+elif [ "$1" = "--readparams" ]; then
+	# PARAM1: server
+	read_param "$script_id" 1 'SMTP Server' "" "."
+	# PARAM2: port
+	read_param "$script_id" 2 'SMTP Port (default 587)' "587" "^[0-9]+$"
+	# PARAM3: email
+	read_param "$script_id" 3 'Email address' "" ".+@.+"
+	# PARAM4: password
+	read_param "$script_id" 4 'Password' "" "."
+	return
+fi
+
+
+#=== EXEC SCRIPT ===================================================================
+srv="$1"
+port="$2"
+email="$3"
+pass="$4"
+
+
+# INSTALL PACKAGES
+labadmin_info "Installing dependencies"
+if which apt &> /dev/null; then 
+	DEBIAN_FRONTEND=noninteractive apt-get install --yes postfix mailutils libsasl2-2 ca-certificates libsasl2-modules
+
+elif which yum &>/dev/null; then
+	yum -y install postfix mailx ca-certificates 
+fi
+
+# ENABLE POSTFIX
+systemctl enable postfix || labadmin_error "Cant enable postfix service" 1
+
+
+# CONFIG SMTP CLIENT
+echo
+labadmin_info "Locating CA certificate file"
+cafile="$(find -L  $(ls -d /etc/pki /etc/ssl 2>/dev/null) -name "ca-certificates.crt" -o -name "ca-bundle.crt" -o -name "ca-bundle.pem" -o -name "cacert.pem" -o -name "tls-ca-bundle.pem" | head -1)"
+[ ! "$cafile" ] && labadmin_error "Cant find CA certificate file" 1
+echo "$cafile"
+
+echo
+labadmin_info "Configuring SMTP Postfix client"
+# Delete lines
+sed -i '/relayhost[[:blank:]]*=\|smtp_sasl_auth_enable[[:blank:]]*=\|smtp_sasl_password_maps[[:blank:]]*=\|smtp_sasl_security_options[[:blank:]]*=\|smtp_tls_security_level[[:blank:]]*=\|smtp_tls_CAfile[[:blank:]]*=\|smtp_use_tls[[:blank:]]*=\|authorized_submit_users[[:blank:]]*=/d' /etc/postfix/main.cf
+# Create lines
+echo -e "${S_B}/etc/postfix/main.cf${S_R}"
+echo 'relayhost = ['"$srv"']:'"$port"'
+smtp_sasl_auth_enable = yes
+smtp_sasl_password_maps = hash:/etc/postfix/sasl/passwd
+smtp_sasl_security_options = noanonymous
+smtp_tls_security_level = encrypt
+smtp_tls_CAfile = '"$cafile"'
+smtp_use_tls = yes
+authorized_submit_users = root' | tee -a /etc/postfix/main.cf
+
+# Create password config
+[ ! -d /etc/postfix/sasl ] && mkdir /etc/postfix/sasl/
+echo
+echo -e "${S_B}/etc/postfix/sasl/passwd${S_R}"
+echo "[${srv}]:${port}    ${email}:${pass}" | tee /etc/postfix/sasl/passwd
+
+chmod 600 /etc/postfix/sasl/passwd
+postmap /etc/postfix/sasl/passwd
+
+
+# Restart
+echo
+labadmin_info "Restarting postfix service"
+service postfix restart

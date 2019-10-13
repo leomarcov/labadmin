@@ -1,0 +1,51 @@
+#!/usr/bin/env bash
+#===================================================================================
+#     FILE: conf/networkmanager/disable
+#   AUTHOR: Leonardo Marco (labadmin@leonardomarco.com)
+#  LICENSE: GNU General Public License v3.0
+#===================================================================================
+script_id="$(echo ${BASH_SOURCE[0]} | sed 's\^'"$scripts_path"'/*\\g')"		# Script filename with relative script path
+
+#=== LOAD INFO =====================================================================
+if [ "$1" = "--load-scriptinfo" ]; then
+	script_desc="Restrict network-manager to prevent specific group can manage it"
+	script_type="ssh"
+	script_bg="sub"
+	script_admindeps=""
+	script_hostdeps="setfacl(acl) systemctl(systemd)"
+	load_scriptinfo "$script_id" "$script_desc" "$script_type" "$script_bg" "$script_admindeps" "$script_hostdeps"
+	return
+
+#=== READ PARAMS ===================================================================
+elif [ "$1" = "--readparams" ]; then
+	read_param "$script_id" 1 "Group (default users)" "users" "."
+	return
+fi
+
+
+#=== EXEC SCRIPT ===================================================================
+group="$1"
+[ ! "$group" ] && group="users"
+d="/var/lib/polkit-1/localauthority/50-local.d/"  	# Policies dir
+
+# CHECKS
+! which NetworkManager && labadmin_error "NetworkManager is not installed" 1
+
+
+# Get Desktop Managerer name
+dm_name=$(systemctl list-units --type=service --all | grep "dm\.service" | awk '{print $1}' | head -1)
+dm_name=${dm_name%.service}
+
+# DISABLE
+labadmin_info "Confing network-manager policies for group $group ${dm_name:+and ${dm_name}}"
+echo '[NetworkManager1]
+Identity=unix-group:'"${group}${dm_name:+;unix-user:${dm_name}}"'
+Action=org.freedesktop.NetworkManager.*
+ResultAny=no
+ResultInactive=no
+ResultActive=auth_admin_keep
+' | tee "$d"/networkmanager.pkla
+
+
+
+

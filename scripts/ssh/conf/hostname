@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+#===================================================================================
+#     FILE: conf/hostname
+#   AUTHOR: Leonardo Marco (labadmin@leonardomarco.com)
+#  LICENSE: GNU General Public License v3.0
+#===================================================================================
+script_id="$(echo ${BASH_SOURCE[0]} | sed 's\^'"$scripts_path"'/*\\g')"		# Script filename with relative script path
+
+#=== LOAD INFO =====================================================================
+if [ "$1" = "--load-scriptinfo" ]; then
+	script_desc="Set hostname"
+	script_type="ssh"
+	script_bg="sub"
+	script_admindeps=""
+	script_hostdeps=""
+	load_scriptinfo "$script_id" "$script_desc" "$script_type" "$script_bg" "$script_admindeps" "$script_hostdeps"
+	return
+
+#=== READ PARAMS ===================================================================
+elif [ "$1" = "--readparams" ]; then
+	# PARAM1: hostname
+	read_param "$script_id" 1 'New hostname (use ${n} to replace for host number)' "" "."
+	return
+fi
+
+
+#=== EXEC SCRIPT ===================================================================
+hn="$1"												# new local hostname
+n="${labadmin_nhost}"								# nhost
+hn="$(eval echo $hn)"								# eval replace ${n} for $n
+hn_old="$(cat /etc/hostname | awk '{print $1}')"
+
+echo -e "\e[1m\e[33mChanging hostname: $hn_old -> $hn"
+echo  "${hn}" > /etc/hostname
+sed -i "/^127.0/ s/${hn_ol}/${hn}/g" /etc/hosts

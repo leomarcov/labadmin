@@ -1,0 +1,49 @@
+#!/usr/bin/env bash
+#===================================================================================
+#     FILE: clone/save-part
+#   AUTHOR: Leonardo Marco (labadmin@leonardomarco.com)
+#  LICENSE: GNU General Public License v3.0
+#===================================================================================
+script_id="$(echo ${BASH_SOURCE[0]} | sed 's\^'"$scripts_path"'/*\\g')"		# Script filename with relative script path
+
+#=== LOAD INFO =====================================================================
+if [ "$1" = "--load-scriptinfo" ]; then
+	script_desc="Clone remote partition and save to partclone image in local path using unicast"
+    script_type="local"
+	script_bg="win"
+	script_admindeps=""
+	script_hostdeps="partclone.ntfs(partclone) partclone.ext4(partclone) partclone.vfat(partclone) partclone.dd(partclone)"
+	load_scriptinfo "$script_id" "$script_desc" "$script_type" "$script_bg" "$script_admindeps" "$script_hostdeps"
+	return
+
+#=== READ PARAMS ===================================================================
+elif [ "$1" = "--readparams" ]; then
+	# PARAM1: remote dev
+	read_param "$script_id" 1 "Source remote partition file in /dev/ (sda1, sdb2,...)" "" "^[a-zA-Z]+[1-9]+$"
+	# PARAM2: local path
+	read_param "$script_id" 2 "Destination local directory to save" "" "."
+	return
+fi
+
+#=== EXEC SCRIPT ===================================================================
+src="/dev/${1}"
+dest="$(eval echo "$2")"			# Resolve scape characteres like \ ,*, etc.
+
+# CHECK DEST
+[ ! -d "$dest" ] || [ ! -w "$dest" ] && labadmin_error "Can't write in local path $dest" 1
+
+
+# CHECK SRC
+labdmin_ssh_host_comm "${labadmin_nhost}" '
+src="$(eval echo "'"$src"'")"				 # Resolve scape characteres like \ ,*, etc.
+[ ! -r "${src}" ] && labadmin_error "Cant locate dev file ${src}" 1
+exit 0
+'
+[ $? -ne 0 ] && exit 1
+
+# CLONE
+labdmin_ssh_host_comm "${labadmin_nhost}" '
+f=$(file -s "'"$src"'");
+if echo "$f" | grep -iq ntfs ; then t="ntfs"; elif echo "$f" | grep -iq "ext[1-4]"; then t="extfs"; elif echo "$f" | grep -iq "fat"; then t="fat32"; else t="dd"; fi;
+echo "Detected $t filesystem" 1>&2
+partclone.${t} -c -s "'"$src"'"' > "${dest}/$(date +%Y-%m-%d)_$(basename "$src").partclone"

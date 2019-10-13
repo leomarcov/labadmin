@@ -1,0 +1,124 @@
+#!/usr/bin/env bash
+#===================================================================================
+#     FILE: exam/check
+#   AUTHOR: Leonardo Marco (labadmin@leonardomarco.com)
+#  LICENSE: GNU General Public License v3.0
+#===================================================================================
+script_id="$(echo ${BASH_SOURCE[0]} | sed 's\^'"$scripts_path"'/*\\g')"		# Script filename with relative script path
+
+#=== LOAD INFO =====================================================================
+if [ "$1" = "--load-scriptinfo" ]; then
+	script_desc="Check if host is blocked for exam"
+	script_type="ssh"
+	script_bg="sub"
+	script_admindeps=""
+	script_hostdeps="crontab(cron) getfacl(acl)"
+	load_scriptinfo "$script_id" "$script_desc" "$script_type" "$script_bg" "$script_admindeps" "$script_hostdeps"
+	return
+
+#=== READ PARAMS ===================================================================
+elif [ "$1" = "--readparams" ]; then
+    return
+fi
+
+
+#=== EXEC SCRIPT ===================================================================
+exam_backups="/root/exam_backups"
+exam_end_script="/root/labadmin_exam-end.sh"   # Exam recovery script path
+errors=0
+
+### REMOVE OLDER BACKUPS 
+max_backup_days=15
+find "$exam_backups" -type f -mtime +${max_backup_days} -exec rm {} \; 2> /dev/null
+
+
+# CHECK EXAM END SCRIPT INFO
+if [ -e "$exam_end_script" ]; then
+	euser="$(cat "$exam_end_script" | grep ^euser= | cut -f2 -d= | tr -d \")"
+    echo -e "${C_BR}EXAM IN PROGRESS${S_R}"
+    echo -e " [${C_BR}*${S_R}] START TIME:          $(stat "$exam_end_script"  -c %y | cut -f1 -d.)\e[0m"
+
+    end=$(crontab -l | grep "#LABADMIN-EXAM" | crontab -l | awk -F "-gt" '{print $2}' | awk -F "]" '{print $1}'|xargs)
+    if [ ! "$end" ]; then end="not programmed"
+    else end="$(date -d @${end} "+%Y-%M-%d %H:%M:%S") ($((($end-$(date +%s))/60)) minutes left)"; fi
+    echo -e " [${C_BR}*${S_R}] AUTORECOVER:         $end"
+	echo -e " [${C_BR}*${S_R}] RECOVER SCRIPT:      $exam_end_script\e[0m"
+else
+	echo -e "\e[1m${C_BG}NO EXAM IN PROGRESS\e[0m"
+fi
+
+# LOGGED USERS
+tmp="$(who | cut -f1 -d" " | sed -z 's/\n/, /g' | sed 's/, $//g')"
+if [ "$tmp" ]; then echo -e " [${C_BR}*${S_R}] LOGGED USERS\e[0m:        ${tmp}"
+else echo -e " [${C_BG}*${S_R}] LOGGED USERS\e[0m:        none"; fi
+
+# USER-EXAM
+if [ "$euser" ]; then
+	if id "$euser" &> /dev/null; then
+		echo -e " [${C_BR}*${S_R}] EXAM USER\e[0m:           $euser (PRESENT)" &&  errors=1
+	else
+		echo -e " [${C_BG}*${S_R}] EXAM USER\e[0m:           $euser (NOT PRESENT)"
+	fi
+fi
+
+# LOCKED USERS
+unset lusers uusers		# List locker users and unlocked users
+for u in $(ls /home)$(echo " ra"); do
+    ! id "$u" &>/dev/null && continue
+    if passwd -S "$u" | grep -q "^$u L "; then
+		lusers="${lusers:+$lusers }$u"
+		errors=1
+	else
+		uusers="${uusers:+$uusers }$u"
+	fi
+done
+
+if [ "$lusers" ]; then 
+	echo -e " [${C_BR}*${S_R}] LOCKED USERS:        ${lusers}"
+else 
+	echo -e " [${C_BG}*${S_R}] LOCKED USERS:        none"
+fi
+if [ "$uusers" ]; then 
+	echo -e " [*] UNLOCKED USERS:      ${uusers}"
+else
+	echo -e " [${C_BR}*${S_R}] UNLOCKED USERS:      none"
+fi
+
+
+# PERMS /media
+u="$(getfacl /media 2>/dev/null | egrep -q "user:.+:" | cut -f2 -d:)"
+[ "$u" ] && echo -e " [${C_BR}*${S_R}] PERMS /media:        restringed for user $u" && errors=1
+
+# CHROMIUM POLICIES
+tmp="$(ls /etc/chromium/policies/managed/ 2>/dev/null)"
+[ "$tmp" ] && echo -e " [${C_BR}*${S_R}] CHORMIUM POLICIES:   ${tmp}" && errors=1
+
+# IPTABLES
+tmp=$(iptables -L | grep -vE "^Chain |^target|^$")
+[ "$tmp" ] && echo -e " [${C_BR}*${S_R}] IPTABLES RULES:\n${C_BR}${tmp}\e[0m" && errors=1
+
+
+# NET
+echo -e " [*] NETWORK CONNECTION:"
+gw="$(ip -4 route | grep default | grep -o "\bvia\b[[:blank:]]\+[0-9]\+\.[0-9]\+\.[0-9]\+\.[0-9]\+" | awk '{print $2}')"
+if ping -c 1 -W 1 "$gw" &>/dev/null; then
+    echo -e "${C_BG}   $gw: OK\e[0m"
+else
+    echo -e "${C_BR}   $gw: ERROR\e[0m"
+    errors=1
+fi
+if ping -c 1 -W 1 8.8.8.8 &>/dev/null; then
+    echo -e "${C_BG}   8.8.8.8: OK\e[0m"
+else
+    echo -e "${C_BR}   8.8.8.8: ERROR\e[0m"
+    errors=1
+fi
+
+
+# CRON
+echo
+c="$(crontab -l 2>/dev/null | grep "#LABADMIN-EXAM")"
+[ "$c" ] && echo -e " [${C_BR}*${S_R}] CRON CONFIG:\n${C_BR}${c}\e[0m" && errors=1
+
+
+exit $errors

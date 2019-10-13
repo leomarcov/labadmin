@@ -1,0 +1,51 @@
+#!/usr/bin/env bash
+#===================================================================================
+#     FILE: exec/script
+#   AUTHOR: Leonardo Marco (labadmin@leonardomarco.com)
+#  LICENSE: GNU General Public License v3.0
+#===================================================================================
+script_id="$(echo ${BASH_SOURCE[0]} | sed 's\^'"$scripts_path"'/*\\g')"		# Script filename with relative script path
+
+#=== LOAD INFO =====================================================================
+if [ "$1" = "--load-scriptinfo" ]; then
+	script_desc="Exec local script in host"
+	script_type="local"
+	script_bg="sub"
+	script_admindeps=""
+	script_hostdeps=""
+	load_scriptinfo "$script_id" "$script_desc" "$script_type" "$script_bg" "$script_admindeps" "$script_hostdeps"
+	return
+
+#=== READ PARAMS ===================================================================
+elif [ "$1" = "--readparams" ]; then
+	# PARAM1: local script path
+	read_param "$script_id" 1 "Local script path" "" "."
+	# PARAM2: first script param
+	read_param "$script_id" 2 "Script parameter 1"
+	# PARAM3: second script param
+	[ "$p2" ] && read_param "$script_id" 3 "Script parameter 2"
+	# PARAM4: third script param
+	[ "$p3" ] && read_param "$script_id" 4 "Script parameter 3"
+	# PARAM5: third script param
+	[ "$p4" ] && read_param "$script_id" 5 "Script parameter 4"
+	# PARAM6: third script param
+	[ "$p5" ] && read_param "$script_id" 6 "Script parameter 5"	
+	return
+fi
+
+
+#=== EXEC SCRIPT ===================================================================
+script="$(eval echo "$1")"			# Resolve scape characteres like \ ,*, etc.
+param1="$2"
+param2="$3"
+param3="$4"
+param4="$5"
+param5="$6"
+
+[ ! -r "$script" ] && labadmin_error "Can't access script file $script" 1
+
+# EXEC SCRIPT
+cat "$script" | labdmin_ssh_host_comm_stdin "${labadmin_nhost}" 'cat - | bash /dev/stdin '\'"${param1}"\'' '\'"${param2}"\'' '\'"${param3}"\'' '\'"${param4}"\'' '\'"${param5}"\'''
+
+
+

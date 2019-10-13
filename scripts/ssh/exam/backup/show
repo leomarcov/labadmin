@@ -1,0 +1,59 @@
+#!/usr/bin/env bash
+#===================================================================================
+#     FILE: exam/backup/show
+#   AUTHOR: Leonardo Marco (labadmin@leonardomarco.com)
+#  LICENSE: GNU General Public License v3.0
+#===================================================================================
+script_id="$(echo ${BASH_SOURCE[0]} | sed 's\^'"$scripts_path"'/*\\g')"		# Script filename with relative script path
+
+#=== LOAD INFO =====================================================================
+if [ "$1" = "--load-scriptinfo" ]; then
+	script_desc="Show content of exam backup"
+	script_type="ssh"
+	script_bg="sub"
+	script_admindeps=""
+	script_hostdeps="7za(p7zip-full|p7zip)"
+	load_scriptinfo "$script_id" "$script_desc" "$script_type" "$script_bg" "$script_admindeps" "$script_hostdeps"
+	return
+
+#=== READ PARAMS ===================================================================
+elif [ "$1" = "--readparams" ]; then
+	# PARAM1: backup number
+	read_param "$script_id" 1 "Backup number" "" "^[0-9]+$"
+    return
+fi
+
+
+#=== EXEC SCRIPT ===================================================================
+enum="$1"
+exam_backups="/root/labadmin_exam-backups/"              # Examen backups path
+
+# SHOW LIST
+backups_list="$(ls "$exam_backups" 2>/dev/null)"
+if [ $? -ne 0 ]; then
+    echo "No exams saved"
+    exit 0
+fi
+
+n=1
+c="%-4s%-30s%-8s%-10s%-35s\n"
+printf "${S_B}${c}${S_R}" "ID" "FILE" "SIZE" "DAYS-AGO" "PASSWORD (7za x <file> -p<pass>)"
+IFS=$'\n\t'
+for f in $backups_list; do
+    efiles[$n]="$exam_backups/$f"
+    bpass="$(echo "${efiles[$n]}" | md5sum | cut -f1 -d" ")"
+    printf "$([ "$n" -eq "$enum" ] && echo "${C_Y}${c}${S_R}" || echo "$c")" "[$n]" "$f" "$(du -sh "${efiles[$n]}" | cut -f1)" "$(( ($(date +%s)-$(date -r "${efiles[$n]}" +%s))/86400 ))" "$bpass"
+    n=$(($n+1))
+done
+
+
+# CHECK SELECTED BACKUP FILE
+efile="${efiles[$enum]}"
+[ ! -e "$efile" ] && labadmin_error "ERROR: can't access file $efile [$enum]" 1
+
+
+# SHOW BACKUP CONTENT
+echo
+echo
+labadmin_info "EXAM $efile"
+7za l "$efile" | sed -n -e '/Date[[:blank:]]*Time/,$p'		# sed cuts stupid content before 7za header

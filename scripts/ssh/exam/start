@@ -1,0 +1,549 @@
+#!/usr/bin/env bash
+#===================================================================================
+#     FILE: exam/start
+#   AUTHOR: Leonardo Marco (labadmin@leonardomarco.com)
+#  LICENSE: GNU General Public License v3.0
+#===================================================================================
+script_id="$(echo ${BASH_SOURCE[0]} | sed 's\^'"$scripts_path"'/*\\g')"		# Script filename with relative script path
+
+#=== LOAD INFO =====================================================================
+if [ "$1" = "--load-scriptinfo" ]; then
+	script_desc="Config host for restrictive exam environment"
+	script_type="ssh"
+	script_bg="sub"
+	script_admindeps=""
+	script_hostdeps="systemctl(systemd) crontab(cron) setfacl(acl) beep netfilter-persistent|/usr/libexec/iptables/iptables.init(iptables-persistent|iptables-services) chromium|chromium-browser"
+	load_scriptinfo "$script_id" "$script_desc" "$script_type" "$script_bg" "$script_admindeps" "$script_hostdeps"
+	return
+
+#=== READ PARAMS ===================================================================
+elif [ "$1" = "--readparams" ]; then
+    # PARAM1: euser
+    read_param "$script_id" 1 "User exam (h for help)" "" "^[a-z_][a-z0-9_]*$" "\tUsername to use in exam. Others users will be blocked in exam time.\n\t  - If user NOT EXISTS: create it\n\t  - If user EXISTS: use existent user\n\tIn boths, when exam ends the user can be removed or blocked"
+    # PARAM2: pass
+    read_param "$script_id" 2 "User password (h for help)" "" "" "\tPassword for create new user exam or to change in existent user exam"
+    # PARAM3: disable options
+    read_param "$script_id" 3 "Disable options (h for help)" "shell poweroff mountpoints" "" "\tDisable options (spareted by spaces)\n\t   none\t\t\tNo disable any option\n\t   screenshots\t\tDisable all screenshooters found\n\t   shell\t\tDisable terminal access\n\t   filemanagers\t\tDisable filemanagers\n\t   poweroff\t\tDisable poweoroff and restart actions\n\t   mountpoints\t\tDisable access to /mnt /media\n\t   browsers\t\tDisable all web browsers found\n\t   com=command\t\tDisable a command. It can be used multiples times\n\t   <empty>|default\tEquals to: shell poweroff mountpoints"
+    # PARAM4: homepage
+    read_param "$script_id" 4 "Homepage (h for help)" "" "" "\tAutostarts Chromium after login whith specific URL homepage.\n\tEmpty value for no user this function"
+    # PARAM5: filter type
+    read_param "$script_id" 5 "Network firewall [WHITELIST/blacklist/none]" "whitelist" "^(whitelist|blacklist|none)$"
+    # PARAM6: filter list
+    [ "${p5,,}" != "none" ] && read_param "$script_id" 6 "$([ "$p5" = "whitelist" ] && echo "Allowed" || echo "Danyed") list (h for help)" "" "" "\tList of IPs, ranges or domains to add in the $p5 (separated by spaces)\n\tSAMPLES:\n\t   www.google.com\t\tAdd Google domain to the list\n\t   www.a.com www.b.com\t\tAdd two domains to the list\n\t   10.0.20.5\t\t\tAdd specific ip to the list\n\t   10.0.20.5 10.0.2.6\t\tAdd two ips to the list\n\t   10.0.20.0/24\t\t\tAdd subnet to the list\n\t   <empty>\t\t\tEmpty list"
+    # PARAM7: mins autorecover
+    read_param "$script_id" 7 "Minutes for autorecover (h for help)" "300" "^[0-9]+$" "\tSchedule autorestauration in next boot if have spend these minutes\n\tDefault: 300 (5 hours)\n\tValue 0 disable autorestauration"
+    return
+fi
+
+
+#=== EXEC SCRIPT ===================================================================
+euser="$1"                              		 		# Exam user name
+epass="$2"                              		 		# Examen user password
+disopt="$3"                             		 		# Options to disable
+homepage="$4"                           		 		# Auto homepage
+fw_type="$5"                            		 		# Firewall type: whitelist|blacklist|none
+fw_list="$6"                           			 		# List of host to insert in the fw list
+er_mins="$7"                            				# Autorecover minutes 
+exam_end_script="/root/labadmin_exam-end.sh"   			# Exam recovery script path
+exam_backups="/root/labadmin_exam-backups/"        		# Examen backups path
+iptables_backup="/root/labadmin_exam-iptables-backup"	# Current iptables backup for restore when end exam
+
+### REMOVE OLDER BACKUPS 
+max_backup_days=15
+labadmin_info "Removing exam older autobackup files ($max_backup_days days older)"
+find "$exam_backups" -type f -mtime +${max_backup_days} -exec rm -v {} \; 2> /dev/null
+
+
+### GET FILES AND PATHS TO DISABLE
+# banned commands and directories:
+perms0="wget curl sudo su links lynx wall nc netcat ncat mount"
+# banned borwsers (all but chromium):
+browsers="$(compgen -c google | grep chrome) $(compgen -c firefox) $(man -s 1 -k "web browser" | cut -f1 -d" ")"
+chromium_name="$(compgen -c chromium)"	# some distros chromium, others chromium-browser
+# banned mountpoints:
+mountpoints="/media/ /mnt/ /run/media/"
+# banned screenshoters
+screenshooters="$(compgen -c | grep screenshot) $(man -s 1 -k "screenshot" | cut -f1 -d" ")"
+# banned power commands
+powercommands="shutdown poweroff reboot halt systemctl pm-suspend pm-hibernate pm-suspend-hybrid"
+# banned file managers
+filemanagers="$(man -s 1 -k "file manager")"; 
+
+if [[ "$disopt" != *( )none*( ) ]]; then
+	echo "$disopt" | grep -iqw "default" && disopt="$disopt shell poweroff mountpoints"
+	echo "$disopt" | egrep -iqw "screenshot(s)?" && dshots="y"
+	echo "$disopt" | grep -iqw "shell" && dshell="y"
+	echo "$disopt" | egrep -iqw "filemanager(s)?" && dfilemanager="y"
+	echo "$disopt" | grep -iqw "poweroff" && dpoweroff="y"
+	echo "$disopt" | egrep -iqw "mountpoint(s)?" && dmountpoints="y"
+    echo "$disopt" | egrep -iqw "browser(s)?" && dbrowser="y"
+	dcom=$(echo "$disopt" | tr " " "\n" | grep "^com=" | sed "s/^com=//" | tr "\n" " ")
+
+	[ "$dshots" ] && perms0="$perms0 ${screenshooters,,}"
+	[ "$dfilemanager" ] && perms0="$perms0 ${filemanagers,,}"
+	[ "$dmountpoints" ] && perms0="$perms0 ${mountpoints}"
+	[ "$dpoweroff" ] && perms0="$perms0 ${powercommands}"
+    [ "$dbrowser" ] && perms0="$perms0 ${browsers,,}"
+	[ "$dcom" ] && perms0="$perms0 $dcom"
+	perms0="$(echo "$perms0" | tr "\n" " " )"
+fi
+
+
+### CHECK EXAM IN PROGRESS
+if [ -e "$exam_end_script" ]; then
+    echo -e "${C_BR}EXAM IN PROGRESS${S_R}"
+    echo -e "  LOGGED USERS:\t$(who | awk '{print $1}' | sed -z 's/\n/, /g' | sed 's/, $//g')"
+    echo -e "  START:\t$(stat "$exam_end_script"  -c %y | cut -f1 -d.)\e[0m"
+
+    end=$(crontab -l | grep "#LABADMIN-EXAM" | crontab -l | awk -F "-gt" '{print $2}' | awk -F "]" '{print $1}'|xargs)
+    if [ ! "$end" ]; then end="not programmed"
+    else end="$(date -d @${end} "+%Y-%M-%d %H:%M:%S") ($[($end-$(date +%s))/60] minutes)"; fi
+    echo -e "  AUTORECOVER:\t${end}"
+    exit 1
+fi
+
+### BEEP!!!!!!!!!
+labadmin_info "BEEEEEEEEP!!!"
+(modprobe pcspkr &>/dev/null && for n in 1 2 3; do for f in 1 2 1 2 1 2 1 2 1 2 ; do beep -f ${f}000 -l 30; done; done)&
+
+
+### ADD USER
+if ! id "$euser" &> /dev/null; then
+    recover_mode="r"	# Autorecovery mode remove
+	# Add euser
+	labadmin_info "Creating exam user"
+	useradd -m -U -s "/bin/bash" "$euser" &>/dev/null && echo -e "Username: ${S_B}${euser}${S_R}" || labadmin_error "ERROR: cant create user $euser" 1
+	chmod o-rwx "/home/$euser" 
+	if [ ! "$epass" ]; then
+		passwd -d "$euser" &>/dev/null && echo -e "Password: ${S_B}disabled${S_R}" || labadmin_error "ERROR: cant disable user $user password" 1
+	else
+		passwd "$euser" &>/dev/null <<EOF
+${epass}
+${epass}
+EOF
+		[ $? -eq 0 ] && echo -e "Password: ${S_B}${epass}${S_R}" || labadmin_error "ERROR: cant set $euser password to $epass" 1 
+	fi
+### USE EXISTING USER
+else 
+    recover_mode="l"	# Autorecovery mode lock
+	labadmin_info "Using existing exam user $euser"
+	# Check if exam user is admin
+	labadmin_isadmin "$euser" && labadmin_error "ERROR: USER $euser HAS ADMIN PRIVILEGES!" 1
+    [ "$epass" ] && passwd "$euser" &>/dev/null <<EOF
+$epass
+$epass
+EOF
+	[ $? -eq 0 ] && echo -e "New password: ${S_B}${epass}${S_R}" || labadmin_error "ERROR: cant set $euser password to $epass" 1
+    # Unlock user exam if locked
+    [ "$(passwd -S "$euser" | cut -f2 -d" ")" = "L" ] && passwd -u "$euser"     
+    usermod --shell "/bin/bash" "$euser"
+fi
+
+
+### SHELL
+if [ "$dshell" ]; then
+	# Add line to .bashrc exam user to:
+	#	do startx and exit if are in ttyX
+	# 	continue if are in the same tty as useradmin
+	#	continue if are tty has error (no tty)
+	#	exit if are in a different tty
+	echo 'tty &>/dev/null && t="$(tty | cut -f3- -d/)" && [ "'$labadmin_sshuser'" != "$(who | grep "\b$t\b" | awk \{\ print\ \$1\ \})" ] && if [[ "$t" != tty[0-9] ]]; then exit; else startx && exit; fi     #LABADMIN-EXAM' >> /home/$euser/.bashrc
+fi
+
+
+### LOCK USERS
+labadmin_info "Locking existing users"
+busers=""
+for u in $(cat /etc/passwd | cut -f1,3 -d: | grep -E :[0-9]{4}$ | cut -f1 -d:); do
+    [ "$u" = "$euser" ] && continue
+    [ "$u" = "$labadmin_sshuser" ] && continue
+    [ "$(passwd -S "$u" | awk '{print $2}')" = "L" ] && continue
+    passwd -l "$u" &>/dev/null && echo -e "Locked ${S_B}${u}${S_R}" || labadmin_error "ERROR: cant lock user $u"
+    busers="${u} ${busers}"
+done
+
+
+#### MOUNTPOINTS
+# Mountpoints are restricted in perms0, but in some distros /run/media is created when media is inserted
+[ "$dmountpoints" ] && [ ! -d /run/media ] && mkdir /run/media
+
+
+### RESTRICT PERMISSIONS FOR COMMANDS AND PATHS
+labadmin_info "Restricting permissions to files and folders for exam user"
+for c in $perms0; do
+	# If command get path or continue if no exist
+	if [ ${c:0:1} != "/" ]; then
+		which "$c" &>/dev/null && c="$(which "$c")" || continue
+	# if path continue fi no exist
+	elif [ ! -e "$c" ]; then
+		continue
+	fi
+
+	# Skip systemctl and links (systemctl is needed for login in some distros)
+	if [ "$(basename $(readlink -f "$c"))" = "systemctl" ]; then
+		echo "Skipped: $c (systemctl)"
+		continue
+	fi
+
+	setfacl -m u:"$euser":0 "$c" && echo -e "Restricted: ${S_B}${c}${S_R}"
+done
+
+
+### DELETE TEMP FILES
+labadmin_info "Deleting files in /tmp/*"
+find /tmp -maxdepth 1 ! -user root -exec rm -rf {} \; &>/dev/null
+
+
+### HOMEPAGE
+if [ "$homepage" ]; then
+    labadmin_info "Config Chromium for autostart when login and show homepage"
+    ! which "$chromium_name" &>/dev/null && labadmin_error "ERROR: cant find Chromium browser. Homepage function will not work"
+    echo -e "Homepage: ${S_B}${homepage}${S_R}"
+    [ ! -d /home/$euser/.config/autostart/ ] && su -l  "$euser" -c "mkdir -p /home/$euser/.config/autostart/"
+    echo '[Desktop Entry]
+Type=Application
+Name=chromium
+Exec="'$chromium_name'"
+X-GNOME-Autostart-enabled=true' > "/home/$euser/.config/autostart/labadmin_chromium.desktop" && echo -e "Autostart desktop: ${S_B}/home/$euser/.config/autostart/labadmin_chromium.desktop${S_R}"  || labadmin_error "ERROR: cant create file /home/$euser/.config/autostart/labadmin_chromium.desktop"
+
+    [ ! -d /etc/chromium/policies/managed/ ] && mkdir -p /etc/chromium/policies/managed/
+    echo '{
+"HomepageIsNewTabPage": false,
+"HomepageLocation": "'$homepage'",
+"RestoreOnStartup": 4,
+"RestoreOnStartupURLs": ["'$homepage'"]
+}' > "/etc/chromium/policies/managed/labadmin_epol.json" && echo -e "Homepage policies: ${S_B}/etc/chromium/policies/managed/labadmin_epol.json${S_R}" || labadmin_error: "ERROR: cant create Chormium homepage file policies"
+fi
+
+
+### IPTABLES RULES
+if [[ "${fw_type,,}" == @(whitelist|blacklist) ]]; then
+	labadmin_info "Creating IPTABLES rules"
+	echo -e "Policy: ${S_B}${fw_type}${S_R}"
+	iptables-save > "$iptables_backup"         # Backup current iptables
+
+	# WHITELIST
+	if [ "${fw_type,,}" = "whitelist" ]; then
+	    iptables -F
+	    iptables -I INPUT -j REJECT
+	    iptables -I OUTPUT -j REJECT
+	    iptables -I INPUT -i lo -j ACCEPT
+	    iptables -I OUTPUT -o lo -j ACCEPT
+	    iptables -I INPUT -p tcp  --dport "${labadmin_sshport}" -j ACCEPT
+	    iptables -I OUTPUT -p tcp  --sport "${labadmin_sshport}" -j ACCEPT
+	    iptables -I INPUT -p udp --sport 53 -m state --state ESTABLISHED -j ACCEPT
+	    iptables -I OUTPUT -p udp --dport 53 -j ACCEPT
+	    iptables -I INPUT -p tcp -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
+
+	    for i in $fw_list; do
+	    	i=$(echo "$i" | sed "s/^.*:\/\///" | cut -f 1 -d "/")		# Cut only domain from URL
+	        echo -e "Adding to $fw_type: ${S_B}${i}${S_R}"
+	        iptables -I OUTPUT -d "$i" -j ACCEPT
+	    done
+
+	# BLACKLIST
+	elif [ "${fw_type,,}" = "blacklist" ]; then
+	    iptables -F
+	    iptables -I INPUT -p tcp  --dport "${labadmin_sshport}" -j ACCEPT
+	    iptables -I OUTPUT -p tcp  --sport "${labadmin_sshport}" -j ACCEPT 
+	    
+	    for i in $fw_list; do
+	    	i=$(echo "$i" | sed "s/^.*:\/\///" | cut -f 1 -d "/")		# Cut only domain from URL
+	        echo -e "Adding to $fw_type: ${S_B}${i}${S_R}"
+	        iptables -A OUTPUT -d "$i" -j REJECT
+	        iptables -A INPUT -s "$i" -j REJECT
+	    done    
+	fi
+
+	# Persistentce
+	labadmin_iptables-persistent || labadmin_error "ERROR: Cant find method for IPTABLES PERSISTENCE"
+fi
+
+
+### POWEROFF
+if [ "$dpoweroff" ]; then
+    labadmin_info "Locking poweroff for $euser user"
+    if [ -d "/var/lib/polkit-1/localauthority/50-local.d/" ]; then
+        echo '[Disable poweroff]
+Identity=unix-user:*
+Action=org.freedesktop.login1.reboot;org.freedesktop.login1.reboot-multiple-sessions;org.freedesktop.login1.power-off;org.freedesktop.login1.power-off-multiple-sessions;org.freedesktop.login1.suspend;org.freedesktop.login1.suspend-multiple-sessions;org.freedesktop.login1.hibernate;org.freedesktop.login1.hibernate;org.freedesktop.login1.hibernate-multiple-sessions;org.freedesktop.upower.hibernate;org.freedesktop.upower.hibernate-multiple-sessions;org.freedesktop.upower.reboot;org.freedesktop.upower.reboot-multiple-sessions;org.freedesktop.upower.power-off;org.freedesktop.upower.power-off-multiple-sessions;org.freedesktop.upower.suspend;org.freedesktop.upower.suspend-multiple-sessions;
+ResultAny=no
+ResultInactive=no
+ResultActive=no' > "/var/lib/polkit-1/localauthority/50-local.d/labadmin_poweroff.pkla"
+    else
+         labadmin_error "ERROR: cant config locking poweroff policies in /var/lib/polkit-1/localauthority/50-local.d/"
+    fi
+fi
+
+
+### KILL ALL USERS
+labadmin_info "Killing all users process"
+for u in $(who | awk "{print \$1}"| sort -u); do
+    [ "$u" = "$labadmin_sshuser" ] && continue
+    pkill -KILL -u "$u" 2>/dev/null && echo -e "User ${S_B}${u}${S_R} killed"
+done
+if ! labadmin_display_manager &>/dev/null; then
+	labadmin_info "Restarting tty1"
+	systemctl restart getty@tty1 &> /dev/null
+fi
+
+
+### VIRTUALBOX BRIDGED NETWORK
+if which VirtualBox &>/dev/null || which virtualbox &>/dev/null; then
+	labadmin_info "Config VirutualBox for prevent users can create bridged network"
+	# Current module status
+	if lsmod | grep -q "^vboxnetflt\b"; then
+		virtualbox_was_enabled=1
+		modprobe -r vboxnetflt || labadmin_error "ERROR: Cant disable VIRTUALBOX BRIDGED NETWORK"
+	fi
+	# Current persisntence 
+	if grep -q vboxnetflt /etc/modprobe.d/labadmin-vboxnetflt.conf &>/dev/null; then
+		echo "install vboxnetflt /bin/false" > /etc/modprobe.d/labadmin-vboxnetflt.conf
+	else
+		virtualbox_was_disabled_persistent=1
+	fi
+fi
+
+
+### BEEP ON REBOOT
+labadmin_info "Config host for beep on reboot"
+(crontab -l 2>/dev/null; echo '@reboot bash -c '\''modprobe pcspkr; for n in 1 2; do for f in 1 2 1 2 1 2 1 2 1 2 ; do /usr/bin/beep -f ${f}000 -l 80; done; done   #LABADMIN-EXAM'\') | crontab -
+
+
+
+### END EXAM SCRIPT
+labadmin_info "Generating end-examn script"
+echo -e "Path: ${S_B}${exam_end_script}${S_R}"
+echo '#!/usr/bin/env bash
+#===============================================================================
+#  GLOBAL FUNCIONS
+#===============================================================================
+S_R="\e[0m"            	# Reset all attributes
+S_B="\e[1m"             # Style BOLD
+C_D="\e[39m"            # Color DEFAULT
+C_R="\e[31m"            # Color RED
+C_BR="\e[1m\e[31m"      # Color BOLD RED
+C_LR="\e[91m"           # Color LIGHT RED
+C_G="\e[32m"            # Color GREEN
+C_BG="\e[1m\e[32m"      # Color BOLD GREEN
+C_LG="\e[92m"           # Color LIGHT GREEN
+C_Y="\e[33m"            # Color YELLOW
+C_BY="\e[1m\e[33m"      # Color BOLD YELLOW
+C_LY="\e[93m"           # Color LIGHT YELLOW
+C_B="\e[34m"            # Color BLUE
+C_BB="\e[1m\e[34m"      # Color BOLD BLUE
+C_LB="\e[94m"           # Color LIGHT BLUE
+C_M="\e[35m"            # Color MAGENTA
+C_BM="\e[1m\e[35m"      # Color BOLD MAGENTA
+C_LM="\e[95m"           # Color LIGHT MAGENTA
+C_C="\e[36m"            # Color CYAN
+C_BC="\e[1m\e[36m"      # Color BOLD CYAN
+C_LC="\e[96m"           # Color LIGHT CYAN
+C_N="\e[90m"            # Color GREY
+C_LN="\e[37m"           # Color LIGHT GREY
+
+function labadmin_error() {
+    echo -e "${C_BR}${1}${S_R}" 1>&2
+    # If $2 exists and is a number exit
+    [ "$2" -eq "$2" ] &> /dev/null && exit "$2"
+}
+
+function labadmin_info() {
+    echo -e "${C_LY}$1${S_R}"
+}
+
+function labadmin_iptables-persistent() {
+    # DEBIAN-UBUNTU
+    if which netfilter-persistent &>/dev/null && [ -d /etc/iptables/ ]; then
+        iptables-save > /etc/iptables/rules.v4
+
+    # RH-FEDORA
+    elif [ -f /etc/sysconfig/iptables-config ] && systemctl is-active iptables.service &>/dev/null; then
+        sed -i "/IPTABLES_SAVE_ON_STOP\|IPTABLES_SAVE_ON_RESTART/d" /etc/sysconfig/iptables-config
+        echo "
+IPTABLES_SAVE_ON_STOP=\"yes\"
+IPTABLES_SAVE_ON_RESTART=\"yes\"" >> /etc/sysconfig/iptables-config
+        iptables-save > /etc/sysconfig/iptables
+
+    # UNKNOWN
+    else
+        labadmin_error "Cant config system for iptables persistence (update iptables-persistent function)"
+        return 1
+    fi
+}
+
+function labadmin_display_manager() {
+    local dm="$(systemctl status display-manager 2>/dev/null | head -1 | egrep -o "[[:alnum:]]+\.service" | cut -f1 -d.)"
+    [ $? -ne 0 ] && return 1
+    [ "$dm" ] && echo "$dm"
+    return $?
+}
+
+
+
+
+#===============================================================================
+#  EXAMN END SCRIPT
+#===============================================================================
+[ "${1,,}" = "y" ] && remove_user="y"		# remove_user=y or empty if no remove user
+new_pass="$2"								# new user password or empty if no change password
+euser="'"$euser"'"
+perms0="'"$perms0"'" 
+busers="'"$busers"'"
+sshuser="'"$labadmin_sshuser"'"
+exam_end_script="'"$exam_end_script"'"
+export PATH="$PATH:'"$PATH"'"
+exam_backups="'"$exam_backups"'"
+virtualbox_was_enabled="'"$virtualbox_was_enabled"'"
+virtualbox_was_disabled_persistent="'"$virtualbox_was_disabled_persistent"'"
+fw_type="'"$fw_type"'" 
+iptables_backup="'"$iptables_backup"'" 
+homepage="'"$homepage"'" 
+
+
+### BEEEEEEEP!!!!!!!
+labadmin_info "BEEEEEEEEP!!!"
+(modprobe pcspkr &>/dev/null && for n in 1 2 3; do for f in 1 2 1 2 1 2 1 2 1 2 ; do beep -f ${f}000 -l 30; done; done)&
+
+### BACKUP EXAM FILES
+if [ "$remove_user" ]; then
+(
+labadmin_info "Creating exam backup"
+[ -d "$exam_backups" ] && mkdir -p "$exam_backups"
+bfile="$exam_backups/exam_$(date +%F_%H-%M-%S).zip"
+bpass="$(echo "${bfile}" | md5sum | cut -f1 -d" ")"
+max_size=100   	# Max size in MB (omit larger files and folders)
+for f in $(find /home/$euser -maxdepth 1 -type f -name "[!.]*" 2>/dev/null; ls -d /home/$euser/Descargas /home/$euser/Downloads /home/$euser/Escritorio /home/$euser/Desktop /home/$euser/Pictures /home/$euser/Imágenes /home/$euser/Documents /home/$euser/Documentos 2>/dev/null); do
+	[ $(du -s "$f" | cut -f1) -lt $(($max_size*1024)) ] && bfiles="$(echo -e "${bfiles}\n${f}")"
+done
+IFS=$'\'\\n\''    # Prevent errors if paths returned by find has spaces. No need restart IFS becouse we are in ( ... )
+if [ "$bfiles" ]; then
+	echo -e "Saving: ${S_B}${bfiles}${S_R} "
+	7za a -tzip -p"${bpass}" -mem=AES256 "$bfile" $bfiles
+	# Uncompress: 7za e fichero.zip
+	echo -e "Recover backup: 7za e $bfile (pass: $bpass)"
+else
+	echo "Saving: no files for saving"
+fi
+)
+fi
+
+### KILL ALL USERS
+labadmin_info "Killing all users process"
+for u in $(who | awk "{print \$1}"| sort -u); do
+	[ "$u" = "$sshuser" ] && continue
+	pkill -9 -u "$u" 2>/dev/null && echo -e "User ${S_B}${u}${S_R} killed"
+done
+if ! labadmin_display_manager &>/dev/null; then
+	labadmin_info "Restarting tty1"
+	systemctl restart getty@tty1 &> /dev/null
+fi
+
+### RESTORE PERMISSIONS FOR COMMANDS AND PATHS
+labadmin_info "Restoring permissions to files and folders"
+for c in $perms0; do
+	if [ ${c:0:1} = "/" ]; then		# PATH
+		[ -e "$c" ] && setfacl -x u:"$euser" "$c" && echo "$c"
+	else							# COMMAND
+		which "$c" 2>/dev/null && setfacl -x u:"$euser" $(which "$c") 
+	fi
+done
+
+### UNLOCK USERS
+if [ "$busers" ]; then
+	labadmin_info "Unlocking users"
+	for u in ${busers}; do
+		passwd -u "$u" &>/dev/null && echo -e "Unlocked ${S_B}${u}${S_R}" || labadmin_error "ERROR: cant unlock user $u"
+	done
+fi
+
+
+### DELETE TEMP FILES
+labadmin_info "Deleting files in /tmp/*"
+find /tmp -maxdepth 1 ! -user root -exec rm -rf {} \; &>/dev/null
+
+
+### RESTORE IPTABLES
+if [[ "${fw_type,,}" == @(whitelist|blacklist) ]]; then
+	labadmin_info "Restoring IPTABLES rules"
+	iptables-restore < "$iptables_backup"
+	rm "$iptables_backup"
+	labadmin_iptables-persistent || labadmin_error "ERROR: Cant find method for IPTABLES PERSISTENCE"
+fi
+
+
+### RESTORE HOMEPAGE
+if [ "$homepage" ]; then
+	labadmin_info "Restoring Chromium autostart and homepage"
+	rm -f /etc/chromium/policies/managed/labadmin_epol.json
+	rm -f /home/$euser/.config/autostart/labadmin_chromium.desktop
+fi
+
+
+### RESTORE POWEROFF
+labadmin_info "Restoring poweroff permissions"
+rm -f "/var/lib/polkit-1/localauthority/50-local.d/labadmin_poweroff.pkla"
+
+
+### KILL ALL USERS (AGAIN)
+labadmin_info "Ensure examn user is logout"
+while pgrep -u "$euser" &>/dev/null; do 
+	echo "Killing $euser process..."
+	pkill -9 -u "$euser"
+	sleep 0.2
+done
+
+
+### REMOVE OR CHANGE PASS EXAM USER
+# REMOVE
+if [ "$remove_user" ]; then
+	labadmin_info "Deleting exam user and home"
+	userdel -r "$euser" &>/dev/null && echo -e "Username: ${S_B}${euser}${S_R}" || labadmin_error "ERROR: cant delete user $euser" 1
+# NEW PASS
+else
+	if [ "$new_pass" ]; then
+		labadmin_info "Changing exam user password"
+		passwd "$euser" <<EOF
+$new_pass
+$new_pass
+EOF
+		[ $? -eq 0 ] && echo "New password: ${S_B}${epass}${S_R}" || labadmin_error "ERROR: cant set $euser password to $epass" 1
+		chmod o-rwx "$(eval echo ~"$euser")"
+		sed -i "/#LABADMIN-EXAM/d" /home/$euser/.bashrc
+	fi
+fi
+
+
+### RESOTRE CRON
+labadmin_info "Restoring CRON"
+crontab -l | grep -v "#LABADMIN-EXAM" | crontab -
+
+
+### RESTORE VIRTUALBOX BRIDGED NETWORK
+if [ ! "$virtualbox_was_disabled_persistent" ]; then
+	rm -f /etc/modprobe.d/labadmin-vboxnetflt.conf
+fi
+if [ "$virtualbox_was_enabled" ]; then
+	labadmin_info "Enabling Virtualbox bridge network module"
+	modprobe vboxnetflt || labadmin_error "ERROR: cant enable Virtualbox bridged network module"
+fi
+
+
+
+### SCRIPT AUTODESTRUCTION!
+labadmin_info "AUTODESTROYING THIS SCRIPT"
+rm -f "$exam_end_script"
+' > "$exam_end_script"
+chmod +x "$exam_end_script"
+
+
+### SCHEDULE AUTORESTORE
+if [ "$er_mins" -gt "0" ]; then
+    # Config CRON for autorestore host at boot if current time overpass $er_mins
+    labadmin_info "Scheduling autorestart in cron"
+    end_time="$(($(date +%s)+${er_mins}*60))"
+    echo -e "Autorestart after: ${S_B}$(date -d @${end_time} "+%Y-%M-%d %H:%M:%S")${S_R} (${S_B}${er_mins}${S_R} mins left)"
+    (echo "PATH=${PATH}:/#LABADMIN-EXAM"; crontab -l 2>/dev/null; echo '@reboot   bash -c '\''[ $(date +\%s) -gt '$end_time' ] && "'"${exam_end_script}"'" '${recover_mode}'   #LABADMIN-EXAM'\' ) | crontab -
+fi
+
+

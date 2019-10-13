@@ -1,0 +1,44 @@
+#!/usr/bin/env bash
+#===================================================================================
+#     FILE: clone/mbr-table/restore-table
+#   AUTHOR: Leonardo Marco (labadmin@leonardomarco.com)
+#  LICENSE: GNU General Public License v3.0
+#===================================================================================
+script_id="$(echo ${BASH_SOURCE[0]} | sed 's\^'"$scripts_path"'/*\\g')"		# Script filename with relative script path
+
+#=== LOAD INFO =====================================================================
+if [ "$1" = "--load-scriptinfo" ]; then
+	script_desc="Restore remote partition table"
+    script_type="local"
+	script_bg="sub"
+	script_admindeps="dd"
+	script_hostdeps="dd"
+	load_scriptinfo "$script_id" "$script_desc" "$script_type" "$script_bg" "$script_admindeps" "$script_hostdeps"
+	return
+
+#=== READ PARAMS ===================================================================
+elif [ "$1" = "--readparams" ]; then
+	# PARAM1: local path
+	read_param "$script_id" 1 "Source local backup file" "" "."
+	# PARAM2: remote dev
+	read_param "$script_id" 2 "Destination remote disk file in /dev/ (sda, sdb,...)" "" "^[a-zA-Z]+$"
+	return
+fi
+
+#=== EXEC SCRIPT ===================================================================
+src="$(eval echo "$1")"			# Resolve scape characteres like \ ,*, etc.
+dest="/dev/${2}"
+
+# CHECK SRC
+[ ! -r "$src" ] || [ ! -f "$src" ] && labadmin_error "Can't read local file $src" 1
+
+# CHECK DEST
+labdmin_ssh_host_comm "${labadmin_nhost}" '
+dest="$(eval echo "'"$dest"'")"				 # Resolve scape characteres like \ ,*, etc.
+[ ! -w "$dest" ] && labadmin_error "Cant locate dev file ${dest}" 1
+exit 0
+'
+[ $? -ne 0 ] && exit 1
+
+# SAVE TABLE
+dd if="${src}" | labdmin_ssh_host_comm_stdin "${labadmin_nhost}" 'dd of="'"${dest}"'"' 

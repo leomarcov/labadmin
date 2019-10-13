@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+#===================================================================================
+#     FILE: clone/mbr-table/show-table
+#   AUTHOR: Leonardo Marco (labadmin@leonardomarco.com)
+#  LICENSE: GNU General Public License v3.0
+#===================================================================================
+script_id="$(echo ${BASH_SOURCE[0]} | sed 's\^'"$scripts_path"'/*\\g')"		# Script filename with relative script path
+
+#=== LOAD INFO =====================================================================
+if [ "$1" = "--load-scriptinfo" ]; then
+	script_desc="Show MBR partition table"
+    script_type="ssh"
+	script_bg="sub"
+	script_admindeps=""
+	script_hostdeps="fdisk"
+	load_scriptinfo "$script_id" "$script_desc" "$script_type" "$script_bg" "$script_admindeps" "$script_hostdeps"
+	return
+
+#=== READ PARAMS ===================================================================
+elif [ "$1" = "--readparams" ]; then
+	# PARAM1
+	read_param "$script_id" 1 "Remote disk file /dev/ (sda, sdb,...)" "" "^[a-zA-Z]+$"
+	return
+fi
+
+#=== EXEC SCRIPT ===================================================================
+dev="/dev/${1}"
+
+# CHECK
+if [ ! -r "${dev}" ]; then
+	echo -e "\e[1m\e[91mCant locate dev file ${dev}\e[0m"
+	exit 1
+fi
+
+# SHOW PARTITION TABLE
+fdisk -l "$dev"

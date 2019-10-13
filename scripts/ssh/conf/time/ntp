@@ -1,0 +1,45 @@
+#!/usr/bin/env bash
+#===================================================================================
+#     FILE: conf/time/ntp
+#   AUTHOR: Leonardo Marco (labadmin@leonardomarco.com)
+#  LICENSE: GNU General Public License v3.0
+#===================================================================================
+script_id="$(echo ${BASH_SOURCE[0]} | sed 's\^'"$scripts_path"'/*\\g')"		# Script filename with relative script path
+
+#=== LOAD INFO =====================================================================
+if [ "$1" = "--load-scriptinfo" ]; then
+	script_desc="Update system timedate using NTP"
+	script_type="ssh"
+	script_bg="sub"
+    script_admindeps=""
+    script_hostdeps="ntpd(ntp) systemctl(systemd)"
+    load_scriptinfo "$script_id" "$script_desc" "$script_type" "$script_bg" "$script_admindeps" "$script_hostdeps" 
+    return
+
+#=== READ PARAMS ===================================================================
+elif [ "$1" = "--readparams" ]; then
+	return
+fi
+
+#=== EXEC SCRIPT ===================================================================
+
+ntp_service_name="$(systemctl list-units --type=service --all | egrep "\bntp(d)?\.service" | awk '{print $1}'| head -1)"
+
+unset was_started
+if systemctl status "$ntp_service_name" &> /dev/null; then
+    labadmin_info "Stopping service ${ntp_service_name}"
+    systemctl stop "$ntp_service_name"
+    [ $? -ne 0 ] && labadmin_error "Error stopping service ${ntp_service_name}" 1
+    was_started=1
+fi
+
+echo
+labadmin_info "Updating time from NTP servers"
+ntpd -gq
+[ "$was_started" ] && systemctl start "$ntp_service_name"
+
+echo
+labadmin_info "Current time:"
+date "+%Y-%m-%d %H:%M:%S"
+
+
