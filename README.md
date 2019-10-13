@@ -398,8 +398,9 @@ Labadmin has a lot of actions ready to use! Actions are categorized in folders f
 
 ```
 
+&nbsp;  
 # Add your own actions!
-
+The easy way to exec your own scripts is use the actions ``exec/com`` (execute comands) and ``exec/script`` (execute external script). 
 
 
 &nbsp;  
