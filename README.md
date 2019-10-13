@@ -170,7 +170,7 @@ If any error occurs labadmin shows at ending the machine list with errors.
 
 &nbsp;  
 # Actions
-Labadmin has a lot of actions ready to use!
+Labadmin has a lot of actions ready to use! Actions are categorized in folders for better organization.
 
 ## Linux actions
 ```
@@ -337,6 +337,64 @@ Labadmin has a lot of actions ready to use!
 
 ## Windows actions
 ```
+[dfc/]              Deep Freeze command line control
+  [conf]            Replace DP configuration using .rdx file (works frozen and unfrozen)
+  [freeze]          Reboot system in frozen state (permanent)
+  [serial]          Change license number
+  [state]           Show DF state
+  [unfreeze]        Reboot system in unfrozen state (permanent)
+
+[exec/]             Exec commands and open interpreter in hosts
+  [cmd]             Open CMD command line interface
+  [com-cmd]         Exec commands in Windows CMD host using WINRM
+  [com-ps]          Exec commands in Windows PowerShell host using WINRM
+  [powershell]      Open PowerShell command line interface
+
+[file/]             Manage files and transfers
+  [download]        Download URL resource in host Downloads folder
+  [remove]          Remove files and folders
+
+[group/]            Manage local groups
+  [add]             Add new group
+  [auser]           Add user account to existing group
+  [del]             Remove group
+  [list]            Show groups list and show specific group info
+  [ruser]           Remove user account from existing group
+
+[license/]          Manage Windows license product key
+  [activate]        Activate Windows license
+  [status]          Show Windows activation status
+
+[process/]          Manage system process
+  [kill]            Kill process
+  [list]            Show process list
+
+[rdp/]              Manage Remote Desktop
+  [connect]         Connect to remote desktop using Remmina
+  [disable]         Disable remote desktop
+  [enable]          Enable remote desktop for admin users
+
+[software/]         Manage software
+  [install]         Install package software silently
+  [list]            List all installed software and show specific programs info
+
+[user/]             Manage local users accounts
+  [add]             Add new user account
+  [agroup]          Add user account to existing group
+  [del]             Remove user account
+  [disable]         Disable user account
+  [enable]          Enable user account
+  [list]            Show user list and show specific user info
+  [pass]            Set user password
+  [rename]          Rename user account
+  [rgroup]          Remove user account from existing group
+
+[hostname]          Set hostname
+[msg]               Open message in notification pop-up
+[poweroff]          Power OFF host
+[poweron]           Power ON host using network
+[reboot]            Reboot host
+[time]              Set system date/hour and show current time
 
 ```
 
