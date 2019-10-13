@@ -4,7 +4,7 @@ It's a tool useful for teachers and sysadmins.
 
 ## Main features
   * Discover the network status hosts in a laboratory classroom by MAC address, working on DHCP networks.
-  * Show the status of each machine in a map according the position in the classroom.
+  * Show the status of each machine in a grid map according the preconfigured position.
   * Flexible machine selection using ranges. Can select all machines, only a row, odd and even machines, a specific list, etc.
   * A set of actions to exec in selected machines. Labadmin incorporate a full set of actions ready to use (currently 133 for Linux and 40 for Windows). Some key actions are:
     * Config a restrictive environment in a exam time.
