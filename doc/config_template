@@ -1,0 +1,82 @@
+#!/usr/bin/env bash
+#===================================================================================
+#        FILE: config_template
+# DESCRIPTION: Template fie for config labs
+#      AUTHOR: Leonardo Marco (labadmin@leonardomarco.com)
+#     LICENSE: GNU General Public License v3.0
+#===================================================================================
+
+#===============================================================================
+# GLOBAL CONFIG
+#===============================================================================
+# Lab name to show in interface
+labname=""
+
+# Server default mode
+# Possible values: winrm|ssh
+srvmode=""
+
+# Network interface to use in admin machine
+# labadmin_iface "$ip" function search iface used to route packages to "$ip"
+iface="$(labadmin_iface 8.8.8.8)"
+
+
+
+#===============================================================================
+# WINDOWS AUTHENTICACION CONFIG
+#===============================================================================
+# WINRM user in host machines with admin privileges used to exec remote commands
+winrmuser=""
+
+# WINRM password
+winrmpass=""
+
+# WINRM port
+winrmport=5985
+
+
+
+#===============================================================================
+# LINNUX HOST AUTHENTICAION CONFIG
+#===============================================================================
+# SSH user admin for Linux hosts
+sshuser=root
+
+# SSH port por Linux hosts
+sshport=58888
+
+# SSH public key. Generation: ssh-keygen -t rsa
+sshpubkey=''
+
+# SSH private key. Generation: ssh-keygen -t rsa
+sshprivatekey=''
+
+
+
+#===============================================================================
+# LAB HOSTS DISTRIBUTION
+#===============================================================================
+# LIST OF MACS FOR EACH HOST 
+# macs[<host_id>]="<host_mac>""
+macs[]=""
+macs[]=""
+macs[]=""
+macs[]=""
+macs[]=""
+macs[]=""
+#...
+
+
+# MAP DISTRIBUTION FOR EACH HOST IN MAP
+# Break line is used for row separator
+# Space is used for column separator
+# Each character not iqual a number is discarted
+map=''
+
+
+#### HOST COLORS
+# Hosts to show with different color in map
+# map_color[<host_id>]="color"
+map_color[]=""          
+map_color[]="" 
+map_color[]="" 

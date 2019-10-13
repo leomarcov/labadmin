@@ -1,0 +1,55 @@
+#!/usr/bin/env bash
+#===================================================================================
+#     FILE: XXXXXXXXXXXXX
+#   AUTHOR: Leonardo Marco (labadmin@leonardomarco.com)
+#  LICENSE: GNU General Public License v3.0
+#===================================================================================
+
+# script_id: script ID used for select and refer the script
+# 	Must be the same as filename (without extension) included script folder
+#	Must start with a alpha char
+script_id="$(echo ${BASH_SOURCE[0]} | sed 's\^'"$scripts_path"'/*\\g')"			# Script filename with relative script path
+
+#=== LOAD INFO =====================================================================
+# DESCRIPTION: call load_scriptinfo function to autoregister script in labadmin base
+# SCRIPT_DESC: description to show in menu
+# SCRIPT_TYPE
+#	ssh					Run for each LISTEN host and exec script in remote using SSH
+#	local				Run for each LISTEN host and exec script in local
+#	inactive			Run for each INACTIVE host and exec script in local
+
+#	admin+local+admin	Run 1 time in local. Run for each LISTEN host and exec script in local. Run 1 time in local
+#	admin+local			Run 1 time in local. Run for each LISTEN host and exec script in local
+#	local+admin			Run for each LISTEN host and exec script in local. Run 1 time in local
+	
+#	admin+ssh+admin		Run 1 time in local. Run for each LISTEN host and exec script in remote using SSH. Run 1 time in local.
+#	admin+ssh 			Run 1 time in local. Run for each LISTEN host and exec script in remote using SSH.
+#	ssh+admin 			Run for each LISTEN host and exec script in remote using SSH. Run 1 time in local.
+
+#	ssh+local 			Run for each LISTEN host and exec first in remote using SSH and then in local
+#	local+ssh 			Run for each LISTEN host and exec first in local and then in remote using SSH
+#	ssh&local 			Run for each LISTEN host and exec simultaneously in remote using SSH and in local
+#	winrm-ps			Run in each remote host using PowerShell
+
+#	winrm-cmd			Run in each remote host using Windows CMD
+#	menu 				Folder for contain other scripts
+#
+# SCRIPT_BG
+#	deny			Deny script can be runned in background mode
+#	win				Run in new widow terminal
+#	sub				Run as a subprocess (default)
+#	force win		Force to run in background mode in new window
+#	force sub		Force to run in background mode in subprocess
+if [ "$1" = "--scriptinfo" ]; then
+	script_desc="DDDDDDDDDDDDD DDDDDDDDDD DDDDDDDDDD"
+	script_type=""
+	script_bg="dey|win|sub|force win|force sub"
+	load_scriptinfo "$script_id" "$script_desc" "$script_type" "$script_bg"
+	return
+
+#=== READ PARAMS ===================================================================
+elif [ "$1" = "--readparams" ]; then
+
+fi
+
+

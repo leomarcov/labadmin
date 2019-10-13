@@ -1,0 +1,414 @@
+#!/usr/bin/env bash
+#===================================================================================
+# LABADMIN GLOBAL VARIABLES AND FUNCTIONS
+#         FILE: global
+#  DESCRIPTION: Gobal config varaibles for labadmin admin and remote calls to hosts
+#
+#       AUTHOR: Leonardo Marco (labadmin@leonardomarco.com)
+#      LICENSE: GNU General Public License v3.0
+#      WEBPAGE: https://github.com/leomarcov/remote-lab-admin
+#      VERSION: 2019.03
+#      CREATED: 16.02.2017
+#===================================================================================
+
+# BASH OPTIONS
+shopt -s extglob                # Activate expanded expansions
+
+#===============================================================================
+#  COLORS AND TEXT
+#===============================================================================
+S_R="\e[0m"            	# Reset all attributes
+S_B="\e[1m"             # Style BOLD
+S_D="\e[2m"             # Style DIM
+S_U="\e[4m"            	# Style UNDERLINE
+S_I="\e[7m"             # Style INVERTED
+S_DL="\e[K"             # Style DELETE TO END OF LINE
+
+cursor_save()		 { echo -en "\e[s"; }			# Cursor SAVE POSITION
+cursor_restore()	 { echo -en "\e[u"; }			# Cursor RESTORE POSITION
+cursor_hide()		 { echo -en "\e[?25l"; }		# Cursor HIDE CURSOR
+cursor_show()		 { echo -en "\e[?25h"; }		# Cursor SHOW CURSOR
+cursor_move-up()	 { echo -en "\e[${1}A"; }		# Cursor MOVE UP $1 LINES
+cursor_move-down()	 { echo -en "\e[${1}B"; }		# Cursor MOVE DOWN $1 LINES
+cursor_move-left()	 { echo -en "\e[${1}D"; }		# Cursor MOVE LEFT $1 COLS
+cursor_move-right()  { echo -en "\e[${1}C"; }		# Cursor MOVE RIGHT $1 COLS
+cursor_move-begin()  { echo -en "\r"; }             # Cursor MOVE BEGIN POSITION IN CURRENT LINE
+cursor_move-pos()    { echo -en "\e[${1};${2}H"; }  # Cursor MOVE LINE $1 COL $2
+
+C_D="\e[39m"            # Color DEFAULT
+C_R="\e[31m"            # Color RED
+C_BR="\e[1m\e[31m"      # Color BOLD RED
+C_LR="\e[91m"           # Color LIGHT RED
+C_G="\e[32m"            # Color GREEN
+C_BG="\e[1m\e[32m"      # Color BOLD GREEN
+C_LG="\e[92m"           # Color LIGHT GREEN
+C_Y="\e[33m"            # Color YELLOW
+C_BY="\e[1m\e[33m"      # Color BOLD YELLOW
+C_LY="\e[93m"           # Color LIGHT YELLOW
+C_B="\e[34m"            # Color BLUE
+C_BB="\e[1m\e[34m"      # Color BOLD BLUE
+C_LB="\e[94m"           # Color LIGHT BLUE
+C_M="\e[35m"            # Color MAGENTA
+C_BM="\e[1m\e[35m"      # Color BOLD MAGENTA
+C_LM="\e[95m"           # Color LIGHT MAGENTA
+C_C="\e[36m"            # Color CYAN
+C_BC="\e[1m\e[36m"      # Color BOLD CYAN
+C_LC="\e[96m"           # Color LIGHT CYAN
+C_N="\e[90m"            # Color GREY
+C_LN="\e[37m"           # Color LIGHT GREY
+B_R="\e[41m"            # Background RED
+B_G="\e[42m"            # Background GREEN
+B_Y="\e[43m"            # Background YELLOW
+B_B="\e[44m"            # Background BLUE
+B_M="\e[45m"            # Background MAGENTA
+B_C="\e[46m"            # Background CYAN
+B_LG="\e[47m"           # Background LIGHT GREY
+B_DG="\e[100m"          # Background DARK GREY
+B_LR="\e[101m"          # Background LIGHT RED
+B_LG="\e[102m"          # Background LIGHT GREEN
+B_LY="\e[103m"          # Background LIGHT YELLOW
+B_LB="\e[104m"          # Background LIGHT BLUE
+B_LM="\e[105m"          # Background LIGHT MAGENTA
+B_LC="\e[106m"          # Background LIGHT CYAN
+B_W="\e[107m"           # Background LIGHT WHITE
+
+
+
+
+#=== FUNCTION ==================================================================
+# NAME: labadmin_error-list
+# DESCRIPTION: show error message adding [*] at beginin
+#===============================================================================
+function labadmin_error-list() {
+    echo -e " [${C_BR}*${S_R}] $1$" 1>&2
+}
+
+#=== FUNCTION ==================================================================
+# NAME: labadmin_info-list()
+# DESCRIPTION: show info message adding [*] at beginin
+#===============================================================================
+function labadmin_info-list() {
+    echo -e " [${C_BG}*${S_R}] $1$"
+}
+
+#=== FUNCTION ==================================================================
+# NAME: labadmin_error
+# DESCRIPTION: show error message and optional exit if exit code is passed
+# PARAMETERS
+#   $1  error message to show
+#   $2  optional exit code to exit
+#===============================================================================
+function labadmin_error() {
+    echo -e "${C_BR}${1}${S_R}" 1>&2
+    # If $2 exists and is a number exit
+    [ "$2" -eq "$2" ] &> /dev/null && exit "$2"
+}
+
+#=== FUNCTION ==================================================================
+# NAME: labadmin_info
+# DESCRIPTION: show info message
+#===============================================================================
+function labadmin_info() {
+    echo -e "${C_BY}$1${S_R}"
+}
+
+
+
+
+
+
+#===============================================================================
+#  USERS FUNCTIONS
+#===============================================================================
+
+#=== FUNCTION ==================================================================
+# NAME: labadmin_active-tty
+# DESCRIPTION: output active tty in system (tty screen is showing)
+#===============================================================================
+function labadmin_active-tty() {
+    cat /sys/class/tty/tty0/active 
+}
+
+
+#=== FUNCTION ==================================================================
+# NAME: labadmin_tty-display
+# DESCRIPTION: output DISPLAY (:0, :1, etc.) and DBUS_SESSION_BUS_ADDRESS associed to tty
+# PARAMETERS:
+#   $1  tty to get display (tty1, tty2, tty3, etc.)
+# EXIT CODE:
+#   0 if tty found and showd in stdout
+#   1 if tty not found
+#===============================================================================
+function labadmin_tty-display() {
+    [ "$#" -eq 0 ] && return 1
+
+    local tty="$1"
+
+    # Loop all process asocied to $tty with ps and who for more compatibility
+    for p in $(pgrep -t "$tty")  $(who -a | grep "[[:blank:]]${tty}[[:blank:]]" | grep -o "[[:blank:]][0-9]\+[[:blank:]]" | tr -d " "); do
+        local d="$(strings "/proc/$p/environ" | grep "^DISPLAY=" | cut -f2 -d=)"
+        if [ "$d" ]; then
+            local b="$(strings "/proc/$p/environ" | grep "^DBUS_SESSION_BUS_ADDRESS=" | cut -f2- -d=)"
+            echo "${d} ${b}"
+            return 0
+        fi
+    done
+ 
+    return 1
+}
+
+
+#=== FUNCTION ==================================================================
+# NAME: labadmin_users-display
+# DESCRIPTION: output user using X display. In format:
+#                user1 :1 tty3 unix:path=/run/user/1001/bus
+#                user2 :0 tty2 unix:path=/run/user/1000/bus
+#              first line is the active tty (screen is showing)
+#===============================================================================
+function labadmin_users-display() {
+    local active_tty="$(labadmin_active-tty)"
+    local output=""
+    local IFS=$'\n\t'
+    for l in $( (ps a -o user,tty --no-headers; who | awk '{print $1,$2}') | grep 'tty[0-9]' | sort -u | grep -v "^$(id -un)\b"); do      # Loop every: user ttyX in system
+        u="$(echo "$l" | awk '{print $1}')"
+        who | grep -q "^${u}\b" || continue                 # Skip system users not actually logged
+        t="$(echo "$l" | awk '{print $2}')"
+        d="$(labadmin_tty-display "$t" | cut -f1 -d" ")"
+        b="$(labadmin_tty-display "$t" | cut -f2 -d" ")"
+        [ ! "$d" ] && continue
+        [ "$t" = "$active_tty" ] && output="${u} ${d} ${t} ${b}${output:+\n}${output}" || output="${output}${output:+\n}${u} ${d} ${t} ${b}"
+    done
+    echo -e "$output"
+}
+
+
+#=== FUNCTION ==================================================================
+# NAME: labadmin_users-logged
+# DESCRIPTION: output all users logged in system except $sshuser, one per line
+#===============================================================================
+function labadmin_users-logged() {
+    w -oshu | cut -f 1 -d " " | grep -v "^${USER}$" | sort -u
+}
+
+
+#=== FUNCTION ==================================================================
+# NAME: labadmin_usernames
+# DESCRIPTION: output all usernames with UID>=1000
+#===============================================================================
+function labadmin_usernames() {
+    awk -F: '{if ($3 >= 1000 && $3 != 65534) print $1}' /etc/passwd
+}
+
+
+#=== FUNCTION ==================================================================
+# NAME: labadmin_isadmin
+# DESCRIPTION: check if user is admin
+# PARAMETERS
+#   $1  username to check
+# EXIT CODE
+#   0   user is admin
+#   1   user is not admin
+#===============================================================================
+function labadmin_isadmin() {
+    local u="$1"
+
+    if [ ! "$u" ] || ! id "$u" &>/dev/null; then
+      labadmin_error "Can't find user $u" 1
+    fi
+
+    # Check if id=0
+    cat /etc/passwd | cut -f1,3 -d: | grep ":0$" | grep -q "^${u}:" && return 0
+
+    # Checi if is in sudoers
+    if [ -f /etc/sudoers ]; then
+        sudo_output="$(su -l "$u" -c "sudo -nv" 2>&1)"
+        if [ $? -eq 0 ]; then
+            return 0
+        elif echo "$sudo_output" | grep -q '^sudo:'; then
+            return 0
+        else
+            return 1
+        fi
+    fi
+    return 1
+}
+
+
+#===============================================================================
+#  NETWORK FUNCTIONS
+#===============================================================================
+
+
+#=== FUNCTION ==================================================================
+# NAME: labadmin_iface
+# DESCRIPTION: output network iface used to route access to IP ($1)
+# PARAMETERE
+#	$1	IP to get interface
+#===============================================================================
+function labadmin_iface() {
+	local ip="$1"
+	[ ! "$ip" ] && labadmin_error "ERROR: function labadmin_iface IP parameter is empty"
+    ip -o -4 route get "$ip" | egrep -o "dev ([[:alnum:]])*" | awk '{print $2}'
+}
+
+
+#=== FUNCTION ==================================================================
+# NAME: labadmin_ip
+# DESCRIPTION: output ip address of iface ($1)
+# PARAMETERS
+#   $1  iface to get ip
+#===============================================================================
+function labadmin_ip() {
+        local iface="$1"
+        [ ! "$iface" ] && labadmin_error "ERROR: function labadmin_ip iface parameter is empty"
+        ip -4 -o addr show dev "$iface" 2> /dev/null | awk '{split($4,a,"/");print a[1]}'
+}
+
+
+#=== FUNCTION ==================================================================
+# NAME: labadmin_mac
+# DESCRIPTION: output mac address of iface ($1)
+# PARAMETERS
+#   $1  iface to get mac
+#===============================================================================
+function labadmin_mac() {
+    local iface="$1"
+    [ ! "$iface" ] && return 1
+    ip addr show dev "$iface" | grep link/ether | awk '{print $2}'
+}
+
+
+
+#=== FUNCTION ==================================================================
+# NAME: iptablespersistent
+# DESCRIPTION: makes current iptables rules persistent according system distro
+#
+# EXIT CODE
+#   0 if ok
+#   1 if error
+#===============================================================================
+function labadmin_iptables-persistent() {
+    # DEBIAN-UBUNTU
+    if which netfilter-persistent &>/dev/null && [ -d /etc/iptables/ ]; then
+        iptables-save > /etc/iptables/rules.v4
+
+    # RH-FEDORA
+    elif [ -f /etc/sysconfig/iptables-config ] && systemctl is-active iptables.service &>/dev/null; then
+        sed -i '/IPTABLES_SAVE_ON_STOP\|IPTABLES_SAVE_ON_RESTART/d' /etc/sysconfig/iptables-config
+        echo '
+IPTABLES_SAVE_ON_STOP="yes"
+IPTABLES_SAVE_ON_RESTART="yes"' >> /etc/sysconfig/iptables-config
+        iptables-save > /etc/sysconfig/iptables
+
+    # UNKNOWN
+    else
+        labadmin_error "ERROR: cant find method for apply iptables persistence (update iptables-persistent function)"
+        return 1
+    fi
+}
+
+
+
+
+
+
+#===============================================================================
+#  OTHERS FUNCTIONS
+#===============================================================================
+
+#=== FUNCTION ==================================================================
+# NAME: labadmin_beep
+# DESCRIPTION: pcspeaker ringtones
+# PARAMETERS
+#   $1  beep tone
+#===============================================================================
+function labadmin_beep() {
+    modprobe pcspkr &>/dev/null || return 1
+    case "$1" in
+        error1) for n in 1 2; do for f in 1 2 1 2 1 2 1 2 1 2 ; do beep -f ${f}000 -l 10; done; sleep 0.08; done
+        ;;
+    esac
+}
+
+
+#=== FUNCTION ==================================================================
+# NAME: labadmin_search_alternative
+# DESCRIPTION: search command in system from a list of alternatives and output it
+# PARAMETERS
+#   $@  list of commands alternatives
+# EXIT CODE
+#   0   if alternative is found
+#   1   if alternative NOT found
+#===============================================================================
+function labadmin_search_alternative() {
+    for c in "$@"; do
+        if which "$c" &>/dev/null; then
+            echo "$c"
+            return 0
+        fi
+    done
+    return 1
+}
+
+
+#=== FUNCTION ==================================================================
+# NAME: labadmin_check_dependence
+# DESCRIPTION: check is command dependence is available and exit program if not found
+# PARAMETERS
+#   $1  command name dependence
+#===============================================================================
+function labadmin_check_dependence() {
+    which "$1" &>/dev/null || labadmin_error "ERROR DEPENDENCE: $1 not found" 1
+}
+
+
+#=== FUNCTION ==================================================================
+# NAME: labdmin_config_terminator
+# DESCRIPTION: check if user has a config file for terminator and crete it with
+#              defualt config in not exists
+# PARAMETERS
+#   $1  username 
+#===============================================================================
+function labdmin_config_terminator() {
+    local u="$1"
+    [ ! "$u" ] && labadmin_error "INTERNAL ERROR: labdmin_config_terminator needs a username" 1
+    
+    local conf_file="$(eval echo ~${u}/.config/terminator/config)"
+    local conf_dir="$(dirname "$conf_file")"
+    
+    [ ! -d "$conf_dir" ] && su -l "$u" -c "mkdir -p \"$conf_dir\""
+    [ ! -f "$conf_file" ] && echo '[global_config]
+[profiles]
+  [[default]]
+    background_color = "#2e3436"
+    background_darkness = 0.83
+    background_type = transparent
+    color_scheme = custom
+    cursor_color = "#d8d8d8"
+    font = Monospace 11
+    foreground_color = "#d8d8d8"
+    palette = "#000000:#cc0000:#4e9a06:#c4a000:#3465a4:#75507b:#06989a:#d3d7cf:#555753:#ef2929:#8ae234:#fce94f:#729fcf:#ad7fa8:#34e2e2:#eeeeec"
+    scrollback_infinite = True
+    scrollback_lines = 5000
+    scrollbar_position = hidden
+    show_titlebar = False
+    use_system_font = False
+' > "$conf_file"
+}
+
+
+
+#=== FUNCTION ==================================================================
+# NAME: labadmin_display_manager
+# DESCRIPTION: output current display manager running
+# EXIT CODE
+#   0 if correct
+#   1 if error or not display manager running
+#===============================================================================
+function labadmin_display_manager() {
+    local dm="$(systemctl status display-manager 2>/dev/null | head -1 | egrep -o "[[:alnum:]]+\.service" | cut -f1 -d.)"
+    [ $? -ne 0 ] && return 1
+    [ "$dm" ] && echo "$dm"
+    return $?
+}
+

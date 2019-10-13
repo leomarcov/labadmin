@@ -1,0 +1,139 @@
+#!/usr/bin/env bash
+#===================================================================================
+# LABADMIN GLOBAL VARIABLES AND FUNCTIONS
+#         FILE: global_admin
+#  DESCRIPTION: Gobal config varaibles for labadmin admin
+#
+#       AUTHOR: Leonardo Marco (labadmin@leonardomarco.com)
+#	   LICENSE: GNU General Public License v3.0
+#      VERSION: 2018.06
+#      CREATED: 16.02.2017
+#===================================================================================
+
+#===============================================================================
+#  GLOBAL CONFIG
+#===============================================================================
+shopt -s checkwinsize																# To get $COLUMNS AND $LINES working
+
+readonly labadmin_path="$(dirname "$(readlink -f "$0")")/"							# Script labadmin directory path
+readonly labadmin_script="$(readlink -f "$0")"                      				# Main script labadmin with path
+readonly labadmin_install="${labadmin_path}/install"								# Install script path
+readonly modules_path="$(dirname "$(readlink -f "$0")")/modules/"					# Modules path
+readonly configs_path="$labadmin_path/configs/"					    				# Configs directory path
+scripts_path="$labadmin_path/scripts/"		                						# Scripts directory
+readonly log_path="/var/log/$(basename "$labadmin_path").log"						# Logs file path
+readonly labadmin_tmp_path="/tmp/labadmin-$(id -u)"									# Temp path for save labadmin temp files
+readonly sshagent_path="${labadmin_tmp_path}/sshagent-${USER}"				# SSH Agent info 
+screen_lock="${labadmin_tmp_path}/screenlock"           							# SCREEN LOCK (one file per process)
+
+
+
+
+
+#=== FUNCTION ==================================================================
+# NAME: labadmin_lock_screen-list
+# DESCRIPTION: while if screen is locked and then locks the screen
+#===============================================================================
+function labadmin_lock_screen() {
+    local i=0
+    while [ -e "$screen_lock" ] && [ "$i" -le 4 ]; do
+        i=$((i+1))
+        sleep 0.5
+    done
+    stty -echo &> /dev/null             # Block keyboard drawing
+    cursor_hide                         # Hide cursor
+    touch "$screen_lock"
+}
+
+
+#=== FUNCTION ==================================================================
+# NAME: labadmin_unlock_screen
+# DESCRIPTION: unock the screen
+#===============================================================================
+function labadmin_unlock_screen() {
+    stty echo &> /dev/null              # Restore keyboard
+    cursor_show                         # Restore cursor
+    rm "$screen_lock" &> /dev/null
+}
+
+
+
+
+#=== FUNCTION ==================================================================
+# NAME: labdmin_ssh_host_comm
+# DESCRIPTION: exec ssh commands ($2) to host ($1) and append labadmin_lib function
+#              function outputs ssh stdout 
+# PARAMETERS
+#   $1  nhost 
+#   $2  commands to exec (add labadmin_lib at beginin)
+#===============================================================================
+function labdmin_ssh_host_comm() {
+    local nhost="$1"
+    local commands="$2"
+    local ip="${ips[$nhost]}"
+
+    # CHECKS
+    [ ! "$ip" ] && labadmin_error "INTERNAL ERROR: labadmin_exec_ssh_hos cant find IP address from host $nhost" 1
+    [ ! "$commands" ] && labadmin_error "INTERNAL ERROR: labadmin_exec_ssh_hos no commands to exec" 1
+
+    # EXEC SSH EXEC COMMANDS
+    ssh $ssh_params ${sshuser}@${ip} -p ${sshport} -oStrictHostKeyChecking=no  "
+$(cat "${labadmin_path}/modules/labadmin_lib")
+
+$(labadmin_export_vars_code)
+
+${commands}"
+    return
+}
+
+
+
+
+#=== FUNCTION ==================================================================
+# NAME: labdmin_ssh_host_comm_stdin
+# DESCRIPTION: exec ssh commands ($2) to host ($1) and append labadmin_lib function
+#			   function stdin is piped to ssh 
+#              function outputs ssh stdout 
+# PARAMETERS
+#   $1  nhost 
+#   $2  commands to exec (add labadmin_lib at beginin). If empty only login
+#===============================================================================
+function labdmin_ssh_host_comm_stdin() {
+	local nhost="$1"
+    local commands="$2"
+	local ip="${ips[$nhost]}"
+
+    # CHECKS
+    [ ! "$ip" ] && labadmin_error "INTERNAL ERROR: labadmin_exec_ssh_hos cant find IP address from host $nhost" 1
+    [ ! "$commands" ] && labadmin_error "INTERNAL ERROR: labadmin_exec_ssh_hos no commands to exec" 1
+
+    # EXEC SSH EXEC COMMANDS
+    cat - | ssh $ssh_params ${sshuser}@${ip} -p ${sshport} -oStrictHostKeyChecking=no  "
+$(cat "${labadmin_path}/modules/labadmin_lib")
+
+$(labadmin_export_vars_code)
+
+${commands}"
+    return
+}
+
+
+
+
+#=== FUNCTION ==================================================================
+# NAME: labdmin_ssh_host_login
+# DESCRIPTION: exec ssh to host and open new login
+# PARAMETERS
+#   $1  nhost 
+#===============================================================================
+function labdmin_ssh_host_login() {
+    local nhost="$1"
+    local ip="${ips[$nhost]}"
+
+    # CHECKS
+    [ ! "$ip" ] && labadmin_error "INTERNAL ERROR: labadmin_exec_ssh_hos cant find IP address from host $nhost" 1
+    
+    ssh $ssh_params ${sshuser}@${ip} -p ${sshport} -oStrictHostKeyChecking=no 
+    return
+}
+
