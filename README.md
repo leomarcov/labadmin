@@ -105,20 +105,16 @@ Discover stage search current IP for each host MAC in lab config file and checks
 <p align="center"><img width="606" src="https://user-images.githubusercontent.com/32820131/66719829-faf9f880-edf4-11e9-9183-f43c3aff4d3b.png"></p>
   
 ## Host selection
-On this stage admin user select controlled hosts range where exec the action. Some range samples are:
-  * ``a|all|*``: select all hosts
-  * ``11,23,51``: select hosts 11, 23 and 51
-  * ``11-20``: select hosts 11 to 20
-  * ``2,3,11-15``: select hosts 2, 3, 11, 12, 13, 14 and 15
-  * ``all /odd``: select all odds hosts
-  * ``11-20 /even``: select hosts 12, 14, 16, 18 and 20
-```
-  > Select range (h for help): a             # Select all hosts
-  > Select range (h for help): 11,23,51      # Select hosts 11, 23 and 51
-  > Select range (h for help): 11-20         # Select host 11 to 20
-  > Select range (h for help): 2,3,11-15     # Select host 2, 3 and 11 to 15
-  > Select range (h for help): all /odd      # Select all odd hosts
-  > Select range (h for help): 11-20 /even   # Select hosts 12, 14, 16, 18 and 20
+On this stage admin user select controlled hosts range where exec the action. 
+
+Some range samples are:
+``` bash
+  > Select range (h for help): a                # Select all hosts
+  > Select range (h for help): 11,23,51         # Select hosts 11, 23 and 51
+  > Select range (h for help): 11-20            # Select host 11 to 20
+  > Select range (h for help): 2,3,11-15        # Select host 2, 3 and 11 to 15
+  > Select range (h for help): all /odd         # Select all odd hosts
+  > Select range (h for help): 11-20 /even      # Select hosts 12, 14, 16, 18 and 20
 ```
 
 
