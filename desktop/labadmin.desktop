@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=Labadmin Remote Controller 
+Comment=Remote control for hosts in a computer lab
+Exec=labadmin
+Terminal=true
+Type=Application
+Icon=labadmin
+Categories=System;Network;
