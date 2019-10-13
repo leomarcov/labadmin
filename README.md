@@ -18,7 +18,7 @@ It's a tool useful for teachers and sysadmins.
   * Monitorization of action execution status. If any error has ocurred in some host is noticed.
   * It's easy to create your own actions using Bash script or Powershell languages.
 
-## Execution demo
+## Demos
 
 
 ## Working schema
