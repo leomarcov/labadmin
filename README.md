@@ -15,7 +15,10 @@ It's a tool useful for teachers and sysadmins.
     * Other administrative task, like software installation, user accounts, process management, Windows activation, etc. 
   * Monitorization of action execution status. If any error has ocurred in some host is noticed.
   * It's easy to create your own actions using Bash script or Powershell languages.
-  
+
+## Execution demo
+
+
 ## Working schema
   * Labadmin use a dedicated machine to admin the students hosts. Admin must be installed in a Linux OS. Students hosts can be Linux or Windows OS computers.
   * All machines must be placed in the same broadcast domain.
