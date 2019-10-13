@@ -101,6 +101,15 @@ Discover stage search current IP for each host MAC in lab config file and checks
 </p>
   
 ## Host selection
+On this stage admin user select controlled hosts range where exec the action. 
+
+Some samples:
+  * ``a|all|*``       Select all hosts
+  * ``11,23,51``      Select hosts 11 23 and 51
+  * ``11-20``         Select hosts 11 to 20
+  * ``2,3,11-15``     Select hosts 2 3 11 12 13 14 15
+  * ``all /odd``      Select all odds hosts
+  * ``11-20 /even``   Select hosts 12 14 16 18 20
 
 ## Action selection
 
