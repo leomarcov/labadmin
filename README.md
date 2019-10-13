@@ -398,7 +398,9 @@ Labadmin has a lot of actions ready to use! Actions are categorized in folders f
 
 ```
 
-# Add new actions
+# Add your own actions!
+
+
 
 &nbsp;  
 # Lincense
