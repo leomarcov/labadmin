@@ -22,6 +22,19 @@ Labadmin aims to be a tool useful for teachers and computer lab sysadmins.
   * Monitorization of action execution status. If any error has ocurred in some host is noticed.
   * It's easy to create your own actions using Bash script or Powershell languages.
 
+## Working schema
+  * Labadmin use a dedicated machine to admin the students hosts (usually teacher computer). Admin must be installed in a Linux OS. Controlled hosts can be Linux or Windows OS computers.
+  * All machines must be placed in the same broadcast domain.
+  * Each lab must be defined in a config file. This file stores:
+    * Authentication config to use (SSH and/or WinRM).
+    * MAC address for each host and a identification number.
+    * Lab distribution: each id host must be placed in a grid position according the real position.
+  * When labadmin starts discovers the computers configured in the lab file, show a map to select them and exec actions in all selected hosts.
+
+<p align="center">
+  <img src="https://user-images.githubusercontent.com/32820131/66718797-596caa00-ede8-11e9-81fd-ed2d3af4e1b2.png">
+</p>
+
 ## Demos
 You can see labadmin in action in short animations:
   * [Poweron computers](https://user-images.githubusercontent.com/32820131/66718825-a5b7ea00-ede8-11e9-9047-5afdac835816.gif)
@@ -35,19 +48,6 @@ You can see labadmin in action in short animations:
   * [Start exam mode](https://user-images.githubusercontent.com/32820131/66718834-a9e40780-ede8-11e9-84af-24bfeff20a76.gif)
   * [Check exam mode](https://user-images.githubusercontent.com/32820131/66718836-aa7c9e00-ede8-11e9-83dc-44fd4427b2e2.gif)
   * [End exam mode](https://user-images.githubusercontent.com/32820131/66718834-a9e40780-ede8-11e9-84af-24bfeff20a76.gif)
-  
-## Working schema
-  * Labadmin use a dedicated machine to admin the students hosts (usually teacher computer). Admin must be installed in a Linux OS. Controlled hosts can be Linux or Windows OS computers.
-  * All machines must be placed in the same broadcast domain.
-  * Each lab must be defined in a config file. This file stores:
-    * Authentication config to use (SSH and/or WinRM).
-    * MAC address for each host and a identification number.
-    * Lab distribution: each id host must be placed in a grid position according the real position.
-  * When labadmin starts discovers the computers configured in the lab file, show a map to select them and exec actions in all selected hosts.
-
-<p align="center">
-  <img src="https://user-images.githubusercontent.com/32820131/66718797-596caa00-ede8-11e9-81fd-ed2d3af4e1b2.png">
-</p>
 
 
 &nbsp;  
