@@ -11,7 +11,8 @@ It's a tool useful for teachers and sysadmins.
     * Send heavy files using multiple modes (unicast, torrent or mulsticast).
     * Send and schedule messages to users
     * Config firewall settings.
-    * Copy disk partition images.
+    * Transfer and copy disk partition images.
+    * Show and save screenshots.
     * Other administrative task, like software installation, user accounts, process management, Windows activation, etc. 
   * Monitorization of action execution status. If any error has ocurred in some host is noticed.
   * It's easy to create your own actions using Bash script or Powershell languages.
@@ -20,7 +21,7 @@ It's a tool useful for teachers and sysadmins.
 
 
 ## Working schema
-  * Labadmin use a dedicated machine to admin the students hosts. Admin must be installed in a Linux OS. Students hosts can be Linux or Windows OS computers.
+  * Labadmin use a dedicated machine to admin the students hosts. Admin must be installed in a Linux OS. Controlled hosts can be Linux or Windows OS computers.
   * All machines must be placed in the same broadcast domain.
   * Each lab must be defined in a config file. This file stores:
     * Authentication config to use (SSH and/or WinRM).
@@ -30,6 +31,8 @@ It's a tool useful for teachers and sysadmins.
 
 ![Labadmin schema](https://github.com/leomarcov/labadmin/blob/master/doc/images/schema.png?raw=true "Labadmin schema")
 
+
+&nbsp;  
 # Install
 Once downloaded or cloned the project, labadmin must be configured for each lab and installed in admin and each controlled host.
 
@@ -41,16 +44,17 @@ Once downloaded or cloned the project, labadmin must be configured for each lab 
 
 ## Admin install
   * Admin must be installed in a Linux machine (Debian, Fedora or Ubuntu).
-  * Exec: `./install -A -c config_file`, where config file is the name of the file located in `configs` directory to use as a default config when labadmin is open. Optionally you can use `ask` config file as default config. This config file asks in each execution what config file to use.
+  * Exec: `./install -A -c config_file`, where config file is the name of the file located in `configs` directory to use as a default config when labadmin is open. 
+  * Optionally you can use `ask` config file as default config. This config file asks in each execution what config file to use.
 ```bash
-./install -A test          # Install labadmin in admin machine using test as default lab 
+./install -A test          # Install labadmin in admin machine using test config file as default lab 
 ```
 
 ## Linux controlled hosts install
   * In Linux controlled hosts installer only need to install all needed dependences and configure the remote SSH access method. Not agent labadmin software is installed.
   * Exec: `install.sh -H -c config_file`, where config file is the name of the file located in `configs` directory where the host is placed. It's important that SSH variables are correctly set in config file. 
 ```bash
-./install -H -c test       # Install labadmin in host machine using test configuration
+./install -H -c test       # Install labadmin in host machine using test config file configuration
 ```  
   
 ## Windows controlled host install
@@ -65,6 +69,7 @@ sc.exe config winrm start= auto
 Set-Item wsman:\localhost\client\trustedhosts *
 
 ```
+
 &nbsp;  
 # Usage
   * Labadmin can operate in interactive or parametrized mode (use `labadmin -h` for parameter info).
@@ -81,3 +86,6 @@ Set-Item wsman:\localhost\client\trustedhosts *
 ## Action parametrization
 
 ## Action monitorization
+
+# Contact
+email: labadmin@gmail.com
