@@ -174,11 +174,11 @@ Labadmin has a lot of actions ready to use! Actions are categorized in folders f
 
 ## Linux actions
 ```
-[clone/]              Manage partition image backups
-  [mbr-table/]        Manage MBR partition table
-    [add-part]        Create new partition
-    [del-part]        Delete partition
-    [resize-part]     Resize partition to grow until end of disk or next partition
+[clone/]             Manage partition image backups
+  [mbr-table/]       Manage MBR partition table
+    [add-part]       Create new partition
+    [del-part]       Delete partition
+    [resize-part]    Resize partition to grow until end of disk or next partition
     [restore-table]  Restore remote partition table
     [save-table]     Backup remote partition table and bootloader (first MB) and save in local path
     [show-table]     Show MBR partition table
