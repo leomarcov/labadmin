@@ -120,15 +120,17 @@ This stage can be skipped using ``-r <range>`` parameter.
 ## Action selection
 Action selection allow navigate accros all available actions to select action to exec. Actions are organized in categories folders. 
 
+It's possible to exec action in a iterative or concurrent way. By defualt iterative mode is used. To exec action in a concurrent mode use ``&`` symbol at end of action name. For example: ``virtualbox/import&``
+
 <p align="center"><img width="606" src="https://user-images.githubusercontent.com/32820131/66720050-dc493100-edf7-11e9-903d-163fd90160c5.png"></p>
-This stage can be skipped using **``-a <action>``** parameter.
+This stage can be skipped using ``-a <action>`` parameter.
 
 
 ## Action parametrization
 Each action ask for needed parameters to exec according to action needs.
 
 <p align="center"><img width="606" src="https://user-images.githubusercontent.com/32820131/66720086-8032dc80-edf8-11e9-919b-8f8755fb9390.png"></p>
-This stage can be skipped using **``-1 <value1> -2 <value2> ...``** parameters.
+This stage can be skipped using ``-1 <value1> -2 <value2> ...`` parameters.
 
 ## Action monitorization
 
