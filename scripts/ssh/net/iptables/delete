@@ -1,0 +1,45 @@
+#!/usr/bin/env bash
+#===================================================================================
+#     FILE: net/iptables/delete
+#   AUTHOR: Leonardo Marco (labadmin@leonardomarco.com)
+#  LICENSE: GNU General Public License v3.0
+#===================================================================================
+script_id="$(echo ${BASH_SOURCE[0]} | sed 's\^'"$scripts_path"'/*\\g')"		# Script filename with relative script path
+
+#=== LOAD SCRIPT INFO ==============================================================
+if [ "$1" = "--load-scriptinfo" ]; then
+	script_desc="Delete specific rule number"
+	script_type="ssh"
+	script_bg="sub"
+	script_admindeps=""
+	script_hostdeps="iptables"
+	load_scriptinfo "$script_id" "$script_desc" "$script_type" "$script_bg" "$script_admindeps" "$script_hostdeps"
+	return
+
+#=== READ PARAMS ===================================================================
+elif [ "$1" = "--readparams" ]; then
+	# PARAM1: list ip
+	read_param "$script_id" 1 "Chain [input/output]" "" "^(input|output)$"
+	# PARAM2: persistent?
+	read_param "$script_id" 2 "Rule number" "" "^[0-9]+$"
+	# PARAM3: persistent?
+	read_param "$script_id" 3 "Persistent [Y/n]" "y" "^(y|n)$"	
+	return
+fi
+
+
+#=== EXEC SCRIPT ===================================================================
+chain="$1"
+rule="$2"
+per="$3"
+
+
+iptables -D "${chain^^}" "$rule"
+iptables -L --line-numbers
+
+
+if [ "${per,,}" = "y" ]; then
+	echo
+	labadmin_info "Applying persistence"
+	labadmin_iptables-persistent
+fi

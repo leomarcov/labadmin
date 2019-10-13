@@ -1,0 +1,65 @@
+#!/usr/bin/env bash
+#===================================================================================
+#     FILE: conf/labadmin/dependencies
+#   AUTHOR: Leonardo Marco (labadmin@leonardomarco.com)
+#  LICENSE: GNU General Public License v3.0
+#===================================================================================
+script_id="$(echo ${BASH_SOURCE[0]} | sed 's\^'"$scripts_path"'/*\\g')"		# Script filename with relative script path
+
+#=== LOAD INFO =====================================================================
+if [ "$1" = "--load-scriptinfo" ]; then
+	script_desc="Check and install host dependencies for Labadmin"
+	script_type="local"
+	script_bg="sub"
+	script_admindeps=""
+	script_hostdeps=""
+	load_scriptinfo "$script_id" "$script_desc" "$script_type" "$script_bg" "$script_admindeps" "$script_hostdeps"
+	return
+
+#=== READ PARAMS ===================================================================
+elif [ "$1" = "--readparams" ]; then
+	# PARAM1: show
+	read_param "$script_id" 1 "Install missing dependencies [y/N]" "n" "^(y|n)$"
+	return
+fi
+
+
+#=== EXEC SCRIPT ===================================================================
+mode="$1"
+
+
+# CHECK INSTALLER
+if [ "${mode,,}" = "y" ]; then
+	mode="autoinstall"
+	# GET INSTALLER
+	installer=""
+	for i in "${modules_path}/installers/"*; do
+		commands="$(cat "$i"; echo -e "\ninstaller_check")"
+		labdmin_ssh_host_comm "${labadmin_nhost}" "$commands" && installer="$i"
+	done
+	[ ! "$installer" ] && labadmin_error "Cant find a installer for host ${labadmin_nhost}"
+else
+	mode="noinstall"
+fi
+
+
+# GENERATE INSTALL CODE
+# Add script dependencies
+install_code="declare -A scripts_hostdeps"
+for m in ${!scripts_hostdeps[*]}; do
+	install_code="${install_code}
+	scripts_hostdeps[$m]=\"${scripts_hostdeps[$m]}\""
+done
+# Add installer code
+[ "$installer" ] && install_code="
+$(cat "$installer")
+${install_code}
+"
+# Add install module code
+install_code="
+${install_code}
+"$(cat "${modules_path}/labadmin_install")"
+check_dependencies ${mode} scripts_hostdeps"
+
+
+labdmin_ssh_host_comm "${labadmin_nhost}" "$install_code"

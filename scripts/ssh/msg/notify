@@ -1,0 +1,38 @@
+#!/usr/bin/env bash
+#===================================================================================
+#     FILE: msg/notify
+#   AUTHOR: Leonardo Marco (labadmin@leonardomarco.com)
+#  LICENSE: GNU General Public License v3.0
+#===================================================================================
+script_id="$(echo ${BASH_SOURCE[0]} | sed 's\^'"$scripts_path"'/*\\g')"		# Script filename with relative script path
+
+#=== LOAD INFO =====================================================================
+if [ "$1" = "--load-scriptinfo" ]; then
+	script_desc="Send notify message to logged user"
+	script_type="ssh"
+	script_bg="sub"
+	script_admindeps=""
+	script_hostdeps="notify-send"
+	load_scriptinfo "$script_id" "$script_desc" "$script_type" "$script_bg" "$script_admindeps" "$script_hostdeps"
+	return
+
+#=== READ PARAMS ===================================================================
+elif [ "$1" = "--readparams" ]; then
+	# PARAM1: message
+	read_param "$script_id" 1 "Message" "" "."
+	return
+fi
+
+
+#=== EXEC SCRIPT ===================================================================
+msg="$1"
+
+# First logged user in X
+u=($(labadmin_users-display | head -1))
+
+# CHECK USERS
+[ ! "${u[0]}" ] && labadmin_error "No users logged" 1
+
+labadmin_info "Sending message to user $u"
+echo " > $msg"
+su "${u[0]}" -c "DISPLAY=${u[1]} DBUS_SESSION_BUS_ADDRESS=${u[3]} notify-send -u critical '$msg'"

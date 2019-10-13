@@ -1,0 +1,43 @@
+#!/usr/bin/env bash
+#===================================================================================
+#     FILE: file/copyto
+#   AUTHOR: Leonardo Marco (labadmin@leonardomarco.com)
+#  LICENSE: GNU General Public License v3.0
+#===================================================================================
+script_id="$(echo ${BASH_SOURCE[0]} | sed 's\^'"$scripts_path"'/*\\g')"		# Script filename with relative script path
+
+#=== LOAD INFO =====================================================================
+if [ "$1" = "--load-scriptinfo" ]; then
+	script_desc="Copy files or directory from admin to host"
+	script_type="local"
+    script_bg="$([ "$DISPLAY" ] && echo "win" || echo "sub" )"
+	script_admindeps="pv"
+	script_hostdeps=""
+	load_scriptinfo "$script_id" "$script_desc" "$script_type" "$script_bg" "$script_admindeps" "$script_hostdeps"
+	return
+
+#=== READ PARAMS ===================================================================
+elif [ "$1" = "--readparams" ]; then
+	# PARAM1: local path
+	read_param "$script_id" 1 "Local path (file or directory)" "" "."
+	# PARAM2: reomte path
+	read_param "$script_id" 2 "Remote path (directory)" "" "."
+	return
+fi
+
+
+#=== EXEC SCRIPT ===================================================================
+src="$(eval echo "$1")"			# Resolve scape characteres like \ ,*, etc.
+dest="$2"						# Resolve scape characteres like \ ,*, etc.
+
+# CHECK SOURCE
+[ ! -r "$src" ] && labadmin_error "Can't access local path $src" 1
+
+
+
+# TRANSFER 
+tar -c -C "$(dirname "$src")" "$(basename "$src")" | pv -s $(du -sb "$src"|awk '{print $1}') | labdmin_ssh_host_comm_stdin "${labadmin_nhost}" '
+dest="$(eval echo "'"$dest"'")"								# Resolve scape characteres like \ ,*, etc.
+[ ! -w "$dest" ] && "Cant access path: ${dest}" 1
+
+su -c "tar xv -C \"$dest\"" $(stat -c "%U" "$dest")'

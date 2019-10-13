@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+#===================================================================================
+#     FILE: net/iptables/flush
+#   AUTHOR: Leonardo Marco (labadmin@leonardomarco.com)
+#  LICENSE: GNU General Public License v3.0
+#===================================================================================
+script_id="$(echo ${BASH_SOURCE[0]} | sed 's\^'"$scripts_path"'/*\\g')"		# Script filename with relative script path
+
+#=== LOAD SCRIPT INFO ==============================================================
+if [ "$1" = "--load-scriptinfo" ]; then
+	script_desc="Flush (clean) all rules"
+	script_type="ssh"
+	script_bg="sub"
+	script_admindeps=""
+	script_hostdeps="iptables"
+	load_scriptinfo "$script_id" "$script_desc" "$script_type" "$script_bg" "$script_admindeps" "$script_hostdeps"
+	return
+
+#=== READ PARAMS ===================================================================
+elif [ "$1" = "--readparams" ]; then
+	# PARAM1: persistent?
+	read_param "$script_id" 1 "Persistent [Y/n]" "y" "^(y|n)$"
+	return
+fi
+
+
+#=== EXEC SCRIPT ===================================================================
+per="$1"
+
+iptables -F
+iptables -L --line-numbers
+
+
+if [ "${per,,}" = "y" ]; then
+	echo
+	labadmin_info "Applying persistence"
+	labadmin_iptables-persistent
+fi
+

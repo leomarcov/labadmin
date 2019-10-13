@@ -1,0 +1,38 @@
+#!/usr/bin/env bash
+#===================================================================================
+#     FILE: file/download
+#   AUTHOR: Leonardo Marco (labadmin@leonardomarco.com)
+#  LICENSE: GNU General Public License v3.0
+#===================================================================================
+script_id="$(echo ${BASH_SOURCE[0]} | sed 's\^'"$scripts_path"'/*\\g')"		# Script filename with relative script path
+
+#=== LOAD INFO =====================================================================
+if [ "$1" = "--load-scriptinfo" ]; then
+	script_desc="Download URL resource in host"
+	script_type="ssh"
+	script_bg="sub"
+	script_admindeps=""
+	script_hostdeps="wget"
+	load_scriptinfo "$script_id" "$script_desc" "$script_type" "$script_bg" "$script_admindeps" "$script_hostdeps"
+	return
+fi
+
+#=== READ PARAMS ===================================================================
+if [ "$1" = "--readparams" ]; then
+	# PARAM1: URL
+	read_param "$script_id" 1 "URL" "" "."
+	# PARAM2: remote path
+	read_param "$script_id" 2 "Remote path (directory)" "" "."
+	return 
+fi
+
+
+#=== EXEC SCRIPT ===================================================================
+url="$1"
+dir="$(eval echo "$2")"		# Resolve scape characteres like \ ,*, etc.
+
+[ ! -d "$dir" ] && labadmin_error "Can't access directory $dir" 1 
+
+cd "$dir"
+owner="$(stat -c "%U" "$dir")"
+su -l "$owner" -c "wget --progress=bar:force \"$url\""

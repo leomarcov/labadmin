@@ -1,0 +1,63 @@
+#!/usr/bin/env bash
+#===================================================================================
+#     FILE: misc/dedsktop
+#   AUTHOR: Leonardo Marco (labadmin@leonardomarco.com)
+#  LICENSE: GNU General Public License v3.0
+#===================================================================================
+script_id="$(echo ${BASH_SOURCE[0]} | sed 's\^'"$scripts_path"'/*\\g')"		# Script filename with relative script path
+
+#=== LOAD INFO =====================================================================
+if [ "$1" = "--load-scriptinfo" ]; then
+	script_desc="Config user wallpaper"
+	script_type="ssh"
+	script_bg="sub"
+	script_admindeps=""
+	script_hostdeps=""
+	load_scriptinfo "$script_id" "$script_desc" "$script_type" "$script_bg" "$script_admindeps" "$script_hostdeps"
+	return
+
+#=== READ PARAMS ===================================================================
+elif [ "$1" = "--readparams" ]; then
+    # PARAM1: file
+	read_param "$script_id" 1 "Wall paper file (remote path)" "" "."
+    # PARAM2: users
+    read_param "$script_id" 2 "Users (space separated, default all)" "" ""
+	return
+fi
+
+
+#=== EXEC SCRIPT ===================================================================
+wp="$1"
+users="$2"
+
+# CHECKS
+[ ! "$users" ] && users="$(labadmin_usernames)"
+[ ! -r "$wp" ] && labadmin_error "Can't access to wallpaper file $wp" 1
+file "$wp" | grep "image data" &>/dev/null || labadmin_error "Wallpaper file seems not to be an image" 1
+
+
+# CHANGE USERS WALLPAPER
+for u in $users; do
+	# Check user
+	if ! id "$u" &>/dev/null; then
+		labadmin_error "User $u not exists"
+		continue
+	fi
+
+	# NITROGEN WALLPAPER
+	if [ -r "$(eval echo ~"$euser")"/.config/nitrogen/bg-saved.cfg ]; then
+		sed -i 's\file=.*\file='"$wp"'\g' "$(eval echo ~"$euser")"/.config/nitrogen/bg-saved.cfg
+	else
+		labadmin_error "Incompatible wallpaper config"
+	fi
+done
+
+
+
+
+
+
+
+
+
+

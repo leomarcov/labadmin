@@ -1,0 +1,49 @@
+#!/usr/bin/env bash
+#===================================================================================
+#     FILE: file/copyfrom
+#   AUTHOR: Leonardo Marco (labadmin@leonardomarco.com)
+#  LICENSE: GNU General Public License v3.0
+#===================================================================================
+script_id="$(echo ${BASH_SOURCE[0]} | sed 's\^'"$scripts_path"'/*\\g')"		# Script filename with relative script path
+
+#=== LOAD INFO =====================================================================
+if [ "$1" = "--load-scriptinfo" ]; then
+	script_desc="Copy files or directory from host to admin"
+	script_type="local"
+    script_bg="$([ "$DISPLAY" ] && echo "win" || echo "sub" )"
+	script_admindeps=""
+	script_hostdeps="pv"
+	load_scriptinfo "$script_id" "$script_desc" "$script_type" "$script_bg" "$script_admindeps" "$script_hostdeps"
+	return
+
+#=== READ PARAMS ===================================================================
+elif [ "$1" = "--readparams" ]; then
+	# PARAM1: remote path
+	read_param "$script_id" 1 "Remote path (file or directory)" "" "."
+	# PARAM2: local path
+	read_param "$script_id" 2 "Local path (directory)" "" "."
+	return
+fi
+
+
+#=== EXEC SCRIPT ===================================================================
+src="$1"						# Resolve scape characteres like \ ,*, etc.
+dest="$(eval echo "$2")"		# Resolve scape characteres like \ ,*, etc.
+
+# CHECK DEST
+[ ! -w "$dest" ] && labadmin_error "Can't write in local path $dest" 1
+
+# CREATE DIR FOR EACH HOST
+dest="${dest}/labadmin-copyfrom_HOST_${labadmin_nhost}/"
+[ ! -d "$dest" ] && mkdir "$dest"
+labadmin_info "Destination dir: $dest"
+
+
+# TRANSFER 
+labdmin_ssh_host_comm "$labadmin_nhost" '
+src="$(eval echo "'"$src"'")"				# Resolve scape characteres like \ ,*, etc.
+[ ! -r "$src" ] && labadmin_error "Cant access source: ${src}" 1
+
+tar -c -C "$(dirname "$src")" "$(basename "$src")" | pv -s $(du -sb "$src"|awk "{print \$1}")' | tar xv -C "$dest"
+
+

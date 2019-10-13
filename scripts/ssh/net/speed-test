@@ -1,0 +1,40 @@
+#!/usr/bin/env bash
+#===================================================================================
+#     FILE: net/speed-test
+#   AUTHOR: Leonardo Marco (labadmin@leonardomarco.com)
+#  LICENSE: GNU General Public License v3.0
+#===================================================================================
+script_id="$(echo ${BASH_SOURCE[0]} | sed 's\^'"$scripts_path"'/*\\g')"		# Script filename with relative script path
+
+#=== LOAD INFO =====================================================================
+if [ "$1" = "--load-scriptinfo" ]; then
+	script_desc="Perform network speed test from admin to host"
+	script_type="local"
+	script_bg="deny"
+	script_admindeps="pv"
+	script_hostdeps=""
+	load_scriptinfo "$script_id" "$script_desc" "$script_type" "$script_bg" "$script_admindeps" "$script_hostdeps"
+	return
+
+#=== READ PARAMS ===================================================================
+elif [ "$1" = "--readparams" ]; then
+	# PARAM1: local path
+	read_param "$script_id" 1 "Size to send in MB (default 200 MB)" "200" "^[0-9]+$"
+	return
+fi
+
+
+#=== EXEC SCRIPT ===================================================================
+size="$1"	# size to transfer in MB
+
+t0=$(date +%s)
+dd if=/dev/zero bs=1M count="${size}" | pv -s $(($size*1024*1024)) | labdmin_ssh_host_comm_stdin "${labadmin_nhost}" 'dd of=/dev/null bs=1M '
+
+err="$?"
+t1=$(date +%s)
+if [ "$err" -eq 0 ]; then
+	v=$((size/(t1-t0)))
+	[ "$v" -lt 50 ] && echo -e "${C_BR} NET-SPEED: ${v}${S_R}" && exit 1
+	[ "$v" -lt 70 ] && echo -e "${C_BY} NET-SPEED: ${v}${S_R}" && exit 0
+	[ "$v" -ge 70 ] && echo -e "${C_BG} NET-SPEED: ${v}${S_R}" && exit 0
+fi

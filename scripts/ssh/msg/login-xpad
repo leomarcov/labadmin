@@ -1,0 +1,131 @@
+#!/usr/bin/env bash
+#===================================================================================
+#     FILE: msg/login-xpad
+#   AUTHOR: Leonardo Marco (labadmin@leonardomarco.com)
+#  LICENSE: GNU General Public License v3.0
+#===================================================================================
+script_id="$(echo ${BASH_SOURCE[0]} | sed 's\^'"$scripts_path"'/*\\g')"		# Script filename with relative script path
+
+#=== LOAD INFO =====================================================================
+if [ "$1" = "--load-scriptinfo" ]; then
+	script_desc="Show text message next time user login in a xpad note"
+	script_type="local+ssh"
+	script_bg="force sub"
+	script_admindeps=""
+	script_hostdeps="xpad"
+	load_scriptinfo "$script_id" "$script_desc" "$script_type" "$script_bg" "$script_admindeps" "$script_hostdeps"
+	return
+
+#=== READ PARAMS ===================================================================
+elif [ "$1" = "--readparams" ]; then
+    # PARAM1: message
+	read_param "$script_id" 1 "Xpad note file (local file)" "" "."
+    # PARAM2: user
+    read_param "$script_id" 2 "Users (space separated, default all)" "" ""
+    # PARAM3: delete
+    read_param "$script_id" 3 "Delete previuos notes (y/N)" "N" "^[yn]$"
+	return
+fi
+
+
+#=== EXEC SCRIPT ===================================================================
+note_conf="$1"
+users="$2"
+del="$3"
+
+# LOCAL EXEC
+if [ "${labadmin_script_type}" = "local" ]; then
+	[ ! -f "$note_conf" ] && labadmin_error "Can't access local xpad file $note_conf"
+	note_msg="$(dirname "$note_conf")/""$(cat "$note_conf" | grep "^content " | cut -f 2 -d" ")"
+	[ ! -f "$note_msg" ] && labadmin_error "Can't access local xpad file $note_msg"
+
+	# Copy note conf and note msg to host temp file
+	labadmin_info "Sending msg to host temp file"
+	tar -c -C "$(dirname "$note_conf")" "$(basename "$note_conf")" "$(basename "$note_msg")" | labdmin_ssh_host_comm_stdin "${labadmin_nhost}" '
+dir="/tmp/labadmin/login-xpad/"
+[ ! -d "$dir" ] && mkdir -p "$dir" &>/dev/null
+tar -xv -C "/tmp/labadmin/login-xpad/"
+'
+	[ $? -ne 0 ] && exit 1
+
+# REMOTE EXEC
+elif [ "${labadmin_script_type}" = "ssh" ]; then
+	# Check users
+	[ ! "$users" ] && users="$(labadmin_usernames)"
+
+	# Config autostart msg for each user
+	for u in $users; do
+		# Check user
+		if ! id "$u" &>/dev/null; then
+			labadmin_error "User $u not exists"
+			continue
+		fi
+
+		echo
+		labadmin_info "USER $u"
+		# Delete other notes
+		[ "${del,,}" = "y" ] && rm -v "/home/$u/.config/xpad/content"* "/home/$u/.config/xpad/info"*
+
+		# Copy files to user xpad config dir
+		[ ! -d "/home/$u/.config/xpad/" ] && su -l  "$u" -c "mkdir -p /home/$u/.config/xpad/"
+		cp -v "/tmp/labadmin/login-xpad/$(basename "$note_conf")" "/home/$u/.config/xpad/"
+		cp -v "/tmp/labadmin/login-xpad/"$(cat "/tmp/labadmin/login-xpad/$(basename "$note_conf")" | grep "^content " | cut -f 2 -d" ")"" "/home/$u/.config/xpad/"
+
+		# Generate xpad config
+		echo 'decorations 0
+height 200
+width 200
+confirm_destroy 0
+edit_lock 0
+sticky_on_start 1
+tray_enabled 0
+tray_click_configuration 1
+back rgb(255,238,153)
+use_back 1
+text rgb(0,0,0)
+use_text 1
+fontname NULL
+toolbar 0
+auto_hide_toolbar 1
+scrollbar 0
+buttons New, Delete, Separator, Cut, Copy, Paste, Separator, Undo, Redo
+autostart_wait_systray 1
+autostart_delay 0
+autostart_new_pad 0
+autostart_display_pads 0
+hide_from_taskbar 1
+hide_from_task_switcher 1
+' > "/home/$u/.config/xpad/default-style"
+		chown "$u:$u" -R "/home/$u/.config/xpad/"
+
+
+		# Create config for autostart xpad
+		autostart_file="/home/$u/.config/autostart/xpad.desktop"
+		echo " Creating autostart file: ${autostart_file}"
+	    echo '[Desktop Entry]
+	Type=Application
+	Name=xpad
+	TryExec=xpad
+	Terminal=false
+	Icon=xpad
+	Exec=xpad -N
+	X-GNOME-Autostart-enabled=true' > "$autostart_file"
+	    chown $u:$u "${autostart_file}"
+	done
+
+	# CHECK USER LOGED AND RERUN XPAD
+	ua=($(labadmin_users-display | head -1))
+	if [ "${ua[0]}" = "$u" ]; then
+		killall xpad &> /dev/null
+		su -l "${ua[0]}" -c "DISPLAY=${ua[1]} xhost si:localuser:$(id -un)" &>/dev/null
+		su -l "${ua[0]}" -c "DISPLAY=${ua[1]} xpad" 2>/dev/null
+	fi
+fi
+true
+
+
+
+
+
+
+

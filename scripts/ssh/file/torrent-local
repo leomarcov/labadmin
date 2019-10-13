@@ -1,0 +1,133 @@
+#!/usr/bin/env bash
+#===================================================================================
+#     FILE: file/torrent-local
+#   AUTHOR: Leonardo Marco (labadmin@leonardomarco.com)
+#  LICENSE: GNU General Public License v3.0
+#===================================================================================
+script_id="$(echo ${BASH_SOURCE[0]} | sed 's\^'"$scripts_path"'/*\\g')"		# Script filename with relative script path
+
+#=== LOAD INFO =====================================================================
+if [ "$1" = "--load-scriptinfo" ]; then
+	script_desc="Send local files to hosts using torrent"
+	script_type="admin+local+admin"
+    script_bg="force sub"
+	script_admindeps=""
+	script_hostdeps="transmission-cli"
+	load_scriptinfo "$script_id" "$script_desc" "$script_type" "$script_bg" "$script_admindeps" "$script_hostdeps"
+	return
+
+#=== READ PARAMS ===================================================================
+elif [ "$1" = "--readparams" ]; then
+	# PARAM1: local path
+	read_param "$script_id" 1 "Local path (file or directory)" "" "."
+	# PARAM2: reomte path
+	read_param "$script_id" 2 "Remote path (directory)" "" "."
+	return
+fi
+
+
+
+#=== EXEC SCRIPT ===================================================================
+src="$(eval echo "$1")"			# Resolve scape characteres like \ ,*, etc.
+dest="$(eval echo "$2")"		# Resolve scape characteres like \ ,*, etc.
+
+tmp_torrent_path="${labadmin_tmp_path}/torrent-send/"
+transmission_settings='{
+	"rpc-enabled": true,
+	"rpc-authentication-required": false,
+    "lpd-enabled": true,
+    "utp-enabled": false
+}'
+
+
+# ADMIN STAGE 1 EXEC : create torrent file
+if [ "${labadmin_script_type}" = "admin" ] && [ "${labadmin_script_type_state}" = "1" ]; then
+	[ ! -r "$src" ] && labadmin_error "Cant access local path ${src}" 1
+	killall transmission-cli &>/dev/null
+
+	labadmin_info "Generating torrent file from ${src}"
+	rm -rf "$tmp_torrent_path" &>/dev/null
+	mkdir "$tmp_torrent_path" &>/dev/null
+	
+	transmission-create -o "${tmp_torrent_path}/current.torrent" "${src}" 
+
+
+# LOCAL EXEC: copy torrent file and exec peers in hosts
+elif [ "${labadmin_script_type}" = "local" ]; then
+	# Copy .torrent file
+	dd if="${tmp_torrent_path}/current.torrent" 2>/dev/null | labdmin_ssh_host_comm_stdin "${labadmin_nhost}" '
+rm -rf /tmp/labadmin_torrent-send/ &>/dev/null
+mkdir /tmp/labadmin_torrent-send &>/dev/null
+dd of="/tmp/labadmin_torrent-send/current.torrent" &>/dev/null' 
+	[ $? -eq 0 ] && labadmin_info "Torrent file copied to host" || labadmin_error "Error copying torrent file to host"
+
+	# Start transmission download
+	labadmin_info "Starting Transmission BitTorrent"
+	labdmin_ssh_host_comm "${labadmin_nhost}" '
+pos_list="'$pos_list'"
+# Check torrent file is correct
+! transmission-show "/tmp/labadmin_torrent-send/current.torrent" &>/dev/null && labadmin_error "Error in torrent file /tmp/labadmin_torrent-send/current.torrent" 1
+
+# Check destination folder
+dest="$(eval echo "'"$dest"'")"			# Resolve scape characteres like \ ,*, etc.
+[ ! -w "$dest" ] && labadmin_error "Cant access path: ${dest}" 1
+
+# Generte transmission settings file
+killall transmission-cli &>/dev/null
+echo '\'"$transmission_settings"\'' >  /tmp/labadmin_torrent-send/settings.json
+
+# Show host % in background
+(
+
+# Wait for transmission starts
+while ! transmission-remote -l &>/dev/null; do printf "${S_B}%8s: ${S_R}%-20s\n" "HOST ${labadmin_nhost}" "Waiting to start transmission client"; sleep 1; done
+
+# While tranmission is active show %  downloaded
+while t_out=$(transmission-remote -l); do
+	t_out="$(echo "$t_out" | grep -Ev "^ID[[:blank:]]|^Sum:[[:blank:]]" | sed "s/  /#/g" | tr -s "#" )"
+	d=$(echo "$t_out" | awk -F "#" "{ print \$7 }")		# Cut download speed
+	u=$(echo "$t_out" | awk -F "#" "{ print \$6 }")		# Cut upload speed
+	p=$(echo "$t_out" | awk -F "#" "{ print \$3 }")		# Cut download percent
+	s=$(echo "$t_out" | awk -F "#" "{ print \$9 }")		# Cut download percent
+	
+	# Color: green if 100% red if <100%
+	[[ "$p" = *100%* ]] && col="${C_BG}" || col="${C_BR}"
+
+	# Show % in screen
+	printf "${S_B}%8s: ${col} %5s${S_R}  %8s▼  %8s▲  %-10s\n" "HOST ${labadmin_nhost}" "$p" "$d" "$u" "$s"
+
+	[ "$p" = "100%" ] && sleep 15 || sleep 5
+done
+)&
+
+# Starts transmission!
+transmission-cli -w "$dest" -g  /tmp/labadmin_torrent-send/ /tmp/labadmin_torrent-send/current.torrent &>/dev/null
+'
+
+
+# ADMIN STAGE 2 EXEC: seed torrent $src
+elif [ "${labadmin_script_type}" = "admin" ] && [ "${labadmin_script_type_state}" = "2" ]; then
+	labadmin_info "Starting torrent seeder"
+	echo "$transmission_settings" > "${tmp_torrent_path}/settings.json"
+
+# While tranmission is active show %  downloaded
+(
+sleep 10
+while t_out=$(transmission-remote -l); do
+	t_out="$(echo "$t_out" | grep -Ev "^ID[[:blank:]]|^Sum:[[:blank:]]" | sed "s/  /#/g" | tr -s "#" )"
+	d=$(echo "$t_out" | awk -F "#" "{ print \$7 }")		# Cut download speed
+	u=$(echo "$t_out" | awk -F "#" "{ print \$6 }")		# Cut upload speed
+	p=$(echo "$t_out" | awk -F "#" "{ print \$3 }")		# Cut download percent
+	s=$(echo "$t_out" | awk -F "#" "{ print \$9 }")		# Cut download percent
+	
+	# Show % in screen
+	echo
+	printf "${S_B}%16s: ${col} %5s${S_R}  %8s▼  %8s▲  %-10s\n" "ADMIN" "$p" "$d" "$u" "$s"
+
+	sleep 5
+done
+)&
+	labadmin_info "TRANSMISSION PROGRESS"
+	transmission-cli -w "$(dirname "${src}")" -g "${tmp_torrent_path}" "${tmp_torrent_path}/current.torrent" &>/dev/null || labadmin_error "Error in exec transmission admin"
+	labadmin_info "TRANSMISSION END"
+fi

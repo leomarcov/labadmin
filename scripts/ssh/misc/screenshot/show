@@ -1,0 +1,54 @@
+#!/usr/bin/env bash
+#===================================================================================
+#     FILE: misc/screenshot/show
+#   AUTHOR: Leonardo Marco (labadmin@leonardomarco.com)
+#  LICENSE: GNU General Public License v3.0
+#===================================================================================
+script_id="$(echo ${BASH_SOURCE[0]} | sed 's\^'"$scripts_path"'/*\\g')"		# Script filename with relative script path
+
+#=== LOAD INFO =====================================================================
+if [ "$1" = "--load-scriptinfo" ]; then
+	script_desc="Show host display animation"
+	script_type="local"
+	script_bg="sub"
+	script_admindeps="feh"
+	script_hostdeps="import(imagemagick)"
+	load_scriptinfo "$script_id" "$script_desc" "$script_type" "$script_bg" "$script_admindeps" "$script_hostdeps"
+	return
+
+#=== READ PARAMS ===================================================================
+elif [ "$1" = "--readparams" ]; then
+	return
+fi
+
+
+#=== EXEC SCRIPT ===================================================================
+
+# CREATE TMP FILE
+file_tmp="$(mktemp -u "$labadmin_tmp_path/screenshot-display.XXXXXXXX")"
+
+# WAIT FOR FRIST IMAGE CREATED
+(
+while [ ! -s "${file_tmp}-0" ] || [ ! -s "${file_tmp}-1" ] ; do echo "Waiting screenshots..."; sleep 0.5; done		# White until 2 frist files are created
+feh -q -R 1 -D 1 "${file_tmp}-0" "${file_tmp}-1"
+) &
+
+
+### SHOW
+n=1
+while true; do
+	(
+		echo -e " [$n] ${S_B}${file_tmp}-$((n%2))${S_R}"
+		labdmin_ssh_host_comm "${labadmin_nhost}" '
+u=($(labadmin_users-display | head -1))
+[ ! "${u[0]}" ] && labadmin_error "No users logged" 1
+su -l "${u[0]}" -c "import -window root -display "${u[1]}" jpg:-"' > "${file_tmp}-$((n%2))"
+	)&
+	[ "$n" -gt 4 ] && ! pidof feh &>/dev/null && exit 0			# If user close feh finish
+	[ "$n" -gt 2 ] && sleep 1 || sleep 0.1
+	n=$((n+1))
+done
+
+rm "${file_tmp}-0" "${file_tmp}-1"
+
+

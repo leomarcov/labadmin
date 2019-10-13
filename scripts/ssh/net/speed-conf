@@ -1,0 +1,41 @@
+#!/usr/bin/env bash
+#===================================================================================
+#     FILE: net/speed-conf
+#   AUTHOR: Leonardo Marco (labadmin@leonardomarco.com)
+#  LICENSE: GNU General Public License v3.0
+#===================================================================================
+script_id="$(echo ${BASH_SOURCE[0]} | sed 's\^'"$scripts_path"'/*\\g')"		# Script filename with relative script path
+
+#=== LOAD INFO =====================================================================
+if [ "$1" = "--load-scriptinfo" ]; then
+	script_desc="Show NIC card speed negotiated and poweroff slow hosts"
+	script_type="ssh"
+	script_bg="sub"
+	script_admindeps=""
+	script_hostdeps="ethtool"
+	load_scriptinfo "$script_id" "$script_desc" "$script_type" "$script_bg" "$script_admindeps" "$script_hostdeps"
+	return
+
+#=== READ PARAMS ===================================================================
+elif [ "$1" = "--readparams" ]; then
+	# PARAM1: continue if active user
+	read_param "$script_id" 1 "Poweroff slow hosts (<1000Mb/s)? [y/N]" "n" "^(y|n)$"
+	return
+fi
+
+
+#=== EXEC SCRIPT ===================================================================
+o="$1"
+iface_host="$(labadmin_iface "${labadmin_ipadmin}")"
+
+speed="$(ethtool "$iface_host" | grep -i speed | awk '{print $2}')"		# Speed config
+echo "$iface_host: $speed"
+
+# Poweroff?
+if [ "${o,,}" = "y" ] && [ "${speed//[!0-9]/}" -lt 1000 ]; then
+	labadmin_info "Shutting down host $labadmin_nhost"
+	shutdown -P now
+fi
+
+# Check speed for exit code
+[ "${speed//[!0-9]/}" -ge 1000 ]

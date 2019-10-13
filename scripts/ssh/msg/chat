@@ -1,0 +1,130 @@
+#!/usr/bin/env bash
+#===================================================================================
+#     FILE: msg/chat
+#   AUTHOR: Leonardo Marco (labadmin@leonardomarco.com)
+#  LICENSE: GNU General Public License v3.0
+#===================================================================================
+script_id="$(echo ${BASH_SOURCE[0]} | sed 's\^'"$scripts_path"'/*\\g')"		# Script filename with relative script path
+
+#=== LOAD INFO =====================================================================
+if [ "$1" = "--load-scriptinfo" ]; then
+	script_desc="Starts text chat with logged user"
+	script_type="ssh&local"
+    script_bg="$([ "$DISPLAY" ] && echo "force win" || echo "deny" )"
+	script_admindeps="nc|netcat|ncat"
+	script_hostdeps=" terminator"
+	load_scriptinfo "$script_id" "$script_desc" "$script_type" "$script_bg" "$script_admindeps" "$script_hostdeps"
+	return
+
+#=== READ PARAMS ===================================================================
+elif [ "$1" = "--readparams" ]; then
+	# PARAM1: fullscreen
+	read_param "$script_id" 1 "Chat in fullscreen [y/N]" "n" "^(y|n)$"
+	return
+fi
+
+
+#=== EXEC SCRIPT ===================================================================
+fs="$1"
+port=6666
+
+chat_server_sh='#!/bin/bash
+port="6666"
+timeout=60
+[ "$1" ] && port="$1"
+input=/tmp/labadmin_chat-receive-$(id -u)-$port
+output=/tmp/labadmin_chat-sending-$(id -u)-$port
+
+rm -f $input
+rm -f $output
+mkfifo $input
+mkfifo $output
+chmod o-rwx "$input" "$output"
+
+clear_line() {
+	printf "\r\033[2K"
+}
+
+move_cursor_up() {
+	printf "\033[1A"
+}
+
+server() {
+	tail -f $output | nc -l -p $port > $input
+}
+
+receive() {
+	local message
+	local connected
+	while IFS= read -r message; do
+		if [ ! "$connected" ]; then
+			echo -en "\e[1m\e[2m### CONNECTION ESTABLISHED ###\e[0m\n> " > $output
+			clear
+			echo -en "> "
+			connected=1
+			continue
+		fi
+		clear_line
+		echo -en "\e[1m\e[32m"; echo -n "$message"; echo -en "\e[0m\n> "
+		move_cursor_up > $output
+		clear_line > $output
+		{ echo -en "\e[1m\e[32m"; echo -n "$message"; echo -en "\e[0m\n> "; } > $output
+	done < $input
+	echo -e "\n\e[1m\e[2m### CONNECTION FINISHED ###\e[0m"
+	sleep 2
+	kill $PPID
+}
+
+chat() {
+	local message
+	while [ 1 ]; do
+		IFS= read -r message
+		clear_line > $output
+		{ echo -n "$message" ; echo -en "\n> "; } > $output
+		move_cursor_up
+		clear_line
+		echo -n "${message}"; echo -en "\n> "
+	done;
+}
+
+
+clear
+server &
+
+echo -en "\e[1m\e[2mWaiting for connection ...\e[0m"
+echo -e "\e[1m\e[2m### NETCAT SERVER RESPONDED ###\e[0m\nPress ENTER to start connection..." > $output
+
+
+receive &
+chat
+'
+
+# REMOTE EXEC
+if [ "${labadmin_script_type}" = "ssh" ]; then
+	# Copy script to /tmp
+	echo "$chat_server_sh" > /tmp/labadmin_chat.sh
+
+	# First logged user in X
+	u=($(labadmin_users-display | head -1))
+
+	# Check users
+	[ ! "${u[0]}" ] && labadmin_error "No users logged" 1
+
+	su -l "${u[0]}" -c "DISPLAY=${u[1]} xhost si:localuser:$(id -un)" >/dev/null
+
+	labdmin_config_terminator "${u[0]}"
+	su -l "${u[0]}" -c "DISPLAY=${u[1]} terminator $([ "${fs,,}" = "y" ] && echo "-f" ) -b -e \"bash /tmp/labadmin_chat.sh '$port'\" &"
+
+# LOCAL EXEC
+elif [ "${labadmin_script_type}" = "local" ]; then
+	while true; do
+		sleep 1
+		t=$(date +%s)
+		nc "${labadmin_iphost}" "$port" && break
+		[ $(($(date +%s)-$t)) -gt 2 ] && break
+		t=$(date +%s)
+	done
+
+fi
+
+

@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+#===================================================================================
+#     FILE: file/torrent
+#   AUTHOR: Leonardo Marco (labadmin@leonardomarco.com)
+#  LICENSE: GNU General Public License v3.0
+#===================================================================================
+script_id="$(echo ${BASH_SOURCE[0]} | sed 's\^'"$scripts_path"'/*\\g')"		# Script filename with relative script path
+
+#=== LOAD INFO =====================================================================
+if [ "$1" = "--load-scriptinfo" ]; then
+	script_desc="Download torrent resource in host"
+	script_type="ssh"
+    script_bg="$([ "$DISPLAY" ] && echo "force win" || echo "force sub")"
+	script_admindeps=""
+	script_hostdeps="transmission-cli"
+	load_scriptinfo "$script_id" "$script_desc" "$script_type" "$script_bg" "$script_admindeps" "$script_hostdeps"
+	return
+
+#=== READ PARAMS ===================================================================
+elif [ "$1" = "--readparams" ]; then
+	# PARAM1: URL
+	read_param "$script_id" 1 "Magnet link or remote .torrent file" "" "."
+	# PARAM2: remote path
+	read_param "$script_id" 2 "Remote directory" "" "."
+	return
+fi
+
+
+
+#=== EXEC SCRIPT ===================================================================
+torrent="$1"
+dest="$(eval echo "$2")"		# Resolve scape characteres like \ ,*, etc.
+
+cd "$dest" &>/dev/null || labadmin_error "Can't access directory $dest" 1
+
+transmission-cli "$torrent" -w "$dest"

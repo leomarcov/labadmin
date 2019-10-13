@@ -1,0 +1,80 @@
+#!/usr/bin/env bash
+#===================================================================================
+#     FILE: msg/msg-urls
+#   AUTHOR: Leonardo Marco (labadmin@leonardomarco.com)
+#  LICENSE: GNU General Public License v3.0
+#===================================================================================
+script_id="$(echo ${BASH_SOURCE[0]} | sed 's\^'"$scripts_path"'/*\\g')"		# Script filename with relative script path
+
+#=== LOAD INFO =====================================================================
+if [ "$1" = "--load-scriptinfo" ]; then
+	script_desc="Config system for send notification when detect user is browsing in Chrome some urls"
+	script_type="ssh"
+	script_bg="sub"
+	script_admindeps=""
+	script_hostdeps=""
+	load_scriptinfo "$script_id" "$script_desc" "$script_type" "$script_bg" "$script_admindeps" "$script_hostdeps"
+	return
+
+#=== READ PARAMS ===================================================================
+elif [ "$1" = "--readparams" ]; then
+	# PARAM2: action
+	read_param "$script_id" 1 "Install or Uninstall [I/u]" "i" "^(i|u)$"
+	# PARAM12 urls
+    [ "${p1,,}" = "i" ] && read_param "$script_id" 2 "Urls (default: facebook.com web.whatsap.com minijuegos.com marca.com)" "facebook.com web.whatsap.com minijuegos.com marca.com" "."
+	return
+fi
+
+
+#=== EXEC SCRIPT ===================================================================
+action="$1"
+urls="$2"
+urls="$urls"
+script_path="/usr/bin/msg-urls.sh"
+log_path="/var/log/msg-urls.log"
+
+case "${action,,}" in
+#### UNINSTALL
+u)
+	rm "$script_path" "$log_path"
+	crontab -l 2>/dev/null | grep -v "$script_path" | crontab -
+;;
+
+#### INSTALL
+i)
+	echo '#!/usr/bin/env bash
+	urls="'"$urls"'"
+	log_path="'"$log_path"'"
+	user=($(w -oshu | grep "[[:blank:]]:[0-9][[:blank:]]" | grep -o "^[a-z][-a-zA-Z0-9]\+\|[[:blank:]]:[0-9][[:blank:]]" | sed -z "s/\n[[:blank:]]:/ :/g" | sort -u))
+	[ ! "$user" ] && exit
+	home="$(eval echo ~${user[0]})"
+
+	day="$(date +%Y-%m-%d)"										# Current date
+	for url in $urls; do
+		ips="$(host "$url" | egrep -o "[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+" | tr "\n" "|" | sed "s/|$//")"
+		ss -tna | egrep "$ips"
+		if [ "$?" -eq 0 ]; then
+			naviso="$(grep "^${user[0]}:" "$log_path" | wc -l)"		# Number of notifiations for this user
+			naviso="$((naviso+1))"
+			msg="Menos ${url%.*} y más estudiar"$'\''\n'\''"AVISO: $naviso"
+			su "${user[0]}" -c "DISPLAY=${user[1]} notify-send -u critical '\''$msg'\''"
+			echo -e "${user}:${day}:$url" >> "$log_path"
+			modprobe pcspkr
+			for n in 1 2 3; do for f in 1 2 1 2 1 2 1 2 1 2 ; do beep -f ${f}000 -l 30; done; done
+			if [ "$naviso" -gt 5 ]; then
+				su "${user[0]}" -c "DISPLAY=${user[1]} notify-send -u critical '\''Descansa un minuto y piensa en tu futuro
+(✖_✖)'\''"
+				sleep 1
+				pkill -STOP -u "$user"
+				sleep 60
+				pkill -CONT -u "$user"
+			fi
+			exit
+		fi
+	done
+	' > "$script_path"
+
+	chmod 700 "$script_path"
+	(crontab -l 2>/dev/null | grep -v "$script_path"; echo "*/14 * * * * $script_path") | crontab -
+;;
+esac

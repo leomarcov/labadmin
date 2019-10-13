@@ -1,0 +1,46 @@
+#!/usr/bin/env bash
+#===================================================================================
+#     FILE: net/iptables/allow
+#   AUTHOR: Leonardo Marco (labadmin@leonardomarco.com)
+#  LICENSE: GNU General Public License v3.0
+#===================================================================================
+script_id="$(echo ${BASH_SOURCE[0]} | sed 's\^'"$scripts_path"'/*\\g')"		# Script filename with relative script path
+
+#=== LOAD SCRIPT INFO ==============================================================
+if [ "$1" = "--load-scriptinfo" ]; then
+	script_desc="Allow access to specific IP or domain in a whitelist"
+	script_type="ssh"
+	script_bg="sub"
+	script_admindeps=""
+	script_hostdeps="iptables"
+	load_scriptinfo "$script_id" "$script_desc" "$script_type" "$script_bg" "$script_admindeps" "$script_hostdeps"
+	return
+
+#=== READ PARAMS ===================================================================
+elif [ "$1" = "--readparams" ]; then
+	# PARAM1: list ip
+	read_param "$script_id" 1 "List of IPs or domains (h for help)" "" "." "\tList of IPs, domains or subnets to allow separated by spaces.\n\tSAMPLES:\n\t   www.mydomain.com\t\tAllow Google domain\n\t   10.0.20.5\t\t\tAllow specific ip\n\t   10.0.20.5 10.0.2.6\t\tAllow two ips\n\t   10.0.20.0/24\t\t\tAllow subnet"
+	# PARAM2: persistent?
+	read_param "$script_id" 2 "Persistent [Y/n]" "y" "^(y|n)$"
+	return
+fi
+
+
+#=== EXEC SCRIPT ===================================================================
+list="$1"
+per="$2"
+
+for i in $list; do
+	i=$(echo "$i" | sed "s/^.*:\/\///" | cut -f 1 -d "/")		# Cut only domain from URL
+	labadmin_info "Allow IP/domain: $i"
+	iptables -I OUTPUT -d "$i" -j ACCEPT
+done
+
+iptables -L --line-numbers
+
+
+if [ "${per,,}" = "y" ]; then
+	echo
+	labadmin_info "Applying persistence"
+	labadmin_iptables-persistent
+fi

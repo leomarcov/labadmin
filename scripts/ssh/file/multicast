@@ -1,0 +1,70 @@
+#!/usr/bin/env bash
+#===================================================================================
+#     FILE: file/multicast
+#   AUTHOR: Leonardo Marco (labadmin@leonardomarco.com)
+#  LICENSE: GNU General Public License v3.0
+#===================================================================================
+script_id="$(echo ${BASH_SOURCE[0]} | sed 's\^'"$scripts_path"'/*\\g')"		# Script filename with relative script path
+
+#=== LOAD INFO =====================================================================
+if [ "$1" = "--load-scriptinfo" ]; then
+	script_desc="Copy files or directory from admin to host using MULTICAST"
+	script_type="ssh+admin"
+	script_bg="force sub"
+	script_admindeps="udp-sender(udpcast) pv"
+	script_hostdeps="udp-receiver(udpcast) ethtool"
+	load_scriptinfo "$script_id" "$script_desc" "$script_type" "$script_bg" "$script_admindeps" "$script_hostdeps"
+	return
+fi
+
+#=== READ PARAMS ===================================================================
+if [ "$1" = "--readparams" ]; then
+	# PARAM1: local path
+	read_param "$script_id" 1 "Local path (file or directory)" "" "."
+	# PARAM2: reomte path
+	read_param "$script_id" 2 "Remote path (directory)" "" "."
+	# PARAM3: skip
+	read_param "$script_id" 3 "Skip hosts with no Gigabit connection [Y/n]" "y" "^(y|n)$"
+	return
+fi
+
+
+#=== EXEC SCRIPT ===================================================================
+src="$(eval echo "$1")"			# Resolve scape characteres like \ ,*, etc.
+dest="$(eval echo "$2")"		# Resolve scape characteres like \ ,*, etc.
+skip="${3}"
+iface_host="$(labadmin_iface "${labadmin_ipadmin}")"
+
+
+# REMOTE EXEC
+if [ "${labadmin_script_type}" = "ssh" ]; then
+	# SKIP LOW HOSTS
+	if [ "${skip,,}" = "y" ]; then
+		speed="$(ethtool "$iface_host" | grep -i speed | awk '{print $2}')"		# Speed config
+		[ "${speed//[!0-9]/}" -lt 1000 ] && labadmin_error "#######################################################################\nSKIPPING HOST [${labadmin_nhost}] (${labadmin_iphost}) WITH SLOW CONNECTION ($speed)\n#######################################################################" 1
+	fi
+
+	# CHECK DEST
+	[ ! -w "$dest" ] && labadmin_error "Can't write in remote path $dest" 1
+	
+	# RECEIVE
+	killall -9 udp-receiver 2>/dev/null               
+	udp-receiver --interface "$iface_host" --nokbd  | tar -x -C "$dest"
+
+
+# ADMIN EXEC
+elif [ "${labadmin_script_type}" = "admin" ]; then
+	# CHECK SRC
+	[ ! -r "$src" ] && labadmin_error "Can't access local path $src" 1
+	# SEND
+	killall -9 udp-sender 2>/dev/null
+	sleep 1
+	tar -c -C "$(dirname "$src")" "$(basename "$src")" | pv -s $(du -sb "$src"| awk '{print $1}') | udp-sender --interface "${labadmin_iface}" &>/dev/null
+	if [ $? -eq 0 ]; then
+		labadmin_info "TRANSFER COMPLETE"
+		exit 0
+	else
+		labadmin_error "TRANSFER ERROR"
+		exit 1
+	fi
+fi

@@ -1,0 +1,56 @@
+#!/usr/bin/env bash
+#===================================================================================
+#     FILE: net/iptables/whitelist
+#   AUTHOR: Leonardo Marco (labadmin@leonardomarco.com)
+#  LICENSE: GNU General Public License v3.0
+#===================================================================================
+script_id="$(echo ${BASH_SOURCE[0]} | sed 's\^'"$scripts_path"'/*\\g')"		# Script filename with relative script path
+
+#=== LOAD SCRIPT INFO ==============================================================
+if [ "$1" = "--load-scriptinfo" ]; then
+	script_desc="Start whitelist (delete all rules and deny all ips but exceptions)"
+	script_type="ssh"
+	script_bg="sub"
+	script_admindeps=""
+	script_hostdeps="netfilter-persistent|/usr/libexec/iptables/iptables.init(iptables-persistent|iptables-services)"
+	load_scriptinfo "$script_id" "$script_desc" "$script_type" "$script_bg" "$script_admindeps" "$script_hostdeps"
+	return
+
+#=== READ PARAMS ===================================================================
+elif [ "$1" = "--readparams" ]; then
+	# PARAM1: persistent?
+	read_param "$script_id" 1 "Persistent [Y/n]" "y" "^(y|n)$"
+	return
+fi
+
+
+#=== EXEC SCRIPT ===================================================================
+per="$1"
+
+iptables -F
+
+# REJECT all output traffic
+iptables -I INPUT -j REJECT
+iptables -I OUTPUT -j REJECT
+
+# ACCEPT loopback
+iptables -I INPUT -i lo -j ACCEPT
+iptables -I OUTPUT -o lo -j ACCEPT
+
+# ACCEPT all connections for LABADMIN port
+iptables -I INPUT -p tcp  --dport "${labadmin_sshport}" -j ACCEPT
+iptables -I OUTPUT -p tcp  --sport "${labadmin_sshport}" -j ACCEPT
+
+# ACCEPT DNS connections
+iptables -I INPUT -p udp --sport 53 -m state --state ESTABLISHED -j ACCEPT
+iptables -I OUTPUT -p udp --dport 53 -j ACCEPT
+
+iptables -I INPUT -p tcp -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
+
+iptables -L --line-numbers
+
+if [ "${per,,}" = "y" ]; then
+	echo
+	labadmin_info "Applying persistence"
+	labadmin_iptables-persistent
+fi

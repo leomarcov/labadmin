@@ -1,0 +1,71 @@
+#!/usr/bin/env bash
+#===================================================================================
+#     FILE: msg/msg-term
+#   AUTHOR: Leonardo Marco (labadmin@leonardomarco.com)
+#  LICENSE: GNU General Public License v3.0
+#===================================================================================
+script_id="$(echo ${BASH_SOURCE[0]} | sed 's\^'"$scripts_path"'/*\\g')"		# Script filename with relative script path
+
+#=== LOAD INFO =====================================================================
+if [ "$1" = "--load-scriptinfo" ]; then
+	script_desc="Open a text message in a terminal window"
+	script_type="local+ssh"
+    script_bg="force sub"
+	script_admindeps=""
+	script_hostdeps="terminator"
+	load_scriptinfo "$script_id" "$script_desc" "$script_type" "$script_bg" "$script_admindeps" "$script_hostdeps"
+	return
+
+#=== READ PARAMS ===================================================================
+elif [ "$1" = "--readparams" ]; then
+    # PARAM1: message
+	read_param "$script_id" 1 "Message (msg text or absolute local file)" "" "."
+	# PARAM2: fullscreen
+	read_param "$script_id" 2 "Show in fullscreen [y/N]" "n" "^(y|n)$"
+	return
+fi
+
+
+#=== EXEC SCRIPT ===================================================================
+msg="$1"
+fs="$2"
+
+msg_temp="/tmp/labadmin-msg-term"
+
+# LOCAL EXEC
+if [ "${labadmin_script_type}" = "local" ]; then
+	# Read message from file
+	if [ "${msg:0:1}" = "/" ]; then
+		msg="$(eval echo "$msg")"			# Resolve scape characteres like \ ,*, etc.
+		[ ! -r "$msg" ] && labadmin_error "Can't access host file $msg" 1
+		msg="$(cat "$msg")"
+	fi
+
+	# Copy msg to host temp file
+	labadmin_info "Sending msg to host temp file"
+	echo "$msg" | labdmin_ssh_host_comm_stdin "${labadmin_nhost}" '
+msg_temp="'"$msg_temp"'"
+touch "$msg_temp"
+chmod o+r "$msg_temp"
+dd of="$msg_temp" &>/dev/null
+'
+	[ $? -ne 0 ] && exit 1
+
+# REMOTE EXEC
+elif [ "${labadmin_script_type}" = "ssh" ]; then
+	labadmin_info "Opening msg in host"
+
+	# First logged user in X
+	u=($(labadmin_users-display | head -1))
+	# CHECK USERS
+	[ ! "${u[0]}" ] && labadmin_error "No users logged" 1
+
+	su -l "${u[0]}" -c "DISPLAY=${u[1]} xhost si:localuser:$(id -un)" &>/dev/null
+	labdmin_config_terminator "${u[0]}"
+	su -l "${u[0]}" -c "DISPLAY=${u[1]} terminator $([ "${fs,,}" = "y" ] && echo "-f" ) -b -x bash -c \"cat $msg_temp; read\"" 2>/dev/null
+	rm -v "$msg_temp"
+fi
+true
+
+
+

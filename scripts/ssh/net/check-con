@@ -1,0 +1,74 @@
+#!/usr/bin/env bash
+#===================================================================================
+#     FILE: net/check-con
+#   AUTHOR: Leonardo Marco (labadmin@leonardomarco.com)
+#  LICENSE: GNU General Public License v3.0
+#===================================================================================
+script_id="$(echo ${BASH_SOURCE[0]} | sed 's\^'"$scripts_path"'/*\\g')"		# Script filename with relative script path
+
+#=== LOAD INFO =====================================================================
+if [ "$1" = "--load-scriptinfo" ]; then
+	script_desc="Check network connectivity to gateway, Internet and DNS"
+	script_type="ssh"
+	script_bg="sub"
+	script_admindeps=""
+	script_hostdeps="nc|netcat|ncat(netcat|nmap-ncat|nmap)"
+	load_scriptinfo "$script_id" "$script_desc" "$script_type" "$script_bg" "$script_admindeps" "$script_hostdeps"
+	return
+
+#=== READ PARAMS ===================================================================
+elif [ "$1" = "--readparams" ]; then
+	return
+fi
+
+
+#=== EXEC SCRIPT ===================================================================
+
+# DEPENDENCIES
+nc_command="$(labadmin_search_alternative nc netcat ncat)"
+
+
+gw="$(ip -4 route | grep default | grep -o "\bvia\b[[:blank:]]\+[0-9]\+\.[0-9]\+\.[0-9]\+\.[0-9]\+" | awk '{print $2}')"
+if ping -c 1 -W 1 "$gw" &>/dev/null; then
+	echo -e " [${C_BG}OK${S_R}] PING GATEWAY $gw"
+else
+	echo -e " [${C_BR}ERROR${S_R}] PING GATEWAY $gw"
+	exit 1
+fi
+
+if ping -c 1 -W 1 8.8.8.8 &>/dev/null; then
+	echo -e " [${C_BG}OK${S_R}] PING 8.8.8.8"
+else
+	echo -e " [${C_BR}ERROR${S_R}] PING 8.8.8.8"
+	exit 1
+fi
+
+if ping -c 1 -W 1 "google.com" &>/dev/null; then
+	echo -e " [${C_BG}OK${S_R}] PING google.com"
+else
+	echo -e " [${C_BR}ERROR${S_R}] PING google.com"
+	exit 1
+fi
+
+if "$nc_command" -uz -w 1 8.8.8.8 53 &>/dev/null; then
+	echo -e " [${C_BG}OK${S_R}] DNS 8.8.8.8 (53)"
+else
+	echo -e " [${C_BR}ERROR${S_R}] DNS 8.8.8.8 (53)"
+	errors="1"
+fi
+
+if "$nc_command" -z gmail-smtp-in.l.google.com 25 &> /dev/null; then
+	echo -e " [${C_BG}OK${S_R}] SMTP gmail-smtp-in.l.google.com (25)"
+else
+	echo -e " [\e[91mERROR${S_R}] SMTP gmail-smtp-in.l.google.com (25)"
+	errors="1"
+fi
+
+if "$nc_command" -uz 0.debian.pool.ntp.org 123 &> /dev/null; then
+	echo -e " [${C_BG}OK${S_R}] NTP 0.debian.pool.ntp.org (123)"
+else
+	echo -e " [${C_BR}ERROR${S_R}] NTP 0.debian.pool.ntp.org (123)"
+	errors="1"
+fi
+
+exit 0
