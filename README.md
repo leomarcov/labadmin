@@ -114,7 +114,7 @@ On this stage admin user select controlled hosts range where exec the action. So
   * ``11-20 /even``: select hosts 12, 14, 16, 18 and 20
 
 <p align="center"><img width="606" src="https://user-images.githubusercontent.com/32820131/66719892-ed913e00-edf5-11e9-82ee-31acae5282ca.png"></p>
-This stage can be skipped using **``-r <range>``** parameter.
+This stage can be skipped using ``-r <range>`` parameter.
 
 
 ## Action selection
