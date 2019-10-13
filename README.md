@@ -77,7 +77,7 @@ Labadmin can operate in interactive or parametrized mode (use `labadmin -h` for 
 Each execution has 5 stages: discover, host selection, action selection, action parametrization and action monitorization.
   
 ## Discover
-Discover stage search for each host MAC in config file his current IP associated and checks the net state (OFF, ON and listening in configured port (SSH or WinrM) or ON but not listening in config port).
+Discover stage search for each host MAC in config file his current IP and checks the net state (OFF, ON and listening in configured port (SSH or WinrM) or ON but not listening in config port).
 
 Once all network info has been recollected labadmin shows a grid map according the position configured for each host and his actual state.
   
