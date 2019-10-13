@@ -4,7 +4,7 @@ It's a tool useful for teachers and sysadmins.
 
 ## Main features
   * Discover the network status hosts in a laboratory classroom by MAC address, working on DHCP networks.
-  * Show the status of each machine in a grid map according the preconfigured position.
+  * Show the status of each machine in a grid map according the preconfigured position. It's easy to identificate students computers by classroom location.
   * Flexible machine selection using ranges. Can select all machines, only a row, odd and even machines, a specific list, etc.
   * A set of actions to exec in selected machines. Labadmin incorporate a full set of actions ready to use (currently 133 for Linux and 40 for Windows). Some key actions are:
     * Config a restrictive environment in a exam time.
@@ -33,11 +33,7 @@ Once downloaded or cloned the project, labadmin must be configured and installed
 ## Create a config files
   * Each classroom must be defined in a config file and placed in `labadmin/configs/` directory. This file is a Bash script where config variables are defined.
   * You can use the provided [configs/test](configs/test) file as template.   
-  * Most important config varialbes are:
-    * `winrmuser` / `winrmpass` / `winrmport` for WinRM autentication and connection.
-    * `sshuser` / `sshport` / `sshpubkey` / `sshprivatekey` for SSH autentication and connection.
-    * `macs[]` array with the MAC address of hosts. The array is indexed by ID host, each host will be identificated with this number. Any number should be used, but it's recommended use simple numbers, for example use 32 for computer in a row 3 column 2.
-    * `map` store the location of each host ID in the classroom. Each not number character is used as column separator and each new line as a row separator. 
+  * For more information refer to [test](configs/test) config file comments.
     
 
 ## Admin install
