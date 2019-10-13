@@ -14,7 +14,7 @@ labname="TEST LAB"
 
 # Server default mode
 # Possible values: ssh|winrm
-# Use parameters -L|-W for use specific mode
+# Use parameters -L (ssh) or -W (winrm) for override default mode
 srvmode="ssh"
 
 # Network interface to use in admin machine
