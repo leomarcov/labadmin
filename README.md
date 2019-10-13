@@ -90,6 +90,13 @@ Set-Item wsman:\localhost\client\trustedhosts *
 &nbsp;  
 # Usage
 Labadmin can operate in interactive or parametrized mode (use `labadmin -h` for parameter info).
+When run labadmin script starts using default lab config file and default mode (Linux or Windows) defined in this config.
+You can run labadmin using any configuration and mode with parameters: ``-c`` and ``-L`` or ``-W``. 
+```bash
+labadmin            # Start labadmin using defualt config lab
+labadmin -c a15     # Start labadin using a15 config file and default mode defined in a15
+labadmin -c 15 -W   # Start labadin using a15 config file and Windows mode (WinRM)
+```
 
 Each action execution has 5 stages: discover, host selection, action selection, action parametrization and action monitorization.
   
@@ -106,14 +113,22 @@ On this stage admin user select controlled hosts range where exec the action. So
   * ``all /odd``: select all odds hosts
   * ``11-20 /even``: select hosts 12, 14, 16, 18 and 20
 
-This stage can be skipped using **``-r``** parameter.
+This stage can be skipped using **``-r <range>``** parameter.
 <p align="center"><img width="606" src="https://user-images.githubusercontent.com/32820131/66719892-ed913e00-edf5-11e9-82ee-31acae5282ca.png"></p>
 
 
 ## Action selection
+Action selection allow navigate accros all available actions to select action to exec. Actions are organized in categories folders. 
+
+This stage can be skipped using **``-a <action>``** parameter.
+<p align="center"><img width="606" src="https://user-images.githubusercontent.com/32820131/66720050-dc493100-edf7-11e9-903d-163fd90160c5.png"></p>
 
 
 ## Action parametrization
+Each action ask for needed parameters to exec according to action needs.
+
+This stage can be skipped using **``-1 <value1> -2 <value2> ...``** parameters.
+<p align="center"><img width="606" src="https://user-images.githubusercontent.com/32820131/66720086-8032dc80-edf8-11e9-919b-8f8755fb9390.png"></p>
 
 ## Action monitorization
 
