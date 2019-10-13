@@ -19,19 +19,19 @@ It's a tool useful for teachers and sysadmins.
 ## Working schema
   * Labadmin use a dedicated machine to admin the students hosts. Admin must be installed in a Linux OS. Students hosts can be Linux or Windows OS computers.
   * All machines must be placed in the same broadcast domain.
-  * Each classroom must be defined in a config file. This file stores:
+  * Each lab must be defined in a config file. This file stores:
     * Authentication config to use (SSH and/or WinRM).
     * MAC address for each host and a identification number.
-    * Classroom distribution: each id host must be placed in a grid position according the real position.
-  * When labadmin starts discovers the computers configured in the classroom file, show a map to select them and exec actions in all selected hosts.
+    * Lab distribution: each id host must be placed in a grid position according the real position.
+  * When labadmin starts discovers the computers configured in the lab file, show a map to select them and exec actions in all selected hosts.
 
 ![Labadmin schema](https://github.com/leomarcov/labadmin/blob/master/doc/images/schema.png?raw=true "Labadmin schema")
 
 # Install
-Once downloaded or cloned the project, labadmin must be configured and installed in admin and each student host.
+Once downloaded or cloned the project, labadmin must be configured for each lab and installed in admin and each controlled host.
 
 ## Create a config files
-  * Each classroom must be defined in a config file and placed in `labadmin/configs/` directory. This file is a Bash script where config variables are defined.
+  * Each lab must be defined in a config file and placed in `labadmin/configs/` directory. This file is a Bash script where config variables are defined.
   * You can use the provided [configs/test](configs/test) file as template.   
   * For more information refer to [test](configs/test) config file comments.
     
@@ -40,17 +40,17 @@ Once downloaded or cloned the project, labadmin must be configured and installed
   * Admin must be installed in a Linux machine (Debian, Fedora or Ubuntu).
   * Exec: `./install -A -c config_file`, where config file is the name of the file located in `configs` directory to use as a default config when labadmin is open. Optionally you can use `ask` config file as default config. This config file asks in each execution what config file to use.
 ```bash
-./install -A test          # Install labadmin in admin machine using test as default classroom 
+./install -A test          # Install labadmin in admin machine using test as default lab 
 ```
 
-## Linux host install
-  * Linux hosts installer only need to install all needed dependences and configure the remote SSH access method.
+## Linux controlled hosts install
+  * In Linux controlled hosts installer only need to install all needed dependences and configure the remote SSH access method. Not agent labadmin software is installed.
   * Exec: `install.sh -H -c config_file`, where config file is the name of the file located in `configs` directory where the host is placed. It's important that SSH variables are correctly set in config file. 
 ```bash
 ./install -H -c test       # Install labadmin in host machine using test configuration
 ```  
   
-## Windows host install
+## Windows controlled host install
   * In Windows 7 first install last version of Windows Management Framework: hhttps://www.microsoft.com/en-us/download/details.aspx?id=54616.
   * Then enable WinRM access executing these commands in a PowerShell:
  ```javascript
