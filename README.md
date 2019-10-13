@@ -98,9 +98,7 @@ Discover stage search current IP for each host MAC in lab config file and checks
 <p align="center"><img width="606" src="https://user-images.githubusercontent.com/32820131/66719829-faf9f880-edf4-11e9-9183-f43c3aff4d3b.png"></p>
   
 ## Host selection
-On this stage admin user select controlled hosts range where exec the action. 
-
-Some samples:
+On this stage admin user select controlled hosts range where exec the action. Some range samples are:
   * ``a|all|*``: select all hosts
   * ``11,23,51``: select hosts 11, 23 and 51
   * ``11-20``: select hosts 11 to 20
@@ -113,6 +111,7 @@ This stage can be skipped using **``-r``** parameter.
 
 
 ## Action selection
+
 
 ## Action parametrization
 
