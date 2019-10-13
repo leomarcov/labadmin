@@ -72,12 +72,14 @@ Set-Item wsman:\localhost\client\trustedhosts *
 
 &nbsp;  
 # Usage
-  * Labadmin can operate in interactive or parametrized mode (use `labadmin -h` for parameter info).
-  * Each execution has 5 stages: discover, host selection, action selection, action parametrization and action monitorization.
+Labadmin can operate in interactive or parametrized mode (use `labadmin -h` for parameter info).
+
+Each execution has 5 stages: discover, host selection, action selection, action parametrization and action monitorization.
   
 ## Discover
-  * Discover stage search for each host MAC in config file the current IP associated and his state (OFF, ON and listening in configured port (SSH or WinrM) or ON but not listening in config port).
-  * Once all network info has been recollected labadmin shows a grid map according the position configured for each host and his actual state.
+Discover stage search for each host MAC in config file the current IP associated and his state (OFF, ON and listening in configured port (SSH or WinrM) or ON but not listening in config port).
+
+Once all network info has been recollected labadmin shows a grid map according the position configured for each host and his actual state.
   
 ## Host selection
 
