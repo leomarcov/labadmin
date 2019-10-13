@@ -3,7 +3,7 @@
 
 Labadmin is a Linux Bash script capable to remotely admin a set of hosts (Linux or Windows). It's an approach similar to Ansible, but Labadmin is focused to work in educational environment  on hosts in a computer laboratory. 
 
-Aims to be a tool useful for teachers and computer lab sysadmins. 
+Labadmin aims to be a tool useful for teachers and computer lab sysadmins. 
 
 &nbsp; 
 ## Main features
@@ -95,7 +95,7 @@ Each action execution has 5 stages: discover, host selection, action selection, 
   
 ## Discover
 Discover stage search current IP for each host MAC in lab config file and checks the net state (is ON or OFF and listening or not). Once all network info has been recollected labadmin shows a grid map according the configured position.
-
+![Discover stage](https://user-images.githubusercontent.com/32820131/66719555-c0429100-edf1-11e9-8b6c-e7af70289b34.png)
   
 ## Host selection
 
