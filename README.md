@@ -406,6 +406,11 @@ For create a new action only need:
   * Create a script file following the labadmin interface. You can use template action located in [doc/script_template](doc/script_template).
   * Save the script file in ``scripts/ssh`` or ``scripts/winrm`` directory, and labadmin will recognize the file automatically when starts.
 
+For more info refer to:
+  * [doc/script_template](doc/script_template)
+  * SSH sample: [scripts/ssh/user/add](scripts/ssh/user/add)
+  * WinRM sampple: [scripts/winrm/user/add](scripts/winrm/user/add)
+
 &nbsp;  
 # Lincense
 Labadmin license is [GPLv3](LICENSE)
