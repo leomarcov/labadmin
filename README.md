@@ -3,8 +3,6 @@ Labadmin is a Linux Bash script capable to remotely admin a set of hosts (Linux 
 It's a tool useful for teachers and sysadmins. 
 
 ## Main features
-<img align="right" src="https://cdn4.iconfinder.com/data/icons/online-marketing-hand-drawn-vol-4/52/target__targetting__mission__goals__seo__office__business-64.png">
-
   * Discover the network status hosts in a laboratory classroom by MAC address, working on DHCP networks.
   * Show the status of each machine in a grid map according the preconfigured position. It's easy to identificate students computers by classroom location.
   * Flexible machine selection using ranges. Can select all machines, only a row, odd and even machines, a specific list, etc.
@@ -21,8 +19,6 @@ It's a tool useful for teachers and sysadmins.
   * It's easy to create your own actions using Bash script or Powershell languages.
 
 ## Demos
-<img align="right" src="https://cdn4.iconfinder.com/data/icons/online-marketing-hand-drawn-vol-1/52/cinema__movie__reel__video__videoreel__film__media-64.png">
-
   * [Poweron computers]()
   * [Check network speed](https://user-images.githubusercontent.com/32820131/66718827-a94b7100-ede8-11e9-9eed-0f13c8b56ce3.gif)
   * [Add user](https://user-images.githubusercontent.com/32820131/66718830-a94b7100-ede8-11e9-8fbd-a738410d0ebb.gif)
