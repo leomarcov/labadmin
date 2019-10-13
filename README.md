@@ -93,4 +93,4 @@ Once all network info has been recollected labadmin shows a grid map according t
 # Contact
 My name is Leonardo Marco. I'm sysadmin teacher in [CIFP Carlos III](https://cifpcarlos3.es/), Cartagena, Murcia (Spain).
 
-You can contact me for suggestions, contributions or help by email: labadmin@leonardomarco.com
+You can email me for suggestions, contributions, labadmin help or share your feelings: labadmin@leonardomarco.com
