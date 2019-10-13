@@ -20,7 +20,7 @@ It's a tool useful for teachers and sysadmins.
 
 ## Demos
   * [Poweron computers]()
-  * ![](https://www.iconfinder.com/icons/811474/download/png/16) [Check network speed](https://user-images.githubusercontent.com/32820131/66718827-a94b7100-ede8-11e9-9eed-0f13c8b56ce3.gif)
+  * ![](https://cdn2.iconfinder.com/data/icons/new-year-s-hand-drawn-basic/64/play_button-16.png) [Check network speed](https://user-images.githubusercontent.com/32820131/66718827-a94b7100-ede8-11e9-9eed-0f13c8b56ce3.gif)
   * [Add user](https://user-images.githubusercontent.com/32820131/66718830-a94b7100-ede8-11e9-8fbd-a738410d0ebb.gif)
   * [Exec command](https://user-images.githubusercontent.com/32820131/66718829-a94b7100-ede8-11e9-900d-9ae35d8c66b2.gif)
   * [Copy 2.1GB file using multicast](https://user-images.githubusercontent.com/32820131/66718831-a94b7100-ede8-11e9-81d7-c3d8d6515ed5.gif)
