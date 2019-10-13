@@ -95,7 +95,11 @@ Each action execution has 5 stages: discover, host selection, action selection, 
   
 ## Discover
 Discover stage search current IP for each host MAC in lab config file and checks the net state (is ON or OFF and listening or not). Once all network info has been recollected labadmin shows a grid map according the configured position.
-![Discover stage](https://user-images.githubusercontent.com/32820131/66719555-c0429100-edf1-11e9-8b6c-e7af70289b34.png)
+
+<p align="center">
+  <img src="https://user-images.githubusercontent.com/32820131/66719589-3810bb80-edf2-11e9-8ea1-c22df19a0803.png
+">
+</p>
   
 ## Host selection
 
