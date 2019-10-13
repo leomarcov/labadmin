@@ -11,6 +11,7 @@ It's a tool useful for teachers and sysadmins.
     * Send heavy files using multiple modes (unicast, torrent or mulsticast).
     * Send and schedule messages to users
     * Config firewall settings.
+    * Virtualbox management (import ovas, play, delete, etc.)
     * Transfer and copy disk partition images.
     * Show and save screenshots.
     * Other administrative task, like software installation, user accounts, process management, Windows activation, etc. 
