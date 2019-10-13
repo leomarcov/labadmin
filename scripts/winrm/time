@@ -1,0 +1,44 @@
+#!/usr/bin/env bash
+#===================================================================================
+#     FILE: time
+#   AUTHOR: Leonardo Marco (labadmin@leonardomarco.com)
+#  LICENSE: GNU General Public License v3.0
+#===================================================================================
+script_id="$(echo ${BASH_SOURCE[0]} | sed 's\^'"$scripts_path"'/*\\g')"		# Script filename with relative script path
+
+#=== LOAD INFO =====================================================================
+if [ "$1" = "--load-scriptinfo" ]; then
+	script_desc="Set system date/hour and show current time"
+	script_type="winrm-ps"
+	script_bg="sub"
+	script_admindeps=""
+	script_hostdeps=""
+	load_scriptinfo "$script_id" "$script_desc" "$script_type" "$script_bg" "$script_admindeps" "$script_hostdeps"
+	return
+
+#=== READ PARAMS ===================================================================
+elif [ "$1" = "--readparams" ]; then
+	# PARAM1: action
+    read_param "$script_id" 1 "SHOW Show system time
+set Set system timedate" "show" "^(show|set)$"
+	# PARAM2: date
+    [ "${p1,,}" = "set" ] && read_param "$script_id" 2 "Date (format YYYY-MM-DD, default local)" "$(date +%Y-%m-%d)" "^[0-9][0-9][0-9][0-9]-[0-1][0-9]-[0-3][0-9]$"
+    # PARAM3: time
+    [ "${p1,,}" = "set" ] && read_param "$script_id" 3 "Hour (format HH:MM:SS, default local)" "$(date +%H:%M:%S)"  "^[0-2][0-9]:[0-5][0-9]:[0-5][0-9]$"
+	return
+fi
+
+
+#=== EXEC SCRIPT ===================================================================
+o="$1"
+d="$2"
+h="$3"
+
+case "${o,,}" in
+set) # SET DATE
+	echo 'Set-Date -date "'"${d} ${h}"'"'
+;;
+*)
+	echo '(Get-Date).ToString("yyyy-MM-dd HH:mm:ss")'
+;;
+esac

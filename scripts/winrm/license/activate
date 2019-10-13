@@ -1,0 +1,34 @@
+#!/usr/bin/env bash
+#===================================================================================
+#     FILE: license/activate
+#   AUTHOR: Leonardo Marco (labadmin@leonardomarco.com)
+#  LICENSE: GNU General Public License v3.0
+#===================================================================================
+script_id="$(echo ${BASH_SOURCE[0]} | sed 's\^'"$scripts_path"'/*\\g')"		# Script filename with relative script path
+
+#=== LOAD INFO =====================================================================
+if [ "$1" = "--load-scriptinfo" ]; then
+	script_desc="Activate Windows license"
+	script_type="winrm-ps"
+	script_bg="sub"
+	script_admindeps=""
+	script_hostdeps=""
+	load_scriptinfo "$script_id" "$script_desc" "$script_type" "$script_bg" "$script_admindeps" "$script_hostdeps"
+	return
+
+#=== READ PARAMS ===================================================================
+elif [ "$1" = "--readparams" ]; then
+    # PARAM1: license
+	read_param "$script_id" 1 "License (empty only activate)" "" "" ""
+	return
+fi
+
+
+#=== EXEC SCRIPT ===================================================================
+license="$1"
+
+echo '$computer = gc env:computername
+$key = "'"$license"'"
+$service = get-wmiObject -query "select * from SoftwareLicensingService" -computername $computer
+if ($key) { $service.InstallProductKey($key) }
+$service.RefreshLicenseStatus()'

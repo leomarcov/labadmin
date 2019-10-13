@@ -1,0 +1,34 @@
+#!/usr/bin/env bash
+#===================================================================================
+#     FILE: group/list
+#   AUTHOR: Leonardo Marco (labadmin@leonardomarco.com)
+#  LICENSE: GNU General Public License v3.0
+#===================================================================================
+script_id="$(echo ${BASH_SOURCE[0]} | sed 's\^'"$scripts_path"'/*\\g')"		# Script filename with relative script path
+
+#=== LOAD INFO =====================================================================
+if [ "$1" = "--load-scriptinfo" ]; then
+	script_desc="Show groups list and show specific group info"
+	script_type="winrm-ps"
+	script_bg="sub"
+	script_admindeps=""
+	script_hostdeps=""
+	load_scriptinfo "$script_id" "$script_desc" "$script_type" "$script_bg" "$script_admindeps" "$script_hostdeps"
+	return
+
+#=== READ PARAMS ===================================================================
+elif [ "$1" = "--readparams" ]; then
+	# PARAM1: username
+    read_param "$script_id" 1 "Groupname (empty only group list)" "" ""
+	return
+fi
+
+
+#=== EXEC SCRIPT ===================================================================
+group="$1"
+
+# SHOW GROUPS
+echo 'Get-LocalGroup'
+
+# SHOW GROUP INFO AND MEMBERS
+[ "$group" ] && echo 'Get-LocalGroup -Name "'"$group"'"' && echo 'Get-LocalGroupMember -Group "'"$group"'" | Format-Table -AutoSize'

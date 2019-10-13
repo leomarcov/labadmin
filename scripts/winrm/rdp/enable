@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+#===================================================================================
+#     FILE: rdp/enable
+#   AUTHOR: Leonardo Marco (labadmin@leonardomarco.com)
+#  LICENSE: GNU General Public License v3.0
+#===================================================================================
+script_id="$(echo ${BASH_SOURCE[0]} | sed 's\^'"$scripts_path"'/*\\g')"		# Script filename with relative script path
+
+#=== LOAD INFO =====================================================================
+if [ "$1" = "--load-scriptinfo" ]; then
+	script_desc="Enable remote desktop for admin users"
+	script_type="winrm-ps"
+	script_bg="sub"
+	script_admindeps=""
+	script_hostdeps=""
+	load_scriptinfo "$script_id" "$script_desc" "$script_type" "$script_bg" "$script_admindeps" "$script_hostdeps"
+	return
+
+#=== READ PARAMS ===================================================================
+elif [ "$1" = "--readparams" ]; then
+	return
+fi
+
+
+#=== EXEC SCRIPT ===================================================================
+echo 'Set-ItemProperty -Path "HKLM:\System\CurrentControlSet\Control\Terminal Server" -Name "fDenyTSConnections" –Value 0
+$FireWall = New-Object -comObject HNetCfg.FwPolicy2
+$EnableRules = $FireWall.rules | Where-Object {$_.LocalPorts -like "*3389*"}
+ForEach ($Rule In $EnableRules){($Rule.Enabled = "True")}'

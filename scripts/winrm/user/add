@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+#===================================================================================
+#     FILE: user/add
+#   AUTHOR: Leonardo Marco (labadmin@leonardomarco.com)
+#  LICENSE: GNU General Public License v3.0
+#===================================================================================
+script_id="$(echo ${BASH_SOURCE[0]} | sed 's\^'"$scripts_path"'/*\\g')"		# Script filename with relative script path
+
+#=== LOAD INFO =====================================================================
+if [ "$1" = "--load-scriptinfo" ]; then
+	script_desc="Add new user account"
+	script_type="winrm-ps"
+	script_bg="sub"
+	script_admindeps=""
+	script_hostdeps=""
+	load_scriptinfo "$script_id" "$script_desc" "$script_type" "$script_bg" "$script_admindeps" "$script_hostdeps"
+	return
+
+#=== READ PARAMS ===================================================================
+elif [ "$1" = "--readparams" ]; then
+    # PARAM1: username
+	read_param "$script_id" 1 "Username" "" "."
+	# PARAM2: password
+    read_param "$script_id" 2 "Password" "" "."
+	# PARAM3: group
+	read_param "$script_id" 3 "Group (default usuarios)" "usuarios" ""
+	return
+fi
+
+
+#=== EXEC SCRIPT ===================================================================
+user="$1"
+pass="$2"
+group="$3"
+
+echo 'New-LocalUser -Name "'"$user"'" -Password (ConvertTo-SecureString "'"$pass"'" -AsPlainText -Force) -AccountNeverExpires'
+[ "$group" ] && echo 'Add-LocalGroupMember -Group "'"$group"'" -Member "'"$user"'"'

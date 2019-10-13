@@ -1,0 +1,59 @@
+#!/usr/bin/env bash
+#===================================================================================
+#     FILE: dfc/license
+#   AUTHOR: Leonardo Marco (labadmin@leonardomarco.com)
+#  LICENSE: GNU General Public License v3.0
+#===================================================================================
+script_id="$(echo ${BASH_SOURCE[0]} | sed 's\^'"$scripts_path"'/*\\g')"		# Script filename with relative script path
+
+#=== LOAD INFO =====================================================================
+if [ "$1" = "--load-scriptinfo" ]; then
+	script_desc="Change license number"
+	script_type="winrm-ps"
+	script_bg="sub"
+	script_admindeps=""
+	script_hostdeps=""
+	load_scriptinfo "$script_id" "$script_desc" "$script_type" "$script_bg" "$script_admindeps" "$script_hostdeps"
+	return
+
+	#=== READ PARAMS ===================================================================
+	elif [ "$1" = "--readparams" ]; then
+		# PARAM1: action
+		read_param "$script_id" 1 "Status/regenerate (S/r)" "s" "^(s|r)$"
+		# PARAM3: license
+	    [ "${p1,,}" != "s" ] && read_param "$script_id" 2 "License key" "" "."
+		# PARAM3: pass
+	    [ "${p1,,}" != "s" ] && read_param "$script_id" 3 "DF password" "" "."
+		return
+	fi
+
+
+#=== EXEC SCRIPT ===================================================================
+action="$1"
+key="$3"
+pass="$3"
+
+case "${action,,}" in
+### CHECK STATUS
+s)
+echo 'DFC.exe get /LICENSESTATUS
+switch ($lastExitCode) {
+	111: { echo "111: Unlicensed" }
+	112: { echo "112: Evaluation (fixed expiration)" }
+	113: { echo "113: Standard (licensed with no expiry date)" }
+	114: { echo "114: No for resale (licensed with no expiry date)" }
+	115: { echo "115: Subcription" }
+	116: { echo "116: Subcription - Evaluation" }
+	117: { echo "117: Subcription - Not for Resale" }
+}'
+;;
+
+### REGENERATE LICENSE
+r)
+echo 'DFC.exe '"${pass}"' /LICENSE='"${key}"'
+switch ($lastExitCode) {
+	101: { echo "101: License key '"${key}"' not valid" }
+	102: { echo "102: License key '"${key}"' has already expired" }
+}'
+;;
+esac

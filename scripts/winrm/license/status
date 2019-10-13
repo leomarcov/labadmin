@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+#===================================================================================
+#     FILE: license/status
+#   AUTHOR: Leonardo Marco (labadmin@leonardomarco.com)
+#  LICENSE: GNU General Public License v3.0
+#===================================================================================
+script_id="$(echo ${BASH_SOURCE[0]} | sed 's\^'"$scripts_path"'/*\\g')"		# Script filename with relative script path
+
+#=== LOAD INFO =====================================================================
+if [ "$1" = "--load-scriptinfo" ]; then
+	script_desc="Show Windows activation status"
+	script_type="winrm-ps"
+    script_bg="sub"
+	script_admindeps=""
+	script_hostdeps=""
+	load_scriptinfo "$script_id" "$script_desc" "$script_type" "$script_bg" "$script_admindeps" "$script_hostdeps"
+	return
+
+#=== READ PARAMS ===================================================================
+elif [ "$1" = "--readparams" ]; then
+	return
+fi
+
+
+#=== EXEC SCRIPT ===================================================================
+echo '$lstat = @("Unlicensed", "Licensed", "OOB Grace", "OOT Grace", "Non-Genuine Grace", "Notification", "Extended Grace")
+Get-WmiObject SoftwareLicensingProduct -ComputerName "$env:COMPUTERNAME" | where {$_.PartialProductKey} | select Name, ApplicationId, @{N="LicenseStatus"; E={$lstat["$($_.LicenseStatus)"]}}'
