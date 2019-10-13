@@ -175,11 +175,51 @@ Labadmin has a lot of actions ready to use!
 ## Linux actions
 ```diff
 +[clone/]          Manage partition image backups
-   +[mbr-table/]      Manage MBR partition table
-   +[multicast/]      Manage partition image backups using multicast
-   +[unicast/]        Manage partition image backups using unicast
++  [mbr-table/]      Manage MBR partition table
+    [add-part]        Create new partition
+    [del-part]        Delete partition
+    [resize-part]     Resize partition to grow until end of disk or next partition
+    [restore-table]   Restore remote partition table
+    [save-table]      Backup remote partition table and bootloader (first MB) and save in local path
+    [show-table]      Show MBR partition table
+	
++  [multicast/]      Manage partition image backups using multicast
+    [restore-dd]      Restore remote partition or disk using dd
+    [restore-part]    Restore remote partition from local partclone image using multicast
+
++  [unicast/]        Manage partition image backups using unicast
+    [restore-dd]      Restore remote partition or disk using dd
+    [restore-part]    Restore remote partition from local partclone image using unicast
+    [save-part]       Clone remote partition and save to partclone image in local path using unicast
 
 +[conf/]           System config tasks
++  [cron/]           Config root crontab file
+    [add]             Add line to root crontab
+    [remove]          Remove line from root crontab
+    [show]            Show root crontab config
+
++  [homeperm/]       Config home directories permissions to 0750
+    [set]             Set HOME directories permissions to rwxr-x--- and config adduser DIR_MODE=750
+    [show]            Show HOME directories with permissive access
+
++  [networkmanager/] Prevent specific group can manage network-manager
+    [disable]         Restrict network-manager to prevent specific group can manage it
+    [restore]         Restore network-manager permissions to allow all users manage it
+
++  [sudoers/]        Config sudoers file
+    [add]             Add new line in sudoers file
+    [remove]          Remove line from sudoers file
+    [show]            Show sudoers file
+
++  [time/]           Set system date/hour and show current time
+    [ntp]             Update system timedate using NTP
+    [set]             Set system timedate
+    [show]            Show system time
+
+   [guardian]        Install labadmin guardian for check and mail "stranger things" in hosts
+   [hostname]        Set hostname
+   [mail]            Install and config Postfix SMTP client for send mails (only root account)
+
 +[exam/]           Create restrictive environment for take exams
 +[exec/]           Exec commands in hosts
 +[file/]           Transfer files to/from host
