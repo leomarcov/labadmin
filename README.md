@@ -162,7 +162,7 @@ If any error has occurs labadmin shows on ending the machine list with errors.
 
 &nbsp;  
 # Contact
-License is GPLv3
+License is [GPLv3](LICENSE)
 
 # Contact
 My name is Leonardo Marco. I'm sysadmin teacher in [CIFP Carlos III](https://cifpcarlos3.es/), Cartagena, Murcia (Spain).
