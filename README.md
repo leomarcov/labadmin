@@ -400,12 +400,12 @@ Labadmin has a lot of actions ready to use! Actions are categorized in folders f
 
 &nbsp;  
 # Add your own actions!
-The easy way to exec your own scripts is use the actions ``exec/com`` (execute comands) and ``exec/script`` (execute external script). 
+The easy way to exec your own scripts is use the actions ``exec/com`` (execute comands) and ``exec/script`` (execute external script). However creating your own labadmin actions can create permanent actions and use the labadmin interface options for more power scripts.
 
 
 &nbsp;  
 # Lincense
-License is [GPLv3](LICENSE)
+Labadmin license is [GPLv3](LICENSE)
 
 # Contact
 My name is Leonardo Marco. I'm sysadmin teacher in [CIFP Carlos III](https://cifpcarlos3.es/), Cartagena, Murcia (Spain).
