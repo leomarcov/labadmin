@@ -62,7 +62,7 @@ sc.exe config winrm start= auto
 Set-Item wsman:\localhost\client\trustedhosts *
 
 ```
-  \   
+&nbsp;  
 # Usage
   * Labadmin can operate in interactive or parametrized mode (use `labadmin -h` for parameter info).
   * Each execution has 5 stages: discover, host selection, action selection, action parametrization and action monitorization.
