@@ -90,12 +90,14 @@ Set-Item wsman:\localhost\client\trustedhosts *
 &nbsp;  
 # Usage
 Labadmin can operate in interactive or parametrized mode (use `labadmin -h` for parameter info).
-When run labadmin script starts using default lab config file and default mode (Linux or Windows) defined in this config.
-You can run labadmin using any configuration and mode with parameters: ``-c`` and ``-L`` or ``-W``. 
+When labadmin starts loads default lab config file and default mode (Linux or Windows) defined in this config.
+You can change lab config loaded and mode with parameters: ``-c <config_file>`` and ``-L`` or ``-W``. 
 ```bash
 labadmin            # Start labadmin using defualt config lab
 labadmin -c a15     # Start labadin using a15 config file and default mode defined in a15
 labadmin -c 15 -W   # Start labadin using a15 config file and Windows mode (WinRM)
+labadmin -c 15 -L   # Start labadin using a15 config file and Linux mode (SSH)
+
 ```
 
 Each action execution has 5 stages: discover, host selection, action selection, action parametrization and action monitorization.
