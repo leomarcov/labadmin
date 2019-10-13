@@ -126,6 +126,5 @@ __ __ 13 12 11
 #### HOST COLORS
 # Hosts to show with different color in map
 # map_color[<host_id>]="color"
-
 #map_color[11]="${S_I}"          
 #map_color[12]="${S_I}"  
