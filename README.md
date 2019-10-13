@@ -51,8 +51,8 @@ Once downloaded or cloned the project, labadmin must be configured for each lab 
 ```  
   
 ## Windows controlled host install
-  * In Windows 7 first install last version of Windows Management Framework: hhttps://www.microsoft.com/en-us/download/details.aspx?id=54616.
-  * Then enable WinRM access executing these commands in a PowerShell:
+  * In Windows 7 first install last version of Windows Management Framework: https://www.microsoft.com/en-us/download/details.aspx?id=54616.
+  * Then enable WinRM access executing these commands in a PowerShell as Administrator:
  ```javascript
 Enable-PSRemoting -Force
 winrm set winrm/config/service/auth '@{Basic="true"}'
@@ -68,5 +68,13 @@ Set-Item wsman:\localhost\client\trustedhosts *
   * Each execution has 5 stages: discover, host selection, action selection, action parametrization and action monitorization.
   
 ## Discover
-  * Discover stage search for each host MAC in config file the current IP associated and his state (OFF, ON and listening in SSH/WinRM port or ON but not listening in labadmin port).
-  * Once all network info has been 
+  * Discover stage search for each host MAC in config file the current IP associated and his state (OFF, ON and listening in configured port (SSH or WinrM) or ON but not listening in config port).
+  * Once all network info has been recollected labadmin shows a grid map according the position configured for each host and his actual state.
+  
+## Host selection
+
+## Action selection
+
+## Action parametrization
+
+## Action monitorization
