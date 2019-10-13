@@ -88,4 +88,4 @@ Set-Item wsman:\localhost\client\trustedhosts *
 ## Action monitorization
 
 # Contact
-email: labadmin@gmail.com
+By email: labadmin@gmail.com
