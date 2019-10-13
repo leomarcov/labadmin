@@ -169,7 +169,7 @@ If any error occurs labadmin shows at ending the machine list with errors.
 <p align="center"><img width="606" src="https://user-images.githubusercontent.com/32820131/66720795-a8730900-ee01-11e9-8146-0c625924fdc4.png"></p>
 
 &nbsp;  
-# Actions
+# Available actions
 Labadmin has a lot of actions ready to use! Actions are categorized in folders for better organization.
 
 ## Linux actions
@@ -398,6 +398,7 @@ Labadmin has a lot of actions ready to use! Actions are categorized in folders f
 
 ```
 
+# Add new actions
 
 &nbsp;  
 # Lincense
