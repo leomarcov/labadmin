@@ -90,6 +90,6 @@ Once all network info has been recollected labadmin shows a grid map according t
 ## Action monitorization
 
 # Contactç
-My name is Leonardo Marco, and iam sysadmin teacher in CIFP Carlos III, Cartagena, Murcia, Spain.
+My name is Leonardo Marco. Im sysadmin teacher in CIFP Carlos III, Cartagena, Murcia, Spain.
 
 You can contact me by email: labadmin@gmail.com
