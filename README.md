@@ -21,7 +21,7 @@ It's a tool useful for teachers and sysadmins.
 
 
 ## Working schema
-  * Labadmin use a dedicated machine to admin the students hosts. Admin must be installed in a Linux OS. Controlled hosts can be Linux or Windows OS computers.
+  * Labadmin use a dedicated machine to admin the students hosts (usually teacher computer or dedicated server). Admin must be installed in a Linux OS. Controlled hosts can be Linux or Windows OS computers.
   * All machines must be placed in the same broadcast domain.
   * Each lab must be defined in a config file. This file stores:
     * Authentication config to use (SSH and/or WinRM).
