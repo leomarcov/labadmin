@@ -1,0 +1,41 @@
+#!/usr/bin/env bash
+#===================================================================================
+#     FILE: user/show
+#   AUTHOR: Leonardo Marco (labadmin@leonardomarco.com)
+#  LICENSE: GNU General Public License v3.0
+#===================================================================================
+script_id="$(echo ${BASH_SOURCE[0]} | sed 's\^'"$scripts_path"'/*\\g')"		# Script filename with relative script path
+
+#=== LOAD INFO =====================================================================
+if [ "$1" = "--load-scriptinfo" ]; then
+	script_desc="Show users with PID >=1000, groups and sudoers config"
+	script_type="ssh"
+    script_bg="$([ "$DISPLAY" ] && echo "win" || echo "sub" )"
+	script_admindeps=""
+	script_hostdeps=""
+	load_scriptinfo "$script_id" "$script_desc" "$script_type" "$script_bg" "$script_admindeps" "$script_hostdeps"
+	return
+
+#=== READ PARAMS ===================================================================
+elif [ "$1" = "--readparams" ]; then
+	return
+fi
+
+
+#=== EXEC SCRIPT ===================================================================
+for u in $(cat /etc/passwd | cut -f1,3 -d: | grep -E :[0-9]{4}$ | cut -f1 -d:); do
+	 # users: groups
+	 g="$(id $u -Gn)"
+	 out=" $(labadmin_isadmin "$u" && echo "${C_BR}" || echo "${C_Y}")${u}${S_R}$(cursor_move-begin; cursor_move-right 20 )$g"
+
+	 # sudoers lines with some user group
+	 [ -f "/etc/sudores" ] && su=$(grep -E "\b$u\b$(for i in $g; do [ "$i" = "sudo" ] && continue; echo -n "|\b$i\b"; done)" /etc/sudoers| grep -v "^#")
+	 [ "$su" ] && out="$out\n    /etc/sudoers:  $su\n"
+
+	 # Color important groups
+	 for g in sudo root admin; do
+		out=$(echo "$out" | sed "s/\b$g\b/\\\e[91m$g\\\e[0m/g")
+	 done
+
+	 echo -e "$out"
+done

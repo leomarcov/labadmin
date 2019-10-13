@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+#===================================================================================
+#     FILE: user/idle
+#   AUTHOR: Leonardo Marco (labadmin@leonardomarco.com)
+#  LICENSE: GNU General Public License v3.0
+#===================================================================================
+script_id="$(echo ${BASH_SOURCE[0]} | sed 's\^'"$scripts_path"'/*\\g')"		# Script filename with relative script path
+
+#=== LOAD INFO =====================================================================
+if [ "$1" = "--load-scriptinfo" ]; then
+	script_desc="Show how much time user is idle (not using keyboard or mouse)"
+	script_type="ssh"
+	script_bg="sub"
+	script_admindeps=""
+	script_hostdeps="xprintidle"
+	load_scriptinfo "$script_id" "$script_desc" "$script_type" "$script_bg" "$script_admindeps" "$script_hostdeps"
+	return
+
+#=== READ PARAMS ===================================================================
+elif [ "$1" = "--readparams" ]; then
+	return
+fi
+
+
+#=== EXEC SCRIPT ===================================================================
+
+labadmin_check_dependence xprintidle
+
+# First logged user in X
+u=($(labadmin_users-display | head -1))
+
+# Check user logged
+[ ! "${u[0]}" ] && labadmin_error "No user logged in X server" 1
+
+idle_time=$(su "${u[0]}" -c "DISPLAY=${u[1]} xprintidle")
+echo "${u[0]} ${idle_time}ms ($((idle_time/2400000))h $((idle_time/60000))m $(((idle_time%60000)/1000))s)"

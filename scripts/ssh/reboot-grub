@@ -1,0 +1,48 @@
+#!/usr/bin/env bash
+#===================================================================================
+#     FILE: power/reboot-grub
+#   AUTHOR: Leonardo Marco (labadmin@leonardomarco.com)
+#  LICENSE: GNU General Public License v3.0
+#===================================================================================
+script_id="$(echo ${BASH_SOURCE[0]} | sed 's\^'"$scripts_path"'/*\\g')"		# Script filename with relative script path
+
+#=== LOAD INFO =====================================================================
+if [ "$1" = "--load-scriptinfo" ]; then
+	script_desc="Reboot host"
+	script_type="ssh"
+	script_bg="sub"
+	script_admindeps=""
+	script_hostdeps="grub-reboot|grub2-reboot(grub2-common|grub2-tools)"
+	load_scriptinfo "$script_id" "$script_desc" "$script_type" "$script_bg" "$script_admindeps" "$script_hostdeps"
+	return
+
+#=== READ PARAMS ===================================================================
+elif [ "$1" = "--readparams" ]; then
+	# PARAM1: show
+	read_param "$script_id" 1 "Only show grub entries [y/N]" "n" "^(y|n)$"
+	# PARAM2: entry
+	[ "${p1,,}" != "y" ] && read_param "$script_id" 2 "Grub entry (0 is the first)" "" "^[0-9]$"
+	return
+fi
+
+
+
+#=== EXEC SCRIPT ===================================================================
+s="$1"
+e="$2"
+
+### DEPENDENCIES
+gr_command="$(labadmin_search_alternative grub-reboot grub2-reboot)"
+
+case "${s,,}" in
+	y)
+		nl=0
+		cat /boot/grub*/grub.cfg  | grep "^menuentry" | cut -f 2 -d \' | while read l; do
+			echo -e "   [$nl]\t$l";
+			nl=$((nl+1));
+		done
+	;;
+	*)
+		(sleep 0.1; "$gr_command" "$e"; shutdown -r now)&
+	;;
+esac

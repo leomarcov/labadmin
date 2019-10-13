@@ -1,0 +1,47 @@
+#!/usr/bin/env bash
+#===================================================================================
+#     FILE: user/group
+#   AUTHOR: Leonardo Marco (labadmin@leonardomarco.com)
+#  LICENSE: GNU General Public License v3.0
+#===================================================================================
+script_id="$(echo ${BASH_SOURCE[0]} | sed 's\^'"$scripts_path"'/*\\g')"		# Script filename with relative script path
+
+#=== LOAD INFO =====================================================================
+if [ "$1" = "--load-scriptinfo" ]; then
+	script_desc="Add/remove users from group"
+	script_type="ssh"
+	script_bg="sub"
+	script_admindeps=""
+	script_hostdeps=""
+	load_scriptinfo "$script_id" "$script_desc" "$script_type" "$script_bg" "$script_admindeps" "$script_hostdeps"
+	return
+
+#=== READ PARAMS ===================================================================
+elif [ "$1" = "--readparams" ]; then
+	# PARAM1: action (add/remove)
+	read_param "$script_id" 1 "Add/remove [A/r]" "a" "^(a|r)$"
+	# PARAM2: user
+	read_param "$script_id" 2 "Users (space separated, default all users)" "" ""
+	# PARAM3: group
+	read_param "$script_id" 3 "Group" "" "."
+	return
+fi
+
+
+#=== EXEC SCRIPT ===================================================================
+o="$1"
+users="$2"
+group="$3"
+
+[ ! "$users" ] && users=$(ls /home)
+[ ! "$users" ] && labadmin_error "No users selected" 1
+
+for u in $users; do
+	! id "$u" &>/dev/null && continue
+
+	case "${o,,}" in
+		r)	gpasswd -d "$u" "$group"	 ;;
+		*)	gpasswd -a "$u" "$group"	 ;;
+	esac
+done
+

@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+#===================================================================================
+#     FILE: process/cont
+#   AUTHOR: Leonardo Marco (labadmin@leonardomarco.com)
+#  LICENSE: GNU General Public License v3.0
+#===================================================================================
+script_id="$(echo ${BASH_SOURCE[0]} | sed 's\^'"$scripts_path"'/*\\g')"		# Script filename with relative script path
+
+#=== LOAD INFO =====================================================================
+if [ "$1" = "--load-scriptinfo" ]; then
+	script_desc="Continue all process of logged user"
+	script_type="ssh"
+	script_bg="sub"
+	script_admindeps=""
+	script_hostdeps=""
+	load_scriptinfo "$script_id" "$script_desc" "$script_type" "$script_bg" "$script_admindeps" "$script_hostdeps"
+	return
+
+#=== READ PARAMS ===================================================================
+elif [ "$1" = "--readparams" ]; then
+	return
+fi
+
+
+#=== EXEC SCRIPT ===================================================================
+# Get logged user
+users="$(who | awk '{print $1}')"
+[ ! "$users" ] && labadmin_error "Nobody are logged" 1
+
+for u in $users; do
+	echo -e "${C_LY}USER $u${C_D}"
+	pkill -CONT -u "$u"
+done

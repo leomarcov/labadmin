@@ -1,0 +1,58 @@
+#!/usr/bin/env bash
+#===================================================================================
+#     FILE: virtualbox/import
+#   AUTHOR: Leonardo Marco (labadmin@leonardomarco.com)
+#  LICENSE: GNU General Public License v3.0
+#===================================================================================
+script_id="$(echo ${BASH_SOURCE[0]} | sed 's\^'"$scripts_path"'/*\\g')"		# Script filename with relative script path
+
+#=== LOAD INFO =====================================================================
+if [ "$1" = "--load-scriptinfo" ]; then
+	script_desc="Import .ova file"
+	script_type="ssh"
+	script_bg="sub"
+	script_admindeps=""
+	script_hostdeps=""
+	load_scriptinfo "$script_id" "$script_desc" "$script_type" "$script_bg" "$script_admindeps" "$script_hostdeps"
+	return
+
+#=== READ PARAMS ===================================================================
+elif [ "$1" = "--readparams" ]; then
+	# PARAM1: user
+	read_param "$script_id" 1 "User (default logged user)" "" ""
+	# PARAM2: .ova path
+	read_param "$script_id" 2 "Path of local file .ova to import" "" "."
+	return
+fi
+
+
+#=== EXEC SCRIPT ===================================================================
+user="$1"
+ovapath="$(eval echo "$2")"			# Resolve scape characteres like \ ,*, etc.
+
+# CHECK VIRTUALBOX INSTALLED
+! which virtualbox &>/dev/null && labadmin_error "Virtualbox not installed" 1
+
+# CHECK USER
+if [ ! "$user" ]; then
+	user="$(who | awk '{print $1}' | grep -vw "$(id -un)" | head -1)"
+	if [ ! "$user" ]; then
+		echo -e "\e[1m\e[33mNo users logged\e[0m"
+		exit 1
+	fi
+fi
+if ! id "$user" &>/dev/null; then
+	if [ ! "$user" ]; then
+		echo -e "\e[1m\e[33mUser $user don't exists\e[0m"
+		exit 1
+	fi
+fi
+
+# CHECK OVA PATH
+if [ ! -r "$ovapath" ]; then
+	echo -e "\e[1m\e[33mCan't access ova file $ovapath\e[0m"
+	exit 1
+fi
+
+# IMPORT OVA
+su -l "$user" -c "vboxmanage import \"$ovapath\""

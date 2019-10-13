@@ -1,0 +1,51 @@
+#!/usr/bin/env bash
+#===================================================================================
+#     FILE: user/add
+#   AUTHOR: Leonardo Marco (labadmin@leonardomarco.com)
+#  LICENSE: GNU General Public License v3.0
+#===================================================================================
+script_id="$(echo ${BASH_SOURCE[0]} | sed 's\^'"$scripts_path"'/*\\g')"		# Script filename with relative script path
+
+#=== LOAD INFO =====================================================================
+if [ "$1" = "--load-scriptinfo" ]; then
+	script_desc="Add a user"
+	script_type="ssh"
+	script_bg="sub"
+	script_admindeps=""
+	script_hostdeps="userdel(passwd|shadow-utils) useradd(passwd|shadow-utils) passwd"
+	load_scriptinfo "$script_id" "$script_desc" "$script_type" "$script_bg" "$script_admindeps" "$script_hostdeps"
+	return
+
+#=== READ PARAMS ===================================================================
+elif [ "$1" = "--readparams" ]; then
+	read_param "$script_id" 1 "User" "" "."
+	read_param "$script_id" 2 "Password" "" "."
+	read_param "$script_id" 3 "Delete if exists [y/N]" "n" "^(y|n)$"
+	return
+fi
+
+
+#=== EXEC SCRIPT ===================================================================
+user="$1"
+pass="$2"
+o="$3"
+
+# Del user if exist
+if [ "${o,,}" = "y" ] &&  id "$user" &>/dev/null; then
+	while pgrep -u "$user" &>/dev/null; do 
+		echo "Killing $user process..."
+		pkill -9 -u "$user"
+		sleep 0.5; 
+	done
+	userdel -r "$user"
+fi
+
+# Add user
+useradd -m -U -s /bin/bash "$user"
+passwd "$user" <<EOF
+$pass
+$pass
+EOF
+
+# Config home perms
+chmod o-rwx "/home/$user"

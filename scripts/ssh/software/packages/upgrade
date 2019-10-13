@@ -1,0 +1,41 @@
+#!/usr/bin/env bash
+#===================================================================================
+#     FILE: software/package/upgrade
+#   AUTHOR: Leonardo Marco (labadmin@leonardomarco.com)
+#  LICENSE: GNU General Public License v3.0
+#===================================================================================
+script_id="$(echo ${BASH_SOURCE[0]} | sed 's\^'"$scripts_path"'/*\\g')"		# Script filename with relative script path
+
+#=== LOAD INFO =====================================================================
+if [ "$1" = "--load-scriptinfo" ]; then
+	script_desc="Update all packages to latest version from repositories"
+	script_type="local"
+	script_bg="win"
+	script_admindeps=""
+	script_hostdeps=""
+	load_scriptinfo "$script_id" "$script_desc" "$script_type" "$script_bg" "$script_admindeps" "$script_hostdeps"
+	return
+
+#=== READ PARAMS ===================================================================
+elif [ "$1" = "--readparams" ]; then
+	return
+fi
+
+
+#=== EXEC SCRIPT ===================================================================
+# CHECK INSTALLER
+installer=""
+for i in "${modules_path}/installers/"*; do
+	commands="$(cat "$i"; echo -e "\ninstaller_check")"
+	labdmin_ssh_host_comm "${labadmin_nhost}" "$commands" && installer="$i"
+done
+[ ! "$installer" ] && labadmin_error "Cant find a installer for host ${labadmin_nhost}"
+
+
+
+# GENERATE INSTALL CODE
+install_code="
+$(cat "$installer")
+installer_upgrade
+"
+labdmin_ssh_host_comm "${labadmin_nhost}" "$install_code"

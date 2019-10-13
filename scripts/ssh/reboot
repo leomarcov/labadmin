@@ -1,0 +1,53 @@
+#!/usr/bin/env bash
+#===================================================================================
+#     FILE: reboot
+#   AUTHOR: Leonardo Marco (labadmin@leonardomarco.com)
+#  LICENSE: GNU General Public License v3.0
+#===================================================================================
+script_id="$(echo ${BASH_SOURCE[0]} | sed 's\^'"$scripts_path"'/*\\g')"		# Script filename with relative script path
+
+#=== LOAD INFO =====================================================================
+if [ "$1" = "--load-scriptinfo" ]; then
+	script_desc="Reboot host"
+	script_type="ssh"
+	script_bg="sub"
+	script_admindeps=""
+	script_hostdeps="xprintidle"
+	load_scriptinfo "$script_id" "$script_desc" "$script_type" "$script_bg" "$script_admindeps" "$script_hostdeps"
+	return
+
+#=== READ PARAMS ===================================================================
+elif [ "$1" = "--readparams" ]; then
+	# PARAM1: continue if active user
+	read_param "$script_id" 1 "Reboot if active user? [y/N]" "n" "^(y|n)$"
+	return
+fi
+
+
+#=== EXEC SCRIPT ===================================================================
+o="$1"
+mins_inactive=10	# Inactive mins needed for reboot
+
+
+# First logged user in X
+u=($(labadmin_users-display | head -1))
+
+[ "${u[0]}" ] && case "$o" in
+n|N)
+	labadmin_check_dependence xprintidle
+	idle_time=$(su "${u[0]}" -c "DISPLAY=${u[1]} xprintidle")
+	if [ $? -ne 0 ]; then
+		labadmin_info "Reboot host -> ${u[0]} (can't get inactive time)"
+	elif [ "$idle_time" -ge $(($mins_inactive*60*1000)) ]; then
+		labadmin_info "Reboot host -> ${u[0]} ($(($idle_time/(60*1000))) mins inactive)"
+	else
+		labadmin_error "Reboot cancelled -> ${u[0]} ($(($idle_time/(60*1000))) mins inactive)"
+		exit 0
+	fi
+;;
+*)
+	labadmin_info "Reboot host ->  ${u[0]}"
+;;
+esac
+
+(sleep 0.1; shutdown -r now)&

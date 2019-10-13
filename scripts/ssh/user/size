@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+#===================================================================================
+#     FILE: user/size
+#   AUTHOR: Leonardo Marco (labadmin@leonardomarco.com)
+#  LICENSE: GNU General Public License v3.0
+#===================================================================================
+script_id="$(echo ${BASH_SOURCE[0]} | sed 's\^'"$scripts_path"'/*\\g')"		# Script filename with relative script path
+
+#=== LOAD INFO =====================================================================
+if [ "$1" = "--load-scriptinfo" ]; then
+	script_desc="Show users sorted by HOME directory size"
+	script_type="ssh"
+	script_bg="sub"
+	script_admindeps=""
+	script_hostdeps=""
+	load_scriptinfo "$script_id" "$script_desc" "$script_type" "$script_bg" "$script_admindeps" "$script_hostdeps"
+	return
+
+#=== READ PARAMS ===================================================================
+elif [ "$1" = "--readparams" ]; then
+	return
+fi
+
+
+#=== EXEC SCRIPT ===================================================================
+df -h /home 2>/dev/null && echo
+
+echo -en "${C_BY}"
+du -sh /home
+echo -en "${S_R}"
+du -sh /home/* | sort -hr
+exit 0
