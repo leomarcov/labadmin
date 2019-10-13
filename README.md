@@ -112,6 +112,15 @@ On this stage admin user select controlled hosts range where exec the action. So
   * ``2,3,11-15``: select hosts 2, 3, 11, 12, 13, 14 and 15
   * ``all /odd``: select all odds hosts
   * ``11-20 /even``: select hosts 12, 14, 16, 18 and 20
+```
+  > Select range (h for help): a             # Select all hosts
+  > Select range (h for help): 11,23,51      # Select hosts 11, 23 and 51
+  > Select range (h for help): 11-20         # Select host 11 to 20
+  > Select range (h for help): 2,3,11-15     # Select host 2, 3 and 11 to 15
+  > Select range (h for help): all /odd      # Select all odd hosts
+  > Select range (h for help): 11-20 /even   # Select hosts 12, 14, 16, 18 and 20
+```
+
 
 <p align="center"><img width="606" src="https://user-images.githubusercontent.com/32820131/66719892-ed913e00-edf5-11e9-82ee-31acae5282ca.png"></p>
 
