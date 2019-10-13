@@ -19,9 +19,9 @@ It's a tool useful for teachers and sysadmins.
   * It's easy to create your own actions using Bash script or Powershell languages.
 
 ## Demos
-  * Poweron
-  * Check network speed
-  * Add user
+  * [Poweron computers]()
+  * [Check network speed](https://user-images.githubusercontent.com/32820131/66718827-a94b7100-ede8-11e9-9eed-0f13c8b56ce3.gif)
+  * [Add user](https://user-images.githubusercontent.com/32820131/66718830-a94b7100-ede8-11e9-8fbd-a738410d0ebb.gif)
 
 ## Working schema
   * Labadmin use a dedicated machine to admin the students hosts (usually teacher computer). Admin must be installed in a Linux OS. Controlled hosts can be Linux or Windows OS computers.
