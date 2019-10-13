@@ -44,8 +44,8 @@ if [ "$1" = "--scriptinfo" ]; then
 
 #=== READ PARAMS ===================================================================
 elif [ "$1" = "--readparams" ]; then
-	read_param "$script_id" 1 "prompt" "default-value" "regex-check"
-	read_param "$script_id" 2 "prompt" "default-value" "regex-check"
+	read_param "$script_id" 1 "prompt text" "default value" "regex ceck" "help message"
+	read_param "$script_id" 2 "prompt" "default value" "regex check" "help message"
 fi
 
 #=== EXEC SCRIPT ===================================================================
