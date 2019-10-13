@@ -113,22 +113,22 @@ On this stage admin user select controlled hosts range where exec the action. So
   * ``all /odd``: select all odds hosts
   * ``11-20 /even``: select hosts 12, 14, 16, 18 and 20
 
-This stage can be skipped using **``-r <range>``** parameter.
 <p align="center"><img width="606" src="https://user-images.githubusercontent.com/32820131/66719892-ed913e00-edf5-11e9-82ee-31acae5282ca.png"></p>
+This stage can be skipped using **``-r <range>``** parameter.
 
 
 ## Action selection
 Action selection allow navigate accros all available actions to select action to exec. Actions are organized in categories folders. 
 
-This stage can be skipped using **``-a <action>``** parameter.
 <p align="center"><img width="606" src="https://user-images.githubusercontent.com/32820131/66720050-dc493100-edf7-11e9-903d-163fd90160c5.png"></p>
+This stage can be skipped using **``-a <action>``** parameter.
 
 
 ## Action parametrization
 Each action ask for needed parameters to exec according to action needs.
 
-This stage can be skipped using **``-1 <value1> -2 <value2> ...``** parameters.
 <p align="center"><img width="606" src="https://user-images.githubusercontent.com/32820131/66720086-8032dc80-edf8-11e9-919b-8f8755fb9390.png"></p>
+This stage can be skipped using **``-1 <value1> -2 <value2> ...``** parameters.
 
 ## Action monitorization
 
