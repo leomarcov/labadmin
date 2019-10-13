@@ -4,6 +4,7 @@ It's a tool useful for teachers and sysadmins.
 
 ## Main features
 <img align="right" width="64" height="64" src="https://cdn4.iconfinder.com/data/icons/online-marketing-hand-drawn-vol-2/52/goals__seo__target__mission__office__business__focus-512.png">
+
   * Discover the network status hosts in a laboratory classroom by MAC address, working on DHCP networks.
   * Show the status of each machine in a grid map according the preconfigured position. It's easy to identificate students computers by classroom location.
   * Flexible machine selection using ranges. Can select all machines, only a row, odd and even machines, a specific list, etc.
@@ -20,7 +21,7 @@ It's a tool useful for teachers and sysadmins.
   * It's easy to create your own actions using Bash script or Powershell languages.
 
 ## Demos
-<img align="right" width="64" height="64" src="https://cdn4.iconfinder.com/data/icons/online-marketing-hand-drawn-vol-1/52/cinema__movie__reel__video__videoreel__film__media-512.png">
+<img align="right" src="https://cdn4.iconfinder.com/data/icons/online-marketing-hand-drawn-vol-1/52/cinema__movie__reel__video__videoreel__film__media-512.png">
 
   * [Poweron computers]()
   * [Check network speed](https://user-images.githubusercontent.com/32820131/66718827-a94b7100-ede8-11e9-9eed-0f13c8b56ce3.gif)
