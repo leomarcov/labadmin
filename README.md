@@ -121,6 +121,9 @@ Some range samples are:
 <p align="center"><img width="606" src="https://user-images.githubusercontent.com/32820131/66719892-ed913e00-edf5-11e9-82ee-31acae5282ca.png"></p>
 
 This stage can be skipped using ``-r <range>`` parameter.
+```bash 
+labadmin -r 11-23       # Exec labadmin and autoselect hosts from 11 to 23
+```
 
 
 ## Action selection
