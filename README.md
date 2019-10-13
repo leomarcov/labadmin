@@ -173,7 +173,7 @@ If any error occurs labadmin shows at ending the machine list with errors.
 Labadmin has a lot of actions ready to use!
 
 ## Linux actions
-```diff
+```
 [clone/]              Manage partition image backups
   [mbr-table/]        Manage MBR partition table
     [add-part]        Create new partition
@@ -256,7 +256,7 @@ Labadmin has a lot of actions ready to use!
 [msg/]              Send msg to host users
   [chat]            Starts text chat with logged user
   [login]           Show text message next time user login
-  [msg-urls]        Config system for send notification when detect user is browsing in Chrome some urls
+  [msg-urls]        Config system for send notification when detect user is browsing some urls
   [notify]          Send notify message to logged user
   [win]             Show text message in a terminal window
 
@@ -332,6 +332,11 @@ Labadmin has a lot of actions ready to use!
 [reboot-grub]       Reboot host
 [ssh]               Open SSH connection to host
 [sysreq]            Send system request signal
+
+```
+
+## Windows actions
+```
 
 ```
 
