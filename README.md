@@ -95,9 +95,7 @@ Each action execution has 5 stages: discover, host selection, action selection, 
   
 ## Discover
 Discover stage search current IP for each host MAC in lab config file and checks the net state (is ON or OFF and listening or not). Once all network info has been recollected labadmin shows a grid map according the configured position.
-<p align="center">
-  <img width="606" src="https://user-images.githubusercontent.com/32820131/66719829-faf9f880-edf4-11e9-9183-f43c3aff4d3b.png">
-</p>
+<p align="center"><img width="606" src="https://user-images.githubusercontent.com/32820131/66719829-faf9f880-edf4-11e9-9183-f43c3aff4d3b.png"></p>
   
 ## Host selection
 On this stage admin user select controlled hosts range where exec the action. 
@@ -111,6 +109,8 @@ Some samples:
   * ``11-20 /even``: select hosts 12, 14, 16, 18 and 20
 
 This stage can be skipped using **``-r``** parameter.
+<p align="center"><img width="606" src="https://user-images.githubusercontent.com/32820131/66719892-ed913e00-edf5-11e9-82ee-31acae5282ca.png"></p>
+
 
 ## Action selection
 
