@@ -149,10 +149,13 @@ Each action ask for needed parameters to exec according to action needs.
 
 This stage can be skipped using ``-1 <value1> -2 <value2> ...`` parameters.
 ```bash 
+# Exec labadmin and autoselect virtualbox/import action with parameters alumno and /home/e.ova
 labadmin -r a virtualbox/import -1 alumno -2 /home/e.ova  
 ```
 
 ## Action monitorization
+On this stage labadmin exec action in each host and show output messages of each host execution.
+If any error has occurs labadmin shows on ending the machine list with errors.
 
 
 &nbsp;  
