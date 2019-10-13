@@ -52,7 +52,7 @@ Once downloaded or cloned the project, labadmin must be configured for each lab 
 
 ## Linux controlled hosts install
   * In Linux controlled hosts installer only need to install all needed dependences and configure the remote SSH access method. Not agent labadmin software is installed.
-  * Exec: `install.sh -H -c config_file`, where config file is the name of the file located in `configs` directory where the host is placed. It's important that SSH variables are correctly set in config file. 
+  * Exec: `install.sh -H -c config_file`, where config file is the name of the lab config file located in `configs` directory where the host is placed. It's important that SSH variables are correctly set in config file. 
 ```bash
 ./install -H -c test       # Install labadmin in host machine using test config file configuration
 ```  
