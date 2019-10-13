@@ -173,21 +173,25 @@ If any error occurs labadmin shows at ending the machine list with errors.
 Labadmin has a lot of actions ready to use!
 
 ## Linux actions
-```
-[clone/]          Manage partition image backups
-[conf/]           System config tasks
-[exam/]           Create restrictive environment for take exams
-[exec/]           Exec commands in hosts
-[file/]           Transfer files to/from host
-[labadmin/]       Manage Labadmin config in hosts
-[misc/]           Miscellaneous actions
-[msg/]            Send msg to host users
-[net/]            Network configs and tools
-[process/]        Manage logged user process
-[service/]        Manage system services
-[software/]       Automate software installation
-[user/]           Admin host users
-[virtualbox/]     Manage VirtualBox using vboxmanage
+```diff
++[clone/]          Manage partition image backups
+   +[mbr-table/]      Manage MBR partition table
+   +[multicast/]      Manage partition image backups using multicast
+   +[unicast/]        Manage partition image backups using unicast
+
++[conf/]           System config tasks
++[exam/]           Create restrictive environment for take exams
++[exec/]           Exec commands in hosts
++[file/]           Transfer files to/from host
++[labadmin/]       Manage Labadmin config in hosts
++[misc/]           Miscellaneous actions
++[msg/]            Send msg to host users
++[net/]            Network configs and tools
++[process/]        Manage logged user process
++[service/]        Manage system services
++[software/]       Automate software installation
++[user/]           Admin host users
++[virtualbox/]     Manage VirtualBox using vboxmanage
 [poweroff]        Power OFF host
 [poweron]         Power ON host using network
 [reboot]          Reboot host
