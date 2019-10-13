@@ -161,7 +161,7 @@ On this stage labadmin exec action in each host and show output messages of each
 If any error has occurs labadmin shows on ending the machine list with errors.
 
 &nbsp;  
-# Contact
+# Lincense
 License is [GPLv3](LICENSE)
 
 # Contact
