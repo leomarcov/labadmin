@@ -1,0 +1,93 @@
+#!/usr/bin/env bash
+#===================================================================================
+# LABADMIN UNINSTALLER
+#         FILE: uninstall
+#
+#  DESCRIPTION: Uninstall labadmin from host and admin
+#
+#       AUTHOR: Leonardo Marco (labadmin@leonardomarco.com)
+#	   LICENSE: GNU General Public License v3.0
+#      VERSION: 2019.04
+#      CREATED: 16.02.2017
+#===================================================================================
+
+#### LOAD GLOBAL CONFIG
+source $(dirname $(readlink -f "$0"))"/modules/labadmin_lib"
+source $(dirname $(readlink -f "$0"))"/modules/labadmin_lib-admin"
+
+#### LOAD INSTALL FUNCTIONS
+source "${modules_path}/labadmin_install"										
+
+
+#=== FUNCTION ==================================================================
+#        NAME: help
+# PARAMETER 1: exit code
+# DESCRIPTION: Show help and exit
+#===============================================================================
+function help() {
+	echo -e 'Uninstall labadmin from host and admin.
+   \e[1m'$(basename $0)'\e[0m -H            Uninstall host
+   \e[1m'$(basename $0)'\e[0m -A            Uninstall admin'
+	exit $1
+}
+
+
+
+#=== FUNCTION ==================================================================
+# NAME: uninstall_host
+# DESCRIPTION: uninstall labadmin from host computer
+#===============================================================================
+function uninstall_host() {
+	[ "$(id -u)" -ne 0 ] &&	labadmin_error "Install must be runed as root" 1
+
+	# Remove ssh authentication
+	eval rm -v ~"$sshuser"/.ssh/authorized_keys
+
+	# Remove SSH server
+	load_installer
+	if [ "$?" -eq 0 ]; then
+		installer_uninstall openssh-server
+		rm -v /etc/ssh/sshd_config
+	else 
+		labadmin_error "Unable to find uninstaller for openssh-server"
+	fi
+}
+
+
+
+#=== FUNCTION ==================================================================
+# NAME: uninstall_admin
+# DESCRIPTION: uninstall labadmin from admin computer
+# USAGE: uninstall_admin config_file
+#===============================================================================
+function uninstall_admin() {
+	[ "$(id -un)" -ne 0 ] &&	labadmin_error "Install must be runed as root" 1
+
+	labadmin_info "Removing directory $dir_install"
+	rm -rf "$dir_install"
+
+	labadmin_info "Removing /usr/bin links"
+	rm -rf "/usr/bin/$(basename "$script_install")"
+
+	labadmin_info "Deactivate SUID for arp-scan command"
+	chmod u-s "$(which arp-scan)"
+
+	labadmin_info "Removing log files"
+	rm -rf "$log_path"
+
+	labdmin_info "Removing desktop files"
+	rm /usr/share/applications/labadmin.desktop
+	rm /usr/share/pixmaps/labadmin.png
+
+	labdmin_info "Removing "$labadmin_group" group"
+	delgroup "$labadmin_group"
+}
+
+
+#### READ PARAMETERS
+[ $# -ne 1 ] && help 1
+case "$1" in
+    -H) uninstall_host      ;;
+    -A) uninstall_admin     ;;
+    *) help 1
+esac

@@ -1,0 +1,115 @@
+#!/usr/bin/env bash
+#===================================================================================
+# LABADMIN INSTALLATION
+#         FILE: install
+#
+#  DESCRIPTION: Install and check labadmin dependencies for admin and host
+#
+#       AUTHOR: Leonardo Marco (labadmin@leonardomarco.com)
+#	   LICENSE: GNU General Public License v3.0
+#      VERSION: 2019.04
+#      CREATED: 16.02.2017
+#===================================================================================
+
+#===============================================================================
+#  LOAD MODULES
+#===============================================================================
+source "$(dirname "$(readlink -f "$0")")/modules/labadmin_lib-admin"				# LABADMIN ADMIN VARIABLES AND FUNCTIONS
+source "${modules_path}/labadmin_lib"												# LABADMIN GLOBAL VARIABLES AND FUNCTIONS
+source "${modules_path}/labadmin_script"											# LABADMIN SCRIPT MODULE
+source "${modules_path}/labadmin_install"											# LABADMIN INSTALL MODULE
+
+
+
+#=== FUNCTION ==================================================================
+#        NAME: help
+# DESCRIPTION: Show help and exit
+# PARAMETERS: 
+#	$1	exit code
+#===============================================================================
+function help() {
+	echo -e 'Install, uninstall and check labadmin dependencies for admin and host.
+  HOST INSTALL
+   \e[1m'$(basename $0)'\e[0m -H -c \e[4mid_config\e[0m            Install host and no insert MAC in config file
+   \e[1m'$(basename $0)'\e[0m -H -c \e[4mid_config\e[0m -n \e[4mnhost\e[0m   Install host and insert in \e[4mid_config\e[0m: macs[\e[4mnhost\e[0m]=<host MAC>
+
+  ADMIN INSTALL
+   \e[1m'$(basename $0)'\e[0m -A -c \e[4mid_config_def\e[0m        Install admin and set \e[4mid_config_def\e[0m as default config
+
+  CHECK DEPENDENCIES
+   \e[1m'$(basename $0)'\e[0m -H -D ask|autoinstall|noinstall      Check host dependencies
+   \e[1m'$(basename $0)'\e[0m -A -D ask|autoinstall|noinstall      Check admin dependencies'
+
+	exit $1
+}
+
+
+#### READ PARAMETERS
+[ $# -eq 0 ] && help
+while getopts ":D:n:Hc:A" o
+do
+    case $o in
+        c) # -c:CONFIG
+            cparam=1
+            config_id="$OPTARG"
+            if [ "${config_id:0:1}" = "-" ]; then
+                echo "Param -c needs a config ID" 1>&2
+                echo "Available config IDs: $(ls $configs_path | sed -z 's/\n/, /g' | sed 's/, $//g')" 1>&2
+                exit 1
+            fi
+            ;;
+        D) # -d:dependencies
+            Dparam=1
+            Daction="$OPTARG"
+            [[ "$Daction" != @(ask|autoinstall|noinstall) ]] && labadmin_error "Incorrect check dependence action $daction\nSupported actions: ask, autoinstall and noinstall" 1            
+            ;;
+        H) # -h:nhost
+            Hparam=1
+            ;;
+        n) # -n:nhost
+            nparam=1
+            nhost="$OPTARG"
+            [ "$nhost" -ne "$nhost" ] && labadmin_error "Host number must be a number" 1
+            ;;
+        A) # -a:admin
+            Aparam=1
+            ;;
+        \?)
+            help
+            ;;
+    esac
+done
+
+
+
+
+
+#### ACTION: INSTALL/UNINSTALL/CHECK
+
+## DEPENDENCIES HOST
+if [ "$Dparam" ] && [ "$Hparam" ]; then
+	load_scripts "$scripts_path"
+    check_dependencies "$Daction" "scripts_hostdeps" 
+
+## DEPENDENCIES ADMIN
+elif [ "$Dparam" ] && [ "$Aparam" ]; then
+	load_scripts "$scripts_path"
+    check_dependencies "$Daction" "scripts_admindeps"
+
+## INSTALL ADMIN
+elif [ "$Aparam" ] && [ "$cparam" ]; then
+	load_scripts "$scripts_path"
+    install_admin "$config_id"
+
+## INSTALL HOST
+elif [ "$Hparam" ] && [ "$cparam" ]; then
+	load_scripts "$scripts_path"
+    install_host "$nhost" "$config_id"
+
+## OTHER CASE
+else
+    help 1
+fi
+
+
+

@@ -6,7 +6,7 @@
 #
 #  DESCRIPTION: Admin remotely hosts in a computer lab environment
 #
-#       AUTHOR: Leonardo Marco, leonardojose.marco@murciaeduca.es
+#       AUTHOR: Leonardo Marco (labadmin@leonardomarco.com)
 #	   LICENSE: GNU General Public License v3.0
 #      VERSION: 2019.04
 #      CREATED: 16.02.2017
@@ -23,7 +23,7 @@ source "${modules_path}/labadmin_map"											# LABADMIN MAP MODULE
 source "${modules_path}/labadmin_script"										# LABADMIN SCRIPT MODULE
 source "${modules_path}/labadmin_install"										# LABADMIN INSTALL MODULE
 
- 
+
 
 #===============================================================================
 #  GLOBAL VARIABLES
