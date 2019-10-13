@@ -305,7 +305,7 @@ function install_admin() {
 	labadmin_info "Config configs/${config_id} as default config file"
 	echo 'source "$configs_path/'"${config_id}"'"' | tee "${dir_install}/configs/default"
 	if [ "$config_id" != "ask" ]; then
-		rm "$dir_install/configs/"!(default|"$config_id")
+		rm "$dir_install/configs/"!(default|"$config_id"|ask)
 	fi
 
 	echo -e "\nFinished! Add users to ${C_BY}$labadmin_group${S_R} group for use labadmin\n"
