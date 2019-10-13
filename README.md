@@ -45,7 +45,7 @@ It's a tool useful for teachers and sysadmins.
   * When labadmin starts discovers the computers configured in the lab file, show a map to select them and exec actions in all selected hosts.
 
 <p align="center">
-  <img width="460" height="300" src="https://user-images.githubusercontent.com/32820131/66718797-596caa00-ede8-11e9-81fd-ed2d3af4e1b2.png">
+  <img src="https://user-images.githubusercontent.com/32820131/66718797-596caa00-ede8-11e9-81fd-ed2d3af4e1b2.png">
 </p>
 
 
