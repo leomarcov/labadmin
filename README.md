@@ -10,23 +10,23 @@ Labadmin aims to be a tool useful for IT teachers and computer lab sysadmins.
   * Discover the network status hosts in a laboratory classroom by MAC address (works on DHCP networks!).
   * Show the status of each machine in a grid map according the preconfigured position in the lab. It's easy to identificate students computers by classroom location.
   * Flexible machine selection using ranges. Can select all machines, only a row, odd and even machines, a specific list, etc.
-  * A set of actions to exec in selected machines. Labadmin incorporate a full set of actions ready to use (currently 133 for Linux and 40 for Windows). Some key actions are:
+  * Labadmin incorporate a full set of administrative actions ready to use (currently 133 for Linux and 40 for Windows). Some key actions are:
     * Config a restrictive environment in a exam time (block all users, block usb drivers, set restrictive firewall rules, autobackup exam user data, block Virtualbox bridge mode and others restrictions).
-    * Send heavy files using multiple modes (unicast, torrent or mulsticast).
+    * Send heavy files using multiple modes (unicast, local network torrent or multicast).
     * Send and schedule messages to users.
     * Config firewall settings.
     * Virtualbox management (import ovas, play, delete, snapshots, etc.)
     * Transfer and copy disk partition images.
     * Show and save screenshots.
-    * Other administrative task, like software installation, user accounts, process management, Windows activation, etc. 
+    * Other administrative tasks, like software installation, user accounts, process management, Windows activation, etc. 
 	* Much more!
   * Monitorization of action execution status. If any error has ocurred in some host is noticed.
-  * It's easy to create your own actions using Bash script or Powershell languages.
+  * It's easy to create your own actions using Bash or Powershell languages.
 
 ## Working schema
   * Labadmin use a dedicated machine to admin the students hosts (usually teacher computer). Admin must be installed in a Linux OS. Controlled hosts can be Linux or Windows OS computers.
   * All machines must be placed in the same broadcast domain.
-  * Each lab must be defined in a config file. This file stores:
+  * Each lab must be defined in a config file. Lab config file stores:
     * Authentication config to use (SSH and/or WinRM).
     * MAC address for each host and a identification number.
     * Lab distribution: each id host must be placed in a grid position according the real position.
