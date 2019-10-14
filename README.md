@@ -69,14 +69,14 @@ Once downloaded or cloned the project, labadmin must be configured for each lab 
 install -A a11          # Install labadmin in admin machine using a11 lab file as default lab 
 ```
 
-## Controlled hosts install on Linux
+## Controlled hosts install in Linux
   * In Linux controlled hosts installer only need to install all needed dependences and configure the remote SSH access method. Not agent labadmin software is installed.
   * Exec: `install.sh -H -l lab_file`, where lab_file is the name of the lab config file located in `labs` directory where the host is placed. It's important that SSH variables are correctly set in config file. 
 ```bash
 install -H -c a11       # Install labadmin in host machine using a11 lab file configuration
 ```  
   
-## Controlled hosts install on Windows
+## Controlled hosts install in Windows
   * In Windows 7 first install last version of Windows Management Framework: https://www.microsoft.com/en-us/download/details.aspx?id=54616.
   * Then enable WinRM access executing these commands in a PowerShell as Administrator:
  ```powershell
