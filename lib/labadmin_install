@@ -288,7 +288,7 @@ function install_admin() {
 
 	labadmin_info "Creating /usr/bin links"
 	rm -rf "/usr/bin/$(basename "$script_install")" &> /dev/null
-	ln -s "$script_install" "/usr/bin/$(basename "$script_install")"
+	ln -s "$script_install" "/usr/bin/$(basename "$script_install")"))
 
 	labadmin_info "Activating SUID for arp-scan command"
 	chmod u+s "$(which arp-scan)"
@@ -304,8 +304,9 @@ function install_admin() {
 
 	labadmin_info "Config labs/${lab_id} as default lab file"
 	echo 'source "$labs_path/'"${lab_id}"'"' | tee "${dir_install}/labs/default"
-	if [ "$lab_id" != "ask" ]; then
-		rm "$dir_install/labs/"!(default|"$lab_id"|ask)
+	if [ "$lab_id" != "ask" ]; thens
+		read -p "Copy all labs config files? (y/N)" r
+		[ "${r,,}" = "n" ] && rm "$dir_install/labs/"!(default|"$lab_id"|ask)
 	fi
 
 	echo -e "\nFinished! Add users to ${C_BY}$labadmin_group${S_R} group for use labadmin\n"
