@@ -56,14 +56,14 @@ You can see labadmin in action in short animations:
 Once downloaded or cloned the project, labadmin must be configured for each lab and installed in admin and each controlled host.
 
 ## Create a config files
-  * Each lab must be defined in a config file and placed in `labadmin/configs/` directory. This file is a Bash script where config variables are defined.
-  * You can use the provided [configs/test](configs/test) file as template.   
-  * For more information refer to [test](configs/test) config file comments.
+  * Each lab must be defined in a config file and placed in `labadmin/labs/` directory. This file is a Bash script where config variables are defined.
+  * You can use the provided [labs/test](labs/test) file as template.   
+  * For more information refer to [test](labs/test) config file comments.
     
 
 ## Admin install
   * Admin must be installed in a Linux machine (Debian, Fedora or Ubuntu).
-  * Exec: `./install -A -c config_file`, where config file is the name of the file located in `configs` directory to use as a default config when labadmin is open. 
+  * Exec: `./install -A -c lab_file`, where config file is the name of the file located in `labs` directory to use as a default config when labadmin is open. 
   * Optionally you can use `ask` config file as default config. This config file asks in each execution what config file to use.
 ```bash
 install -A a11          # Install labadmin in admin machine using a11 config file as default lab 
@@ -71,7 +71,7 @@ install -A a11          # Install labadmin in admin machine using a11 config fil
 
 ## Controlled hosts install on Linux
   * In Linux controlled hosts installer only need to install all needed dependences and configure the remote SSH access method. Not agent labadmin software is installed.
-  * Exec: `install.sh -H -c config_file`, where config file is the name of the lab config file located in `configs` directory where the host is placed. It's important that SSH variables are correctly set in config file. 
+  * Exec: `install.sh -H -c lab_file`, where config file is the name of the lab config file located in `labs` directory where the host is placed. It's important that SSH variables are correctly set in config file. 
 ```bash
 install -H -c a11       # Install labadmin in host machine using a11 config file configuration
 ```  
@@ -93,7 +93,7 @@ Set-Item wsman:\localhost\client\trustedhosts *
 # Usage
 Labadmin can operate in interactive or parametrized mode (use `labadmin -h` for parameter info).
 When labadmin starts loads default lab config file and default mode (Linux or Windows) defined in this config.
-You can change lab config loaded and mode with parameters: ``-c <config_file>`` and ``-L`` or ``-W``. 
+You can change lab config loaded and mode with parameters: ``-c <lab_file>`` and ``-L`` or ``-W``. 
 ```bash
 labadmin            # Start labadmin using defualt config lab
 labadmin -c a15     # Start labadin using a15 config file and default mode defined in a15

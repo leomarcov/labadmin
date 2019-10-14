@@ -58,7 +58,7 @@ function uninstall_host() {
 #=== FUNCTION ==================================================================
 # NAME: uninstall_admin
 # DESCRIPTION: uninstall labadmin from admin computer
-# USAGE: uninstall_admin config_file
+# USAGE: uninstall_admin 
 #===============================================================================
 function uninstall_admin() {
 	[ "$(id -un)" -ne 0 ] &&	labadmin_error "Install must be runed as root" 1

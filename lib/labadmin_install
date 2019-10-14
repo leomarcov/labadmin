@@ -231,16 +231,16 @@ function check_dependencies() {
 # NAME: install_admin
 # DESCRIPTION: install or reinstall admin script in $dir_install directory
 # PARAMETERS:
-#	$1   config_id (without path) for set as default config (in ./configs/default)
+#	$1   lab_id (without path) for set as default lab (in ./labs/default)
 #===============================================================================
 function install_admin() {
-    config_id="$1"
-    config_file="$configs_path/${config_id}"
+    lab_id="$1"
+    lab_file="$labs_path/${lab_id}"
 
 	# CHECKS
 	[ "$(id -u)" -ne 0 ] && labadmin_error "Install must be runed as root" 1
-	[ ! "$config_id" ] && labadmin_error "Default config ID must be specified" 1
-	[ ! -r "$config_file" ] && labadmin_error "Can't access config file $config_file" 1
+	[ ! "$lab_id" ] && labadmin_error "Default lab ID must be specified" 1
+	[ ! -r "$lab_file" ] && labadmin_error "Can't access lab config file $lab_file" 1
 
 
 	# DEPENDENCIES
@@ -302,10 +302,10 @@ function install_admin() {
 	cp "$labadmin_path/desktop/labadmin.desktop" /usr/share/applications/
 	cp "$labadmin_path/desktop/labadmin.png" /usr/share/pixmaps/
 
-	labadmin_info "Config configs/${config_id} as default config file"
-	echo 'source "$configs_path/'"${config_id}"'"' | tee "${dir_install}/configs/default"
-	if [ "$config_id" != "ask" ]; then
-		rm "$dir_install/configs/"!(default|"$config_id"|ask)
+	labadmin_info "Config labs/${lab_id} as default lab file"
+	echo 'source "$labs_path/'"${lab_id}"'"' | tee "${dir_install}/labs/default"
+	if [ "$lab_id" != "ask" ]; then
+		rm "$dir_install/labs/"!(default|"$lab_id"|ask)
 	fi
 
 	echo -e "\nFinished! Add users to ${C_BY}$labadmin_group${S_R} group for use labadmin\n"
@@ -317,25 +317,25 @@ function install_admin() {
 #=== FUNCTION ==================================================================
 # NAME: install_host
 # DESCRIPTION: config and install dependencies in host computer for control it
-#	and add host MAC in config file
+#	and add host MAC in lab file
 #
 # PARAMETERS:
-# 	[$1]    host number for add macs[nhost] in config file
-#   [$2]    config id from file to add line macs[nhost]= currecut MAC host
+# 	[$1]    host number for add macs[nhost] in lab file
+#   [$2]    lab id from file to add line macs[nhost]= currecut MAC host
 #===============================================================================
 function install_host() {
 	nhost="$1"
-	config_id="$2"
-	config_file="$configs_path/${config_id}"
+	lab_id="$2"
+	lab_file="$labs_path/${lab_id}"
 
 	# CHECKS
 	[ "$(id -u)" -ne 0 ] && labadmin_error "Install must be runed as root" 1
-	[ ! "$config_id" ] && labadmin_error "Config ID must be specified" 1
+	[ ! "$lab_id" ] && labadmin_error "Lab ID must be specified" 1
 	[ "$nhost" ] && [ "$nhost" -ne "$nhost" ] && labadmin_error "Host number must be a number" 1
-	[ "$nhost" ] && [ ! -w "${config_file}" ] && labadmin_error "Can't write config file: ${config_file}" 1
+	[ "$nhost" ] && [ ! -w "${lab_file}" ] && labadmin_error "Can't write lab file: ${lab_file}" 1
 
 	# LOAD CONFIG FILE
-	source "$config_file"	# Import variables from config file
+	source "$lab_file"	# Import variables from lab file
 
 	# DEPENDENCIES
 	check_dependencies "ask" "scripts_hostdeps"
@@ -381,23 +381,23 @@ function install_host() {
 
 	[ ! "$nhost" ] && exit
 
-	# INSERT MAC IN CONFIG FILE
-  	labadmin_info "Adding MAC in config file $config_file"
+	# INSERT MAC IN LAB FILE
+  	labadmin_info "Adding MAC in lab file $lab_file"
 
     iface=$(labadmin_iface 8.8.8.8)
 	mac=$(labadmin_mac "$iface")
 
-	[ ! "$mac" ] && labadmin_error "Please, insert MAC manually in config file ${config_file}\nmacs[${nhost:-nhost}]=${mac:-mac}" 1 
+	[ ! "$mac" ] && labadmin_error "Please, insert MAC manually in lab file ${lab_file}\nmacs[${nhost:-nhost}]=${mac:-mac}" 1 
 
 	echo MAC $iface: $mac
-	if grep "^macs\[$nhost\]=" $config_file &> /dev/null; then
+	if grep "^macs\[$nhost\]=" $lab_file &> /dev/null; then
 		echo -e "\nHost $nhost is already configured"
 		echo -en "Press ${S_B}[ENTER]${S_R} to substitute it or ${S_B}CTRL+C${S_R} to end installation"
 		read 
-		sed -i "/^macs\[$nhost\]=/d" "$config_file"
+		sed -i "/^macs\[$nhost\]=/d" "$lab_file"
 	fi
 
-	echo -e "macs[$nhost]=$mac\t\t# AUTO-ADDED [$config_file] - $(date +%F_%T)" | tee -a "$config_file"
+	echo -e "macs[$nhost]=$mac\t\t# AUTO-ADDED [$lab_file] - $(date +%F_%T)" | tee -a "$lab_file"
 	echo
 }
 

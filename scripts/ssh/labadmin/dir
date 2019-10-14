@@ -8,7 +8,7 @@ script_id="$(dirname $(echo ${BASH_SOURCE[0]} | sed 's\^'"$scripts_path"'/*\\g')
 
 #=== LOAD INFO =====================================================================
 if [ "$1" = "--load-scriptinfo" ]; then
-	script_desc="Manage Labadmin config in hosts"
+	script_desc="Manage Labadmin labs config in hosts"
 	script_type="menu"
 	load_scriptinfo "$script_id" "$script_desc" "$script_type"
 	return

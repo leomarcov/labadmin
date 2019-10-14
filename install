@@ -30,11 +30,11 @@ source "${lib_path}/labadmin_install"											# LABADMIN INSTALL MODULE
 function help() {
 	echo -e 'Install, uninstall and check labadmin dependencies for admin and host.
   HOST INSTALL
-   \e[1m'$(basename $0)'\e[0m -H -c \e[4mid_config\e[0m            Install host and no insert MAC in config file
-   \e[1m'$(basename $0)'\e[0m -H -c \e[4mid_config\e[0m -n \e[4mnhost\e[0m   Install host and insert in \e[4mid_config\e[0m: macs[\e[4mnhost\e[0m]=<host MAC>
+   \e[1m'$(basename $0)'\e[0m -H -c \e[4mid_lab\e[0m            Install host and no insert MAC in lab file
+   \e[1m'$(basename $0)'\e[0m -H -c \e[4mid_lab\e[0m -n \e[4mnhost\e[0m   Install host and insert in \e[4mid_lab\e[0m: macs[\e[4mnhost\e[0m]=<host MAC>
 
   ADMIN INSTALL
-   \e[1m'$(basename $0)'\e[0m -A -c \e[4mid_config_def\e[0m        Install admin and set \e[4mid_config_def\e[0m as default config
+   \e[1m'$(basename $0)'\e[0m -A -c \e[4mid_lab_def\e[0m        Install admin and set \e[4mid_lab_def\e[0m as default lab
 
   CHECK DEPENDENCIES
    \e[1m'$(basename $0)'\e[0m -H -D ask|autoinstall|noinstall      Check host dependencies
@@ -46,15 +46,15 @@ function help() {
 
 #### READ PARAMETERS
 [ $# -eq 0 ] && help
-while getopts ":D:n:Hc:A" o
+while getopts ":D:n:Hl:A" o
 do
     case $o in
-        c) # -c:CONFIG
-            cparam=1
-            config_id="$OPTARG"
-            if [ "${config_id:0:1}" = "-" ]; then
-                echo "Param -c needs a config ID" 1>&2
-                echo "Available config IDs: $(ls $configs_path | sed -z 's/\n/, /g' | sed 's/, $//g')" 1>&2
+        l) # -l:LAB
+            lparam=1
+            lab_id="$OPTARG"
+            if [ "${lab_id:0:1}" = "-" ]; then
+                echo "Param -c needs a lab ID" 1>&2
+                echo "Available lab IDs: $(ls $"labs_path" | sed -z 's/\n/, /g' | sed 's/, $//g')" 1>&2
                 exit 1
             fi
             ;;
@@ -97,14 +97,14 @@ elif [ "$Dparam" ] && [ "$Aparam" ]; then
     check_dependencies "$Daction" "scripts_admindeps"
 
 ## INSTALL ADMIN
-elif [ "$Aparam" ] && [ "$cparam" ]; then
+elif [ "$Aparam" ] && [ "$lparam" ]; then
 	load_scripts "$scripts_path"
-    install_admin "$config_id"
+    install_admin "$lab_id"
 
 ## INSTALL HOST
-elif [ "$Hparam" ] && [ "$cparam" ]; then
+elif [ "$Hparam" ] && [ "$lparam" ]; then
 	load_scripts "$scripts_path"
-    install_host "$nhost" "$config_id"
+    install_host "$nhost" "$lab_id"
 
 ## OTHER CASE
 else

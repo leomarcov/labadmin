@@ -8,7 +8,7 @@ script_id="$(echo ${BASH_SOURCE[0]} | sed 's\^'"$scripts_path"'/*\\g')"		# Scrip
 
 #=== LOAD INFO =====================================================================
 if [ "$1" = "--load-scriptinfo" ]; then
-	script_desc="Update labadmin host config (sshport and sshpubkey) from lab file config"
+	script_desc="Update labadmin host config (sshport and sshpubkey) from lab config file"
 	script_type="local"
 	script_bg="sub"
 	script_admindeps=""
@@ -26,13 +26,13 @@ fi
 
 #=== EXEC SCRIPT ===================================================================
 lab_config="$1"
-[ ${lab_config:0:1} != "/" ] && lab_config="${configs_path}/${lab_config}"
+[ ${lab_config:0:1} != "/" ] && lab_config="${labs_path}/${lab_config}"
 
 # CHECKS
 if [ ! -f "${lab_config}" ]; then
 	labadmin_error "$(echo "Can't access lab config file $lab_config" | tr -s "/")"
-	echo "Available configs to use:"
-	find "$configs_path" -type f | sed 's\'"${configs_path}"'\ \g'
+	echo "Available labs to use:"
+	find "$labs_path" -type f | sed 's\'"${labs_path}"'\ \g'
 	echo "Or specify your own file with absolute path"
 	exit 1
 fi
@@ -43,9 +43,9 @@ fi
 	labadmin_info "Getting config values from $lab_conf"
 	unset sshport sshpubkey sshprivatekey
 	source "$lab_config"
-	[ ! "$sshuser" ] && labadmin_error "Can't find sshuser value from config file" 1
-	[ ! "$sshport" ] && labadmin_error "Can't find sshport value from config file" 1
-	[ ! "$sshpubkey" ] && labadmin_error "Can't find sshpubkey value from config file" 1
+	[ ! "$sshuser" ] && labadmin_error "Can't find sshuser value from lab config file" 1
+	[ ! "$sshport" ] && labadmin_error "Can't find sshport value from lab config file" 1
+	[ ! "$sshpubkey" ] && labadmin_error "Can't find sshpubkey value from lab config file" 1
 	echo -e "sshuser: ${S_B}${sshuser}${S_R}"
 	echo -e "sshport: ${S_B}${sshport}${S_R}"
 	echo -e "sshpubkey: ${S_B}${sshpubkey}${S_R}"

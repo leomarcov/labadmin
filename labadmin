@@ -2,7 +2,7 @@
 #===================================================================================
 # LABADMIN CONTROLLER
 #         FILE: labadmin
-#        USAGE: labadmin [-c file_config] [-i iface] [-r range] [-a script] [-1 value1] [-2 value2]...
+#        USAGE: labadmin [-l lab_config] [-i iface] [-r range] [-a script] [-1 value1] [-2 value2]...
 #
 #  DESCRIPTION: Admin remotely hosts in a computer lab environment
 #
@@ -30,7 +30,7 @@ source "${lib_path}/labadmin_install"										# LABADMIN INSTALL LIB
 #===============================================================================
 # PARAMS
 unset hparam			# Param -h found
-unset cparam			# Param -c found
+unset lparam			# Param -l found
 unset iparam			# Param -i found
 unset piface			# Param -i argument (iface)
 unset rparam			# Param -r found
@@ -64,8 +64,8 @@ unset p9				# 9st parameter value (-9 param or read)
 # CONFIG
 unset noninteractive	# No empty if exec in non-interactive mode (-a and -r parameters found) for display reduced messages
 unset ipadmin			# Admin IP
-unset config_id			# Config file id (filename without extension)
-unset config_file		# Config file with path
+unset lab_id			# Lab config file id (filename without extension)
+unset lab_file			# Lab config file with path
 unset iface				# Network iface for use in admin
 unset map 				# Map distribution
 unset map_color			# Map host colors
@@ -84,16 +84,16 @@ unset srvmode			# Server mode: ssh or winrm
 #===============================================================================
 function help() {
 	echo -e 'Admin remotely hosts in a computer lab environment.
-   '"${S_B}$(basename $0)${S_R}"' [-c '"${S_U}"'file_config'"${S_R}"'] [-i '"${S_U}"'face'"${S_R}"'] [-r '"${S_U}"'range'"${S_R}"'] [-a '"${S_U}"'action'"${S_R}"'] [-1|-2|-3|-4|-5|-6|-7|-8|-9 '"${S_U}"'param'"${S_R}"'] [-W|-L] [-F]
+   '"${S_B}$(basename $0)${S_R}"' [-l '"${S_U}"'lab_config'"${S_R}"'] [-i '"${S_U}"'face'"${S_R}"'] [-r '"${S_U}"'range'"${S_R}"'] [-a '"${S_U}"'action'"${S_R}"'] [-1|-2|-3|-4|-5|-6|-7|-8|-9 '"${S_U}"'param'"${S_R}"'] [-W|-L] [-F]
 
   OPTIONS
-   '"${S_B}"'-c '"${S_U}"'file_config'"${S_R}"'
-\tConfig filename to use
-\tConfig files must be placed in '"${S_B}"'configs/'"${S_R}"' directory
+   '"${S_B}"'-l '"${S_U}"'lab_config'"${S_R}"'
+\tLab config filename to use
+\tLab config files must be placed in '"${S_B}"'labs/'"${S_R}"' directory
 \tWhen not specified '"${S_B}"'default'"${S_R}"' file is used.
 
    '"${S_B}"'-i '"${S_U}"'iface'"${S_R}"'
-\tNetwork interface to use. Overrides iface variable in config file.
+\tNetwork interface to use. Overrides iface variable in lab config file.
 
    '"${S_B}"'-a '"${S_U}"'n_action'"${S_R}"'
 \tAction to exec (script_id)
@@ -105,10 +105,10 @@ function help() {
 \tAction parameter value to exec.
 
    '"${S_B}"'-W '"${S_R}"'
-\tForce Windows WINRM server mode. Overrides srvmode variable in config file.
+\tForce Windows WINRM server mode. Overrides srvmode variable in lab config file.
 
    '"${S_B}"'-L '"${S_R}"'
-\tForce Linux SSH server mode. Overrides srvmode variable in config file.
+\tForce Linux SSH server mode. Overrides srvmode variable in lab config file.
 
   SAMPLES
     '"${S_B}$(basename $0)${S_R}"' -c a11 -i eth0
@@ -162,19 +162,19 @@ function ssh_init() {
 #	$@	All parameter from command line
 #===============================================================================
 function check_params() {
-	while getopts ":hc:i:r:a:1:2:3:4:5:6:7:8:9:SWLF" o
+	while getopts ":hl:i:r:a:1:2:3:4:5:6:7:8:9:SWLF" o
 	do
 		case $o in
 			h) hparam=1; help 0 ;;
-			c) # -c:CONFIG
-				cparam=1
-				config_id="$OPTARG"
-				if [ "${config_id:0:1}" = "-" ]; then
-					echo "Param -c needs a valid config ID" 1>&2
-					echo "Available config IDs: $(ls $configs_path |  sed -z 's/\n/, /g' | sed 's/, $//g')" 1>&2
+			l) # -l:LAB
+				lparam=1
+				lab_id="$OPTARG"
+				if [ "${lab_id:0:1}" = "-" ]; then
+					echo "Param -c needs a valid lab ID" 1>&2
+					echo "Available lab IDs: $(ls "$labs_path" |  sed -z 's/\n/, /g' | sed 's/, $//g')" 1>&2
 					exit 1
 				fi
-				config_file="$configs_path/${config_id}"
+				lab_file="$labs_path/${lab_id}"
 				;;
 			i) # -i:IFACE
 				iparam=1
@@ -248,7 +248,7 @@ function check_params() {
 
 #=== FUNCTION ==================================================================
 #        NAME: initialize
-# DESCRIPTION: read parameters and initialize configs
+# DESCRIPTION: read parameters and initialize lab config
 #===============================================================================
 function initialize() {
 	##### CHECK BASH VERSION >=4.0
@@ -270,19 +270,19 @@ function initialize() {
 	rm "$labadmin_tmp_path/screenlock*" &> /dev/null
 	readonly screen_lock="$(mktemp -u "${labadmin_tmp_path}/screenlock".XXXXXXXX)"      # SCREEN LOCK (one file per process)
 
-	##### LOAD CONFIG FILE
-	[ ! "$noninteractive" ] && echo "Loading config files"
-	if [ ! "$config_id" ]; then
-		config_id="default"
-		config_file="$configs_path/default"
+	##### LOAD LAB FILE
+	[ ! "$noninteractive" ] && echo "Loading labs files"
+	if [ ! "$lab_id" ]; then
+		lab_id="default"
+		lab_file="$labs_path/default"
 	fi
-	if [ ! -r "$config_file" ]; then
-		labadmin_error "$(echo "Can't access config file $config_file"|tr -s "/")"
-		echo "Available configs to use:"
-		find "$configs_path" -type f | sed 's\'"${configs_path}"'\ \g'
+	if [ ! -r "$lab_file" ]; then
+		labadmin_error "$(echo "Can't access lab file $lab_file"|tr -s "/")"
+		echo "Available labs to use:"
+		find "$labs_path" -type f | sed 's\'"${labs_path}"'\ \g'
 		exit 1
 	fi
-	source "$config_file"	# Import variables from config file
+	source "$lab_file"	# Import variables from lab file
 
 	##### SERVER MODE
 	if [ "$Lparam" ]; then
@@ -307,7 +307,7 @@ function initialize() {
 	##### IFACE AND IPADMIN
 	[ "$iparam" ] && iface="$piface"
 	ipadmin="$(labadmin_ip "$iface")"
-	! [ "$ipadmin" ] && labadmin_error "Cant get IP from iface $iface\nPlease check iface config in $config_file or use -i param" 1
+	! [ "$ipadmin" ] && labadmin_error "Cant get IP from iface $iface\nPlease check iface lab config in $lab_file or use -i param" 1
 
 	##### LOAD SCRIPTS
 	if [ ! "$p0param" ]; then

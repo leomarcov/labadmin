@@ -535,7 +535,7 @@ function labadmin_export_vars_code() {
 function exec_script_win() {
 	local nhost="$1"
 	
-	local labadmin_cmd="\"$labadmin_script\" -S $([ "$config_id" != "default" ]&&echo "-c \"$config_id\"") -r \"$nhost\" -a \"$script_id\" $([ ! -z "${Wparam+set}" ]&&echo " -W")$([ ! -z "${iparam+set}" ]&&echo " -i \"$iface\"")$([ ! -z "${p1+set}" ]&&echo " -1 \"$p1\"")$([ ! -z "${p2+set}" ]&&echo " -2 \"$p2\"")$([ ! -z "${p3+set}" ]&&echo " -3 \"$p3\"")$([ ! -z "${p4+set}" ]&&echo " -4 \"$p4\"")$([ ! -z "${p5+set}" ]&&echo " -5 \"$p5\"")$([ ! -z "${p6+set}" ]&&echo " -6 \"$p6\"")$([ ! -z "${p7+set}" ]&&echo " -7 \"$p7\"")$([ ! -z "${p8+set}" ]&&echo " -8 \"$p8\"")$([ ! -z "${p9+set}" ]&&echo " -9 \"$p9\"")"
+	local labadmin_cmd="\"$labadmin_script\" -S $([ "$lab_id" != "default" ]&&echo "-c \"$lab_id\"") -r \"$nhost\" -a \"$script_id\" $([ ! -z "${Wparam+set}" ]&&echo " -W")$([ ! -z "${iparam+set}" ]&&echo " -i \"$iface\"")$([ ! -z "${p1+set}" ]&&echo " -1 \"$p1\"")$([ ! -z "${p2+set}" ]&&echo " -2 \"$p2\"")$([ ! -z "${p3+set}" ]&&echo " -3 \"$p3\"")$([ ! -z "${p4+set}" ]&&echo " -4 \"$p4\"")$([ ! -z "${p5+set}" ]&&echo " -5 \"$p5\"")$([ ! -z "${p6+set}" ]&&echo " -6 \"$p6\"")$([ ! -z "${p7+set}" ]&&echo " -7 \"$p7\"")$([ ! -z "${p8+set}" ]&&echo " -8 \"$p8\"")$([ ! -z "${p9+set}" ]&&echo " -9 \"$p9\"")"
 	labadmin_info "$labadmin_cmd"
 	terminator -m -T "labadmin - ${script_id}" --new-tab -e "echo -e \"${C_BB}${labadmin_cmd}${S_R}\"; ${labadmin_cmd}; read" &>/dev/null &
 }
