@@ -111,7 +111,7 @@ function help() {
 \tForce Linux SSH server mode. Overrides srvmode variable in lab config file.
 
   SAMPLES
-    '"${S_B}$(basename $0)${S_R}"' -c a11 -i eth0
+    '"${S_B}$(basename $0)${S_R}"' -l a11 -i eth0
     '"${S_B}$(basename $0)${S_R}"' -r 5,12,15-20 -a exec -1 c -2 "du -sh /home/*"
     '"${S_B}$(basename $0)${S_R}"' -r all -a "update&" -1 y -2 y
 '
@@ -170,7 +170,7 @@ function check_params() {
 				lparam=1
 				lab_id="$OPTARG"
 				if [ "${lab_id:0:1}" = "-" ]; then
-					echo "Param -c needs a valid lab ID" 1>&2
+					echo "Param -l needs a valid lab ID" 1>&2
 					echo "Available lab IDs: $(ls "$labs_path" |  sed -z 's/\n/, /g' | sed 's/, $//g')" 1>&2
 					exit 1
 				fi

@@ -30,11 +30,11 @@ source "${lib_path}/labadmin_install"											# LABADMIN INSTALL MODULE
 function help() {
 	echo -e 'Install, uninstall and check labadmin dependencies for admin and host.
   HOST INSTALL
-   \e[1m'$(basename $0)'\e[0m -H -c \e[4mid_lab\e[0m            Install host and no insert MAC in lab file
-   \e[1m'$(basename $0)'\e[0m -H -c \e[4mid_lab\e[0m -n \e[4mnhost\e[0m   Install host and insert in \e[4mid_lab\e[0m: macs[\e[4mnhost\e[0m]=<host MAC>
+   \e[1m'$(basename $0)'\e[0m -H -l \e[4mid_lab\e[0m            Install host and no insert MAC in lab file
+   \e[1m'$(basename $0)'\e[0m -H -l \e[4mid_lab\e[0m -n \e[4mnhost\e[0m   Install host and insert in \e[4mid_lab\e[0m: macs[\e[4mnhost\e[0m]=<host MAC>
 
   ADMIN INSTALL
-   \e[1m'$(basename $0)'\e[0m -A -c \e[4mid_lab_def\e[0m        Install admin and set \e[4mid_lab_def\e[0m as default lab
+   \e[1m'$(basename $0)'\e[0m -A -l \e[4mid_lab_def\e[0m        Install admin and set \e[4mid_lab_def\e[0m as default lab
 
   CHECK DEPENDENCIES
    \e[1m'$(basename $0)'\e[0m -H -D ask|autoinstall|noinstall      Check host dependencies
@@ -53,7 +53,7 @@ do
             lparam=1
             lab_id="$OPTARG"
             if [ "${lab_id:0:1}" = "-" ]; then
-                echo "Param -c needs a lab ID" 1>&2
+                echo "Param -l needs a lab ID" 1>&2
                 echo "Available lab IDs: $(ls $"labs_path" | sed -z 's/\n/, /g' | sed 's/, $//g')" 1>&2
                 exit 1
             fi
