@@ -135,7 +135,7 @@ labadmin -r 11-23       # Exec labadmin and autoselect hosts from 11 to 23
 
 
 ## Action selection
-Action selection allow navigate accros all available actions to select action to exec. Actions are organized in categories folders. 
+Action selection allow navigate accros all available actions to select action to exec. Actions are organized in categories directories. 
 
 It's possible to exec action in a iterative or concurrent way. By defualt iterative mode is used. To exec action in a concurrent mode use ``&`` symbol at end of action name. 
 ```bash
@@ -170,7 +170,7 @@ If any error occurs labadmin shows at ending the machine list with errors.
 
 &nbsp;  
 # Available actions
-Labadmin has a lot of actions ready to use! Actions are categorized in folders for better organization.
+Labadmin has a lot of actions ready to use! Actions are categorized in directories for better organization.
 
 ## Linux actions
 ```
