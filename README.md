@@ -64,16 +64,16 @@ Once downloaded or cloned the project, labadmin must be configured for each lab 
 ## Admin install
   * Admin must be installed in a Linux machine (Debian, Fedora or Ubuntu).
   * Exec: `./install -A -c lab_file`, where lab_file is the name of the file located in `labs` directory to use as a default config when labadmin is open. 
-  * Optionally you can use `ask` config file as default config. This config file asks in each execution what config file to use.
+  * Optionally you can use `ask` lab as default config. This lab config file asks in each execution what lab to use.
 ```bash
-install -A a11          # Install labadmin in admin machine using a11 config file as default lab 
+install -A a11          # Install labadmin in admin machine using a11 lab file as default lab 
 ```
 
 ## Controlled hosts install on Linux
   * In Linux controlled hosts installer only need to install all needed dependences and configure the remote SSH access method. Not agent labadmin software is installed.
   * Exec: `install.sh -H -c lab_file`, where lab_file is the name of the lab config file located in `labs` directory where the host is placed. It's important that SSH variables are correctly set in config file. 
 ```bash
-install -H -c a11       # Install labadmin in host machine using a11 config file configuration
+install -H -c a11       # Install labadmin in host machine using a11 lab file configuration
 ```  
   
 ## Controlled hosts install on Windows
@@ -93,7 +93,7 @@ Set-Item wsman:\localhost\client\trustedhosts *
 # Usage
 Labadmin can operate in interactive or parametrized mode (use `labadmin -h` for parameter info).
 When labadmin starts loads default lab config file and default mode (Linux or Windows) defined in this config.
-You can change lab config loaded and mode with parameters: ``-c <lab_file>`` and ``-L`` or ``-W``. 
+You can select lab config loaded and mode with parameters: ``-c <lab_file>`` and ``-L`` or ``-W``. 
 ```bash
 labadmin            # Start labadmin using defualt config lab
 labadmin -c a15     # Start labadin using a15 config file and default mode defined in a15
