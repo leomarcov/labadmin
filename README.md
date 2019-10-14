@@ -411,7 +411,7 @@ For more info refer to:
   * Action template: [doc/action_template](doc/action_template)
   * SSH sample: [actions/ssh/user/add](actions/ssh/user/add)
   * SSH admin+local+admin sample: [actions/ssh/file/torrent-local](actions/ssh/file/torrent-local)
-  * WinRM sampple: actions/winrm/user/add](actions/winrm/user/add)
+  * WinRM sampple: [actions/winrm/user/add](actions/winrm/user/add)
 
 &nbsp;  
 # Lincense
