@@ -284,7 +284,7 @@ function install_admin() {
 	chmod ug+x "$script_install"
 	chmod -R g=u "$dir_install"
 	chmod -R o=-rwx "$dir_install"
-	chmod -R ug+x "$dir_install/scripts"
+	chmod -R ug+x "$dir_install/actions/"
 
 	labadmin_info "Creating /usr/bin links"
 	rm -rf "/usr/bin/$(basename "$script_install")" &> /dev/null
@@ -305,11 +305,12 @@ function install_admin() {
 	labadmin_info "Config labs/${lab_id} as default lab file"
 	echo 'source "$labs_path/'"${lab_id}"'"' | tee "${dir_install}/labs/default"
 	if [ "$lab_id" != "ask" ]; then
+		echo
 		read -p "Copy all labs config files? (y/N)" r
 		[ "${r,,}" = "n" ] && rm "$dir_install/labs/"!(default|"$lab_id"|ask)
 	fi
 
-	echo -e "\nFinished! Add users to ${C_BY}$labadmin_group${S_R} group for use labadmin\n"
+	echo -e "\nFinished! Add users to ${C_BY}$labadmin_group${S_R} group to allow use labadmin\n"
 }
 
 

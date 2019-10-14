@@ -128,3 +128,4 @@ __ __ 13 12 11
 # map_color[<host_id>]="color"
 #map_color[11]="${S_I}"          
 #map_color[12]="${S_I}"  
+macs[01]=e8:94:f6:fc:d4:4a		# AUTO-ADDED [/media/nar/LEONARDO_MARCO/labadmin//labs//test] - 2019-10-14_12:27:05

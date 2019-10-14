@@ -75,11 +75,11 @@ function uninstall_admin() {
 	labadmin_info "Removing log files"
 	rm -rf "$log_path"
 
-	labdmin_info "Removing desktop files"
+	labadmin_info "Removing desktop files"
 	rm /usr/share/applications/labadmin.desktop
 	rm /usr/share/pixmaps/labadmin.png
 
-	labdmin_info "Removing "$labadmin_group" group"
+	labadmin_info "Removing "$labadmin_group" group"
 	delgroup "$labadmin_group"
 }
 
