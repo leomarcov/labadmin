@@ -404,14 +404,14 @@ Labadmin has a lot of actions ready to use! Actions are categorized in directori
 The easy way to exec your own scripts is use the actions ``exec/com`` (execute comands) and ``exec/script`` (execute external script). However creating your own labadmin actions you can add permanent actions and use the labadmin interface options to obtain more power scripts.
 
 For add a new action to labadmin only need:
-  * Create a script file following the labadmin interface. You can use template action located in [doc/script_template](doc/script_template).
-  * Save the script file in ``scripts/ssh`` or ``scripts/winrm`` directory, and labadmin will recognize the file automatically when starts.
+  * Create a action file following the labadmin interface. You can use template action located in [doc/action_template](doc/action_template).
+  * Save the action file in ``actions/ssh`` or ``actions/winrm`` directory, and labadmin will recognize the file automatically when starts.
 
 For more info refer to:
-  * Action script template: [doc/script_template](doc/script_template)
-  * SSH sample: [scripts/ssh/user/add](scripts/ssh/user/add)
-  * SSH admin+local+admin sample: [scripts/ssh/file/torrent-local](scripts/ssh/file/torrent-local)
-  * WinRM sampple: [scripts/winrm/user/add](scripts/winrm/user/add)
+  * Action template: [doc/action_template](doc/action_template)
+  * SSH sample: [actions/ssh/user/add](actions/ssh/user/add)
+  * SSH admin+local+admin sample: [actions/ssh/file/torrent-local](actions/ssh/file/torrent-local)
+  * WinRM sampple: actions/winrm/user/add](actions/winrm/user/add)
 
 &nbsp;  
 # Lincense
