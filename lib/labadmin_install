@@ -288,7 +288,7 @@ function install_admin() {
 
 	labadmin_info "Creating /usr/bin links"
 	rm -rf "/usr/bin/$(basename "$script_install")" &> /dev/null
-	ln -s "$script_install" "/usr/bin/$(basename "$script_install")"))
+	ln -s "$script_install" "/usr/bin/$(basename "$script_install")"
 
 	labadmin_info "Activating SUID for arp-scan command"
 	chmod u+s "$(which arp-scan)"
