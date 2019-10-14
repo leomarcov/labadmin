@@ -148,7 +148,8 @@ It's possible to exec action in a iterative or concurrent way. By defualt iterat
 
 This stage can be skipped using ``-a <action>`` parameter.
 ```bash 
-labadmin -r a virtualbox/import       # Exec labadmin and autoselect action virtualbox/import
+labadmin -a virtualbox/import       # Exec labadmin and autoselect action virtualbox/import
+labadmin -a "virtualbox/import&"    # Exec labadmin and autoselect action virtualbox/import in concurrent mode
 ```
 
 ## Action parametrization
@@ -159,7 +160,7 @@ Each action ask for needed parameters to exec according to action needs.
 This stage can be skipped using ``-1 <value1> -2 <value2> ...`` parameters.
 ```bash 
 # Exec labadmin and autoselect virtualbox/import action with parameters alumno and /home/e.ova
-labadmin -r a virtualbox/import -1 alumno -2 /home/e.ova  
+labadmin -a virtualbox/import -1 alumno -2 /home/e.ova  
 ```
 
 ## Action monitorization
