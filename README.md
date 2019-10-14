@@ -55,7 +55,7 @@ You can see labadmin in action in short animations:
 # Install
 Once downloaded or cloned the project, labadmin must be configured for each lab and installed in admin and each controlled host.
 
-## Create a config files
+## Create labs config files
   * Each lab must be defined in a config file and placed in `labadmin/labs/` directory. This file is a Bash script where config variables are defined.
   * You can use the provided [labs/test](labs/test) file as template.   
   * For more information refer to [test](labs/test) config file comments.
