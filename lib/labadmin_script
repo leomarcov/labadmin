@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 #===================================================================================
-# LABADMIN SCRIPT MODULE
+# LABADMIN SCRIPT LIB
 #         FILE: labadmin_script
-#  DESCRIPTION: labadmin module for load and select scripts
+#  DESCRIPTION: labadmin lib for load and select scripts
 #
 #       AUTHOR: Leonardo Marco (labadmin@leonardomarco.com)
 #	   LICENSE: GNU General Public License v3.0
@@ -544,7 +544,7 @@ function exec_script_win() {
 #=== FUNCTION ==================================================================
 # NAME: exec_script_ssh
 # DESCRIPTION: exec current $script_id script in remote host using SSH
-#              modules/labdamin_global and labadmin_export_vars_code is 
+#              lib/labdamin_global and labadmin_export_vars_code is 
 #              exec before the script code
 #
 # PARAMETERS
@@ -556,7 +556,7 @@ function exec_script_ssh() {
 	local script_file="${scripts_file[$script_id]}"
 
 	( 
-		cat "${labadmin_path}/modules/labadmin_lib" 
+		cat "${lib_path}/labadmin_lib" 
 		script_type="ssh" labadmin_export_vars_code
 		cat "$script_file" 
 	) | ssh -T $sshuser@$iphost -p $sshport -oStrictHostKeyChecking=no 'cat | bash /dev/stdin' "'""$p1""'" "'""$p2""'" "'""$p3""'" "'""$p4""'" "'""$p5""'" "'""$p6""'" "'""$p7""'" "'""$p8""'" "'""$p9""'"
@@ -568,7 +568,7 @@ function exec_script_ssh() {
 #=== FUNCTION ==================================================================
 # NAME: exec_script_local
 # DESCRIPTION: exec current $script_id script in local  
-#              modules/labdamin_global and labadmin_export_vars_code is 
+#              lib/labdamin_global and labadmin_export_vars_code is 
 #              exec before the script code
 #
 # PARAMETERS
@@ -581,7 +581,7 @@ function exec_script_local() {
 	local script_file="${scripts_file[$script_id]}"
 
 	(
-		source "${labadmin_path}/modules/labadmin_lib"
+		source "${lib_path}/labadmin_lib"
 		eval $(script_type="$script_type" labadmin_export_vars_code)
 		source "$script_file" "$p1" "$p2" "$p3" "$p4" "$p5" "$p6" "$p7" "$p8" "$p9" 	
 	)
@@ -592,7 +592,7 @@ function exec_script_local() {
 #=== FUNCTION ==================================================================
 # NAME: exec_script_winrm-ps
 # DESCRIPTION: exec current $script_id script in remote host using WINRM Powershell
-#              modules/labdamin_global and labadmin_export_vars_code is 
+#              lib/labdamin_global and labadmin_export_vars_code is 
 #              exec before the script code
 #
 # PARAMETERS
@@ -604,7 +604,7 @@ function exec_script_winrm-ps() {
 	local script_file="${scripts_file[$script_id]}"
 
 	ps_script=$(
-		source "${labadmin_path}/modules/labadmin_lib"
+		source "${lib_path}/labadmin_lib"
 		eval $(script_type="winrm-ps" labadmin_export_vars_code)	
 		source "$script_file" "$p1" "$p2" "$p3" "$p4" "$p5" "$p6" "$p7" "$p8" "$p9"
 	)
@@ -617,7 +617,7 @@ function exec_script_winrm-ps() {
 #=== FUNCTION ==================================================================
 # NAME: exec_script_winrm-cmd
 # DESCRIPTION: exec current $script_id script in remote host using WINRM CMD
-#              modules/labdamin_global and labadmin_export_vars_code is 
+#              lib/labdamin_global and labadmin_export_vars_code is 
 #              exec before the script code
 #
 # PARAMETERS
@@ -629,7 +629,7 @@ function exec_script_winrm-cmd() {
 	local script_file="${scripts_file[$script_id]}"
 
 	ps_script=$(
-		source "${labadmin_path}/modules/labadmin_lib"
+		source "${lib_path}/labadmin_lib"
 		eval $(script_type="winrm-cmd" labadmin_export_vars_code)
 		source "$script_file" "$p1" "$p2" "$p3" "$p4" "$p5" "$p6" "$p7" "$p8" "$p9"
 	)

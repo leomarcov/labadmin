@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 #===================================================================================
-# LABADMIN IP MODULE
+# LABADMIN IP LIB
 #         FILE: labadmin_ip
-#  DESCRIPTION: labadmin module for manage host ip discover and arp table
+#  DESCRIPTION: labadmin lib for manage host ip discover and arp table
 #
 #       AUTHOR: Leonardo Marco (labadmin@leonardomarco.com)
 #	   LICENSE: GNU General Public License v3.0

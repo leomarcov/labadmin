@@ -14,14 +14,14 @@
 
 
 #===============================================================================
-#  LOAD MODULES
+#  LOAD LIBS
 #===============================================================================
-source "$(dirname "$(readlink -f "$0")")/modules/labadmin_lib-admin"			# LABADMIN ADMIN VARIABLES AND FUNCTIONS
-source "${modules_path}/labadmin_lib"											# LABADMIN GLOBAL VARIABLES AND FUNCTIONS
-source "${modules_path}/labadmin_ip"											# LABADMIN IP MODULE
-source "${modules_path}/labadmin_map"											# LABADMIN MAP MODULE
-source "${modules_path}/labadmin_script"										# LABADMIN SCRIPT MODULE
-source "${modules_path}/labadmin_install"										# LABADMIN INSTALL MODULE
+source "$(dirname "$(readlink -f "$0")")/lib/labadmin_lib-admin"			# LABADMIN ADMIN VARIABLES AND FUNCTIONS
+source "${lib_path}/labadmin_lib"											# LABADMIN GLOBAL VARIABLES AND FUNCTIONS
+source "${lib_path}/labadmin_ip"											# LABADMIN IP LIB
+source "${lib_path}/labadmin_map"											# LABADMIN MAP LIB
+source "${lib_path}/labadmin_script"										# LABADMIN SCRIPT LIB
+source "${lib_path}/labadmin_install"										# LABADMIN INSTALL LIB
 
 
 
@@ -318,7 +318,7 @@ function initialize() {
 	fi	
 
 	##### CHECK ADMIN DEPENDENCIES
-	[ ! "$noninteractive" ] && echo "Checking module dependencies"
+	[ ! "$noninteractive" ] && echo "Checking modules dependencies"
 	check_dependencies "noinstall" "scripts_admindeps" >/dev/null
 	if [ $? -ne 0 ]; then
 		if [ ! "$Fparam" ]; then

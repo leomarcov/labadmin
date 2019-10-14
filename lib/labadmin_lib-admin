@@ -18,12 +18,12 @@ shopt -s checkwinsize																# To get $COLUMNS AND $LINES working
 readonly labadmin_path="$(dirname "$(readlink -f "$0")")/"							# Script labadmin directory path
 readonly labadmin_script="$(readlink -f "$0")"                      				# Main script labadmin with path
 readonly labadmin_install="${labadmin_path}/install"								# Install script path
-readonly modules_path="$(dirname "$(readlink -f "$0")")/modules/"					# Modules path
+readonly lib_path="$(dirname "$(readlink -f "$0")")/lib/"							# Libs path
 readonly configs_path="$labadmin_path/configs/"					    				# Configs directory path
 scripts_path="$labadmin_path/scripts/"		                						# Scripts directory
 readonly log_path="/var/log/$(basename "$labadmin_path").log"						# Logs file path
 readonly labadmin_tmp_path="/tmp/labadmin-$(id -u)"									# Temp path for save labadmin temp files
-readonly sshagent_path="${labadmin_tmp_path}/sshagent-${USER}"				# SSH Agent info 
+readonly sshagent_path="${labadmin_tmp_path}/sshagent-${USER}"						# SSH Agent info 
 screen_lock="${labadmin_tmp_path}/screenlock"           							# SCREEN LOCK (one file per process)
 
 
@@ -78,7 +78,7 @@ function labdmin_ssh_host_comm() {
 
     # EXEC SSH EXEC COMMANDS
     ssh $ssh_params ${sshuser}@${ip} -p ${sshport} -oStrictHostKeyChecking=no  "
-$(cat "${labadmin_path}/modules/labadmin_lib")
+$(cat "${lib_path}/labadmin_lib")
 
 $(labadmin_export_vars_code)
 
@@ -109,7 +109,7 @@ function labdmin_ssh_host_comm_stdin() {
 
     # EXEC SSH EXEC COMMANDS
     cat - | ssh $ssh_params ${sshuser}@${ip} -p ${sshport} -oStrictHostKeyChecking=no  "
-$(cat "${labadmin_path}/modules/labadmin_lib")
+$(cat "${lib_path}/labadmin_lib")
 
 $(labadmin_export_vars_code)
 

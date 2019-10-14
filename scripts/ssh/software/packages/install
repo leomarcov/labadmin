@@ -29,7 +29,7 @@ packages="$1"
 
 # CHECK INSTALLER
 installer=""
-for i in "${modules_path}/installers/"*; do
+for i in "${lib_path}/installers/"*; do
 	commands="$(cat "$i"; echo -e "\ninstaller_check")"
 	labdmin_ssh_host_comm "${labadmin_nhost}" "$commands" && installer="$i"
 done

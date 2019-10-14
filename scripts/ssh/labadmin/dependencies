@@ -33,7 +33,7 @@ if [ "${mode,,}" = "y" ]; then
 	mode="autoinstall"
 	# GET INSTALLER
 	installer=""
-	for i in "${modules_path}/installers/"*; do
+	for i in "${lib_path}/installers/"*; do
 		commands="$(cat "$i"; echo -e "\ninstaller_check")"
 		labdmin_ssh_host_comm "${labadmin_nhost}" "$commands" && installer="$i"
 	done
@@ -55,10 +55,10 @@ done
 $(cat "$installer")
 ${install_code}
 "
-# Add install module code
+# Add install lib code
 install_code="
 ${install_code}
-"$(cat "${modules_path}/labadmin_install")"
+"$(cat "${lib_path}/labadmin_install")"
 check_dependencies ${mode} scripts_hostdeps"
 
 

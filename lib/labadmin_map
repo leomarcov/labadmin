@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 #===================================================================================
-# LABADMIN MAP MODULE
+# LABADMIN MAP LIB
 #         FILE: labadmin_map
-#  DESCRIPTION: labadmin module for manage map and selected host range
+#  DESCRIPTION: labadmin lib for manage map and selected host range
 #
 #t       AUTHOR: Leonardo Marco (labadmin@leonardomarco.com)
 #	   LICENSE: GNU General Public License v3.0
