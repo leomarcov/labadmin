@@ -304,7 +304,7 @@ function install_admin() {
 
 	labadmin_info "Config labs/${lab_id} as default lab file"
 	echo 'source "$labs_path/'"${lab_id}"'"' | tee "${dir_install}/labs/default"
-	if [ "$lab_id" != "ask" ]; thens
+	if [ "$lab_id" != "ask" ]; then
 		read -p "Copy all labs config files? (y/N)" r
 		[ "${r,,}" = "n" ] && rm "$dir_install/labs/"!(default|"$lab_id"|ask)
 	fi
