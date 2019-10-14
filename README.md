@@ -66,14 +66,14 @@ Once downloaded or cloned the project, labadmin must be configured for each lab 
   * Exec: `./install -A -c config_file`, where config file is the name of the file located in `configs` directory to use as a default config when labadmin is open. 
   * Optionally you can use `ask` config file as default config. This config file asks in each execution what config file to use.
 ```bash
-install -A test          # Install labadmin in admin machine using test config file as default lab 
+install -A a11          # Install labadmin in admin machine using a11 config file as default lab 
 ```
 
 ## Controlled hosts install on Linux
   * In Linux controlled hosts installer only need to install all needed dependences and configure the remote SSH access method. Not agent labadmin software is installed.
   * Exec: `install.sh -H -c config_file`, where config file is the name of the lab config file located in `configs` directory where the host is placed. It's important that SSH variables are correctly set in config file. 
 ```bash
-install -H -c test       # Install labadmin in host machine using test config file configuration
+install -H -c a11       # Install labadmin in host machine using a11 config file configuration
 ```  
   
 ## Controlled hosts install on Windows
@@ -99,7 +99,6 @@ labadmin            # Start labadmin using defualt config lab
 labadmin -c a15     # Start labadin using a15 config file and default mode defined in a15
 labadmin -c 15 -W   # Start labadin using a15 config file and Windows mode (WinRM)
 labadmin -c 15 -L   # Start labadin using a15 config file and Linux mode (SSH)
-
 ```
 
 Each action execution has 5 stages: discover, host selection, action selection, action parametrization and action monitorization.
