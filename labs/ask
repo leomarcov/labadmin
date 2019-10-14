@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+#===================================================================================
+#        FILE: ask
+# DESCRIPTION: Meta lab config file for ask user the lab config file to use
+#      AUTHOR: Leonardo Marco (labadmin@leonardomarco.com)
+#     LICENSE: GNU General Public License v3.0
+#=============================================================================
+
+
+[ ! -d "$labs_path" ] && labadmin_error "Can't access labs path $labs_path" 1
+
+(
+IFS=$'\n\t'
+for i in $(find "$labs_path" -type f); do
+	i="$(echo "$i" | sed 's\'"${labs_path}"'\\g')"		# Strip $labs_path from files
+	[[ "$i" == @(ask|default) ]] && continue
+	echo -e "    [${C_LY}${i}${C_D}]\t$(grep "^labname=" "${labs_path}/$i"| cut -f2 -d= | tr -d \")"
+done
+)
+
+echo
+
+unset lab_file
+while [ ! -r "$lab_file" ] || [ ! -f "$lab_file" ]; do
+	echo -en "  > ${S_U}Select lab file${S_R}:"
+	read -e -p " " lab_id
+	[ ! "$lab_id" ] && continue
+
+	lab_file="$labs_path/${lab_id}"
+	([ ! -r "$lab_file" ] || [ ! -f "$lab_file" ]) && labadmin_error "  ! Can't access lab config file $(echo "$lab_file" | tr -s "/")"
+done
+
+echo
+source "$lab_file"	# Import variables from lab file
+
+
+
