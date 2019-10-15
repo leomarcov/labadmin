@@ -308,6 +308,7 @@ function initialize() {
 	[ "$iparam" ] && iface="$piface"
 	ipadmin="$(labadmin_ip "$iface")"
 	! [ "$ipadmin" ] && labadmin_error "Cant get IP from iface $iface\nPlease check iface lab config in $lab_file or use -i param" 1
+	macadmin="$(labadmin_mac "$iface")"
 
 	##### LOAD SCRIPTS
 	if [ ! "$p0param" ]; then
