@@ -90,10 +90,10 @@ Set-Item wsman:\localhost\client\trustedhosts *
 
 &nbsp;  
 # Usage
-Labadmin can operate in interactive or parametrized mode (use `labadmin -h` for parameter info).
+Labadmin can operate in interactive or parametrized mode. For parameter info refer to `labadmin -h`.
 
-When labadmin starts loads default lab config file and default mode (Linux or Windows) defined in this config.
-You can select lab config loaded and mode with parameters: ``-l <lab_file>`` and ``-L`` or ``-W``. 
+When labadmin starts loads default lab config file and operate in default mode (Linux or Windows) defined in the lab config.
+You can select loaded lab config and mode with parameters: ``-l <lab_file>`` and ``-L`` or ``-W``. 
 ```bash
 labadmin            # Start labadmin using defualt config lab
 labadmin -l a15     # Start labadin using a15 lab file and default mode defined in a15
