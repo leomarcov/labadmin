@@ -112,7 +112,7 @@ function help() {
 
   SAMPLES
     '"${S_B}$(basename $0)${S_R}"' -l a11 -i eth0
-    '"${S_B}$(basename $0)${S_R}"' -r 5,12,15-20 -a exec -1 c -2 "du -sh /home/*"
+    '"${S_B}$(basename $0)${S_R}"' -r 5,12,15-20 -a exec/com -1 "du -sh /home/*"
     '"${S_B}$(basename $0)${S_R}"' -r all -a "update&" -1 y -2 y
 '
 	exit $1
