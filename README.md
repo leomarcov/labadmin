@@ -400,7 +400,7 @@ Labadmin has a lot of actions ready to use! Actions are categorized in directori
 
 &nbsp;  
 # Add your own actions!
-The easy way to exec your own scripts is use the actions ``exec/com`` (execute comands) and ``exec/script`` (execute external script). However creating your own labadmin actions you can add permanent actions and use the labadmin interface options to obtain more power scripts.
+The easy way to exec your own scripts is use the actions ``exec/com`` (execute comands) and ``exec/script`` (execute external script). However creating your own labadmin actions you can add permanent actions and use the labadmin interface options to obtain more powerful scripts.
 
 For add a new action to labadmin only need:
   * Create a action file following the labadmin interface. You can use template action located in [doc/action_template](doc/action_template).
