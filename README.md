@@ -127,9 +127,8 @@ Admin remotely hosts in a computer lab environment.
     labadmin -r all -a "update&" -1 y -2 y
 
 ```
-</p></details
+</p></details>
 
-.
 
 When labadmin starts loads default lab config file and operate in configured as default mode (Linux or Windows).
 You can select other lab config and mode with parameters: ``-l <lab_file>`` and ``-L`` or ``-W``. 
