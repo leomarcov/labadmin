@@ -7,7 +7,7 @@ Labadmin aims to be a tool useful for IT teachers and computer lab sysadmins.
 
 &nbsp; 
 ## Main features
-  * Discover the network status hosts in a laboratory classroom by MAC address (works on DHCP networks!).
+  * Discover the host network status in a laboratory classroom by MAC address (works on DHCP networks!).
   * Show the status of each machine in a grid map according the preconfigured position in the lab. It's easy to identificate students computers by classroom location.
   * Flexible host selection using ranges. Can select all machines, only a row, odd and even machines, a specific list, etc.
   * Labadmin incorporate a full set of administrative actions ready to use (currently 133 for Linux and 40 for Windows). Some key actions are:
