@@ -107,8 +107,8 @@ Admin remotely hosts in a computer lab environment.
    -i iface
 	Network interface to use. Overrides iface variable in lab config file.
 
-   -a n_action
-	Action to exec (script_id)
+   -a action
+	Action to exec. For example: user/add
 
    -r range
 	Hosts range to apply actions. For example: 11,34,23,21-28
@@ -124,8 +124,8 @@ Admin remotely hosts in a computer lab environment.
 
   SAMPLES
     labadmin -l a11 -i eth0
-    labadmin -r 5,12,15-20 -a exec -1 c -2 "du -sh /home/*"
-    labadmin -r all -a "update&" -1 y -2 y
+    labadmin -r 5,12,15-20 -a exec/com -1 "du -sh /home/*"
+    labadmin -r all -a "software/packages/upgrade &" -1 y -2 y
 
 ```
 </p></details>
