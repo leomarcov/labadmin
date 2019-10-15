@@ -30,7 +30,7 @@ Labadmin aims to be a tool useful for IT teachers and computer lab sysadmins.
     * Authentication config to use (SSH and/or WinRM).
     * MAC address for each host and a identification number.
     * Lab distribution: each id host must be placed in a grid according the real position in the lab.
-  * When labadmin starts discovers the computers configured in the lab file, show a map to select them and exec actions in all selected hosts.
+  * When labadmin starts it discover the computers configured in the lab file, show a map to select them and exec actions in all selected hosts.
 
 <p align="center">
   <img src="https://user-images.githubusercontent.com/32820131/66718797-596caa00-ede8-11e9-81fd-ed2d3af4e1b2.png">
