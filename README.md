@@ -61,7 +61,7 @@ Once downloaded or cloned the project, labadmin must be configured for each lab 
     
 
 ## Admin install
-  * Admin must be installed in a Linux machine (Debian, Fedora or Ubuntu).
+  * Admin must be installed in a Linux machine (Debian, Fedora and Ubuntu has been tested).
   * Exec: `install -A -l lab_file`, where lab_file is the name of the file located in `labs` directory to use as a default config when labadmin is open. 
   * Optionally you can use `ask` lab as default config. This lab config file asks in each execution what lab to use.
 ```bash
