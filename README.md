@@ -91,10 +91,10 @@ Set-Item wsman:\localhost\client\trustedhosts *
 &nbsp;  
 # Usage
 Labadmin can operate in interactive or parametrized mode. 
-<details><summary>For parameter info refer to `labadmin -h`</summary><p>
+<details><summary>Parameter options</summary><p>
 	
 ```
-labadmin -h
+$ labadmin -h
 Admin remotely hosts in a computer lab environment.
    labadmin [-l lab_config] [-i face] [-r range] [-a action] [-1|-2|-3|-4|-5|-6|-7|-8|-9 param] [-W|-L] [-F]
 
