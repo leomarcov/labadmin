@@ -95,8 +95,8 @@ function help() {
    '"${S_B}"'-i '"${S_U}"'iface'"${S_R}"'
 \tNetwork interface to use. Overrides iface variable in lab config file.
 
-   '"${S_B}"'-a '"${S_U}"'n_action'"${S_R}"'
-\tAction to exec (script_id)
+   '"${S_B}"'-a '"${S_U}"'action'"${S_R}"'
+\tAction to exec. For example: user/add
 
    '"${S_B}"'-r '"${S_U}"'range'"${S_R}"'
 \tHosts range to apply actions. For example: 11,34,23,21-28
