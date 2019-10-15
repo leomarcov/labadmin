@@ -91,9 +91,42 @@ Set-Item wsman:\localhost\client\trustedhosts *
 &nbsp;  
 # Usage
 Labadmin can operate in interactive or parametrized mode. 
-<details><summary>For parameter info refer to labadmin -h</summary><p>
+<details><summary>For parameter info refer to `labadmin -h`</summary><p>
+	
 ```
-aaa
+labadmin -h
+Admin remotely hosts in a computer lab environment.
+   labadmin [-l lab_config] [-i face] [-r range] [-a action] [-1|-2|-3|-4|-5|-6|-7|-8|-9 param] [-W|-L] [-F]
+
+  OPTIONS
+   -l lab_config
+	Lab config filename to use
+	Lab config files must be placed in labs/ directory
+	When not specified default file is used.
+
+   -i iface
+	Network interface to use. Overrides iface variable in lab config file.
+
+   -a n_action
+	Action to exec (script_id)
+
+   -r range
+	Hosts range to apply actions. For example: 11,34,23,21-28
+
+   -1|-2|-3|-4|-5|-6|-7|-8|-9 param
+	Action parameter value to exec.
+
+   -W 
+	Force Windows WINRM server mode. Overrides srvmode variable in lab config file.
+
+   -L 
+	Force Linux SSH server mode. Overrides srvmode variable in lab config file.
+
+  SAMPLES
+    labadmin -l a11 -i eth0
+    labadmin -r 5,12,15-20 -a exec -1 c -2 "du -sh /home/*"
+    labadmin -r all -a "update&" -1 y -2 y
+
 ```
 </p></details>
 
