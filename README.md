@@ -29,7 +29,7 @@ Labadmin aims to be a tool useful for IT teachers and computer lab sysadmins.
   * Each lab must be defined previously in a config file. Lab config file stores:
     * Authentication config to use (SSH and/or WinRM).
     * MAC address for each host and a identification number.
-    * Lab distribution: each id host must be placed in a grid position according the real position.
+    * Lab distribution: each id host must be placed in a grid according the real position in the lab.
   * When labadmin starts discovers the computers configured in the lab file, show a map to select them and exec actions in all selected hosts.
 
 <p align="center">
