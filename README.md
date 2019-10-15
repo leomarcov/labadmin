@@ -1,7 +1,7 @@
 # labadmin
 <img align="left" src="https://cdn4.iconfinder.com/data/icons/online-marketing-hand-drawn-vol-3/52/monitor__television__computer__desktop__seo__service__marketing-128.png">
 
-Labadmin is a Linux Bash script capable to remotely admin a set of hosts running Linux or Windows. It's an approach similar to Ansible, but Labadmin is focused to work in educational environment with hosts in a computer laboratory. 
+Labadmin is a Linux Bash script capable to remotely admin a set of hosts running Linux or Windows. It's an approach similar to Ansible, but Labadmin is focused to work in educational environment controlling hosts in a computer laboratory. 
 
 Labadmin aims to be a tool useful for IT teachers and computer lab sysadmins. 
 
