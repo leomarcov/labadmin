@@ -63,7 +63,8 @@ unset p9				# 9st parameter value (-9 param or read)
 
 # CONFIG
 unset noninteractive	# No empty if exec in non-interactive mode (-a and -r parameters found) for display reduced messages
-unset ipadmin			# Admin IP
+unset ipadmin			# Admin IP address
+unset macadmin			# Admin MAC address
 unset lab_id			# Lab config file id (filename without extension)
 unset lab_file			# Lab config file with path
 unset iface				# Network iface for use in admin
