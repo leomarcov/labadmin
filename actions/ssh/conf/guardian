@@ -20,8 +20,12 @@ if [ "$1" = "--load-scriptinfo" ]; then
 elif [ "$1" = "--readparams" ]; then
 	# PARAM1: action
 	read_param "$script_id" 1 "install/uninstall/Check (i/u/C)" "i" "^(i|u|c)$"
+	# PARAM2: admins
 	[ "${p1,,}" = "i" ] && read_param "$script_id" 2 "List of admins users" "" ""
-	[ "${p1,,}" = "i" ] && read_param "$script_id" 3 "Email admin" "" "."
+	# PARAM3: log times
+	[ "${p1,,}" = "i" ] && read_param "$script_id" 3 "Denaied time slots (h for help)" "" "." "\tTime slots where users cant loggin in Format: user1 hour_start_hour_end | user2 hour_start hour_end | ...\n\t For example: asir 1 13 | daw 15 23"
+	# PARAM4: email
+	[ "${p1,,}" = "i" ] && read_param "$script_id" 4 "Email admin" "" "."
 	return
 fi
 
@@ -33,7 +37,8 @@ opt="$1"
 guardian_admins="${2} root"	
 guardian_name="labadmin_guardian.sh"
 guardian_path="/usr/sbin/$guardian_name"
-guardian_email="${3}"
+guardina_slots="${3}"
+guardian_email="${4}"
 guardian_cache="/var/cache/labadmin/guardian"
 guardian_cron="@daily	${guardian_path}   #LABADMIN-GUARDIAN"
 guardian_log="/var/log/labadmin_guardian"
