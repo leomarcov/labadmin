@@ -68,8 +68,8 @@ labadmin_info "Installing $guardian_name"
 
 echo '#!/usr/bin/env bash
 labadmin_sshuser="'"$labadmin_sshuser"'"
-guardian_admins="'"$guardian_admins"'"
 labadmin_nhost="'"$labadmin_nhost"'"
+guardian_admins="'"$guardian_admins"'"
 guardian_email="'"$guardian_email"'"
 guardian_cache="'"$guardian_cache"'"
 guardian_log="'"$guardian_log"'"
@@ -84,8 +84,8 @@ guardian_log="'"$guardian_log"'"
 #===============================================================================
 function log_file() {
 	local event_id="$1"
-	loacl event_msg="$2"
-	echo -e "[$(date "+%F %T")][${event_id}]\t${event_msg}" >> "$log_file"
+	local event_msg="$2"
+	echo -e "[$(date "+%F %T")][${event_id}]\t${event_msg}" >> "$guardian_log"
 }
 
 
@@ -99,15 +99,16 @@ function log_file() {
 function log_email() {
 	local event_id="$1"
 	local event_msg="$2"
-	local event_hostname="$labadmin_nhost"
+	local hostname="$(hostname)"
 	echo -e "#### LABADMIN-GUARDIAN ##############################
 Alert: ${event_id}
 Date:  $(date "+%Y/%m/%d")
 Time:  $(date "+%H:%M")
-Host:  ${nhost}
+Hostname:  $hostname
+Host id: $labadmin_nhost
 ### INFO ##############################
 ${event_msg}
-" | mail -s "[labadmin] [$labadmin_nhost] [GUARDIAN-${event_id^^}]" -a "From: $(hostname) <$(labadmin_nhost)@carlos3.com>" "$guardian_email"
+" | mail -s "[labadmin] [$hostname] [GUARDIAN-${event_id^^}]" -a "From: $hostname <${hostname}@carlos3.com>" "$guardian_email"
 }
 
 
@@ -216,17 +217,19 @@ function check_root-mount() {
 
 ### INIT FILES
 current_date="$(date +%s)"
-last_date="$(grep "^last_date=" "$guardian_cache" | cut -f2 -d=)"
-sed -i "/^last_date=/d" "$guardian_cache"
+if [ -f "$guardian_cache" ]; then
+	last_date="$(grep "^last_date=" "$guardian_cache" | cut -f2 -d=)"
+	sed -i "/^last_date=/d" "$guardian_cache"
+fi
 echo "last_date=$current_date" >> "$guardian_cache"
 
 if [ ! -d "$(dirname "$guardian_cache")" ]; then
 	mkdir "$(dirname "$guardian_cache")"
 	chmod 770 "$(dirname "$guardian_cache")"
 fi
-if [ ! -f "$log_file" ]; then
-	touch "$log_file"
-	chmod 770 "$log_file"
+if [ ! -f "$guardian_log" ]; then
+	touch "$guardian_log"
+	chmod 770 "$guardian_log"
 fi
 
 
