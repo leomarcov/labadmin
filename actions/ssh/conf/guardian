@@ -18,8 +18,8 @@ if [ "$1" = "--load-scriptinfo" ]; then
 
 #=== READ PARAMS ===================================================================
 elif [ "$1" = "--readparams" ]; then
-	# PARAM1: action (install/uninstall)
-	read_param "$script_id" 1 "Install/Uninstall (i/u/C)" "i" "^(i|u|c)$"
+	# PARAM1: action
+	read_param "$script_id" 1 "install/uninstall/Check (i/u/C)" "i" "^(i|u|c)$"
 	[ "${p1,,}" = "i" ] && read_param "$script_id" 2 "List of admins users" "" ""
 	[ "${p1,,}" = "i" ] && read_param "$script_id" 3 "Email admin" "" "."
 	return
