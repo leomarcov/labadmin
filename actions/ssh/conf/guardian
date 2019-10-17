@@ -154,7 +154,7 @@ function check_admins-perms() {
 	# FORBIDDEN SUDOERS: search for sudo users not in admins list and remove sudo
 	[ -f /etc/sudoers ] && for u in $(cut -f1 -d: /etc/passwd); do
 		sudo_output="$(su -l "$u" -c "sudo -nv" 2>&1)"
-	    if [ $? -eq 0 ] || (echo "$sudo_output" | grep -q "^sudo:"); then
+	    if [ $? -eq 0 ] || (echo "$sudo_output" | grep -q "a password is required"); then
 	        echo "$guardian_admins" | grep -qw "$u" && continue
 	        issues="${issues}${issues:+\n}FORBIDDEN USER WITH SUDO: $u"
 	        gpasswd -d "$u" sudo
