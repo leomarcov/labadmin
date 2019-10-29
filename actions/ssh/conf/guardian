@@ -18,10 +18,14 @@ if [ "$1" = "--load-scriptinfo" ]; then
 
 #=== READ PARAMS ===================================================================
 elif [ "$1" = "--readparams" ]; then
-	# PARAM1: action (install/uninstall)
-	read_param "$script_id" 1 "Install/Uninstall (i/u/C)" "i" "^(i|u|c)$"
+	# PARAM1: action
+	read_param "$script_id" 1 "install/uninstall/Check (i/u/C)" "i" "^(i|u|c)$"
+	# PARAM2: admins
 	[ "${p1,,}" = "i" ] && read_param "$script_id" 2 "List of admins users" "" ""
-	[ "${p1,,}" = "i" ] && read_param "$script_id" 3 "Email admin" "" "."
+	# PARAM3: log times
+	[ "${p1,,}" = "i" ] && read_param "$script_id" 3 "Denaied time slots (h for help)" "" "." "\tTime slots where users cant loggin\n\tFormat: user1 hour_start_hour_end | user2 hour_start hour_end | ...\n\tSample: asir 1 13 | daw 15 23"
+	# PARAM4: email
+	[ "${p1,,}" = "i" ] && read_param "$script_id" 4 "Email admin" "" "."
 	return
 fi
 
@@ -33,7 +37,8 @@ opt="$1"
 guardian_admins="${2} root"	
 guardian_name="labadmin_guardian.sh"
 guardian_path="/usr/sbin/$guardian_name"
-guardian_email="${3}"
+guardina_slots="${3}"
+guardian_email="${4}"
 guardian_cache="/var/cache/labadmin/guardian"
 guardian_cron="@daily	${guardian_path}   #LABADMIN-GUARDIAN"
 guardian_log="/var/log/labadmin_guardian"
@@ -68,8 +73,9 @@ labadmin_info "Installing $guardian_name"
 
 echo '#!/usr/bin/env bash
 labadmin_sshuser="'"$labadmin_sshuser"'"
-guardian_admins="'"$guardian_admins"'"
 labadmin_nhost="'"$labadmin_nhost"'"
+guardian_admins="'"$guardian_admins"'"
+guardian_slots="'"$guardian_slots"'"
 guardian_email="'"$guardian_email"'"
 guardian_cache="'"$guardian_cache"'"
 guardian_log="'"$guardian_log"'"
@@ -84,8 +90,8 @@ guardian_log="'"$guardian_log"'"
 #===============================================================================
 function log_file() {
 	local event_id="$1"
-	loacl event_msg="$2"
-	echo -e "[$(date "+%F %T")][${event_id}]\t${event_msg}" >> "$log_file"
+	local event_msg="$2"
+	echo -e "[$(date "+%F %T")][${event_id}]\t${event_msg}" >> "$guardian_log"
 }
 
 
@@ -99,15 +105,16 @@ function log_file() {
 function log_email() {
 	local event_id="$1"
 	local event_msg="$2"
-	local event_hostname="$labadmin_nhost"
+	local hostname="$(hostname)"
 	echo -e "#### LABADMIN-GUARDIAN ##############################
 Alert: ${event_id}
 Date:  $(date "+%Y/%m/%d")
 Time:  $(date "+%H:%M")
-Host:  ${nhost}
+Hostname:  $hostname
+Host id: $labadmin_nhost
 ### INFO ##############################
 ${event_msg}
-" | mail -s "[labadmin] [$labadmin_nhost] [GUARDIAN-${event_id^^}]" -a "From: $(hostname) <$(labadmin_nhost)@carlos3.com>" "$guardian_email"
+" | mail -s "[labadmin] [$hostname] [GUARDIAN-${event_id^^}]" -a "From: $hostname <${hostname}@carlos3.com>" "$guardian_email"
 }
 
 
@@ -153,7 +160,7 @@ function check_admins-perms() {
 	# FORBIDDEN SUDOERS: search for sudo users not in admins list and remove sudo
 	[ -f /etc/sudoers ] && for u in $(cut -f1 -d: /etc/passwd); do
 		sudo_output="$(su -l "$u" -c "sudo -nv" 2>&1)"
-	    if [ $? -eq 0 ] || (echo "$sudo_output" | grep -q "^sudo:"); then
+	    if [ $? -eq 0 ] || (echo "$sudo_output" | grep -q "a password is required"); then
 	        echo "$guardian_admins" | grep -qw "$u" && continue
 	        issues="${issues}${issues:+\n}FORBIDDEN USER WITH SUDO: $u"
 	        gpasswd -d "$u" sudo
@@ -179,6 +186,22 @@ function check_installed-pkgs() {
 }
 
 #=== FUNCTION ==================================================================
+#        NAME: check_login-slots
+# DESCRIPTION: Check if some user has loggin in forbbied slot time
+#===============================================================================
+function check_login-slots() {
+	(IFS="|"; for s in $guardian_slots; do
+		IFS=" "; u=($s)
+		h1="${u[1]}"
+		h2="${u[2]}"
+		u="${u[0]}"
+		id "$u" &>/dev/null || continue
+		
+	done)
+}
+
+
+#=== FUNCTION ==================================================================
 #        NAME: check_auth-fail
 # DESCRIPTION: Check authentication failures
 #===============================================================================
@@ -193,6 +216,7 @@ function check_auth-fail() {
 		log_event "AUTH-BADPASS" "$bad_pass"
 	fi	
 }
+
 
 
 #=== FUNCTION ==================================================================
@@ -216,17 +240,19 @@ function check_root-mount() {
 
 ### INIT FILES
 current_date="$(date +%s)"
-last_date="$(grep "^last_date=" "$guardian_cache" | cut -f2 -d=)"
-sed -i "/^last_date=/d" "$guardian_cache"
+if [ -f "$guardian_cache" ]; then
+	last_date="$(grep "^last_date=" "$guardian_cache" | cut -f2 -d=)"
+	sed -i "/^last_date=/d" "$guardian_cache"
+fi
 echo "last_date=$current_date" >> "$guardian_cache"
 
 if [ ! -d "$(dirname "$guardian_cache")" ]; then
 	mkdir "$(dirname "$guardian_cache")"
 	chmod 770 "$(dirname "$guardian_cache")"
 fi
-if [ ! -f "$log_file" ]; then
-	touch "$log_file"
-	chmod 770 "$log_file"
+if [ ! -f "$guardian_log" ]; then
+	touch "$guardian_log"
+	chmod 770 "$guardian_log"
 fi
 
 
