@@ -11,7 +11,7 @@
 
 (
 IFS=$'\n\t'
-for i in $(find "$labs_path" -type f); do
+for i in $(find "$labs_path" -type f | sort -n); do
 	i="$(echo "$i" | sed 's\'"${labs_path}"'\\g')"		# Strip $labs_path from files
 	[[ "$i" == @(ask|default) ]] && continue
 	echo -e "    [${C_LY}${i}${C_D}]\t$(grep "^labname=" "${labs_path}/$i"| cut -f2 -d= | tr -d \")"
