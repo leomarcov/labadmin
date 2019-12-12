@@ -104,7 +104,7 @@ while true; do
 done' > /tmp/labadmin-xmas.sh
 
 labdmin_config_terminator "${u[0]}"
-com="terminator -x bash -c /tmp/labadmin-xmas.sh"
+com="terminator -x bash -c \"/tmp/labadmin-xmas.sh\""
 su -l "${u[0]}" -c "DISPLAY=${u[1]} xhost si:localuser:$(id -un)" &>/dev/null
 su -l "${u[0]}" -c "DISPLAY=${u[1]} $com" 2>/dev/null
 
