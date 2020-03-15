@@ -23,6 +23,9 @@ srvmode="ssh"
 iface="$(labadmin_iface 8.8.8.8)"
 
 
+# Lab timeout for MAC discover scan in milliseconds (optional, default 500)
+lab_timeout=500
+
 
 #===============================================================================
 # WINDOWS AUTHENTICACION CONFIG
