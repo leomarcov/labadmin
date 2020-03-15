@@ -121,8 +121,8 @@ function search_ips() {
 #===============================================================================
 function update_arpscan() {
 	local arp_out
-	lab_timeout=${lab_timeout:-500}
-	arp_out="$(arp-scan -l -I $iface -q -r 1 -N -t $lab_timeout)" 	# In background is better to avoid > directly
+	scan_timeout=${scan_timeout:-500}
+	arp_out="$(arp-scan -l -I $iface -q -r 1 -N -t $scan_timeout)" 	# In background is better to avoid > directly
 	[ $? -ne 0 ] && labadmin_error "    ! Failed to scan network hosts (arp-scan exit error)" 1 
 	arp_out="${arp_out}"$'\n'"${ipadmin}"$'\t'"${macadmin}"		# Add admin ip mac (allow select admin if is present in lab config file)
 	echo "${arp_out}" > "$arp_file"
