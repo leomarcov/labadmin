@@ -219,7 +219,7 @@ function labadmin_isadmin() {
     # Check if id=0
     cat /etc/passwd | cut -f1,3 -d: | grep ":0$" | grep -q "^${u}:" && return 0
 
-    # Checi if is in sudoers
+    # Check if is in sudoers
     if [ -f /etc/sudoers ]; then
         sudo_output="$(su -l "$u" -c "sudo -nv" 2>&1)"
         if [ $? -eq 0 ]; then
