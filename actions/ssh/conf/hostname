@@ -32,4 +32,4 @@ hn_old="$(cat /etc/hostname | awk '{print $1}')"
 
 echo -e "\e[1m\e[33mChanging hostname: $hn_old -> $hn"
 echo  "${hn}" > /etc/hostname
-sed -i "/^127.0/ s/${hn_ol}/${hn}/g" /etc/hosts
+sed -i "/^127.0/ s/${hn_old}/${hn}/g" /etc/hosts
