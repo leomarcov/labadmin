@@ -11,8 +11,8 @@ if [ "$1" = "--load-scriptinfo" ]; then
 	script_desc="Start anydesk connection to remote host"
 	script_type="local"
 	script_bg="sub"
-	script_admindeps="anydesk(anydesk)"
-	script_hostdeps="anydesk(anydesk)"
+	script_admindeps=""
+	script_hostdeps=""
 	load_scriptinfo "$script_id" "$script_desc" "$script_type" "$script_bg" "$script_admindeps" "$script_hostdeps"
 	return
 
