@@ -9,7 +9,7 @@ script_id="$(echo ${BASH_SOURCE[0]} | sed 's\^'"$scripts_path"'/*\\g')"		# Scrip
 #=== LOAD INFO =====================================================================
 if [ "$1" = "--load-scriptinfo" ]; then
 	script_desc="Start anydesk connection to remote host"
-	script_type="ssh+admin"
+	script_type="local"
 	script_bg="sub"
 	script_admindeps="anydesk(anydesk)"
 	script_hostdeps="anydesk(anydesk)"
@@ -23,11 +23,5 @@ fi
 
 #=== EXEC SCRIPT ===================================================================
 
-# REMOTE EXEC
-if [ "${labadmin_script_type}" = "ssh" ]; then
-
-
-# LOCAL EXEC
-elif [ "${labadmin_script_type}" = "admin" ]; then
-
-fi
+aid=$(labdmin_ssh_host_comm "${labadmin_nhost}" 'anydesk --get-id')
+anydesk "$aid"
