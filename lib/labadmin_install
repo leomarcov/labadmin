@@ -282,6 +282,7 @@ function install_admin() {
 	fi
 	chown -R root."$labadmin_group" "$dir_install"
 	chmod -R 640 "$dir_install"
+	chmod ug+x "$script_install"
 	chmod ug+x "$dir_install/install"
 	chmod ug+x "$dir_install/uninstall"
 
