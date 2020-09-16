@@ -281,10 +281,9 @@ function install_admin() {
 		cp -r "$labadmin_path" "$dir_install"
 	fi
 	chown -R root."$labadmin_group" "$dir_install"
-	chmod ug+x "$script_install"
-	chmod -R g=u "$dir_install"
-	chmod -R o=-rwx "$dir_install"
-	chmod -R ug+x "$dir_install/actions/"
+	chmod -R 640 "$dir_install"
+	chmod ug+x "$dir_install/install"
+	chmod ug+x "$dir_install/uninstall"
 
 	labadmin_info "Creating /usr/bin links"
 	rm -rf "/usr/bin/$(basename "$script_install")" &> /dev/null
