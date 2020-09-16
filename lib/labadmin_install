@@ -281,7 +281,8 @@ function install_admin() {
 		cp -r "$labadmin_path" "$dir_install"
 	fi
 	chown -R root."$labadmin_group" "$dir_install"
-	chmod -R 640 "$dir_install"
+	find "$dir_install" -type f -exec chmod 640 {} \;
+	find "$dir_install" -type d -exec chmod 650 {} \;
 	chmod ug+x "$script_install"
 	chmod ug+x "$dir_install/install"
 	chmod ug+x "$dir_install/uninstall"
