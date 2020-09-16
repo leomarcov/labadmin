@@ -24,4 +24,5 @@ fi
 #=== EXEC SCRIPT ===================================================================
 
 aid=$(labdmin_ssh_host_comm "${labadmin_nhost}" 'anydesk --get-id')
+labadmin_info "Host Anydesk ID: $aid"
 anydesk "$aid"
