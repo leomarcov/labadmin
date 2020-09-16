@@ -146,6 +146,7 @@ function ssh_init() {
 	# Check if current pubkey is on ssh-agent
 	if ! ssh-add -L | grep "$sshpubkey" &> /dev/null; then
 		(unset DISPLAY; echo "$sshprivatekey" > "$sshkey_file" | ssh-add "$sshkey_file")
+		[ $? -ne 0 ] && labadmin_error "Error adding labadmin private key to ssh agent" 1
 	fi
 	# Reset .ssh/knownhosts if is 24h or older (in dhcp avoids ip server has changed warning)
 	if [ $(find "$HOME/.ssh/knownhosts" -mtime +0 2>/dev/null | wc -l) -ne 0 ]; then
