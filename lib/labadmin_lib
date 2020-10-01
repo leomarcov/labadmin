@@ -261,7 +261,7 @@ function labadmin_iface() {
 function labadmin_ip() {
         local iface="$1"
         [ ! "$iface" ] && labadmin_error "ERROR: function labadmin_ip iface parameter is empty"
-        ip -4 -o addr show dev "$iface" 2> /dev/null | awk '{split($4,a,"/");print a[1]}'
+        ip -4 -o addr show dev "$iface" 2> /dev/null | awk '{split($4,a,"/");print a[1]}' | head -1
 }
 
 
