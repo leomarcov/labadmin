@@ -153,7 +153,7 @@ function draw_map() {
 		echo "${tab}${ei}$(seq -s"─" $(($nc*6)) | tr -d "[0-9]")${ed}"
 	done
 	# Print IP
-	ip="$(ip -o -4 address show dev "$iface" | awk '{print $4}')"
+	ip="$(ip -o -4 address show dev "$iface" | awk '{print $4}' | head -1)"
 	echo -en "${tab} ${C_N}${ip}${S_R}"
 	# Print num selected hosts
 	[ "$mark_selected" ] && echo -en "$(seq -s " " 1 "$((4+${nc}*6-5-${#ip}))" | tr -d "[0-9]")${sel_bg_color}${#ashosts[*]}${S_R}"
