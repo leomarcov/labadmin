@@ -301,7 +301,9 @@ function install_admin() {
 
 	labadmin_info "Copying desktop files"
 	cp "$labadmin_path/desktop/labadmin.desktop" /usr/share/applications/
+	chmod a+r /usr/share/applications/labadmin.desktop
 	cp "$labadmin_path/desktop/labadmin.png" /usr/share/pixmaps/
+	chmod a+r /usr/share/pixmaps/labadmin.png
 
 	labadmin_info "Config labs/${lab_id} as default lab file"
 	echo 'source "$labs_path/'"${lab_id}"'"' | tee "${dir_install}/labs/default"
