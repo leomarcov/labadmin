@@ -59,7 +59,7 @@ find "$exam_backups" -type f -mtime +${max_backup_days} -exec rm -v {} \; 2> /de
 perms0="wget curl sudo su links lynx wall nc netcat ncat mount"
 # banned borwsers (all but chromium):
 browsers="$(compgen -c google | grep chrome) $(compgen -c firefox) $(man -s 1 -k "web browser" | cut -f1 -d" ")"
-chromium_name="$(compgen -c chromium)"	# some distros chromium, others chromium-browser
+chromium_name="$(compgen -c chromium|head -1)"	# some distros chromium, others chromium-browser
 # banned mountpoints:
 mountpoints="/media/ /mnt/ /run/media/"
 # banned screenshoters
