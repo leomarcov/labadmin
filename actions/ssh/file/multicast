@@ -48,9 +48,9 @@ if [ "${labadmin_script_type}" = "ssh" ]; then
 	[ ! -w "$dest" ] && labadmin_error "Can't write in remote path $dest" 1
 	
 	# RECEIVE
-	killall -9 udp-receiver 2>/dev/null      
-	id
-	udp-receiver --interface "$iface_host" --nokbd  | tar -x -C "$dest"
+	killall -9 udp-receiver 2>/dev/null   
+	owner="$(stat -c "%U" "$dest")"
+	udp-receiver --interface "$iface_host" --nokbd  | sudo -l "$owner" -c "tar -x -C \"$dest\""
 
 
 # ADMIN EXEC
