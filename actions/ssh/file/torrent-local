@@ -58,6 +58,7 @@ elif [ "${labadmin_script_type}" = "local" ]; then
 	dd if="${tmp_torrent_path}/current.torrent" 2>/dev/null | labdmin_ssh_host_comm_stdin "${labadmin_nhost}" '
 rm -rf /tmp/labadmin_torrent-send/ &>/dev/null
 mkdir /tmp/labadmin_torrent-send &>/dev/null
+chmod o+w /tmp/labadmin_torrent-send
 dd of="/tmp/labadmin_torrent-send/current.torrent" &>/dev/null' 
 	[ $? -eq 0 ] && labadmin_info "Torrent file copied to host" || labadmin_error "Error copying torrent file to host"
 
