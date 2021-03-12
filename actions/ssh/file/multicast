@@ -50,7 +50,7 @@ if [ "${labadmin_script_type}" = "ssh" ]; then
 	# RECEIVE
 	killall -9 udp-receiver 2>/dev/null   
 	owner="$(stat -c "%U" "$dest")"
-	udp-receiver --interface "$iface_host" --nokbd  | sudo -l "$owner" -c "tar -x -C \"$dest\""
+	udp-receiver --interface "$iface_host" --nokbd  | su -l "$owner" -c "tar -x -C \"$dest\""
 
 
 # ADMIN EXEC
