@@ -48,7 +48,8 @@ if [ "${labadmin_script_type}" = "ssh" ]; then
 	[ ! -w "$dest" ] && labadmin_error "Can't write in remote path $dest" 1
 	
 	# RECEIVE
-	killall -9 udp-receiver 2>/dev/null               
+	killall -9 udp-receiver 2>/dev/null      
+	id
 	udp-receiver --interface "$iface_host" --nokbd  | tar -x -C "$dest"
 
 
