@@ -101,7 +101,8 @@ done
 )&
 
 # Starts transmission!
-transmission-cli -w "$dest" -g  /tmp/labadmin_torrent-send/ /tmp/labadmin_torrent-send/current.torrent &>/dev/null
+owner="$(stat -c "%U" "$dest")"
+su -l "$owner" -c "transmission-cli -w \"$dest\" -g  /tmp/labadmin_torrent-send/ /tmp/labadmin_torrent-send/current.torrent &>/dev/null"
 '
 
 
