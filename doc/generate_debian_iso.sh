@@ -21,7 +21,7 @@ sudo chroot "${install_dir}/chroot"
 echo "$hostname" > /etc/hostname
 apt-get update
 apt-get install --no-install-recommends linux-image-${arch} live-boot systemd-sysv
-apt-get install --no-install-recommends network-manager net-tools iproute2 xinit xtern vim
+apt-get install --no-install-recommends network-manager net-tools iproute2 xinit xterm vim
 
 # INSTALL PACKAGES
 
