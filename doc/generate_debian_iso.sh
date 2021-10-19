@@ -3,8 +3,8 @@
 
 install_dir="$HOME/DEBIAN_LABADMIN_SOURCE"
 arch="amd64"
-debian_ver="sid"
-hostname="debian_labadmin"
+debian_ver="stable"
+hostname="labadmin_pxe"
 iso_filename="debian_labadmin.iso"
 
 
