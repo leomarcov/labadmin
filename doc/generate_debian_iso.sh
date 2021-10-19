@@ -5,7 +5,7 @@ install_dir="$HOME/DEBIAN_LABADMIN_SOURCE"
 arch="amd64"
 debian_ver="stable"
 hostname="labadmin_pxe"
-iso_filename="debian_labadmin.iso"
+iso_filename="labadmin_pxe.iso"
 
 
 # INSTALL PREREQUISITES
