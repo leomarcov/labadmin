@@ -2,7 +2,6 @@
 # SOURCE: https://willhaley.com/blog/custom-debian-live-environment/
 
 install_dir="$HOME/DEBIAN_LABADMIN_SOURCE"
-arch="amd64"
 debian_ver="stable"
 hostname="labadmin_pxe"
 iso_filename="labadmin_pxe.iso"
@@ -12,7 +11,7 @@ iso_filename="labadmin_pxe.iso"
 sudo apt-get install debootstrap squashfs-tools xorriso grub-pc-bin grub-efi-amd64-bin mtools
 
 # BOOTSTRAP AND CONFIGURE DEBIAN
-sudo debootstrap --arch="$arch" --variant=minbase "$debian_ver" "${install_dir}/chroot" http://ftp.us.debian.org/debian/
+sudo debootstrap --arch=amd64 --variant=minbase "$debian_ver" "${install_dir}/chroot" http://ftp.us.debian.org/debian/
 
 
 # CHROOT #############################################################################
@@ -20,7 +19,7 @@ sudo chroot "${install_dir}/chroot"
 
 echo "$hostname" > /etc/hostname
 apt-get update
-apt-get install --no-install-recommends linux-image-${arch} live-boot systemd-sysv
+apt-get install --no-install-recommends linux-image-amd64 live-boot systemd-sysv
 apt-get install --no-install-recommends network-manager net-tools iproute2 xinit xterm vim
 
 # INSTALL PACKAGES
