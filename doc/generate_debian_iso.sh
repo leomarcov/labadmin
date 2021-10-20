@@ -3,7 +3,6 @@
 
 install_dir="$HOME/DEBIAN_LABADMIN_SOURCE"
 debian_ver="stable"
-hostname="labadmin_pxe"
 iso_filename="labadmin_pxe.iso"
 
 
@@ -16,16 +15,20 @@ sudo debootstrap --arch=amd64 --variant=minbase "$debian_ver" "${install_dir}/ch
 
 # CHROOT #############################################################################
 sudo chroot "${install_dir}/chroot"
+hostname="labadmin_pxe"
 
+# CONFIG SYSTEM
+passwd root
 echo "$hostname" > /etc/hostname
-apt-get update
-apt-get install --no-install-recommends linux-image-amd64 live-boot systemd-sysv
-apt-get install --no-install-recommends network-manager net-tools iproute2 xinit xterm vim
+dpkg-reconfigure locales
 
 # INSTALL PACKAGES
-
-passwd root
+apt-get update
+apt-get install --no-install-recommends linux-image-amd64 live-boot systemd-sysv iproute2 vim
+# install other needed packages
 apt-get clean
+apt-get autoremove
+
 exit
 ######################################################################################
 
@@ -37,16 +40,14 @@ sudo mksquashfs "${install_dir}/chroot" "${install_dir}/image/live/filesystem.sq
 
 cp "${install_dir}/chroot/boot/vmlinuz-"* "${install_dir}/image/vmlinuz" && cp "${install_dir}/chroot/boot/initrd.img-"* "${install_dir}/image/initrd"
 
+
 cat <<'EOF' > "${install_dir}/scratch/grub.cfg"
-
 search --set=root --file /DEBIAN_CUSTOM
-
 insmod all_video
-
 set default="0"
 set timeout=0
 
-menuentry "Debian Live"" {
+menuentry "Labadmin PXE"" {
     linux /vmlinuz boot=live quiet nomodeset
     initrd /initrd
 }
@@ -56,7 +57,6 @@ touch "${install_dir}/image/DEBIAN_CUSTOM"
 
 rm "${install_dir}/scratch/core.img"
 grub-mkstandalone --format=i386-pc --output="${install_dir}/scratch/core.img" --install-modules="linux normal iso9660 biosdisk memdisk search tar ls" --modules="linux normal iso9660 biosdisk search" --locales="" --fonts=""  "boot/grub/grub.cfg=${install_dir}/scratch/grub.cfg"
-
 cat /usr/lib/grub/i386-pc/cdboot.img "${install_dir}/scratch/core.img" > "${install_dir}/scratch/bios.img"
 
 rm "${install_dir}/${iso_filename}"
