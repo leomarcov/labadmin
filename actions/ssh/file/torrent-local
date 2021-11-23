@@ -11,7 +11,7 @@ if [ "$1" = "--load-scriptinfo" ]; then
 	script_desc="Send local files to hosts using torrent"
 	script_type="admin+local+admin"
     script_bg="force sub"
-	script_admindeps=""
+	script_admindeps="transmission-cli"
 	script_hostdeps="transmission-cli"
 	load_scriptinfo "$script_id" "$script_desc" "$script_type" "$script_bg" "$script_admindeps" "$script_hostdeps"
 	return
