@@ -43,5 +43,4 @@ if [ "${term,,}" = "y" ]; then
 fi
 
 su -l "${u[0]}" -c "DISPLAY=${u[1]} xhost si:localuser:$(id -un)" 
-
-DISPLAY=${u[1]} $com 2>/dev/null
+su -l root -c "DISPLAY=${u[1]} $com" 2>/dev/null
