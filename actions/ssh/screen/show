@@ -28,7 +28,7 @@ fi
 if [ "${labadmin_script_type}" = "admin" ] && [ "${labadmin_script_type_state}" = "1" ]; then
     # CREATE TMP DIR
     export dir_img="$(mktemp -d "$labadmin_tmp_path/screenshot-display.XXXXXXXX")"
-    labadmin_info "Creating temp directory $dir"
+    labadmin_info-list "Creating temp directory $dir"
 
 (
     # Wait for first image created
@@ -50,10 +50,10 @@ if [ "${labadmin_script_type}" = "admin" ] && [ "${labadmin_script_type_state}" 
     done
 
     # Start imagen viewer tool
-    labadmin_info "\nPress [Enter] or close image window to stop cast"
+	labadmin_info-list "Press ${S_B}[ENTER]${S_R} or close screenshot window to ${S_B}stop${S_R} cast\n"
     feh -S filename -R 0.5 --title "%n" "$dir_img"/*.jpg 2>/dev/null
     # Remove dir 
-    [ -d "$dir_img" ] && { labadmin_info "Removing $dir_img"; rm -rf "$dir_img"; }
+    [ -d "$dir_img" ] && { labadmin_info-list "Removing $dir_img"; rm -rf "$dir_img"; }
 )&
 
 
@@ -81,6 +81,6 @@ elif [ "${labadmin_script_type}" = "admin" ] && [ "${labadmin_script_type_state}
     dir_img="$(ls -dt "$labadmin_tmp_path/screenshot-display"* | head -1)/"
     sleep 2
     read 
-    [ -d "$dir_img" ] && { labadmin_info "Removing $dir_img"; rm -rf "$dir_img"; }
+    [ -d "$dir_img" ] && { labadmin_info-list "Removing $dir_img"; rm -rf "$dir_img"; }
     true
 fi    
