@@ -8,7 +8,7 @@ script_id="$(echo ${BASH_SOURCE[0]} | sed 's\^'"$scripts_path"'/*\\g')"		# Scrip
 
 #=== LOAD INFO =====================================================================
 if [ "$1" = "--load-scriptinfo" ]; then
-	script_desc="Save screenshots from multiple hosts"
+	script_desc="Save screenshots files for each selected host"
 	script_type="local"
 	script_bg="sub"
 	script_admindeps=""
