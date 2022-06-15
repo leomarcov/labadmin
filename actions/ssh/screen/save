@@ -1,59 +1,72 @@
-#!/usr/bin/env bash
+#!/usr/bin/env bash                                                                                                                                                                                                 
 #===================================================================================
 #     FILE: screen/save
 #   AUTHOR: Leonardo Marco (labadmin@leonardomarco.com)
 #  LICENSE: GNU General Public License v3.0
 #===================================================================================
-script_id="$(echo ${BASH_SOURCE[0]} | sed 's\^'"$scripts_path"'/*\\g')"		# Script filename with relative script path
+script_id="$(echo ${BASH_SOURCE[0]} | sed 's\^'"$scripts_path"'/*\\g')"     # Script filename with relative script path
 
 #=== LOAD INFO =====================================================================
 if [ "$1" = "--load-scriptinfo" ]; then
-	script_desc="Save screenshots files for each selected host"
-	script_type="local"
-	script_bg="sub"
-	script_admindeps=""
-	script_hostdeps="import(imagemagick)"
-	load_scriptinfo "$script_id" "$script_desc" "$script_type" "$script_bg" "$script_admindeps" "$script_hostdeps"
-	return
+    script_desc="Save screenshots files for each selected host"
+    script_type="local+admin"
+    script_bg="force sub"
+    script_admindeps=""
+    script_hostdeps="import(imagemagick)"
+    load_scriptinfo "$script_id" "$script_desc" "$script_type" "$script_bg" "$script_admindeps" "$script_hostdeps"
+    return
 
 #=== READ PARAMS ===================================================================
 elif [ "$1" = "--readparams" ]; then
-	# PARAM1: delay
-	read_param "$script_id" 1 "Delay seconds (default 5)"  "5" "^[1-9]([0-9])*$"
-	# PARAM2: time displaying
-	[ "${p2,,}" ] && read_param "$script_id" 2 "Max time in seconds (default forever)" "" "^[1-9]([0-9])*$|^$"
-	# PARAM3: directory for save
-	read_param "$script_id" 4 "Directory to save pictures (default tmp folder)"  "$(mktemp -d /tmp/labadmin-screenshot.XXXXXXXX)" ""
-	return
+    # PARAM1: delay
+    read_param "$script_id" 1 "Delay seconds (default 5)"  "5" "^[1-9]([0-9])*$"
+    # PARAM2: time displaying
+    [ "${p2,,}" ] && read_param "$script_id" 2 "Time saving in seconds (default forever)" "" "^[1-9]([0-9])*$|^$"
+    # PARAM3: directory for save
+    read_param "$script_id" 4 "Directory to save pictures (default tmp folder)"  "$(mktemp -d "$labadmin_tmp_path/screenshot-display.XXXXXXXX")" ""
+    return
 fi
 
 
 #=== EXEC SCRIPT ===================================================================
-dsec="$1";
-tdisp="$2"
-dir_dest="$4"
-[ ! "$tdisp" ] && tdisp="999999999"
-[ "$dir_dest" ] && dir_dest="$(eval echo "$dir_dest")"			# Resolve scape characteres like \ ,*, etc.
 
+# LOCAL EXEC
+if [ "${labadmin_script_type}" = "local" ]; then
+    dsec="$1";
+    tdisp="$2"
+    dir_dest="$4"
+    [ ! "$tdisp" ] && tdisp="999999999"
+    [ "$dir_dest" ] && dir_dest="$(eval echo "$dir_dest")"          # Resolve scape characteres like \ ,*, etc.
+    [ ! -w "$dir_dest" ] && labadmin_error "Can't write in directory $dir_dest" 1 
 
-[ ! -w "$dir_dest" ] && labadmin_error "Can't write in directory $dir_dest" 1 
-chmod 700 "$dir_dest"
-
-
-### SAVE
-t0=$(date +%s)
-n=0
-while [ $[$(date +%s)-$t0] -le "$tdisp" ]; do
-	(
-		file_tmp="$dir_dest/[${labadmin_nhost}]_$(date +%Y-%m-%d_%H-%M-%S).jpg"
-		echo -e " [$n] ${S_B}${file_tmp}${S_R}"
-		labdmin_ssh_host_comm "${labadmin_nhost}" '
+    sleep 2
+    t0=$(date +%s)
+    n=0
+    while [ $[$(date +%s)-$t0] -le "$tdisp" ]; do
+        [ -f "$dir_dest/stop" ] && break
+        file_tmp="$dir_dest/[${labadmin_nhost}]_$(date +%Y-%m-%d_%H-%M-%S).jpg"
+        echo -e " [$n] ${S_B}${file_tmp}${S_R}"
+        labdmin_ssh_host_comm "${labadmin_nhost}" '
 u=($(labadmin_users-display | head -1))
 [ ! "${u[0]}" ] && labadmin_error "No users logged" 1
 modprobe -r pcspkr
 su -l "${u[0]}" -c "import -window root -display "${u[1]}" jpg:-"' > "${file_tmp}"
-	)&
-	n=$((n+1))
-	sleep $dsec
-done
-sleep 1
+
+        n=$((n+1))
+        [ -f "$dir_dest/stop" ] && break
+        sleep $dsec
+    done
+
+# ADMIN EXEC
+elif [ "${labadmin_script_type}" = "admin" ]; then
+    dir_dest="$4"
+    [ "$dir_dest" ] && dir_dest="$(eval echo "$dir_dest")"          # Resolve scape characteres like \ ,*, etc.
+    [ ! -w "$dir_dest" ] && labadmin_error "Can't write in directory $dir_dest" 1 
+
+    labadmin_info-list "Saving screenshots in: ${S_B}$dir_dest${S_R}"
+    labadmin_info-list "Press ${S_B}[ENTER]${S_R} to ${S_B}stop${S_R} saving screenshots\n"
+    read
+    touch "$dir_dest/stop"
+    ( sleep 10; rm "$dir_dest/stop" &>/dev/null)& 
+    
+fi
