@@ -80,7 +80,7 @@ B_W="\e[107m"           # Background LIGHT WHITE
 # DESCRIPTION: show error message adding [*] at beginin
 #===============================================================================
 function labadmin_error-list() {
-    echo -e " [${C_BR}*${S_R}] $1$" 1>&2
+    echo -e " [${C_BR}*${S_R}] $1" 1>&2
 }
 
 #=== FUNCTION ==================================================================
