@@ -72,6 +72,7 @@ su -l "${u[0]}" -c "import -window root -display "${u[1]}" jpg:-"' > "${file_img
 # ADMIN EXEC STAGE 2
 elif [ "${labadmin_script_type}" = "admin" ] && [ "${labadmin_script_type_state}" = "2" ]; then
     dir_img="$(ls -dt "$labadmin_tmp_path/screenshot-display"* | head -1)/"
+	sleep 2
     labadmin_info "Press [Enter] or close image window to stop cast"
 	read -p ""
 	[ -d "$dir_img" ] && { labadmin_info "Removing $dir_img"; rm -rf "$dir_img"; }
