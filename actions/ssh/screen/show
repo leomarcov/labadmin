@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/env bash                                                                                                                                                                                                 
 #===================================================================================
 #     FILE: screen/show
 #   AUTHOR: Leonardo Marco (labadmin@leonardomarco.com)
@@ -27,25 +27,31 @@ fi
 # ADMIN EXEC STAGE1
 if [ "${labadmin_script_type}" = "admin" ] && [ "${labadmin_script_type_state}" = "1" ]; then
     # CREATE TMP DIR
-	export dir_img="$(mktemp -d "$labadmin_tmp_path/screenshot-display.XXXXXXXX")"
-	labadmin_info "Creating temp directory $dir"
+    export dir_img="$(mktemp -d "$labadmin_tmp_path/screenshot-display.XXXXXXXX")"
+    labadmin_info "Creating temp directory $dir"
 
-(   
+(
     # Wait for first image created
     sleep 1
     n=0 
-    while [ "$(find "$dir_img" -name "*.jpg" -size 0)" ]; do  
-       	labadmin_info-list "Waiting for images..."
-        sleep 1
+    while true; do
+        pending_imgs=$(find "$dir_img" -name "*.jpg" -size 0)                       #List of img file paths pending
+        [ ! "$pending_imgs" ] && break
+        pending_hosts=$(echo "$pending_imgs" | sed 's/.*\///g' | sed 's/.jpg$//g' | sed -z 's/\n/ /g')  # List of hosts pending
+
+        labadmin_info-list "Waiting for images: $pending_hosts"
         n=$((n+1))
         if [ "$n" -gt 5 ]; then
-            labadmin_error-list "Skipping not responding hosts:"
-            rm -v $(find "$dir_img" -name "*.jpg" -size 0)
+            labadmin_error-list "\nSkipping not responding hosts: $pending_hosts"
+            rm -f $pending_imgs
+            break
         fi  
+        sleep 1
     done
-    
+
     # Start imagen viewer tool
-    feh -S filename -R 0.5 --title "%n" "$dir_img"/*.jpg
+    labadmin_info "Press [Enter] or close image window to stop cast"
+    feh -S filename -R 0.5 --title "%n" "$dir_img"/*.jpg 2>/dev/null
     # Remove dir 
     [ -d "$dir_img" ] && { labadmin_info "Removing $dir_img"; rm -rf "$dir_img"; }
 )&
@@ -58,13 +64,14 @@ elif [ "${labadmin_script_type}" = "local" ]; then
     touch "$file_img"
 
     while true; do
-        (
-            [ ! -d "$dir_img" ] && exit
-            labdmin_ssh_host_comm "${labadmin_nhost}" '
+        [ ! -d "$dir_img" ] && break
+        labdmin_ssh_host_comm "${labadmin_nhost}" '
 u=($(labadmin_users-display | head -1))
 [ ! "${u[0]}" ] && labadmin_error "No users logged" 1
-su -l "${u[0]}" -c "import -window root -display "${u[1]}" jpg:-"' > "${file_img}.tmp" && cp "${file_img}.tmp" "${file_img}" 2>/dev/null
-)&
+modprobe -r pcspkr
+su -l "${u[0]}" -c "import -window root -display "${u[1]}" jpg:-"' > "${file_img}.tmp" 
+        [ "$?" -ne 0 ] && exit
+        cp "${file_img}.tmp" "${file_img}" 2>/dev/null
         sleep 0.5
     done
 
@@ -72,8 +79,8 @@ su -l "${u[0]}" -c "import -window root -display "${u[1]}" jpg:-"' > "${file_img
 # ADMIN EXEC STAGE 2
 elif [ "${labadmin_script_type}" = "admin" ] && [ "${labadmin_script_type_state}" = "2" ]; then
     dir_img="$(ls -dt "$labadmin_tmp_path/screenshot-display"* | head -1)/"
-	sleep 2
-    labadmin_info "Press [Enter] or close image window to stop cast"
-	read -p ""
-	[ -d "$dir_img" ] && { labadmin_info "Removing $dir_img"; rm -rf "$dir_img"; }
-fi
+    sleep 2
+    read -p ""
+    [ -d "$dir_img" ] && { labadmin_info "Removing $dir_img"; rm -rf "$dir_img"; }
+    true
+fi    
