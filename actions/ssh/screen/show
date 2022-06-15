@@ -46,10 +46,8 @@ if [ "${labadmin_script_type}" = "admin" ] && [ "${labadmin_script_type_state}" 
     
     # Start imagen viewer tool
     feh -S filename -R 0.5 --title "%n" "$dir_img"/*.jpg
-
     # Remove dir 
-    labadmin_info "Removing $dir_img"
-    rm -rf "$dir_img"
+    [ -d "$dir_img" ] && { labadmin_info "Removing $dir_img"; rm -rf "$dir_img"; }
 )&
 
 
@@ -76,6 +74,5 @@ elif [ "${labadmin_script_type}" = "admin" ] && [ "${labadmin_script_type_state}
     dir_img="$(ls -dt "$labadmin_tmp_path/screenshot-display"* | head -1)/"
     labadmin_info "Press [Enter] or close image window to stop cast"
 	read -p ""
-    labadmin_info "Removing $dir_img"
-    rm -rf "$dir_img"
+	[ -d "$dir_img" ] && { labadmin_info "Removing $dir_img"; rm -rf "$dir_img"; }
 fi
