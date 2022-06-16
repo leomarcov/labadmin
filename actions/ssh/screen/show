@@ -33,7 +33,7 @@ if [ "${labadmin_script_type}" = "admin" ] && [ "${labadmin_script_type_state}" 
 (
     # Wait for first image created
     sleep 1
-    n=5 
+    n=5 	# Number of seconds to wait for first image host
     while true; do
         pending_imgs=$(find "$dir_img" -name "*.jpg" -size 0)                       #List of img file paths pending
         [ ! "$pending_imgs" ] && break
