@@ -21,7 +21,7 @@ readonly installers_path="$labadmin_path/lib/installers/"				# Installers path
 declare -A dependence_errors											# Array with dependence errors in last check: dependence_errors[action_id]=dependencies(packages)...
 
 # List of global labadmin dependencies                   																			
-scripts_admindeps["labadmin-base"]="ssh(openssh-client|openssh-clients) systemctl(systemd) arp-scan terminator winrm-go(winrm) awk ip" 		
+scripts_admindeps["labadmin-base"]="ssh(openssh-client|openssh-clients) systemctl(systemd) arp-scan terminator winrm-go(winrm) awk ip beep" 		
 # List of global host dependencies
 scripts_hostdeps["labadmin-base"]="sshd(openssh-server) awk ip"
 
