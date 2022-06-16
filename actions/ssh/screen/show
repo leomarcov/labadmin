@@ -41,7 +41,7 @@ if [ "${labadmin_script_type}" = "admin" ] && [ "${labadmin_script_type_state}" 
 
         labadmin_info-list "Waiting for images: $pending_hosts"
         n=$((n-1))
-        if [ "$n" -lt 0 ]; then
+        if [ "$n" -le 0 ]; then
             labadmin_error-list "Skipping hosts: $pending_hosts"
             rm -f $pending_imgs
             break
