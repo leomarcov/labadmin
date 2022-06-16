@@ -325,7 +325,7 @@ IPTABLES_SAVE_ON_RESTART="yes"' >> /etc/sysconfig/iptables-config
 function labadmin_beep() {
     modprobe pcspkr &>/dev/null || return 1
     case "$1" in
-        error1) for n in 1 2; do for f in 1 2 1 2 1 2 1 2 1 2 ; do beep -f ${f}000 -l 10; done; sleep 0.08; done
+        error1) for n in 1 2; do for f in 1 2 1 2 1 2 1 2 1 2 ; do beep -f ${f}000 -l 10; done; sleep 0.08; done &>/dev/null
         ;;
     esac
 }
