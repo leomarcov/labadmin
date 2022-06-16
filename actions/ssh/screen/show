@@ -70,7 +70,11 @@ u=($(labadmin_users-display | head -1))
 [ ! "${u[0]}" ] && labadmin_error "No users logged" 1
 modprobe -r pcspkr
 su -l "${u[0]}" -c "import -window root -display "${u[1]}" jpg:-"' > "${file_img}.tmp" 
-        [ "$?" -ne 0 ] && exit
+        if [ "$?" -eq 0 ]; then
+			[ ! "$c" ] && labadmin_info-list "Connection successful"; c=1
+		else
+			exit
+		fi
         cp "${file_img}.tmp" "${file_img}" 2>/dev/null
         sleep 0.5
     done
