@@ -71,7 +71,7 @@ u=($(labadmin_users-display | head -1))
 modprobe -r pcspkr
 su -l "${u[0]}" -c "import -window root -display "${u[1]}" jpg:-"' > "${file_img}.tmp" 
         if [ "$?" -eq 0 ]; then
-			[ ! "$c" ] && labadmin_info-list "Connection successful"; c=1
+			[ ! "$c" ] && echo "Connection successful"; c=1
 		else
 			exit
 		fi
