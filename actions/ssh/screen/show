@@ -50,6 +50,7 @@ if [ "${labadmin_script_type}" = "admin" ] && [ "${labadmin_script_type_state}" 
     done
 
     # Start imagen viewer tool
+	echo
 	labadmin_info-list "Press ${S_B}[ENTER]${S_R} or close screenshot window to ${S_B}stop${S_R} cast\n"
     feh -S filename -R 0.5 --title "%n" "$dir_img"/*.jpg 2>/dev/null
     # Remove dir 
