@@ -19,7 +19,7 @@ if [ "$1" = "--load-scriptinfo" ]; then
 #=== READ PARAMS ===================================================================
 elif [ "$1" = "--readparams" ]; then
 	# PARAM1: hostname
-	read_param "$script_id" 1 'New hostname (use \${n} for replace for host number)' "" "."
+	read_param "$script_id" 1 'New hostname (use ${n} for replace for host number)' "" "."
 	return
 fi
 
