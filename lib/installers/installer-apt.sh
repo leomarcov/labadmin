@@ -70,7 +70,7 @@ function installer_uninstall() {
 # DESCRIPTION: update packages info from repositories
 #===============================================================================
 function installer_update() {
-	apt-get update
+	apt-get update --allow-releaseinfo-change
 	return $?
 }
 
