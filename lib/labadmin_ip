@@ -90,7 +90,7 @@ function search_ips() {
 	for n in ${!macs[@]}; do
 		local mac=${macs[$n]}
 		[ ! "$mac" ] && continue
-		local ip=$(echo "$arp_table" | grep -i "$mac" | tail -1)
+		local ip=$(echo "$arp_table" | grep -i "${mac}$" | tail -1)
 		if [ "$ip" ]; then
 			ips[$n]=$(echo $ip | awk '{print $1}')
 			if $(echo "$ip" | grep -q "inactive"); then
