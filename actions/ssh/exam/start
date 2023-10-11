@@ -466,7 +466,7 @@ find /tmp -maxdepth 1 ! -user root -exec rm -rf {} \; &>/dev/null
 ### RESTORE IPTABLES
 if [[ "${fw_type,,}" == @(whitelist|blacklist) ]]; then
 	labadmin_info "Restoring IPTABLES rules"
-	iptables-restore < "$iptables_backup"
+	[ -s "$iptables_backup ] && iptables-restore < "$iptables_backup" || iptables -F
 	rm "$iptables_backup"
 	labadmin_iptables-persistent || labadmin_error "ERROR: Cant find method for IPTABLES PERSISTENCE"
 fi
