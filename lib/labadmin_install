@@ -111,7 +111,7 @@ function check_dependencies() {
 	local action="$1"
 	local aname="$2"
 
-	eval [[ ! -v ${aname}[@] ]] && labadmin_error "Error checking dependencies (incorrect arrayname $aname in check_dependencies function)" 1
+	#eval [[ ! -v ${aname}[@] ]] && labadmin_error "Error checking dependencies (incorrect arrayname $aname in check_dependencies function)" 1
 
 	echo "Checking modules dependencies"
 
