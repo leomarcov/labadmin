@@ -8,7 +8,7 @@ script_id="$(echo ${BASH_SOURCE[0]} | sed 's\^'"$scripts_path"'/*\\g')"		# Scrip
 
 #=== LOAD INFO =====================================================================
 if [ "$1" = "--load-scriptinfo" ]; then
-	script_desc="Backup remote partition table and bootloader (first MB) and save in local path"
+	script_desc="Backup remote partition table and save in local path"
     script_type="local"
 	script_bg="sub"
 	script_admindeps=""
@@ -20,18 +20,13 @@ if [ "$1" = "--load-scriptinfo" ]; then
 elif [ "$1" = "--readparams" ]; then
 	# PARAM1: remote dev
 	read_param "$script_id" 1 "Source remote disk file in /dev/ (sda, sdb,...)" "" "^[a-zA-Z]+$"
-	# PARAM2: last sector
-	read_param "$script_id" 2 "Last sector (default 2048)" "2048" "^[0-9]+$"
-	# PARAM3: local path
-	read_param "$script_id" 3 "Local path to save (directory)" "" "."
+	read_param "$script_id" 2 "Local path to save (directory)" "" "."
 	return
 fi
 
 #=== EXEC SCRIPT ===================================================================
 src="/dev/${1}"
-last="${2}"
-dest="$(eval echo "$3")"			# Resolve scape characteres like \ ,*, etc.
-
+dest="$(eval echo "$2")"			# Resolve scape characteres like \ ,*, etc.
 
 # CHECK DEST
 [ ! -w "$dest" ] || [ ! -d "$dest" ] && labadmin_error "Can't write in local directory $dest" 1
