@@ -40,5 +40,5 @@ exit 0
 '
 [ $? -ne 0 ] && exit 1
 
-# SAVE TABLE
+# RESTORE TABLE
 dd if="${src}" | labdmin_ssh_host_comm_stdin "${labadmin_nhost}" 'dd of="'"${dest}"'"' 
