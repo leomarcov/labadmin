@@ -85,7 +85,7 @@ while ! transmission-remote -l &>/dev/null; do printf "${S_B}%8s: ${S_R}%-20s\n"
 
 # While tranmission is active show %  downloaded
 while t_out=$(transmission-remote -l); do
-	t_out="$(echo "$t_out" | grep -Ev "^ID[[:blank:]]|^Sum:[[:blank:]]" | sed "s/  /#/g" | tr -s "#" | tail -n +2)"
+	t_out="$(echo "$t_out" | grep -Ev "^ID[[:blank:]]|^Sum:[[:blank:]]" | sed "s/  /#/g" | tr -s "#" | tail -1)"
 	d=$(echo "$t_out" | awk -F "#" "{ print \$7 }")		# Cut download speed
 	u=$(echo "$t_out" | awk -F "#" "{ print \$6 }")		# Cut upload speed
 	p=$(echo "$t_out" | awk -F "#" "{ print \$3 }")		# Cut download percent
@@ -116,7 +116,7 @@ elif [ "${labadmin_script_type}" = "admin" ] && [ "${labadmin_script_type_state}
 (
 sleep 10
 while t_out=$(transmission-remote -l); do
-	t_out="$(echo "$t_out" | grep -Ev "^ID[[:blank:]]|^Sum:[[:blank:]]" | sed "s/  /#/g" | tr -s "#" | tail -n +2)"
+	t_out="$(echo "$t_out" | grep -Ev "^ID[[:blank:]]|^Sum:[[:blank:]]" | sed "s/  /#/g" | tr -s "#" | tail -1)"
 	d=$(echo "$t_out" | awk -F "#" "{ print \$7 }")		# Cut download speed
 	u=$(echo "$t_out" | awk -F "#" "{ print \$6 }")		# Cut upload speed
 	p=$(echo "$t_out" | awk -F "#" "{ print \$3 }")		# Cut download percent
