@@ -18,18 +18,21 @@ if [ "$1" = "--load-scriptinfo" ]; then
 
 #=== READ PARAMS ===================================================================
 elif [ "$1" = "--readparams" ]; then
-    # PARAM1: remove user
-    read_param "$script_id" 1 "Remove exam user [Y/n]" "y"  "^(y|n)$"
-    # PARAM2: change pass	
-    [ "${p1,,}" = "n" ] && read_param "$script_id" 2 "New user password (empty no change)" ""  ""
+	# PARAM1: poweroff after end
+	read_param "$script_id" 1 "Poweroff after end [Y/n]" "y"  "^(y|n)$"
+    # PARAM2: remove user
+    read_param "$script_id" 2 "Remove exam user [Y/n]" "y"  "^(y|n)$"
+    # PARAM3: change pass	
+    [ "${p2,,}" = "n" ] && read_param "$script_id" 3 "New user password (empty no change)" ""  ""
     return
 fi
 
 
 #=== EXEC SCRIPT ===================================================================
 exam_end_script_path="/root/labadmin_exam-end.sh"   # Exam recovery script path
-remove_user="$1"
-new_pass="$2"
+poweroff_end="$1"
+remove_user="$2"
+new_pass="$3"
 
 
 ### CHECK RECOVERY EXAM SCRIPT
@@ -37,3 +40,10 @@ new_pass="$2"
 
 ### EXEC EXAM RECOVERY SCRIPT
 bash "$exam_end_script_path" "${remove_user}" "${new_pass}"
+
+# Poweroff 
+[ $? -eq 0 ] && [ "${poweroff_end,,}" = "y" ] && poweroff
+
+
+
+
