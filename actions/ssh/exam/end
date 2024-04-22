@@ -42,7 +42,7 @@ new_pass="$3"
 bash "$exam_end_script_path" "${remove_user}" "${new_pass}"
 
 # Poweroff 
-[ $? -eq 0 ] && [ "${poweroff_end,,}" = "y" ] && poweroff
+[ $? -eq 0 ] && [ "${poweroff_end,,}" = "y" ] && { labadmin_info "\nNO ERRORS REPORTED -> POWEROFF"; poweroff; }
 
 
 
