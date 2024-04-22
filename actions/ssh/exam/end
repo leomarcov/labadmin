@@ -19,7 +19,7 @@ if [ "$1" = "--load-scriptinfo" ]; then
 #=== READ PARAMS ===================================================================
 elif [ "$1" = "--readparams" ]; then
 	# PARAM1: poweroff after end
-	read_param "$script_id" 1 "Poweroff after end [Y/n]" "y"  "^(y|n)$"
+	read_param "$script_id" 1 "Poweroff host[Y/n]" "y"  "^(y|n)$"
     # PARAM2: remove user
     read_param "$script_id" 2 "Remove exam user [Y/n]" "y"  "^(y|n)$"
     # PARAM3: change pass	
