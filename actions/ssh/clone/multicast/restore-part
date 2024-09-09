@@ -21,7 +21,7 @@ elif [ "$1" = "--readparams" ]; then
     # PARAM1: local path
 	read_param "$script_id" 1 "Source local gzip image file" "" "."
 	# PARAM2: remote dev
-	read_param "$script_id" 2 "Remote destination partition file in /dev/ (sda1, sdb2,...)" "" "^[a-zA-Z]+[1-9]+$"
+	read_param "$script_id" 2 "Remote destination partition file in /dev/ (sda1, sdb2,...)" "" "^[a-zA-Z0-9]+$"
 	return
 fi
 
