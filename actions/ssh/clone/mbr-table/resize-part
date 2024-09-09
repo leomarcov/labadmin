@@ -18,7 +18,7 @@ if [ "$1" = "--load-scriptinfo" ]; then
 #=== READ PARAMS ===================================================================
 elif [ "$1" = "--readparams" ]; then
     # PARAM1
-	read_param "$script_id" 1 "Remote disk file in /dev/ (sda, sdb,...)" "" "^[a-zA-Z]+$"
+	read_param "$script_id" 1 "Remote disk file in /dev/ (sda, sdb,...)" "" "^[a-zA-Z0-9]+$"
 	# PARAM2
 	read_param "$script_id" 2 "Partition number" "" "^[0-9]+$"
 	return
