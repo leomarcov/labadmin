@@ -21,7 +21,7 @@ elif [ "$1" = "--readparams" ]; then
     # PARAM1: local path
     read_param "$script_id" 1 "Source local backup file" "" "."
     # PARAM2: remote dev
-    read_param "$script_id" 2 "Destination remote disk file in /dev/ (sda, sdb,...)" "" "^[a-zA-Z]+$"
+    read_param "$script_id" 2 "Destination remote disk file in /dev/ (sda, sdb,...)" "" "^[a-zA-Z0-9]+$"
     return
 fi
 
