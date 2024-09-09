@@ -21,7 +21,7 @@ elif [ "$1" = "--readparams" ]; then
 	# PARAM1: local path
 	read_param "$script_id" 1 "Source local backup file" "" "."
 	# PARAM2: remote dev
-	read_param "$script_id" 2 "Destination remote disk or partition file in /dev/ (sda, sda1,...)" "" "^[a-zA-Z]+[0-9]*$"
+	read_param "$script_id" 2 "Destination remote disk or partition file in /dev/ (sda, sda1,...)" "" "^[a-zA-Z0-9]+$"
 	# PARAM3: start sector
 	read_param "$script_id" 3 "Start destination sector to restore (default 0)" "0" "^[0-9]+$"
 	return
