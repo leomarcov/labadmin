@@ -19,7 +19,7 @@ if [ "$1" = "--load-scriptinfo" ]; then
 #=== READ PARAMS ===================================================================
 elif [ "$1" = "--readparams" ]; then
 	# PARAM1: remote dev
-	read_param "$script_id" 1 "Source remote disk file in /dev/ (sda, sdb,...)" "" "^[a-zA-Z]+$"
+	read_param "$script_id" 1 "Source remote disk file in /dev/ (sda, sdb,...)" "" "^[a-zA-Z0-9]+$"
 	# PARAM2: last sector
 	read_param "$script_id" 2 "Last sector (default 2048)" "2048" "^[0-9]+$"
 	# PARAM3: local path
