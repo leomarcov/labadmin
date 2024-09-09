@@ -19,7 +19,7 @@ if [ "$1" = "--load-scriptinfo" ]; then
 #=== READ PARAMS ===================================================================
 elif [ "$1" = "--readparams" ]; then
 	# PARAM1: remote dev
-	read_param "$script_id" 1 "Source remote partition file in /dev/ (sda1, sdb2,...)" "" "^[a-zA-Z]+[1-9]+$"
+	read_param "$script_id" 1 "Source remote partition file in /dev/ (sda1, sdb2,...)" "" "^[a-zA-Z0-9]+$"
 	# PARAM2: local path
 	read_param "$script_id" 2 "Destination local directory to save" "" "."
 	return
