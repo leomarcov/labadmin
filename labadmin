@@ -246,6 +246,19 @@ function check_params() {
 }
 
 
+#=== FUNCTION ==================================================================
+#        NAME: ctrl_c
+# DESCRIPTION: function to manage ctrl_c signal capture (2 short signals exit, only 1 go to main loop)
+#===============================================================================
+function ctrl_c() {
+    current_ctrl_c=$SECONDS
+    if [ $((current_ctrl_c-last_ctrl_c)) -lt 2 ]; then
+        exit 0
+    fi
+    last_ctrl_c=$current_ctrl_c
+    main_loop
+}
+
 
 
 #=== FUNCTION ==================================================================
@@ -339,6 +352,9 @@ function initialize() {
 	##### INIT SSH CONIFG
 	[ ! "$noninteractive" ] && echo "Initializing ssh config"
 	[ "$srvmode" = "ssh" ] && ssh_init	
+
+	#### CAPTURE CTRL_C SIGNAL
+	trap ctrl_c TERM INT
 }
 
 
