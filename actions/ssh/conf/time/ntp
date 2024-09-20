@@ -22,8 +22,7 @@ elif [ "$1" = "--readparams" ]; then
 fi
 
 #=== EXEC SCRIPT ===================================================================
-
-ntp_service_name="$(systemctl list-units --type=service --all | egrep "\bntp(d)?\.service" | awk '{print $1}'| head -1)"
+ntp_service_name=$(systemctl list-units --type=service --all | egrep -o "ntp\.service|ntpsec\.service" | head -1)
 
 unset was_started
 if systemctl status "$ntp_service_name" &> /dev/null; then
