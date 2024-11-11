@@ -18,7 +18,6 @@ shopt -s checkwinsize																# To get $COLUMNS AND $LINES working
 readonly labadmin_path="$(dirname "$(readlink -f "$0")")/"							# Script labadmin directory path
 readonly labadmin_script="$(readlink -f "$0")"                      				# Main script labadmin with path
 readonly labadmin_install="${labadmin_path}/install"								# Install script path
-readonly config_path="${labadmin_path}/conf/labadmin.conf"							# Labadmin global config file path
 readonly lib_path="$(dirname "$(readlink -f "$0")")/lib/"							# Libs path
 readonly labs_path="$labadmin_path/labs/"					    					# Labs configs directory path
 scripts_path="$labadmin_path/actions/"		                						# Scripts directory
