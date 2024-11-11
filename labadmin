@@ -272,11 +272,18 @@ function initialize() {
 	rm "$labadmin_tmp_path/screenlock*" &> /dev/null
 	readonly screen_lock="$(mktemp -u "${labadmin_tmp_path}/screenlock".XXXXXXXX)"      # SCREEN LOCK (one file per process)
 
+	#### LOAD CONFIG FILE
+	local config_path="${labadmin_path}/conf/labadmin.conf"							# Labadmin global config file path
+	[ ! -f "$config_path" ] || [ ! -r "$config_path" ] && labadmin_error "$(echo "Can't access labadmin config file $config_file"|tr -s "/")"
+	source "$config_path"	# Import variables from config file
+
 	##### LOAD LAB FILE
 	[ ! "$noninteractive" ] && echo "Loading labs files"
 	if [ ! "$lab_id" ]; then
-		lab_id="default"
-		lab_file="$labs_path/default"
+		local defaultlab_path="${labadmin_path}/conf/lab.default"						# Labadmin default lab file path
+		[ ! -f "$defaultlab_path" ] || [ ! -r "$defaultlab_path" ] && labadmin_error "$(echo "No lab specified in -l para or configured as lab default in $defaultlab_path"|tr -s "/")"
+		lab_id=$(cat "$defaultlab_path" | xargs)
+		lab_file="$labs_path/${lab_id}"
 	fi
 	if [ ! -r "$lab_file" ]; then
 		labadmin_error "$(echo "Can't access lab file $lab_file"|tr -s "/")"
