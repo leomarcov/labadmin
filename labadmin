@@ -274,19 +274,19 @@ function initialize() {
 
 	#### LOAD CONFIG FILE
 	local config_path="${labadmin_path}/conf/labadmin.conf"							# Labadmin global config file path
-	[ ! -f "$config_path" ] || [ ! -r "$config_path" ] && labadmin_error "$(echo "Can't access labadmin config file $config_file"|tr -s "/")"
+	[ ! -f "$config_path" ] || [ ! -r "$config_path" ] && labadmin_error "Can't access labadmin config file ${config_file//\/\//\/}" 1
 	source "$config_path"	# Import variables from config file
 
 	##### LOAD LAB FILE
 	[ ! "$noninteractive" ] && echo "Loading labs files"
 	if [ ! "$lab_id" ]; then
 		local defaultlab_path="${labadmin_path}/conf/lab.default"						# Labadmin default lab file path
-		[ ! -f "$defaultlab_path" ] || [ ! -r "$defaultlab_path" ] && labadmin_error "$(echo "No lab specified in -l para or configured as lab default in $defaultlab_path"|tr -s "/")"
+		[ ! -f "$defaultlab_path" ] || [ ! -r "$defaultlab_path" ] && labadmin_error "No lab specified in -l para or configured as lab default in ${defaultlab_path//\/\//\/}" 1
 		lab_id=$(cat "$defaultlab_path" | xargs)
 		lab_file="$labs_path/${lab_id}"
 	fi
 	if [ ! -r "$lab_file" ]; then
-		labadmin_error "$(echo "Can't access lab file $lab_file"|tr -s "/")"
+		labadmin_error "Can't access lab file ${lab_file//\/\//\/}"
 		echo "Available labs to use:"
 		find "$labs_path" -type f | sed 's\'"${labs_path}"'\ \g'
 		exit 1
