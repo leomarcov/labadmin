@@ -310,7 +310,7 @@ function install_admin() {
 	if [ "$lab_id" != "ask" ]; then
 		echo
 		read -p "Copy all labs config files? (y/N) " r
-		[ "${r,,}" = "n" ] && rm "$dir_install/labs/"!(default|"$lab_id"|ask)
+		[ "${r,,}" = "n" ] && rm "$dir_install/labs/"!("$lab_id")
 	fi
 
 	echo -e "\nFinished! Add users to ${C_BY}$labadmin_group${S_R} group to allow use labadmin\n"
