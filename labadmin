@@ -282,12 +282,13 @@ function initialize() {
 	if [ ! "$lab_id" ]; then
 		local defaultlab_path="${labadmin_path}/conf/lab.default"						# Labadmin default lab file path
 		if [ ! -f "$defaultlab_path" ] || [ ! -r "$defaultlab_path" ]; then
-			labadmin_error "No lab specified"
-			echo "Create file ${defaultlab_path//\/\//\/} with lab id inside"
+			labadmin_error "No lab specified and no deault lab configured"
+			echo "Config default lab creating file ${defaultlab_path//\/\//\/} with lab_id inside"
 			echo -e "Or use ${S_B}-l <lab_id>${S_R} with available lab file:"
 			for f in "$labs_path"/*; do
 				[ ! -f "$f" ] && continue
-				echo -e "  [${C_LY}$(basename "$f")${C_D}]\t$(grep "labname=" "$f"| cut -f2 -d= | tr -d \'\")"
+				local pad="        "; local n=$(basename "$f")
+				echo -e "  [${C_LY}${n}${pad:${#n}}${C_D}]\t$(grep "labname=" "$f"| cut -f2 -d= | tr -d \'\")"
 			done
 			exit 1
 		fi
