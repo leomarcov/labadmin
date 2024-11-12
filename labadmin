@@ -284,7 +284,11 @@ function initialize() {
 		if [ ! -f "$defaultlab_path" ] || [ ! -r "$defaultlab_path" ]; then
 			labadmin_error "No lab specified"
 			echo "Create file ${defaultlab_path//\/\//\/} with lab id inside"
-			echo "Or use ${S_B}-l <lab_id>${S_R} with available lab file:"
+			echo -e "Or use ${S_B}-l <lab_id>${S_R} with available lab file:"
+			for f in "$labs_path"/*; do
+				[ ! -f "$f" ] && continue
+				echo -e "  [${C_LY}$(basename "$f")${C_D}]\t$(grep "labname=" "$f"| cut -f2 -d= | tr -d \'\")"
+			done
 			exit 1
 		fi
 
