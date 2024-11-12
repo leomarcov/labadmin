@@ -281,15 +281,18 @@ function initialize() {
 	[ ! "$noninteractive" ] && echo "Loading labs files"
 	if [ ! "$lab_id" ]; then
 		local defaultlab_path="${labadmin_path}/conf/lab.default"						# Labadmin default lab file path
-		[ ! -f "$defaultlab_path" ] || [ ! -r "$defaultlab_path" ] && labadmin_error "No lab specified. Use -l param or create file ${defaultlab_path//\/\//\/} with lab id inside" 1
+		if [ ! -f "$defaultlab_path" ] || [ ! -r "$defaultlab_path" ]; then
+			labadmin_error "No lab specified"
+			echo "Create file ${defaultlab_path//\/\//\/} with lab id inside"
+			echo "Or use ${S_B}-l <lab_id>${S_R} with available lab file:"
+			exit 1
+		fi
+
 		lab_id=$(cat "$defaultlab_path" | xargs)
 		lab_file="$labs_path/${lab_id}"
 	fi
 	if [ ! -r "$lab_file" ]; then
-		labadmin_error "Can't access lab file ${lab_file//\/\//\/}"
-		echo "Available labs to use:"
-		find "$labs_path" -type f | sed 's\'"${labs_path}"'\ \g'
-		exit 1
+		labadmin_error "Can't access lab file ${lab_file//\/\//\/}" 1
 	fi
 	source "$lab_file"	# Import variables from lab file
 
