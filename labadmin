@@ -342,9 +342,14 @@ function initialize() {
 		fi
 	fi
 
-	##### INIT SSH CONIFG
-	[ ! "$noninteractive" ] && echo "Initializing ssh config"
-	[ "$srvmode" = "ssh" ] && ssh_init	
+	##### INIT REMOTE AUTENTICACION
+	if [ "$srvmode" = "ssh" ]; then
+		[ ! "$noninteractive" ] && echo "Initializing ssh config"
+		ssh_init
+	elif [ "$srvmode" = "winrm" ]; then
+		[ ! "$noninteractive" ] && echo "Initializing WINRM config"
+		winrmpass=$(echo -n "$winrmpass" | base64 -d | openssl enc -aes-256-cbc -a -d -salt -pbkdf2) || labadmin_error "Incorrect decryption pass for WinRM password" 1
+	fi
 }
 
 
