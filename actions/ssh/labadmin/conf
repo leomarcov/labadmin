@@ -30,7 +30,7 @@ lab_config="$1"
 
 # CHECKS
 if [ ! -f "${lab_config}" ]; then
-	labadmin_error "$(echo "Can't access lab config file $lab_config" | tr -s "/")"
+	labadmin_error "Can't access lab config file ${lab_config//\/\//\/}"
 	echo "Available labs to use:"
 	find "$labs_path" -type f | sed 's\'"${labs_path}"'\ \g'
 	echo "Or specify your own file with absolute path"
