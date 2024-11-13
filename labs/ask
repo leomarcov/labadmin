@@ -12,7 +12,7 @@
 # If lss-inventory show global map
 if [ -r "/opt/labadmin-script_server/lss-inventory" ]; then
 	bash /opt/labadmin-script_server/lss-inventory map -S
-
+	
 # If no lss-inventory show available script list
 else
 	for f in "$labs_path"/*; do
@@ -21,8 +21,8 @@ else
 		[ "${n,,}" = "ask" ] && continue 
 		echo -e "    ${C_LY}${n}${C_D}${pad:${#n}}$(grep "labname=" "$f"| cut -f2 -d= | tr -d \'\")"
 	done	
-	echo
 fi
+echo
 
 # Ask for lab
 unset lab_file
