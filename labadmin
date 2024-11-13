@@ -288,6 +288,7 @@ function initialize() {
 			for f in "$labs_path"/*; do
 				[ ! -f "$f" ] && continue
 				local pad="        "; local n=$(basename "$f")
+				[ "${n,,}" = "ask" ] && continue 
 				echo -e "    ${C_LY}${n}${C_D}${pad:${#n}}$(grep "labname=" "$f"| cut -f2 -d= | tr -d \'\")"
 			done
 			echo
