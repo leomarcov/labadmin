@@ -6,11 +6,14 @@
 #     LICENSE: GNU General Public License v3.0
 #=============================================================================
 
-
+# Check labs path
 [ ! -d "$labs_path" ] && labadmin_error "Can't access labs path $labs_path" 1
 
+# If lss-inventory show global map
 if [ -r "/opt/labadmin-script_server/lss-inventory" ]; then
 	bash /opt/labadmin-script_server/lss-inventory map -S
+
+# If no lss-inventory show available script list
 else
 	for f in "$labs_path"/*; do
 		[ ! -f "$f" ] && continue
@@ -21,6 +24,7 @@ else
 	echo
 fi
 
+# Ask for lab
 unset lab_file
 while [ ! -r "$lab_file" ] || [ ! -f "$lab_file" ]; do
 	echo -en "  > ${S_U}Select lab file${S_R}:"
@@ -30,6 +34,7 @@ while [ ! -r "$lab_file" ] || [ ! -f "$lab_file" ]; do
 	lab_file="$labs_path/${lab_id}"
 	([ ! -r "$lab_file" ] || [ ! -f "$lab_file" ]) && labadmin_error "  ! Can't access lab config file $(echo "$lab_file" | tr -s "/")"
 done
-
 echo
+
+# Load selected lab
 source "$lab_file"	# Import variables from lab file
