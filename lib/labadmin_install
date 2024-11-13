@@ -305,9 +305,9 @@ function install_admin() {
 	cp "$labadmin_path/desktop/labadmin.png" /usr/share/pixmaps/
 	chmod a+r /usr/share/pixmaps/labadmin.png
 
-	labadmin_info "Config labs/${lab_id} as default lab file"
-	echo 'source "$labs_path/'"${lab_id}"'"' | tee "${dir_install}/labs/default"
-	if [ "$lab_id" != "ask" ]; then
+	labadmin_info "Config labs/${lab_id} as default lab"
+	echo "$lab_id" > "${dir_install}/conf/lab.default"
+	if [ "${lab_id,,}" != "ask" ]; then
 		echo
 		read -p "Copy all labs config files? (y/N) " r
 		[ "${r,,}" = "n" ] && rm "$dir_install/labs/"!("$lab_id")
