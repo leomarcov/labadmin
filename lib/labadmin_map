@@ -22,7 +22,7 @@
 unset shosts			# List (space separated) with all selected hosts numbers (range expanded)
 unset shosts_listen		# List (space separated) with all selected host numbers with IP and listen
 unset shosts_inactive	# List (space separated) with all selected host numbers selected with no IP found
-unset nupdate_map		# Counter of updates showd in right of the map
+unset nupdate_map		# Counter of updates showed in right of the map
 
 
 #=== FUNCTION ==================================================================
