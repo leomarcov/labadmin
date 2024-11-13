@@ -15,7 +15,7 @@
 
 #===============================================================================
 #  LOAD LIBS
-#===============================================================================
+#============================================================f===================
 source "$(dirname "$(readlink -f "$0")")/lib/labadmin_lib-admin"			# LABADMIN ADMIN VARIABLES AND FUNCTIONS
 source "${lib_path}/labadmin_lib"											# LABADMIN GLOBAL VARIABLES AND FUNCTIONS
 source "${lib_path}/labadmin_ip"											# LABADMIN IP LIB
@@ -283,8 +283,8 @@ function initialize() {
 		local defaultlab_path="${labadmin_path}/conf/lab.default"						# Labadmin default lab file path
 		if [ ! -f "$defaultlab_path" ] || [ ! -r "$defaultlab_path" ]; then
 			labadmin_error "No lab specified and no deault lab configured"
-			echo "Config default lab creating file ${defaultlab_path//\/\//\/} with lab_id inside"
-			echo -e "Or use ${S_B}-l <lab_id>${S_R} with available lab file:"
+			echo "Config default lab creating file  ${S_B}${defaultlab_path//\/\//\/} ${S_R} and insert lab_id inside"
+			echo -e "Or use ${S_B}-l lab${S_R} with available lab file:"
 			for f in "$labs_path"/*; do
 				[ ! -f "$f" ] && continue
 				local pad="        "; local n=$(basename "$f")
