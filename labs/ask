@@ -27,7 +27,7 @@ echo
 # Ask for lab
 unset lab_file
 while [ ! -r "$lab_file" ] || [ ! -f "$lab_file" ]; do
-	echo -en "  > ${S_U}Select lab file${S_R}:"
+	echo -en "  > ${S_U}Select lab${S_R}:"
 	read -e -p " " lab_id
 	[ ! "$lab_id" ] && continue
 
