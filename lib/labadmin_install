@@ -280,6 +280,7 @@ function install_admin() {
 		rm -rf "$dir_install"
 		cp -r "$labadmin_path" "$dir_install"
 	fi
+	[ -f "${dir_install}/conf/labadmin.conf" ] && rm "${dir_install}/conf/test-labadmin.conf" || mv "${dir_install}/conf/test-labadmin.conf" "${dir_install}/conf/labadmin.conf"
 	chown -R root."$labadmin_group" "$dir_install"
 	find "$dir_install" -type f -exec chmod 640 {} \;
 	find "$dir_install" -type d -exec chmod 650 {} \;
