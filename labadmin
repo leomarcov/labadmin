@@ -284,7 +284,7 @@ function initialize() {
 		if [ ! -f "$defaultlab_path" ] || [ ! -r "$defaultlab_path" ]; then
 			labadmin_error "No lab specified and no deault lab configured!"
 			echo -e " * Config default lab: create file ${S_B}${defaultlab_path//\/\//\/}${S_R} and insert lab_id inside"
-			echo -e " * Or use ${S_B}-l ${C_LY}lab${S_R}${C_D} parameter with available lab file:"
+			echo -e " * Or use ${S_B}-l ${S_R}${C_LY}lab${C_D} parameter with available lab file:"
 			for f in "$labs_path"/*; do
 				[ ! -f "$f" ] && continue
 				local pad="        "; local n=$(basename "$f")
