@@ -21,7 +21,7 @@ elif [ "$1" = "--readparams" ]; then
     # PARAM1: delay
     read_param "$script_id" 1 "Delay seconds (default 5)"  "5" "^[1-9]([0-9])*$"
     # PARAM2: time displaying
-    [ "${p2,,}" ] && read_param "$script_id" 2 "Time recording in seconds (default forever)" "" "^[1-9]([0-9])*$|^$"
+    read_param "$script_id" 2 "Time recording in seconds (default forever)" "" "^[1-9]([0-9])*$|^$"
     # PARAM3: directory for save
     read_param "$script_id" 3 "Directory to save pictures (default tmp folder)"  "$(mktemp -d "$labadmin_tmp_path/screenshot-display.XXXXXXXX")" ""
 	#PARAM4: overwrite
