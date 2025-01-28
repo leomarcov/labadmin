@@ -23,7 +23,9 @@ elif [ "$1" = "--readparams" ]; then
     # PARAM2: time displaying
     [ "${p2,,}" ] && read_param "$script_id" 2 "Time recording in seconds (default forever)" "" "^[1-9]([0-9])*$|^$"
     # PARAM3: directory for save
-    read_param "$script_id" 4 "Directory to save pictures (default tmp folder)"  "$(mktemp -d "$labadmin_tmp_path/screenshot-display.XXXXXXXX")" ""
+    read_param "$script_id" 3 "Directory to save pictures (default tmp folder)"  "$(mktemp -d "$labadmin_tmp_path/screenshot-display.XXXXXXXX")" ""
+	#PARAM4: overwrite
+	read_param "$script_id" 4 "Overwrite files [Y/n]" "y" "^(y|n)$"
     return
 fi
 
@@ -34,7 +36,8 @@ fi
 if [ "${labadmin_script_type}" = "local" ]; then
     dsec="$1";
     tdisp="$2"
-    dir_dest="$4"
+    dir_dest="$3"
+	ow="$4"
     [ ! "$tdisp" ] && tdisp="999999999"
     [ "$dir_dest" ] && dir_dest="$(eval echo "$dir_dest")"          # Resolve scape characteres like \ ,*, etc.
     [ ! -w "$dir_dest" ] && labadmin_error "Can't write in directory $dir_dest" 1 
@@ -44,7 +47,8 @@ if [ "${labadmin_script_type}" = "local" ]; then
     n=0
     while [ $[$(date +%s)-$t0] -le "$tdisp" ]; do
         [ -f "$dir_dest/stop" ] && break
-        file_tmp="$dir_dest/[${labadmin_nhost}]_$(date +%Y-%m-%d_%H-%M-%S).jpg"
+		[ "${ow,,}" != "y" ] && ct="_$(date +%Y-%m-%d_%H-%M-%S)"
+        file_tmp="$dir_dest/[${labadmin_nhost}]${ct}.jpg"
         echo -e " [$n] ${S_B}${file_tmp}${S_R}"
         labdmin_ssh_host_comm "${labadmin_nhost}" '
 u=($(labadmin_users-display | head -1))
