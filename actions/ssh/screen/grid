@@ -52,12 +52,13 @@ su -l "${u[0]}" -c "import -window root -display "${u[1]}" -quality '${iq}' -int
 
 # ADMIN EXEC
 elif [ "${labadmin_script_type}" = "admin" ]; then
+    dsec="$1"
     dir_dest=$(mktemp -d "${labadmin_tmp_path}/screenshot-grid.XXXXXXXX")
     [ ! -w "$dir_dest" ] && labadmin_error "Can't write in directory $dir_dest" 1 
 
 	labadmin_info-list "Saving screenshots in: ${S_B}$dir_dest${S_R}"
 
-	screenshot_grid_url="file://${labadmin_path}/screenshot-grid/screenshot-grid.html?lab=$(echo -n "$labname" | base64 -w0)&dir=$(echo -n "$dir_dest" | base64 -w0)&map=$( echo -n "$map" | base64 -w0)"
+	screenshot_grid_url="file://${labadmin_path}/screenshot-grid/screenshot-grid.html?lab=$(echo -n "$labname" | base64 -w0)&dir=$(echo -n "$dir_dest" | base64 -w0)&map=$( echo -n "$map" | base64 -w0)$ref=${dsec}"
 	labadmin_info-list "Opening Labadmin Screenshot Grid: ${S_B}$screenshot_grid_url${S_R}"
 	x-www-browser "${screenshot_grid_url}" &>/dev/null &
 
