@@ -549,4 +549,18 @@ if [ "$er_mins" -gt "0" ]; then
     (echo "PATH=${PATH}:/#LABADMIN-EXAM"; crontab -l 2>/dev/null; echo '@reboot   bash -c '\''[ $(date +\%s) -gt '$end_time' ] && "'"${exam_end_script}"'" '${recover_mode}'   #LABADMIN-EXAM'\' ) | crontab -
 fi
 
+### AUTOSCREENSHOTS 
+# Create service
+if [ ! -f /etc/systemd/system/labadmin-screenshots.service ]; then
+	echo '[Unit]
+Description=Labadmin Screenshots Service
+[Service]
+Type=simple
+Restart=always
+ExecStart=/usr/bin/env bash /sbin/labadmin-screenshots
+
+[Install]
+WantedBy=multi-user.target' > /etc/systemd/system/labadmin-screenshots.service
+
+fi
 
