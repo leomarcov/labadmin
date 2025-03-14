@@ -56,11 +56,12 @@ elif [ "${labadmin_script_type}" = "admin" ]; then
     [ ! -w "$dir_dest" ] && labadmin_error "Can't write in directory $dir_dest" 1 
 
 	labadmin_info-list "Saving screenshots in: ${S_B}$dir_dest${S_R}"
-    labadmin_info-list "Press ${S_B}[ENTER]${S_R} to ${S_B}stop${S_R} saving screenshots\n"
 
 	screenshot_grid_url="${labadmin_path}/screenshot-grid/screenshot-grid.html?lab=$(echo -n "$labname" | base64)&dir=$(echo -n "$dir_dest" | base64)&map=$( echo -n "$map" | base64)"
+	labadmin_info-list "Labadmin Screenshot Grid: $screenshot_grid_url"
 	x-www-browser "${screenshot_grid_url}"
 
+    labadmin_info-list "Press ${S_B}[ENTER]${S_R} to ${S_B}stop${S_R} saving screenshots\n"
 	read
     touch "$dir_dest/stop"
     ( sleep 10; rm "$dir_dest/stop" &>/dev/null)& 
