@@ -21,7 +21,7 @@ elif [ "$1" = "--readparams" ]; then
     # PARAM1: delay
     read_param "$script_id" 1 "Delay seconds (default 5)"  "5" "^[1-9]([0-9])*$"
     # PARAM2: image quality
-    read_param "$script_id" 4 "Image quality (default 10, range 10-100)"  "10" "^[1-9]([0-9])*$"
+    read_param "$script_id" 2 "Image quality (default 10, range 10-100)"  "10" "^[1-9]([0-9])*$"
 	return
 fi
 
