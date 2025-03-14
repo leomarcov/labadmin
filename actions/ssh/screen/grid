@@ -20,7 +20,9 @@ if [ "$1" = "--load-scriptinfo" ]; then
 elif [ "$1" = "--readparams" ]; then
     # PARAM1: delay
     read_param "$script_id" 1 "Delay seconds (default 5)"  "5" "^[1-9]([0-9])*$"
-    return
+    # PARAM2: image quality
+    read_param "$script_id" 4 "Image quality (default 10, range 10-100)"  "10" "^[1-9]([0-9])*$"
+	return
 fi
 
 
@@ -29,9 +31,12 @@ fi
 # LOCAL EXEC
 if [ "${labadmin_script_type}" = "local" ]; then
     dsec="$1"
-    sleep 2
+	iq="$2"
+    
+	sleep 2
 	dir_dest=$(ls -dt "${labadmin_tmp_path}/screenshot-grid."* | head -1)
 	[ ! -w "$dir_dest" ] && labadmin_error "Can't write in directory $dir_dest" 1
+	[ "$iq" -lt 10 ] && iq=10; [ "$iq" -gt 100 ] && iq=100
 
     while [ ! -f "$dir_dest/stop" ]; do
         file_tmp="$dir_dest/${labadmin_nhost}.jpg"
@@ -40,7 +45,7 @@ if [ "${labadmin_script_type}" = "local" ]; then
 u=($(labadmin_users-display | head -1))
 [ ! "${u[0]}" ] && labadmin_error "No users logged" 1
 modprobe -r pcspkr
-su -l "${u[0]}" -c "import -window root -display "${u[1]}" -quality 10 -interlace Plane jpg:-"' > "${file_tmp}"
+su -l "${u[0]}" -c "import -window root -display "${u[1]}" -quality '${iq}' -interlace Plane jpg:-"' > "${file_tmp}"
 
         sleep $dsec
     done
