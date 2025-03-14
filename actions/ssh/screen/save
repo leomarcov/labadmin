@@ -32,7 +32,7 @@ fi
 
 # LOCAL EXEC
 if [ "${labadmin_script_type}" = "local" ]; then
-    dsec="$1";
+    dsec="$1"
     tdisp="$2"
     dir_dest="$3"
     [ ! "$tdisp" ] && tdisp="999999999"
