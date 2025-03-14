@@ -57,7 +57,7 @@ elif [ "${labadmin_script_type}" = "admin" ]; then
 
 	labadmin_info-list "Saving screenshots in: ${S_B}$dir_dest${S_R}"
 
-	screenshot_grid_url="${labadmin_path}/screenshot-grid/screenshot-grid.html?lab=$(echo -n "$labname" | base64)&dir=$(echo -n "$dir_dest" | base64)&map=$( echo -n "$map" | base64)"
+	screenshot_grid_url="${labadmin_path}/screenshot-grid/screenshot-grid.html?lab=$(echo -n "$labname" | base64 -w0)&dir=$(echo -n "$dir_dest" | base64 -w0)&map=$( echo -n "$map" | base64 -w0)"
 	labadmin_info-list "Labadmin Screenshot Grid: $screenshot_grid_url"
 	x-www-browser "${screenshot_grid_url}"
 
