@@ -52,6 +52,7 @@ su -l "${u[0]}" -c "import -window root -display "${u[1]}" -quality '${iq}' -int
 
 # ADMIN EXEC
 elif [ "${labadmin_script_type}" = "admin" ]; then
+echo "AAA$labname"
     dir_dest=$(mktemp -d "${labadmin_tmp_path}/screenshot-grid.XXXXXXXX")
     [ ! -w "$dir_dest" ] && labadmin_error "Can't write in directory $dir_dest" 1 
 
