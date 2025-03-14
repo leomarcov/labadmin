@@ -18,7 +18,7 @@ if [ "$1" = "--load-scriptinfo" ]; then
 
 #=== READ PARAMS ===================================================================
 elif [ "$1" = "--readparams" ]; then
-    # PARAM1: quality
+    # PARAM1: image quality
     read_param "$script_id" 1 "Image quality (default 50, range 10-100)"  "50" "^[1-9]([0-9])*$"
     return
 fi
