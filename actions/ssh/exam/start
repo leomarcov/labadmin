@@ -65,7 +65,7 @@ browsers="$(compgen -c google | grep chrome) $(compgen -c firefox) $(man -s 1 -k
 chromium_name="$(compgen -c chromium|head -1)"	# some distros chromium, others chromium-browser
 # banned mountpoints:
 mountpoints="/media/ /mnt/ /run/media/"
-# banned screenshoters
+# banned screenshooters
 screenshooters="$(compgen -c | grep screenshot) $(man -s 1 -k "screenshot" | cut -f1 -d" ")"
 # banned power commands
 powercommands="shutdown poweroff reboot halt systemctl pm-suspend pm-hibernate pm-suspend-hybrid"
