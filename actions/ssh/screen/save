@@ -24,6 +24,8 @@ elif [ "$1" = "--readparams" ]; then
     [ "${p2,,}" ] && read_param "$script_id" 2 "Time recording in seconds (default forever)" "" "^[1-9]([0-9])*$|^$"
     # PARAM3: directory for save
     read_param "$script_id" 3 "Directory to save pictures (default tmp folder)"  "$(mktemp -d "$labadmin_tmp_path/screenshot-display.XXXXXXXX")" ""
+    # PARAM4: image quality
+    read_param "$script_id" 4 "Image quality (default 10, range 10-100)"  "10" "^[1-9]([0-9])*$"
     return
 fi
 
@@ -35,9 +37,12 @@ if [ "${labadmin_script_type}" = "local" ]; then
     dsec="$1"
     tdisp="$2"
     dir_dest="$3"
+	iq="$4"
+
     [ ! "$tdisp" ] && tdisp="999999999"
     [ "$dir_dest" ] && dir_dest="$(eval echo "$dir_dest")"          # Resolve scape characteres like \ ,*, etc.
     [ ! -w "$dir_dest" ] && labadmin_error "Can't write in directory $dir_dest" 1 
+	[ "$iq" -lt 10 ] && iq=10; [ "$iq" -gt 100 ] && iq=100
 
     sleep 2
     t0=$(date +%s)
@@ -50,7 +55,7 @@ if [ "${labadmin_script_type}" = "local" ]; then
 u=($(labadmin_users-display | head -1))
 [ ! "${u[0]}" ] && labadmin_error "No users logged" 1
 modprobe -r pcspkr
-su -l "${u[0]}" -c "import -window root -display "${u[1]}" -quality 10 -interlace Plane jpg:-"' > "${file_tmp}"
+su -l "${u[0]}" -c "import -window root -display "${u[1]}" -quality '$iq' -interlace Plane jpg:-"' > "${file_tmp}"
 
         n=$((n+1))
         [ -f "$dir_dest/stop" ] && break
