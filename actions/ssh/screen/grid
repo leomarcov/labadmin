@@ -40,7 +40,7 @@ if [ "${labadmin_script_type}" = "local" ]; then
 u=($(labadmin_users-display | head -1))
 [ ! "${u[0]}" ] && labadmin_error "No users logged" 1
 modprobe -r pcspkr
-su -l "${u[0]}" -c "import -window root -display "${u[1]}" -quality 10 jpg:-"' > "${file_tmp}"
+su -l "${u[0]}" -c "import -window root -display "${u[1]}" -quality 10 -interlace Plane jpg:-"' > "${file_tmp}"
 
         sleep $dsec
     done
