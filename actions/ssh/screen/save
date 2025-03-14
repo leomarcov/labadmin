@@ -23,7 +23,7 @@ elif [ "$1" = "--readparams" ]; then
     # PARAM2: time displaying
     [ "${p2,,}" ] && read_param "$script_id" 2 "Time recording in seconds (default forever)" "" "^[1-9]([0-9])*$|^$"
     # PARAM3: directory for save
-    read_param "$script_id" 4 "Directory to save pictures (default tmp folder)"  "$(mktemp -d "$labadmin_tmp_path/screenshot-display.XXXXXXXX")" ""
+    read_param "$script_id" 3 "Directory to save pictures (default tmp folder)"  "$(mktemp -d "$labadmin_tmp_path/screenshot-display.XXXXXXXX")" ""
     return
 fi
 
@@ -34,7 +34,7 @@ fi
 if [ "${labadmin_script_type}" = "local" ]; then
     dsec="$1";
     tdisp="$2"
-    dir_dest="$4"
+    dir_dest="$3"
     [ ! "$tdisp" ] && tdisp="999999999"
     [ "$dir_dest" ] && dir_dest="$(eval echo "$dir_dest")"          # Resolve scape characteres like \ ,*, etc.
     [ ! -w "$dir_dest" ] && labadmin_error "Can't write in directory $dir_dest" 1 
@@ -59,7 +59,7 @@ su -l "${u[0]}" -c "import -window root -display "${u[1]}" jpg:-"' > "${file_tmp
 
 # ADMIN EXEC
 elif [ "${labadmin_script_type}" = "admin" ]; then
-    dir_dest="$4"
+    dir_dest="$3"
     [ "$dir_dest" ] && dir_dest="$(eval echo "$dir_dest")"          # Resolve scape characteres like \ ,*, etc.
     [ ! -w "$dir_dest" ] && labadmin_error "Can't write in directory $dir_dest" 1 
 
