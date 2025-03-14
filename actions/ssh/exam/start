@@ -46,6 +46,7 @@ homepage="$4"                           		 		# Auto homepage
 fw_type="$5"                            		 		# Firewall type: whitelist|blacklist|none
 fw_list="$6"                           			 		# List of host to insert in the fw list
 er_mins="$7"                            				# Autorecover minutes 
+as_delay="$8"											# Autoscreenshots delay seconds
 exam_end_script="/root/labadmin_exam-end.sh"   			# Exam recovery script path
 exam_backups="/root/labadmin_exam-backups/"        		# Examen backups path
 iptables_backup="/root/labadmin_exam-iptables-backup"	# Current iptables backup for restore when end exam
