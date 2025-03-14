@@ -413,10 +413,10 @@ labadmin_info "Creating exam backup"
 bfile="$exam_backups/exam_$(date +%F_%H-%M-%S).zip"
 bpass="$(echo "${bfile}" | md5sum | cut -f1 -d" ")"
 max_size=100   	# Max size in MB (omit larger files and folders)
+IFS=$'\'\\n\''    # Prevent errors if paths returned by find has spaces. No need restart IFS becouse we are in ( ... )
 for f in $(find /home/$euser -maxdepth 1 -type f -name "[!.]*" 2>/dev/null; ls -d /home/$euser/Descargas /home/$euser/Downloads /home/$euser/Escritorio /home/$euser/Desktop /home/$euser/Pictures /home/$euser/Imágenes /home/$euser/Documents /home/$euser/Documentos 2>/dev/null); do
 	[ $(du -s "$f" | cut -f1) -lt $(($max_size*1024)) ] && bfiles="$(echo -e "${bfiles}\n${f}")"
 done
-IFS=$'\'\\n\''    # Prevent errors if paths returned by find has spaces. No need restart IFS becouse we are in ( ... )
 if [ "$bfiles" ]; then
 	echo -e "Saving: ${S_B}${bfiles}${S_R} "
 	7za a -tzip -p"${bpass}" -mem=AES256 "$bfile" $bfiles
