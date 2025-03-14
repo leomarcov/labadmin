@@ -70,7 +70,7 @@ elif [ "${labadmin_script_type}" = "local" ]; then
 u=($(labadmin_users-display | head -1))
 [ ! "${u[0]}" ] && labadmin_error "No users logged" 1
 modprobe -r pcspkr
-su -l "${u[0]}" -c "import -window root -display "${u[1]}" -quality 10 jpg:-"' > "${file_img}.tmp" 
+su -l "${u[0]}" -c "import -window root -display "${u[1]}" -quality 10 -interlace Plane jpg:-"' > "${file_img}.tmp" 
         if [ "$?" -eq 0 ]; then
 			[ ! "$c" ] && echo "Connection successful"; c=1
 		else
