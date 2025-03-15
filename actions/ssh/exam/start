@@ -33,8 +33,8 @@ elif [ "$1" = "--readparams" ]; then
     # PARAM7: mins autorecover
     read_param "$script_id" 7 "Minutes for autorecover (h for help)" "300" "^[0-9]+$" "\tSchedule autorestauration in next boot if have spend these minutes\n\tDefault: 300 (5 hours)\n\tValue 0 disable autorestauration"
 	# PARAM8: autoscreenshots delay
-	read_param "$script_id" 8 "Autoscreenshots delay seconds (default 5, 0 for disable)"  "5" "^([0-9])+$"
-    return
+	read_param "$script_id" 8 "Delay seconds for autosave screenshot (default 5, 0 for disable)"  "5" "^([0-9])+$"
+	return
 fi
 
 
@@ -549,18 +549,24 @@ if [ "$er_mins" -gt "0" ]; then
     (echo "PATH=${PATH}:/#LABADMIN-EXAM"; crontab -l 2>/dev/null; echo '@reboot   bash -c '\''[ $(date +\%s) -gt '$end_time' ] && "'"${exam_end_script}"'" '${recover_mode}'   #LABADMIN-EXAM'\' ) | crontab -
 fi
 
-### AUTOSCREENSHOTS 
-# Create service
-if [ ! -f /etc/systemd/system/labadmin-screenshots.service ]; then
-	echo '[Unit]
+### AUTOSCREENSHOT
+if [ "$as_delay" -ne 0 ]; then
+	# Create service
+	if [ ! -f /etc/systemd/system/labadmin-screenshot.service ]; then
+		labadmin_info "Creating labadmin-screenshot service"
+	
+		echo '[Unit]
 Description=Labadmin Screenshots Service
 [Service]
 Type=simple
 Restart=always
-ExecStart=/usr/bin/env bash /sbin/labadmin-screenshots
+ExecStart=/usr/bin/env bash /sbin/labadmin-screenshot
 
 [Install]
-WantedBy=multi-user.target' > /etc/systemd/system/labadmin-screenshots.service
-
+WantedBy=multi-user.target' > /etc/systemd/system/labadmin-screenshot.service
+		systemctl daemon-reload
+	fi
+	# Enable and start service
+	systemctl enable labadmin-screenshot
+	systemctl start labadmin-screenshot
 fi
-
