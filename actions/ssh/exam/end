@@ -37,7 +37,7 @@ new_pass="$3"
 
 
 ### CHECK RECOVERY EXAM SCRIPT
-[ ! -f "$exam_end_script_path" ] && labadmin_error "ERROR: no exam in progress (script $exam_end_script_path no exists)" 1
+[ ! -f "$exam_end_script" ] && labadmin_error "ERROR: no exam in progress (script $exam_end_script no exists)" 1
 
 ### EXEC EXAM RECOVERY SCRIPT
 bash "$exam_end_script_path" "${remove_user}" "${new_pass}"
