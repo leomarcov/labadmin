@@ -77,7 +77,7 @@ find "$labadmin_cache_path" -maxdepth 1 -mindepth 1 -type d -mtime +${max_backup
 ### CREATE EXAM PATHS
 exam_cache_path="${labadmin_cache_path}/EXAM_$(date +%F_%H-%M-%S)-${euser}/"			# Current exam cache path
 home_backup="${exam_cache_path}/home/" 									       			# Exam user home backup path
-screenshots_backup="${exam_cache_path}/screnshoots/"									# Screenshots backup path
+screenshots_backup="${exam_cache_path}/screenshoots/"									# Screenshots backup path
 iptables_backup="${exam_cache_path}/labadmin_exam-iptables-backup"						# Current iptables backup file for restore when exam ends
 mkdir -p "$exam_cache_path" || labadmin_error "ERROR: cant create exam cache path: $exam_cache_path" 1
 chmod 000 "$exam_cache_path"
