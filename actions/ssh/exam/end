@@ -29,7 +29,8 @@ fi
 
 
 #=== EXEC SCRIPT ===================================================================
-exam_end_script_path="/root/labadmin_exam-end.sh"   # Exam recovery script path
+labadmin_cache_path="/home/.labadmin-cache/"					# Labadmin exam cache path
+exam_end_script="${labadmin_cache_path}/current_exam-end.sh"	# Current exam end script
 poweroff_end="$1"
 remove_user="$2"
 new_pass="$3"
