@@ -413,6 +413,7 @@ busers="'"$busers"'"
 sshuser="'"$labadmin_sshuser"'"
 exam_end_script="'"$exam_end_script"'"
 export PATH="$PATH:'"$PATH"'"
+labadmin_cache_path="/home/.labadmin-cache/"
 exam_cache_path="'"$exam_cache_path"'"
 home_backup="'"$home_backup"'"
 as_delay="'"$as_delay"'"
@@ -544,6 +545,13 @@ if [ "$virtualbox_was_enabled" ]; then
 	modprobe vboxnetflt || labadmin_error "ERROR: cant enable Virtualbox bridged network module"
 fi
 
+### STOP AUTOSCREENSHOTS
+if [ "$as_delay" -ne 0 ]; then
+	labadmin_info "Stopping autoscreenshots"
+	systemctl stop labadmin-screenshot.service
+	systemctl disable labadmin-screenshot.service
+	rm -rf "${labadmin_cache_path}/current_screenshots/"
+fi
 
 
 ### SCRIPT AUTODESTRUCTION!
