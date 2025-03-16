@@ -39,22 +39,46 @@ fi
 
 
 #=== EXEC SCRIPT ===================================================================
-euser="$1"                              		 		# Exam user name
-epass="$2"                              		 		# Examen user password
-disopt="$3"                             		 		# Options to disable
-homepage="$4"                           		 		# Auto homepage
-fw_type="$5"                            		 		# Firewall type: whitelist|blacklist|none
-fw_list="$6"                           			 		# List of host to insert in the fw list
-er_mins="$7"                            				# Autorecover minutes 
-as_delay="$8"											# Autoscreenshots delay seconds
-exam_end_script="/root/labadmin_exam-end.sh"   			# Exam recovery script path
-exam_backups="/root/labadmin_exam-backups/"        		# Examen backups path
-iptables_backup="/root/labadmin_exam-iptables-backup"	# Current iptables backup for restore when end exam
+euser="$1"                              		 				# Exam user name
+epass="$2"                              		 				# Examen user password
+disopt="$3"                             		 				# Options to disable
+homepage="$4"                           		 				# Auto homepage
+fw_type="$5"                            		 				# Firewall type: whitelist|blacklist|none
+fw_list="$6"                           			 				# List of host to insert in the fw list
+er_mins="$7"                            						# Autorecover minutes 
+as_delay="$8"													# Autoscreenshots delay seconds
 
-### REMOVE OLDER BACKUPS 
+### EXAM PATHS
+labadmin_cache_path="/home/.labadmin-cache/"					# Labadmin exam cache path
+exam_end_script="${labadmin_cache_path}/current_exam-end.sh"	# Current exam end script
+if [ ! -d "$labadmin_cache_path" ]; then mkdir "$labadmin_cache_path" || exit 1; chmod 000 "$labadmin_cache_path; fi
+
+### CHECK EXAM IN PROGRESS
+if [ -e "$exam_end_script" ]; then
+    echo -e "${C_BR}EXAM IN PROGRESS${S_R}"
+    echo -e "  LOGGED USERS:\t$(who | awk '{print $1}' | sed -z 's/\n/, /g' | sed 's/, $//g')"
+    echo -e "  START:\t$(stat "$exam_end_script"  -c %y | cut -f1 -d.)\e[0m"
+
+    end=$(crontab -l | grep "#LABADMIN-EXAM" | crontab -l | awk -F "-gt" '{print $2}' | awk -F "]" '{print $1}'|xargs)
+    if [ ! "$end" ]; then end="not programmed"
+    else end="$(date -d @${end} "+%Y-%M-%d %H:%M:%S") ($[($end-$(date +%s))/60] minutes)"; fi
+    echo -e "  AUTORECOVER:\t${end}"
+    exit 1
+fi
+
+### REMOVE OLDER BACKUPS
 max_backup_days=15
 labadmin_info "Removing exam older autobackup files ($max_backup_days days older)"
-find "$exam_backups" -type f -mtime +${max_backup_days} -exec rm -v {} \; 2> /dev/null
+find "$labadmin_cache_path" -maxdepth 1 -mindepth 1 -type d -mtime +${max_backup_days} | while read f; do echo "Removing exam: $f"; rm -r "$f"; done
+
+### CREATE EXAM PATHS
+exam_cache_path="${labadmin_cache_path}/exam_$(date +%F_%H-%M-%S)-${euser}_CURRENT/"		# Current exam cache path
+home_backup="${exam_cache_path}/home/" 									       				# Exam user home backup path
+screenshots_backup="${exam_cache_path}/screnshoots/"										# Screenshots backup path
+iptables_backup="${exam_cache_path}/labadmin_exam-iptables-backup"							# Current iptables backup file for restore when exam ends
+mkdir -p "$exam_cache_path" || exit 1							
+mkdir -p "$home_backup" || exit 1														
+[ "$as_delay" -gt 0 ] && mkdir "${screenshots_backup}"
 
 
 ### GET FILES AND PATHS TO DISABLE
@@ -89,20 +113,6 @@ if [[ "$disopt" != *( )none*( ) ]]; then
     [ "$dbrowser" ] && perms0="$perms0 ${browsers,,}"
 	[ "$dcom" ] && perms0="$perms0 $dcom"
 	perms0="$(echo "$perms0" | tr "\n" " " )"
-fi
-
-
-### CHECK EXAM IN PROGRESS
-if [ -e "$exam_end_script" ]; then
-    echo -e "${C_BR}EXAM IN PROGRESS${S_R}"
-    echo -e "  LOGGED USERS:\t$(who | awk '{print $1}' | sed -z 's/\n/, /g' | sed 's/, $//g')"
-    echo -e "  START:\t$(stat "$exam_end_script"  -c %y | cut -f1 -d.)\e[0m"
-
-    end=$(crontab -l | grep "#LABADMIN-EXAM" | crontab -l | awk -F "-gt" '{print $2}' | awk -F "]" '{print $1}'|xargs)
-    if [ ! "$end" ]; then end="not programmed"
-    else end="$(date -d @${end} "+%Y-%M-%d %H:%M:%S") ($[($end-$(date +%s))/60] minutes)"; fi
-    echo -e "  AUTORECOVER:\t${end}"
-    exit 1
 fi
 
 ### BEEP!!!!!!!!!
