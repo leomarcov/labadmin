@@ -23,10 +23,10 @@ fi
 
 
 #=== EXEC SCRIPT ===================================================================
-exam_backups="/root/labadmin_exam-backups/"              # Examen backups path
+labadmin_cache_path="/home/.labadmin-cache/"			# Labadmin exam cache path
 
 # SHOW LIST
-backups_list="$(ls "$exam_backups" 2>/dev/null)"
+backups_list="$(ls -d "${labadmin_cache_path}/EXAM_"* 2>/dev/null)"
 if [ $? -ne 0 ]; then
     echo "No exams saved"
     exit 0
