@@ -40,8 +40,15 @@ n=1
 m="${S_B}ID DIR SIZE DAYS-AGO HOME SCREENSHOTS${S_R}\n"
 IFS=$'\n'
 for d in $backups_list; do
-    m="${m} $([ "$n" -eq "$enum" ] && echo -e "${C_BR}")[$([ "$n" -eq "$enum" ] && echo "-" || echo "$n")] $(basename "$d") $(du -sh "$d" | cut -f1) $((($(date +%s)-$(date -r "$d" +%s))/86400))  $(du -sh "${d}/home/" 2>/dev/null| cut -f1)  $(du -sh "${d}/screenshots/" 2>/dev/null| cut -f1)\n${S_R}"
-    [ "$n" -eq "$enum" ] && edir="$d" || n=$(($n+1))
+    l="[$n] $(basename "$d") $(du -sh "$d" | cut -f1) $((($(date +%s)-$(date -r "$d" +%s))/86400))  $(du -sh "${d}/home/" 2>/dev/null| cut -f1)  $(du -sh "${d}/screenshots/" 2>/dev/null| cut -f1)\n"
+	if [ "$n" -eq "$enum" ]; then
+		m="${m}${C_BR}${l}${S_R}"
+		edir="$d"
+		enum=0
+	else
+		m="${m}${l}"
+		n=n+1
+	fi
 done
 echo
 echo -e "$m" | column -t | sed '1a----------------------------------------------------------------------------'
