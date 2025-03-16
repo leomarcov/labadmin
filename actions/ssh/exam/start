@@ -75,7 +75,7 @@ labadmin_info "Removing exam older autobackup files ($max_backup_days days older
 find "$labadmin_cache_path" -maxdepth 1 -mindepth 1 -type d -mtime +${max_backup_days} | while read f; do echo "Removing exam: $f"; rm -rf "$f"; done
 
 ### CREATE EXAM PATHS
-exam_cache_path="${labadmin_cache_path}/EXAM_$(date +%F_%H-%M-%S)-${euser}/"			# Current exam cache path
+exam_cache_path="${labadmin_cache_path}/EXAM_$(date +%F_%H-%M-%S)_${euser}/"			# Current exam cache path
 home_backup="${exam_cache_path}/home/" 									       			# Exam user home backup path
 screenshots_backup="${exam_cache_path}/screenshots/"									# Screenshots backup path
 iptables_backup="${exam_cache_path}/labadmin_exam-iptables-backup"						# Current iptables backup file for restore when exam ends
