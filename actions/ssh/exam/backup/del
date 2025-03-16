@@ -44,11 +44,10 @@ for d in $backups_list; do
 	if [ "$n" -eq "$enum" ]; then
 		m="${m}${C_BR}${l}${S_R}"
 		edir="$d"
-		enum=0
 	else
 		m="${m}${l}"
-		n=$((n+1))
 	fi
+	n=$((n+1))
 done
 echo
 echo -e "$m" | column -t | sed '1a----------------------------------------------------------------------------'
