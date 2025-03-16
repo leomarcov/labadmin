@@ -83,7 +83,8 @@ mkdir -p "$exam_cache_path" || labadmin_error "ERROR: cant create exam cache pat
 chmod 000 "$exam_cache_path"
 mkdir -p "$home_backup" || labadmin_error "ERROR: cant create home backup path: $home_backup" 1														
 if [ "$as_delay" -gt 0 ]; then
-	mkdir "${screenshots_backup}" || labadmin_error "ERROR: cant create screenshots path: $screenshots_backup" 1	
+	mkdir "${screenshots_backup}" || labadmin_error "ERROR: cant create screenshots path: $screenshots_backup" 1
+	[ -e "${labadmin_cache_path}/current_screenshots" ] && labadmin_error "ERROR: "${labadmin_cache_path}/current_screenshots" link exists. Autoscreenshots already running?" 1
 	ln -s "${screenshots_backup}" "${labadmin_cache_path}/current_screenshots"|| labadmin_error "ERROR: cant create screenshots link: ${labadmin_cache_path}/current_screenshots" 1	
 fi
 
