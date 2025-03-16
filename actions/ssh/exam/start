@@ -51,7 +51,7 @@ as_delay="$8"													# Autoscreenshots delay seconds
 ### EXAM PATHS
 labadmin_cache_path="/home/.labadmin-cache/"					# Labadmin exam cache path
 exam_end_script="${labadmin_cache_path}/current_exam-end.sh"	# Current exam end script
-if [ ! -d "$labadmin_cache_path" ]; then mkdir "$labadmin_cache_path" || exit 1; chmod 000 "$labadmin_cache_path; fi
+if [ ! -d "$labadmin_cache_path" ]; then mkdir "$labadmin_cache_path" || exit 1; chmod 000 "$labadmin_cache_path"; fi
 
 ### CHECK EXAM IN PROGRESS
 if [ -e "$exam_end_script" ]; then
