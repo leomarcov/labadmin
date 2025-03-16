@@ -550,7 +550,7 @@ if [ "$as_delay" -ne 0 ]; then
 	labadmin_info "Stopping autoscreenshots"
 	systemctl stop labadmin-screenshot.service
 	systemctl disable labadmin-screenshot.service
-	rm -rf "${labadmin_cache_path}/current_screenshots/"
+	rm -rf "${labadmin_cache_path}/current_screenshots"
 fi
 
 
