@@ -58,5 +58,5 @@ echo
 [ ! -e "$edir" ] && labadmin_error "ERROR: can't access dir $edir" 1
 
 # DELETE BACKUP
-echo
-rm -rfv "$edir"
+echo -e "Removing directory: ${S_B}${edir}${S_R}"
+rm -rf "$edir"
