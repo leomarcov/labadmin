@@ -34,14 +34,14 @@ labadmin_cache_path="/home/.labadmin-cache/"			# Labadmin exam cache path
 [ ! -w "$dest" ] || [ ! -w "$dest" ] && labadmin_error "Can't write in local path $dest" 1
 
 # CHECK EXAM FILENAME
-efile="$(labdmin_ssh_host_comm "${labadmin_nhost}" "ls -d \"${labadmin_cache_path}\" | sed -n ${enum}p")"
+efile="$(labdmin_ssh_host_comm "${labadmin_nhost}" "ls -d \"${labadmin_cache_path}\"EXAM* | sed -n ${enum}p")"
 
 [ ! "$efile" ] && labadmin_error "Can't access backup number $enum ($exam_backups)" 1
 
 # DOWNLOAD FILE
 dest="$dest/$(basename "$efile")_HOST${labadmin_nhost}"
 mkdir "$dest" || labadmin_error "Cant create dest dir: $dest" 1 
-labadmin_info "Destination: $dest"
+echo -e "Destination: ${S_B}$dest${S_R}"
 
 exit 0
 
