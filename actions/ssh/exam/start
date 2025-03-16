@@ -332,7 +332,7 @@ labadmin_info "Config host for beep on reboot"
 
 
 ### END EXAM SCRIPT
-labadmin_info "Generating end-examn script"
+labadmin_info "Generating exam-end script"
 echo -e "Path: ${S_B}${exam_end_script}${S_R}"
 echo '#!/usr/bin/env bash
 #===============================================================================
