@@ -26,32 +26,31 @@ fi
 
 #=== EXEC SCRIPT ===================================================================
 enum="$1"
-exam_backups="/root/labadmin_exam-backups/"              # Examen backups path
+labadmin_cache_path="/home/.labadmin-cache/"			# Labadmin exam cache path
 
 # SHOW LIST
-backups_list="$(ls "$exam_backups" 2>/dev/null)"
+backups_list="$(ls -d "${labadmin_cache_path}/EXAM_"* 2>/dev/null)"
 if [ $? -ne 0 ]; then
     echo "No exams saved"
     exit 0
 fi
 
+
 n=1
-c="%-4s%-30s%-8s%-10s%-35s\n"
-printf "${S_B}${c}${S_R}" "ID" "FILE" "SIZE" "DAYS-AGO" "PASSWORD (7za x <file> -p<pass>)"
-IFS=$'\n\t'
-for f in $backups_list; do
-    efiles[$n]="$exam_backups/$f"
-    bpass="$(echo "${efiles[$n]}" | md5sum | cut -f1 -d" ")"
-    printf "$([ "$n" -eq "$enum" ] && echo "${C_BR}${c}${S_R}" || echo "$c")" "[$n]" "$f" "$(du -sh "${efiles[$n]}" | cut -f1)" "$(( ($(date +%s)-$(date -r "${efiles[$n]}" +%s))/86400 ))" "$bpass"
-    n=$(($n+1))
+m="${S_B}ID DIR SIZE DAYS-AGO HOME SCREENSHOTS${S_R}\n"
+IFS=$'\n'
+for d in $backups_list; do
+    m="${m} $([ "$n" -eq "$enum" ] && echo -e "${C_BR}")[$([ "$n" -eq "$enum" ] && echo "-" || echo "$n")] $(basename "$d") $(du -sh "$d" | cut -f1) $((($(date +%s)-$(date -r "$d" +%s))/86400))  $(du -sh "${d}/home/" 2>/dev/null| cut -f1)  $(du -sh "${d}/screenshots/" 2>/dev/null| cut -f1)\n${S_R}"
+    [ "$n" -eq "$enum" ] && edir="${labadmin_cache_path}/$d" || n=$(($n+1))
 done
+echo
+echo -e "$m" | column -t | sed '1a----------------------------------------------------------------------------'
+echo
 
 
 # CHECK SELECTED BACKUP FILE
-efile="${efiles[$enum]}"
-[ ! -e "$efile" ] && labadmin_error "ERROR: can't access file $efile [$enum]" 1
-
+[ ! -e "$edir" ] && labadmin_error "ERROR: can't access dir $edir" 1
 
 # DELETE BACKUP
 echo
-rm -rfv "$efile"
+echo rm -rfv "$edir"
