@@ -39,5 +39,5 @@ for d in $backups_list; do
     m="${m} [$n] $(basename "$d") $(du -sh "$d" | cut -f1) $((($(date +%s)-$(date -r "$d" +%s))/86400))  $(du -sh "${d}/home/" 2>/dev/null| cut -f1)  $(du -sh "${d}/screenshots/" 2>/dev/null| cut -f1)\n"
     n=$(($n+1))
 done
-echo -e "$m" | column -t | sed '1a--------------------------------------------------------------------------'
+echo -e "\n$m" | column -t | sed '1a--------------------------------------------------------------------------'
 echo
