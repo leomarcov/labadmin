@@ -43,7 +43,7 @@ dest="$dest/$(basename "$edir")_HOST${labadmin_nhost}"
 mkdir "$dest" || labadmin_error "Cant create dest dir: $dest" 1 
 echo -e "Destination: ${S_B}$dest${S_R}"
 echo "Downloading exam..."
-labdmin_ssh_host_comm "${labadmin_nhost}" "tar -c -C \"$(dirname \"${edir}\")\" \"$(basename \"${edir}\")\" | pv -s $(du -sb \"${edir}\" | cut -f1)" | tar xv -C "$dest"
+labdmin_ssh_host_comm "${labadmin_nhost}" "tar -c -C $(dirname \""${edir}"\") $(basename \""${edir}"\") | pv -s $(du -sb \"${edir}\" | cut -f1)" | tar xv -C "$dest"
 
 
 
