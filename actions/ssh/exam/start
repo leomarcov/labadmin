@@ -558,6 +558,7 @@ fi
 ### SCRIPT AUTODESTRUCTION!
 labadmin_info "AUTODESTROYING THIS SCRIPT"
 rm -f "$exam_end_script"
+[ -f "$exam_end_script" ] && labadmin_error "ERROR: Cant remove exam end script: $exam_end_script" 1
 ' > "$exam_end_script"
 chmod +x "$exam_end_script"
 
