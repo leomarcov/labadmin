@@ -33,7 +33,7 @@ if [ $? -ne 0 ]; then
 fi
 
 n=1
-m="${S_B}ID DIR SIZE DAYS-AGO HOME SCREENSHOTS\n"
+m="${S_B}ID DIR SIZE DAYS-AGO HOME SCREENSHOTS${S_R}\n"
 IFS=$'\n'
 for d in $backups_list; do
     m="${m} [$n] $(basename "$d") $(du -sh "$d" | cut -f1) $((($(date +%s)-$(date -r "$d" +%s))/86400))  $(du -sh "${d}/home/" 2>/dev/null| cut -f1)  $(du -sh "${d}/screenshots/" 2>/dev/null| cut -f1)\n"
