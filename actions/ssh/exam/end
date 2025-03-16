@@ -40,7 +40,7 @@ new_pass="$3"
 [ ! -f "$exam_end_script" ] && labadmin_error "ERROR: no exam in progress (script $exam_end_script no exists)" 1
 
 ### EXEC EXAM RECOVERY SCRIPT
-bash "$exam_end_script_path" "${remove_user}" "${new_pass}"
+bash "$exam_end_script" "${remove_user}" "${new_pass}"
 
 # Poweroff 
 [ $? -eq 0 ] && [ "${poweroff_end,,}" = "y" ] && { labadmin_info "\nNO ERRORS REPORTED -> POWEROFF"; poweroff; }
