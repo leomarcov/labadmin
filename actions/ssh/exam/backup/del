@@ -59,4 +59,4 @@ echo
 
 # DELETE BACKUP
 echo
-echo rm -rfv "$edir"
+rm -rfv "$edir"
