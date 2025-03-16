@@ -90,7 +90,7 @@ chromium_name="$(compgen -c chromium|head -1)"	# some distros chromium, others c
 # banned mountpoints:
 mountpoints="/media/ /mnt/ /run/media/"
 # banned screenshooters
-screenshooters="$(compgen -c | grep screenshot) $(man -s 1 -k "screenshot" | cut -f1 -d" ")"
+screenshooters="$(compgen -c | grep screenshot) $(man -s 1 -k "screenshot" 2>/dev/null | cut -f1 -d" ")"
 # banned power commands
 powercommands="shutdown poweroff reboot halt systemctl pm-suspend pm-hibernate pm-suspend-hybrid"
 # banned file managers
