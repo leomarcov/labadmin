@@ -406,7 +406,9 @@ busers="'"$busers"'"
 sshuser="'"$labadmin_sshuser"'"
 exam_end_script="'"$exam_end_script"'"
 export PATH="$PATH:'"$PATH"'"
+exam_cache_path="'"$exam_cache_path"'"
 home_backup="'"$home_backup"'"
+as_delay="'"$as_delay"'"
 virtualbox_was_enabled="'"$virtualbox_was_enabled"'"
 virtualbox_was_disabled_persistent="'"$virtualbox_was_disabled_persistent"'"
 fw_type="'"$fw_type"'" 
@@ -427,7 +429,8 @@ echo -e "Backup path: ${S_B}${home_backup}${S_R}"
 max_size=100   	# Max size in MB (omit larger files and folders)
 IFS=$'\'\\n\''    # Prevent errors if paths returned by find has spaces. No need restart IFS becouse we are in ( ... )
 for f in $(find /home/$euser -maxdepth 1 -mindepth 1 -name "[!.]*"); do
-	[ $(du -s "$f" | cut -f1) -gt $(($max_size*1024)) ] && continue
+	[ $(du -s "$f" | cut -f1) -gt $(($max_size*1024)) ] && continue		# Skip heavy files and directories
+	[ -d "$f" ] && [ ! "$(ls -A "$f")" ] && continue					# Skip empty directories
 	echo " $f"
 	cp -r "$f" "$home_backup"
 done
@@ -538,6 +541,7 @@ fi
 
 ### SCRIPT AUTODESTRUCTION!
 labadmin_info "AUTODESTROYING THIS SCRIPT"
+mv "$exam_cache_path" "$(echo "$exam_cache_path" | sed 's/\/CURRENT_/\/EXAM_/g')"		# Rename CURRENT_... exam cache path to EXAM_...
 rm -f "$exam_end_script"
 ' > "$exam_end_script"
 chmod +x "$exam_end_script"
