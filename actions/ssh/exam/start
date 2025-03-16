@@ -69,7 +69,7 @@ fi
 ### REMOVE OLDER BACKUPS
 max_backup_days=15
 labadmin_info "Removing exam older autobackup files ($max_backup_days days older)"
-find "$labadmin_cache_path" -maxdepth 1 -mindepth 1 -type d -mtime +${max_backup_days} | while read f; do echo "Removing exam: $f"; rm -r "$f"; done
+find "$labadmin_cache_path" -maxdepth 1 -mindepth 1 -type d -mtime +${max_backup_days} | while read f; do echo "Removing exam: $f"; rm -rf "$f"; done
 
 ### CREATE EXAM PATHS
 exam_cache_path="${labadmin_cache_path}/exam_$(date +%F_%H-%M-%S)-${euser}_CURRENT/"		# Current exam cache path
@@ -406,7 +406,7 @@ busers="'"$busers"'"
 sshuser="'"$labadmin_sshuser"'"
 exam_end_script="'"$exam_end_script"'"
 export PATH="$PATH:'"$PATH"'"
-exam_backups="'"$exam_backups"'"
+home_backups="'"$home_backup"'"
 virtualbox_was_enabled="'"$virtualbox_was_enabled"'"
 virtualbox_was_disabled_persistent="'"$virtualbox_was_disabled_persistent"'"
 fw_type="'"$fw_type"'" 
@@ -422,22 +422,15 @@ labadmin_info "BEEEEEEEEP!!!"
 if [ "$remove_user" ]; then
 (
 labadmin_info "Creating exam backup"
-[ -d "$exam_backups" ] && mkdir -p "$exam_backups"
-bfile="$exam_backups/exam_$(date +%F_%H-%M-%S).zip"
-bpass="$(echo "${bfile}" | md5sum | cut -f1 -d" ")"
+[ ! -d "$home_backup" ] && labadmin_error "Cant find exam cache dir: $home_backup" 1
+echo -e "Backup path: ${S_B}${home_backup}${S_R}"
 max_size=100   	# Max size in MB (omit larger files and folders)
 IFS=$'\'\\n\''    # Prevent errors if paths returned by find has spaces. No need restart IFS becouse we are in ( ... )
-for f in $(find /home/$euser -maxdepth 1 -type f -name "[!.]*" 2>/dev/null; ls -d /home/$euser/Descargas /home/$euser/Downloads /home/$euser/Escritorio /home/$euser/Desktop /home/$euser/Pictures /home/$euser/Imágenes /home/$euser/Documents /home/$euser/Documentos 2>/dev/null); do
-	[ $(du -s "$f" | cut -f1) -lt $(($max_size*1024)) ] && bfiles="$(echo -e "${bfiles}\n${f}")"
+for f in $(find /home/$euser -maxdepth 1 -mindepth 1 -name "[!.]*"); do
+	[ $(du -s "$f" | cut -f1) -gt $(($max_size*1024)) ] && continue
+	echo " $f"
+	cp -r "$f" "$home_backup"
 done
-if [ "$bfiles" ]; then
-	echo -e "Saving: ${S_B}${bfiles}${S_R} "
-	7za a -tzip -p"${bpass}" -mem=AES256 "$bfile" $bfiles
-	# Uncompress: 7za e fichero.zip
-	echo -e "Recover backup: 7za e $bfile (pass: $bpass)"
-else
-	echo "Saving: no files for saving"
-fi
 )
 fi
 
