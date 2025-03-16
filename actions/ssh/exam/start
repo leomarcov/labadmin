@@ -76,7 +76,8 @@ exam_cache_path="${labadmin_cache_path}/CURRENT_$(date +%F_%H-%M-%S)-${euser}/"	
 home_backup="${exam_cache_path}/home/" 									       				# Exam user home backup path
 screenshots_backup="${exam_cache_path}/screnshoots/"										# Screenshots backup path
 iptables_backup="${exam_cache_path}/labadmin_exam-iptables-backup"							# Current iptables backup file for restore when exam ends
-mkdir -p "$exam_cache_path" || exit 1							
+mkdir -p "$exam_cache_path" || exit 1
+chmod 000 "$exam_cache_path"
 mkdir -p "$home_backup" || exit 1														
 [ "$as_delay" -gt 0 ] && mkdir "${screenshots_backup}"
 
