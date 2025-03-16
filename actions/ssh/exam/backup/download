@@ -34,22 +34,16 @@ labadmin_cache_path="/home/.labadmin-cache/"			# Labadmin exam cache path
 [ ! -w "$dest" ] || [ ! -w "$dest" ] && labadmin_error "Can't write in local path $dest" 1
 
 # CHECK EXAM FILENAME
-efile="$(labdmin_ssh_host_comm "${labadmin_nhost}" "ls -d \"${labadmin_cache_path}\"EXAM* | sed -n ${enum}p")"
+edir="$(labdmin_ssh_host_comm "${labadmin_nhost}" "ls -d \"${labadmin_cache_path}\"EXAM* | sed -n ${enum}p")"
 
-[ ! "$efile" ] && labadmin_error "Can't access backup number $enum ($exam_backups)" 1
+[ ! "$edir" ] && labadmin_error "Can't access backup number $enum ($exam_backups)" 1
 
 # DOWNLOAD FILE
-dest="$dest/$(basename "$efile")_HOST${labadmin_nhost}"
+dest="$dest/$(basename "$edir")_HOST${labadmin_nhost}"
 mkdir "$dest" || labadmin_error "Cant create dest dir: $dest" 1 
 echo -e "Destination: ${S_B}$dest${S_R}"
+echo "Downloading..."
+labdmin_ssh_host_comm "${labadmin_nhost}" "tar -c -C \"$(dirname \"${edir}\")\" \"$(basename \"${edir}\")\" | pv -s $(du -sb \"${edir}\" | cut -f1)" | tar xv -C "$dest"
 
-exit 0
 
-labdmin_ssh_host_comm "${labadmin_nhost}" "dd if=\"${exam_backups}/${efile}\" bs=1M" > "${dest}/${efile}"
 
-# UNZIP FILE
-bpass="$(echo "${exam_backups}/${efile}" | md5sum | cut -f1 -d" ")"
-( cd "$dest"
-  7za x "$efile" -p"${bpass}"
-  rm "$efile";
-)
