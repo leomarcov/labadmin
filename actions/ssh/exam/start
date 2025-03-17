@@ -610,12 +610,12 @@ if [ ! -d "$screenshots_path" ] || [ ! -w "$screenshots_path" ]; then
 fi
 
 while true; do
-	# Screenshot path
-	sp="${screenshots_path}/$(date +%Y-%m-%d_%H-%M-%S)_${u}.jpg"
 	# Active tty
 	atty=$(cat /sys/class/tty/tty0/active)
 	# Current user and display
 	u=$(w -h | grep "\b${atty}\b" | head -1); d=$(echo "$u" | grep -wo ":[0-9]"); u=$(echo "$u" | cut -f1 -d" ")
+	# Screenshot path
+	sp="${screenshots_path}/$(date +%Y-%m-%d_%H-%M-%S)_${u}.jpg"
 
 	# Take screenshot if user logged
 	[ "$u" ] && su -l "${u}" -c "import -window root -display ${d} -quality ${iq} -interlace Plane jpg:-" > "${sp}"
