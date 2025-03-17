@@ -97,9 +97,9 @@ tmp="$(ls /etc/chromium/policies/managed/ 2>/dev/null)"
 if [ ! -f /etc/systemd/system/labadmin-screenshot.service ]; then
 	echo -e " [${C_BG}*${S_R}] AUTOSCREENSHOTS:     not installed"
 elif ! systemctl is-active labadmin-screenshot.service &>/dev/null && ! systemctl is-enabled labadmin-screenshot.service &>/dev/null; then
-	echo -e " [${C_BG}*${S_R}] AUTOSCREENSHOTS:     not actived"
+	echo -e " [${C_BG}*${S_R}] AUTOSCREENSHOTS:     installed but not actived"
 else
-	echo -e " [${C_BR}*${S_R}] AUTOSCREENSHOTS:     active or enabled"
+	echo -e " [${C_BR}*${S_R}] AUTOSCREENSHOTS:     installed and active or enabled"
 fi
 
 # IPTABLES
