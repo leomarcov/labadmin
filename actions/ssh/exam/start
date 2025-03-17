@@ -549,8 +549,8 @@ fi
 ### STOP AUTOSCREENSHOTS
 if [ "$as_delay" -ne 0 ]; then
 	labadmin_info "Stopping autoscreenshots"
-	systemctl stop labadmin-screenshot.service
-	systemctl disable labadmin-screenshot.service
+	systemctl stop labadmin-screenshot.service &>/dev/null || labadmin_error "ERROR: error stopping labadmin-screenshot service"
+	systemctl disable labadmin-screenshot.service || labadmin_error "ERROR: error disabling labadmin-screenshot service"
 	rm -rf "${labadmin_cache_path}/current_screenshots"
 fi
 
@@ -558,7 +558,7 @@ fi
 ### SCRIPT AUTODESTRUCTION!
 labadmin_info "AUTODESTROYING THIS SCRIPT"
 rm -f "$exam_end_script"
-[ -f "$exam_end_script" ] && labadmin_error "ERROR: Cant remove exam end script: $exam_end_script" 1
+[ -f "$exam_end_script" ] && labadmin_error "ERROR: Cant remove exam end script: $exam_end_script"
 exit 0
 ' > "$exam_end_script"
 chmod +x "$exam_end_script"
