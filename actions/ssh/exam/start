@@ -619,7 +619,7 @@ while true; do
 
 	# Take screenshot
 	su -l "${u}" -c "import -window root -display ${d} -quality ${iq} -interlace Plane \"${sp}\""
-	speep "$dsec"
+	sleep "$dsec"
 done
 
 
