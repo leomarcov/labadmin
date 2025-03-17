@@ -23,4 +23,5 @@ fi
 
 
 #=== EXEC SCRIPT ===================================================================
-bash -c "cd /home"
+cd /home/.labadmin-cache/
+bash
