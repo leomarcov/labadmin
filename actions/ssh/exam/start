@@ -574,21 +574,59 @@ fi
 
 ### AUTOSCREENSHOT
 if [ "$as_delay" -ne 0 ]; then
-	# Create service
-	if [ ! -f /etc/systemd/system/labadmin-screenshot.service ]; then
+	# Create labadmin-screenshot service
+	if [ -f /etc/systemd/system/labadmin-screenshot.service ]; then
 		labadmin_info "Creating labadmin-screenshot service"
-	
+############################################################	
 		echo '[Unit]
 Description=Labadmin Screenshots Service
+After=auditd.service
+
 [Service]
 Type=simple
 Restart=always
 ExecStart=/usr/bin/env bash /sbin/labadmin-screenshot
+StandardOutput=syslog
+StandardError=syslog
 
 [Install]
 WantedBy=multi-user.target' > /etc/systemd/system/labadmin-screenshot.service
+##############################################################
+##############################################################
+		echo '#!/bin/bash
+#!/usr/bin/env bash
+# CONFIG VARIABLES
+labadmin_cache_path="/home/.labadmin-cache"								# Labadmin cache path
+screenshots_path="${labadmin_cache_path}/current_screenshots"			# Screenshots save path
+dsec=5																	# Screenshot delay seconds
+iq=10																	# Screenshot JPEG image quality (range 1-100)
+
+# Check screenshots path
+if [ ! -d "$screenshots_path" ] || [ ! -w "$screenshots_path" ]; then
+	echo "ERROR: cant access to screenshots path: $screenshots_path
+	exit 1
+fi
+
+while true; do
+	# Screenshot path
+	sp="${screenshots_path}/$(date +%Y-%m-%d_%H-%M-%S)_${u}.jpg"
+	# Active tty
+	atty=$(cat /sys/class/tty/tty0/active)
+	# Current user and display
+	u=$(w -h | grep "\b${atty}\b" | head -1); d=$(echo "$u" | grep -wo ":[0-9]"); u=$(echo "$u" | cut -f1 -d" ")
+
+	# Take screenshot
+	su -l "${u}" -c "import -window root -display ${d} -quality ${iq} -interlace Plane \"${sp}\""
+	speep "$dsec"
+done
+
+
+' > /sbin/labadmin-screenshot
+##############################################################
+		chmod 760 /sbin/labadmin-screenshot
 		systemctl daemon-reload
 	fi
+
 	# Enable and start service
 	systemctl enable labadmin-screenshot
 	systemctl start labadmin-screenshot
