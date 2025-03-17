@@ -49,3 +49,4 @@ done
 echo
 echo -e "$m" | column -t | sed '1a------------------------------------------------------------------------'
 echo
+echo "TOTAL: ${S_B}$(du -sch "${labadmin_cache_path}/EXAM_"* | tail -1 | grep -w total | cut -f1)${S_R}"
