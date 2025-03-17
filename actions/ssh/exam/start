@@ -598,8 +598,12 @@ WantedBy=multi-user.target' > /etc/systemd/system/labadmin-screenshot.service  |
 ##############################################################
 ##############################################################
 		echo "Creating /sbin/labadmin-screenshot script"
-		echo '#!/bin/bash
-#!/usr/bin/env bash
+		echo '#!/usr/bin/env bash
+#===================================================================================
+#     FILE: labadmin-screenshot
+#   AUTHOR: Leonardo Marco (labadmin@leonardomarco.com)
+#  LICENSE: GNU General Public License v3.0
+#===================================================================================
 # CONFIG VARIABLES
 labadmin_cache_path="/home/.labadmin-cache"								# Labadmin cache path
 screenshots_path="${labadmin_cache_path}/current_screenshots"			# Screenshots save path
@@ -621,13 +625,11 @@ while true; do
 	sp="${screenshots_path}/$(date +%Y-%m-%d_%H-%M-%S)_${u}.jpg"
 
 	# Take screenshot if user logged
-	[ "$u" ] && su -l "${u}" -c "import -window root -display ${d} -quality ${iq} -interlace Plane jpg:-" > "${sp}"
+	[ "$u" ] && [ "$d" ] && su -l "${u}" -c "import -window root -display ${d} -quality ${iq} -interlace Plane jpg:-" > "${sp}"
 	sleep "$dsec"
 done
-
-
 ' > /sbin/labadmin-screenshot || { labadmin_error "ERROR: error creating script /sbin/labadmin-screenshot"; ecode=1; }
-chmod 760 /sbin/labadmin-screenshot
+		chmod 760 /sbin/labadmin-screenshot
 ##############################################################
 		chmod 750 /sbin/labadmin-screenshot
 		systemctl daemon-reload &>/dev/null
