@@ -47,6 +47,7 @@ fw_type="$5"                            		 				# Firewall type: whitelist|blackl
 fw_list="$6"                           			 				# List of host to insert in the fw list
 er_mins="$7"                            						# Autorecover minutes 
 as_delay="$8"													# Autoscreenshots delay seconds
+ecode=0															# Exit code
 
 ### EXAM PATHS
 labadmin_cache_path="/home/.labadmin-cache/"					# Labadmin exam cache path
@@ -133,28 +134,28 @@ if ! id "$euser" &> /dev/null; then
     recover_mode="r"	# Autorecovery mode remove
 	# Add euser
 	labadmin_info "Creating exam user"
-	useradd -m -U -s "/bin/bash" "$euser" &>/dev/null && echo -e "Username: ${S_B}${euser}${S_R}" || labadmin_error "ERROR: cant create user $euser" 1
+	useradd -m -U -s "/bin/bash" "$euser" &>/dev/null && echo -e "Username: ${S_B}${euser}${S_R}" || { labadmin_error "ERROR: cant create user $euser"; ecode=1; }
 	chmod o-rwx "/home/$euser" 
 	if [ ! "$epass" ]; then
-		passwd -d "$euser" &>/dev/null && echo -e "Password: ${S_B}disabled${S_R}" || labadmin_error "ERROR: cant disable user $user password" 1
+		passwd -d "$euser" &>/dev/null && echo -e "Password: ${S_B}disabled${S_R}" || { labadmin_error "ERROR: cant disable user $user password"; ecode=1; }
 	else
 		passwd "$euser" &>/dev/null <<EOF
 ${epass}
 ${epass}
 EOF
-		[ $? -eq 0 ] && echo -e "Password: ${S_B}${epass}${S_R}" || labadmin_error "ERROR: cant set $euser password to $epass" 1 
+		[ $? -eq 0 ] && echo -e "Password: ${S_B}${epass}${S_R}" || { labadmin_error "ERROR: cant set $euser password to $epass"; ecode=1; }
 	fi
 ### USE EXISTING USER
 else 
     recover_mode="l"	# Autorecovery mode lock
 	labadmin_info "Using existing exam user $euser"
 	# Check if exam user is admin
-	labadmin_isadmin "$euser" && labadmin_error "ERROR: USER $euser HAS ADMIN PRIVILEGES!" 1
+	labadmin_isadmin "$euser" && { labadmin_error "ERROR: USER $euser HAS ADMIN PRIVILEGES!"; ecode=1; }
     [ "$epass" ] && passwd "$euser" &>/dev/null <<EOF
 $epass
 $epass
 EOF
-	[ $? -eq 0 ] && echo -e "New password: ${S_B}${epass}${S_R}" || labadmin_error "ERROR: cant set $euser password to $epass" 1
+	[ $? -eq 0 ] && echo -e "New password: ${S_B}${epass}${S_R}" || { labadmin_error "ERROR: cant set $euser password to $epass"; ecode=1; }
     # Unlock user exam if locked
     [ "$(passwd -S "$euser" | cut -f2 -d" ")" = "L" ] && passwd -u "$euser"     
     usermod --shell "/bin/bash" "$euser"
@@ -179,7 +180,7 @@ for u in $(cat /etc/passwd | cut -f1,3 -d: | grep -E :[0-9]{4}$ | cut -f1 -d:); 
     [ "$u" = "$euser" ] && continue
     [ "$u" = "$labadmin_sshuser" ] && continue
     [ "$(passwd -S "$u" | awk '{print $2}')" = "L" ] && continue
-    passwd -l "$u" &>/dev/null && echo -e "Locked ${S_B}${u}${S_R}" || labadmin_error "ERROR: cant lock user $u"
+    passwd -l "$u" &>/dev/null && echo -e "Locked ${S_B}${u}${S_R}" || { labadmin_error "ERROR: cant lock user $u"; ecode=1; }
     busers="${u} ${busers}"
 done
 
@@ -218,7 +219,7 @@ find /tmp -maxdepth 1 ! -user root -exec rm -rf {} \; &>/dev/null
 ### HOMEPAGE
 if [ "$homepage" ]; then
     labadmin_info "Config Chromium for autostart when login and show homepage"
-    ! which "$chromium_name" &>/dev/null && labadmin_error "ERROR: cant find Chromium browser. Homepage function will not work"
+    ! which "$chromium_name" &>/dev/null && { labadmin_error "ERROR: cant find Chromium browser. Homepage function will not work"; ecode=1; }
     echo -e "Homepage: ${S_B}${homepage}${S_R}"
     [ ! -d /home/$euser/.config/autostart/ ] && su -l  "$euser" -c "mkdir -p /home/$euser/.config/autostart/"
     echo '[Desktop Entry]
@@ -277,7 +278,7 @@ if [[ "${fw_type,,}" == @(whitelist|blacklist) ]]; then
 	fi
 
 	# Persistentce
-	labadmin_iptables-persistent || labadmin_error "ERROR: Cant find method for IPTABLES PERSISTENCE"
+	labadmin_iptables-persistent || { labadmin_error "ERROR: Cant find method for IPTABLES PERSISTENCE"; ecode=1; }
 fi
 
 
@@ -293,6 +294,7 @@ ResultInactive=no
 ResultActive=no' > "/var/lib/polkit-1/localauthority/50-local.d/labadmin_poweroff.pkla"
     else
          labadmin_error "ERROR: cant config locking poweroff policies in /var/lib/polkit-1/localauthority/50-local.d/"
+		 ecode=1
     fi
 fi
 
@@ -315,7 +317,7 @@ if which VirtualBox &>/dev/null || which virtualbox &>/dev/null; then
 	# Current module status
 	if lsmod | grep -q "^vboxnetflt\b"; then
 		virtualbox_was_enabled=1
-		modprobe -r vboxnetflt || labadmin_error "ERROR: Cant disable VIRTUALBOX BRIDGED NETWORK"
+		modprobe -r vboxnetflt || { labadmin_error "ERROR: Cant disable VIRTUALBOX BRIDGED NETWORK"; ecode=1; }
 	fi
 	# Current persisntence 
 	if grep -q vboxnetflt /etc/modprobe.d/labadmin-vboxnetflt.conf &>/dev/null; then
@@ -560,7 +562,7 @@ labadmin_info "AUTODESTROYING THIS SCRIPT"
 rm -f "$exam_end_script"
 [ -f "$exam_end_script" ] && { labadmin_error "ERROR: Cant remove exam end script: $exam_end_script"; ecode=1; }
 exit $ecode
-' > "$exam_end_script"
+' > "$exam_end_script" || { labadmin_error "ERROR: cant create exam end script: $exam_end_script"; ecode=1; }
 chmod +x "$exam_end_script"
 
 
@@ -592,7 +594,7 @@ StandardOutput=syslog
 StandardError=syslog
 
 [Install]
-WantedBy=multi-user.target' > /etc/systemd/system/labadmin-screenshot.service
+WantedBy=multi-user.target' > /etc/systemd/system/labadmin-screenshot.service  || { labadmin_error "ERROR: error creating /etc/systemd/system/labadmin-screenshot.service"; ecode=1; }
 ##############################################################
 ##############################################################
 		echo "Creating /sbin/labadmin-screenshot script"
@@ -624,7 +626,7 @@ while true; do
 done
 
 
-' > /sbin/labadmin-screenshot
+' > /sbin/labadmin-screenshot || { labadmin_error "ERROR: error creating script /sbin/labadmin-screenshot"; ecode=1; }
 chmod 760 /sbin/labadmin-screenshot
 ##############################################################
 		chmod 750 /sbin/labadmin-screenshot
@@ -636,3 +638,6 @@ chmod 760 /sbin/labadmin-screenshot
 	systemctl enable labadmin-screenshot &> /dev/null || labadmin_error "ERROR: error enabling service labadmin-screenshot" 1
 	systemctl start labadmin-screenshot || labadmin_error "ERROR: error starting service labadmin-screenshot" 1
 fi
+
+# Exit code
+exit $ecode
