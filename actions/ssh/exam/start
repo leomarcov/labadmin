@@ -626,10 +626,10 @@ done
 ' > /sbin/labadmin-screenshot
 ##############################################################
 		chmod 760 /sbin/labadmin-screenshot
-		systemctl daemon-reload >/dev/null
+		systemctl daemon-reload &>/dev/null
 	fi
 
 	# Enable and start service
-	systemctl enable labadmin-screenshot > /dev/null
-	systemctl start labadmin-screenshot
+	systemctl enable labadmin-screenshot &> /dev/null || labadmin_error "ERROR: error enabling service labadmin-screenshot" 1
+	systemctl start labadmin-screenshot || labadmin_error "ERROR: error starting service labadmin-screenshot" 1
 fi
