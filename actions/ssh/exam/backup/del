@@ -63,4 +63,4 @@ echo
 
 # DELETE BACKUP
 echo -e "Removing directory: ${S_B}${edir}${S_R}"
-echo rm -rf "$edir"
+rm -rf "$edir"
