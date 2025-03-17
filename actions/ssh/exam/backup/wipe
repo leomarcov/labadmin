@@ -1,0 +1,64 @@
+#!/usr/bin/env bash
+#===================================================================================
+#     FILE: exam/backup/wipe
+#   AUTHOR: Leonardo Marco (labadmin@leonardomarco.com)
+#  LICENSE: GNU General Public License v3.0
+#===================================================================================
+script_id="$(echo ${BASH_SOURCE[0]} | sed 's\^'"$scripts_path"'/*\\g')"		# Script filename with relative script path
+
+#=== LOAD INFO =====================================================================
+if [ "$1" = "--load-scriptinfo" ]; then
+	script_desc="Wipe all exam backups"
+	script_type="ssh"
+	script_bg="sub"
+	script_admindeps=""
+	script_hostdeps=""
+	load_scriptinfo "$script_id" "$script_desc" "$script_type" "$script_bg" "$script_admindeps" "$script_hostdeps"
+	return
+
+#=== READ PARAMS ===================================================================
+elif [ "$1" = "--readparams" ]; then
+	# PARAM1: backup number
+	read_param "$script_id" 1 "Sure? All exam backups will be removed! (S/n)" "" "^[0-9]+$"
+  return
+fi
+
+
+#=== EXEC SCRIPT ===================================================================
+enum="$1"
+labadmin_cache_path="/home/.labadmin-cache/"			# Labadmin exam cache path
+
+# SHOW LIST
+backups_list="$(ls -d "${labadmin_cache_path}/EXAM_"* 2>/dev/null)"
+if [ $? -ne 0 ]; then
+    echo "No exams saved"
+    exit 0
+fi
+
+n=1
+m="${S_B}ID DATE TIME USER DAYS-AGO SIZE HOME SCREENSHOTS${S_R}${S_BR}\n"
+IFS=$'\n'
+for e in $backups_list; do
+	d=$(basename "$e"|cut -f2 -d_);                           # Exam DATE
+	t=$(basename "$e"|cut -f3 -d_ | tr - :)                  # Exam TIME
+	u=$(basename "$e"|cut -f4 -d_)								           # Exam USER
+	s=$(du -sh "$e" | cut -f1)									             # Exam SIZE
+	da=$((($(date +%s)-$(date -r "$e" +%s))/86400))				   # Exam DAYS-AGO
+	sh=$(du -sh "${e}/home/" 2>/dev/null| cut -f1)				   # Exam SIZE-HOME
+	ss=$(du -sh "${e}/screenshots/" 2>/dev/null| cut -f1)    # Ezam SIZE-SCREENSHOTS
+  m="${m}$n] ${d} ${t} ${u} ${da} ${s} ${sh} ${ss}\n"		   # MENU
+  n=$(($n+1))													                     # Exam ID
+done
+echo
+echo -e "$m${S_R}" | column -t | sed '1a------------------------------------------------------------------------'
+echo
+
+
+# CHECK SELECTED BACKUP FILE
+[ ! -e "$labadmin_cache_path" ] && labadmin_error "ERROR: can't access dir $labadmin_cache_path" 1
+
+# DELETE BACKUP
+for d in "${labadmin_cache_path}/"*; do
+  echo -e "Removing directory: ${S_B}${d}${S_R}"
+  echo rm -rf "$d"
+done
