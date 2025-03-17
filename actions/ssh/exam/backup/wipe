@@ -36,7 +36,7 @@ if [ $? -ne 0 ]; then
 fi
 
 n=1
-m="${S_B}ID DATE TIME USER DAYS-AGO SIZE HOME SCREENSHOTS${S_R}${C_BR}\n"
+m="${S_B}ID DATE TIME USER DAYS-AGO SIZE HOME SCREENSHOTS${S_R}\n${C_BR}"
 IFS=$'\n'
 for e in $backups_list; do
 	d=$(basename "$e"|cut -f2 -d_);                           # Exam DATE
@@ -52,7 +52,7 @@ done
 echo
 echo -e "$m${S_R}" | column -t | sed '1a------------------------------------------------------------------------'
 echo
-
+echo -e "TOTAL SIZE: ${S_B}$(du -sch "${labadmin_cache_path}/EXAM_"* | tail -1 | grep -w total | cut -f1)${S_R}"
 
 # CHECK SELECTED BACKUP FILE
 [ ! -e "$labadmin_cache_path" ] && labadmin_error "ERROR: can't access dir $labadmin_cache_path" 1
