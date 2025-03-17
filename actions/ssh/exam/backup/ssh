@@ -23,7 +23,4 @@ fi
 
 
 #=== EXEC SCRIPT ===================================================================
-
-labdmin_ssh_host_login "${labadmin_nhost}" <<EOF
-cd /home
-EOF
+bash -c "cd /home"
