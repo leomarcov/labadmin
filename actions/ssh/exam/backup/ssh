@@ -29,5 +29,6 @@ labadmin_cache_path="/home/.labadmin-cache/"			# Labadmin exam cache path
 
 # SHOW LIST
 dest="$(ls -d "${labadmin_cache_path}/EXAM_"* 2>/dev/null |  sed -n ${enum}p)"
+echo "$dest"
 cd "$dest"
 bash
