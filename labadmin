@@ -277,12 +277,13 @@ function initialize() {
 	readonly screen_lock="$(mktemp -u "${labadmin_tmp_path}/screenlock".XXXXXXXX)"      # SCREEN LOCK (one file per process)
 
 	#### LOAD CONFIG FILE
+	labadmin_info "Loading config file"
 	local config_path="${labadmin_path}/conf/labadmin.conf"							# Labadmin global config file path
 	[ ! -f "$config_path" ] || [ ! -r "$config_path" ] && labadmin_error "Can't access labadmin config file ${config_file//\/\//\/}" 1
 	source "$config_path"	# Import variables from config file
 
 	##### LOAD LAB FILE
-	[ ! "$noninteractive" ] && echo "Loading labs files"
+	[ ! "$noninteractive" ] && labadmin_info "Loading lab file"
 	if [ ! "$lab_id" ]; then
 		local defaultlab_path="${labadmin_path}/conf/lab.default"						# Labadmin default lab file path
 		if [ ! -f "$defaultlab_path" ] || [ ! -r "$defaultlab_path" ]; then
@@ -326,14 +327,14 @@ function initialize() {
 
 	##### LOAD SCRIPTS
 	if [ ! "$p0param" ]; then
-		echo "Loading scripts"
+		labadmin_info "Loading action scripts"
 		load_scripts "$scripts_path"											# Load all scripts recursively
 	else
 		load_scripts "$(echo "${scripts_path}/${p0}" | sed 's/[& ]*$//g')"		# Load only script to exec (without last &)
 	fi	
 
 	##### CHECK ADMIN DEPENDENCIES
-	[ ! "$noninteractive" ] && echo "Checking modules dependencies"
+	[ ! "$noninteractive" ] && labadmin_info "Checking modules dependencies"
 	check_dependencies "noinstall" "scripts_admindeps" >/dev/null
 	if [ $? -ne 0 ]; then
 		if [ ! "$Fparam" ]; then
@@ -349,10 +350,10 @@ function initialize() {
 
 	##### INIT REMOTE AUTENTICACION
 	if [ "$srvmode" = "ssh" ]; then
-		[ ! "$noninteractive" ] && echo "Initializing ssh config"
+		[ ! "$noninteractive" ] && labadmin_info "Initializing ssh config"
 		ssh_init
 	elif [ "$srvmode" = "winrm" ]; then
-		[ ! "$noninteractive" ] && echo "Initializing WINRM config"
+		[ ! "$noninteractive" ] && labadmin_info "Initializing WINRM config"
 		winrmpass=$(echo -n "$winrmpass" | base64 -d | openssl enc -aes-256-cbc -a -d -salt -pbkdf2) || labadmin_error "Incorrect decryption pass for WinRM password" 1
 	fi
 }
