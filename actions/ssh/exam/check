@@ -93,10 +93,6 @@ u="$(getfacl /media 2>/dev/null | egrep -q "user:.+:" | cut -f2 -d:)"
 tmp="$(ls /etc/chromium/policies/managed/ 2>/dev/null)"
 [ "$tmp" ] && echo -e " [${C_BR}*${S_R}] CHORMIUM POLICIES:   ${tmp}" && errors=1
 
-# IPTABLES
-tmp=$(iptables -L | grep -vE "^Chain |^target|^$")
-[ "$tmp" ] && echo -e " [${C_BR}*${S_R}] IPTABLES RULES:\n${C_BR}${tmp}\e[0m" && errors=1
-
 # AUTOSCREENSHOTS
 if [ ! -f /etc/systemd/system/labadmin-screenshot.service ]; then
 	echo -e " [${C_BG}*${S_R}] AUTOSCREENSHOTS:     not installed"
@@ -105,6 +101,10 @@ elif ! systemctl is-active labadmin-screenshot.service &>/dev/null && ! systemct
 else
 	echo -e " [${C_BR}*${S_R}] AUTOSCREENSHOTS:     active or enabled"
 fi
+
+# IPTABLES
+tmp=$(iptables -L | grep -vE "^Chain |^target|^$")
+[ "$tmp" ] && echo -e " [${C_BR}*${S_R}] IPTABLES RULES:\n${C_BR}${tmp}\e[0m" && errors=1
 
 # NET
 echo -e " [*] NETWORK CONNECTION:"
