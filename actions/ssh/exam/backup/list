@@ -46,7 +46,6 @@ for e in $backups_list; do
     m="${m} [$n] ${d} ${t} ${u} ${da} ${s} ${sh} ${ss}\n"		# MENU
     n=$(($n+1))													# Exam ID
 done
-m="${m}\n - - - - ${S_B}$(du -sch "${labadmin_cache_path}/EXAM_"* | tail -1 | grep -w total | cut -f1)${S_R}"
 echo
 echo -e "$m" | column -t | sed '1a------------------------------------------------------------------------'
 echo
