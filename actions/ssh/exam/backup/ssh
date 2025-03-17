@@ -24,4 +24,4 @@ fi
 
 #=== EXEC SCRIPT ===================================================================
 
-echo "cd /home" | labdmin_ssh_host_login "${labadmin_nhost}"
+echo "cd /home/.labadmin-cache/; bash" | labdmin_ssh_host_login "${labadmin_nhost}"
