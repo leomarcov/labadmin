@@ -575,7 +575,7 @@ fi
 ### AUTOSCREENSHOT
 if [ "$as_delay" -ne 0 ]; then
 	# Create labadmin-screenshot service
-	if [ -f /etc/systemd/system/labadmin-screenshot.service ]; then
+	if [ ! -f /etc/systemd/system/labadmin-screenshot.service ]; then
 		labadmin_info "Installing labadmin-screenshot service"
 ############################################################
 		echo "Creating labadmin-screenshot.service"
@@ -624,12 +624,14 @@ done
 
 
 ' > /sbin/labadmin-screenshot
+chmod 760 /sbin/labadmin-screenshot
 ##############################################################
-		chmod 760 /sbin/labadmin-screenshot
+		chmod 750 /sbin/labadmin-screenshot
 		systemctl daemon-reload &>/dev/null
 	fi
 
 	# Enable and start service
+	labadmin_info "Starting labadmin-screenshot service"
 	systemctl enable labadmin-screenshot &> /dev/null || labadmin_error "ERROR: error enabling service labadmin-screenshot" 1
 	systemctl start labadmin-screenshot || labadmin_error "ERROR: error starting service labadmin-screenshot" 1
 fi
