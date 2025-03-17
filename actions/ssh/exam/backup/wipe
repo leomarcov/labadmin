@@ -19,7 +19,7 @@ if [ "$1" = "--load-scriptinfo" ]; then
 #=== READ PARAMS ===================================================================
 elif [ "$1" = "--readparams" ]; then
 	# PARAM1: backup number
-	read_param "$script_id" 1 "Sure? All exam backups will be removed! (S/n)" "s" "^[yn]$"
+	read_param "$script_id" 1 "Sure? All exam backups will be removed! (write yes)" "" "^yes$"
   return
 fi
 
@@ -36,7 +36,7 @@ if [ $? -ne 0 ]; then
 fi
 
 n=1
-m="${S_B}ID DATE TIME USER DAYS-AGO SIZE HOME SCREENSHOTS${S_R}${S_BR}\n"
+m="${S_B}ID DATE TIME USER DAYS-AGO SIZE HOME SCREENSHOTS${S_R}${C_BR}\n"
 IFS=$'\n'
 for e in $backups_list; do
 	d=$(basename "$e"|cut -f2 -d_);                           # Exam DATE
@@ -46,7 +46,7 @@ for e in $backups_list; do
 	da=$((($(date +%s)-$(date -r "$e" +%s))/86400))				   # Exam DAYS-AGO
 	sh=$(du -sh "${e}/home/" 2>/dev/null| cut -f1)				   # Exam SIZE-HOME
 	ss=$(du -sh "${e}/screenshots/" 2>/dev/null| cut -f1)    # Ezam SIZE-SCREENSHOTS
-  m="${m}$n] ${d} ${t} ${u} ${da} ${s} ${sh} ${ss}\n"		   # MENU
+  m="${m}[$n] ${d} ${t} ${u} ${da} ${s} ${sh} ${ss}\n"		   # MENU
   n=$(($n+1))													                     # Exam ID
 done
 echo
