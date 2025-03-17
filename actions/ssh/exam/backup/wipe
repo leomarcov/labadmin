@@ -59,5 +59,5 @@ echo
 # DELETE BACKUP
 for d in "${labadmin_cache_path}/"*; do
   echo -e "Removing directory: ${S_B}${d}${S_R}"
-  #rm -rf "$d"
+  rm -rf "$d"
 done
