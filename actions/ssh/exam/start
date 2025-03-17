@@ -577,7 +577,8 @@ if [ "$as_delay" -ne 0 ]; then
 	# Create labadmin-screenshot service
 	if [ -f /etc/systemd/system/labadmin-screenshot.service ]; then
 		labadmin_info "Creating labadmin-screenshot service"
-############################################################	
+############################################################
+		echo "Creating labadmin-screenshot.service"
 		echo '[Unit]
 Description=Labadmin Screenshots Service
 After=auditd.service
@@ -593,6 +594,7 @@ StandardError=syslog
 WantedBy=multi-user.target' > /etc/systemd/system/labadmin-screenshot.service
 ##############################################################
 ##############################################################
+		echo "Creating labadmin-screenshot script"
 		echo '#!/bin/bash
 #!/usr/bin/env bash
 # CONFIG VARIABLES
