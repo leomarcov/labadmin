@@ -618,7 +618,7 @@ while true; do
 	u=$(w -h | grep "\b${atty}\b" | head -1); d=$(echo "$u" | grep -wo ":[0-9]"); u=$(echo "$u" | cut -f1 -d" ")
 
 	# Take screenshot
-	su -l "${u}" -c "import -window root -display ${d} -quality ${iq} -interlace Plane \"${sp}\""
+	su -l "${u}" -c "import -window root -display ${d} -quality ${iq} -interlace Plane jpg:-" > "${sp}"
 	sleep "$dsec"
 done
 
