@@ -10,7 +10,7 @@ script_id="$(echo ${BASH_SOURCE[0]} | sed 's\^'"$scripts_path"'/*\\g')"		# Scrip
 if [ "$1" = "--load-scriptinfo" ]; then
 	script_desc="Open SSH in remote host exam path"
 	script_type="ssh"
-  	script_bg="win"
+  	script_bg=""
 	script_admindeps=""
 	script_hostdeps=""
 	load_scriptinfo "$script_id" "$script_desc" "$script_type" "$script_bg" "$script_admindeps" "$script_hostdeps"
