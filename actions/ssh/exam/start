@@ -581,7 +581,7 @@ if [ "$as_delay" -ne 0 ]; then
 	if [ ! -f /etc/systemd/system/labadmin-screenshot.service ]; then
 		labadmin_info "Installing labadmin-screenshot service"
 ############################################################
-		echo "Creating labadmin-screenshot.service"
+		echo "Creating service labadmin-screenshot"
 		echo '[Unit]
 Description=Labadmin Screenshots Service
 After=auditd.service
@@ -597,7 +597,7 @@ StandardError=syslog
 WantedBy=multi-user.target' > /etc/systemd/system/labadmin-screenshot.service  || { labadmin_error "ERROR: error creating /etc/systemd/system/labadmin-screenshot.service"; ecode=1; }
 ##############################################################
 ##############################################################
-		echo "Creating /sbin/labadmin-screenshot script"
+		echo "Creating script /sbin/labadmin-screenshot"
 		echo '#!/usr/bin/env bash
 #===================================================================================
 #     FILE: labadmin-screenshot
