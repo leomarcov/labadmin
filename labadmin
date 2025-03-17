@@ -139,7 +139,7 @@ function ssh_init() {
 	[ ! -r  "$sshkey_file" ] &&	mkfifo -m=600 "$sshkey_file"
 	# Load ssh-agent
 	if [ ! $SSH_AGENT_PID ]; then
-		[ ! -e "${sshagent_path}" ] && ssh-agent -s > "${sshagent_path}"
+		[ ! -e "${sshagent_path}" ] && ssh-agent -s > "${sshagent_path}" 2>/dev/null
 		chmod 600 "${sshagent_path}"
 		source "${sshagent_path}"
 	fi
