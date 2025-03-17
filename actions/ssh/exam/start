@@ -50,7 +50,7 @@ as_delay="$8"													# Autoscreenshots delay seconds
 ecode=0															# Exit code
 
 ### EXAM PATHS
-labadmin_cache_path="/home/.labadmin-cache/"					# Labadmin exam cache path
+labadmin_cache_path="/home/.labadmin-cache"					# Labadmin exam cache path
 exam_end_script="${labadmin_cache_path}/current_exam-end.sh"	# Current exam end script
 if [ ! -d "$labadmin_cache_path" ]; then 						# Create labadmin exam cache path
 	mkdir "$labadmin_cache_path" || labadmin_error "ERROR: cant create labadmin cache path: $labadmin_cache_path" 1
