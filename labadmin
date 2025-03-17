@@ -254,7 +254,7 @@ function check_params() {
 function initialize() {
 	##### SHOW LABADMIN VERSION
 	labadmin_version=$(cat "${labadmin_path}/version")
-	echo -e "LABADMIN ${S_D}ver.${labadmin_version}${S_R}"
+	echo -e "${S_B}LABADMIN${S_R}      ${S_D}version ${labadmin_version}${S_R}"
 
 	##### CHECK BASH VERSION >=4.0
 	[ "$({ echo $BASH_VERSION; echo 4.0; } | sort -V | head -1)" = "4.0" ] || labadmin_error "Labadmin must be runned in Bash >=4.0" 1
