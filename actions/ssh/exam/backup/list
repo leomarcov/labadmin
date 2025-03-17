@@ -33,7 +33,7 @@ if [ $? -ne 0 ]; then
 fi
 
 n=1
-m="${S_B}ID DATE TIME USER SIZE DAYS-AGO HOME SCREENSHOTS${S_R}\n"
+m="${S_B}ID DATE TIME USER DAYS-AGO SIZE HOME SCREENSHOTS${S_R}\n"
 IFS=$'\n'
 for e in $backups_list; do
 	d=$(basename "$e"|cut -f2 -d_); 							# Exam DATE
@@ -43,9 +43,9 @@ for e in $backups_list; do
 	da=$((($(date +%s)-$(date -r "$e" +%s))/86400))				# Exam DAYS-AGO
 	sh=$(du -sh "${e}/home/" 2>/dev/null| cut -f1)				# Exam SIZE-HOME
 	ss=$(du -sh "${e}/screenshots/" 2>/dev/null| cut -f1)		# Ezam SIZE-SCREENSHOTS
-    m="${m} [$n] ${d} ${t} ${u} ${s} ${da} ${sh} ${ss}\n"		# MENU
+    m="${m} [$n] ${d} ${t} ${u} ${da} ${s} ${sh} ${ss}\n"		# MENU
     n=$(($n+1))													# Exam ID
 done
 echo
-echo -e "$m" | column -t | sed '1a----------------------------------------------------------------------------'
+echo -e "$m" | column -t | sed '1a------------------------------------------------------------------------'
 echo
