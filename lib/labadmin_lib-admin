@@ -133,7 +133,7 @@ function labdmin_ssh_host_login() {
     # CHECKS
     [ ! "$ip" ] && labadmin_error "INTERNAL ERROR: labadmin_exec_ssh_hos cant find IP address from host $nhost" 1
     
-    ssh -T $ssh_params ${sshuser}@${ip} -p ${sshport} -oStrictHostKeyChecking=no 
+    ssh $ssh_params ${sshuser}@${ip} -p ${sshport} -oStrictHostKeyChecking=no 
     return
 }
 
