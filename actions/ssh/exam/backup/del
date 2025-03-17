@@ -50,7 +50,7 @@ for e in $backups_list; do
 	# Color selected exam
 	c="${S_R}"; [ "$n" -eq "$enum" ] && { c="${C_BR}"; edir="$e"; }
 
-    m="${m} [$n]${c} ${d} ${t} ${u} ${da} ${s} ${sh} ${ss}${S_R}\n"		# MENU
+    m="${m}${c}[$n] ${d} ${t} ${u} ${da} ${s} ${sh} ${ss}${S_R}\n"		# MENU
     n=$(($n+1))													# Exam ID
 done
 echo
