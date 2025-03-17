@@ -31,4 +31,4 @@ labadmin_cache_path="/home/.labadmin-cache/"			# Labadmin exam cache path
 dest="$(ls -d "${labadmin_cache_path}/EXAM_"* 2>/dev/null |  sed -n ${enum}p)"
 echo "$dest"
 cd "$dest"
-bash
+/usr/bin/env bash
