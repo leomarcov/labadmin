@@ -35,6 +35,27 @@ if [ $? -ne 0 ]; then
     exit 0
 fi
 
+n=1
+m="${S_B}ID DATE TIME USER DAYS-AGO SIZE HOME SCREENSHOTS${S_R}\n"
+IFS=$'\n'
+for e in $backups_list; do
+	d=$(basename "$e"|cut -f2 -d_); 							# Exam DATE
+	t=$(basename "$e"|cut -f3 -d_ | tr - :)						# Exam TIME
+	u=$(basename "$e"|cut -f4 -d_)								# Exam USER
+	s=$(du -sh "$e" | cut -f1)									# Exam SIZE
+	da=$((($(date +%s)-$(date -r "$e" +%s))/86400))				# Exam DAYS-AGO
+	sh=$(du -sh "${e}/home/" 2>/dev/null| cut -f1)				# Exam SIZE-HOME
+	ss=$(du -sh "${e}/screenshots/" 2>/dev/null| cut -f1)		# Ezam SIZE-SCREENSHOTS
+
+	# Color selected exam
+	c="${S_R}"; [ "$n" -eq "$enum" ] && { c="${C_BR}"; edir="$e"; }
+
+    m="${m} [$n]${c} ${d} ${t} ${u} ${da} ${s} ${sh} ${ss}${S_R}\n"		# MENU
+    n=$(($n+1))													# Exam ID
+done
+echo
+echo -e "$m" | column -t | sed '1a------------------------------------------------------------------------'
+echo
 
 n=1
 m="${S_B}ID DIR SIZE DAYS-AGO HOME SCREENSHOTS${S_R}\n"
