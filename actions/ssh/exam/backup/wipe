@@ -19,7 +19,7 @@ if [ "$1" = "--load-scriptinfo" ]; then
 #=== READ PARAMS ===================================================================
 elif [ "$1" = "--readparams" ]; then
 	# PARAM1: backup number
-	read_param "$script_id" 1 "Sure? All exam backups will be removed! (S/n)" "" "^[0-9]+$"
+	read_param "$script_id" 1 "Sure? All exam backups will be removed! (S/n)" "s" "^[yn]$"
   return
 fi
 
