@@ -552,7 +552,7 @@ fi
 if [ "$as_delay" -ne 0 ]; then
 	labadmin_info "Stopping autoscreenshots"
 	systemctl stop labadmin-screenshot.service &>/dev/null || { labadmin_error "ERROR: error stopping labadmin-screenshot service"; ecode=1; }
-	systemctl disable labadmin-screenshot.service || { labadmin_error "ERROR: error disabling labadmin-screenshot service"; ecode=1; }
+	systemctl disable labadmin-screenshot.service &>/dev/null || { labadmin_error "ERROR: error disabling labadmin-screenshot service"; ecode=1; }
 	rm -rf "${labadmin_cache_path}/current_screenshots"
 fi
 
