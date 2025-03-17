@@ -139,9 +139,9 @@ function ssh_init() {
 	[ ! -r  "$sshkey_file" ] &&	mkfifo -m=600 "$sshkey_file"
 	# Load ssh-agent
 	if [ ! $SSH_AGENT_PID ]; then
-		[ ! -e "${sshagent_path}" ] && ssh-agent -s > "${sshagent_path}" 2>/dev/null
+		[ ! -e "${sshagent_path}" ] && ssh-agent -s > "${sshagent_path}"
 		chmod 600 "${sshagent_path}"
-		source "${sshagent_path}"
+		source "${sshagent_path}" &>/dev/null
 	fi
 	# Check if current pubkey is on ssh-agent
 	if ! ssh-add -L | grep "$sshpubkey" &> /dev/null; then
