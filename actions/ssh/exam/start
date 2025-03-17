@@ -423,7 +423,7 @@ virtualbox_was_disabled_persistent="'"$virtualbox_was_disabled_persistent"'"
 fw_type="'"$fw_type"'" 
 iptables_backup="'"$iptables_backup"'" 
 homepage="'"$homepage"'" 
-
+ecode=0										# exit code
 
 ### BEEEEEEEP!!!!!!!
 labadmin_info "BEEEEEEEEP!!!"
@@ -441,7 +441,7 @@ for f in $(find /home/$euser -maxdepth 1 -mindepth 1 -name "[!.]*"); do
 	[ $(du -s "$f" | cut -f1) -gt $(($max_size*1024)) ] && continue		# Skip heavy files and directories
 	[ -d "$f" ] && [ ! "$(ls -A "$f")" ] && continue					# Skip empty directories
 	echo " $f"
-	cp -r "$f" "$home_backup"
+	cp -r "$f" "$home_backup" || { labadmin_error "ERROR: error copying home backup files to $home_backup"; ecode=1; }
 done
 )
 fi
@@ -471,7 +471,7 @@ done
 if [ "$busers" ]; then
 	labadmin_info "Unlocking users"
 	for u in ${busers}; do
-		passwd -u "$u" &>/dev/null && echo -e "Unlocked ${S_B}${u}${S_R}" || labadmin_error "ERROR: cant unlock user $u"
+		passwd -u "$u" &>/dev/null && echo -e "Unlocked ${S_B}${u}${S_R}" || { labadmin_error "ERROR: cant unlock user $u"; ecode=1; }
 	done
 fi
 
@@ -486,7 +486,7 @@ if [[ "${fw_type,,}" == @(whitelist|blacklist) ]]; then
 	labadmin_info "Restoring IPTABLES rules"
 	[ -s "$iptables_backup" ] && iptables-restore < "$iptables_backup" || iptables -F
 	rm "$iptables_backup"
-	labadmin_iptables-persistent || labadmin_error "ERROR: Cant find method for IPTABLES PERSISTENCE"
+	labadmin_iptables-persistent || { labadmin_error "ERROR: Cant find method for IPTABLES PERSISTENCE"; ecode=1; }
 fi
 
 
@@ -516,7 +516,7 @@ done
 # REMOVE
 if [ "$remove_user" ]; then
 	labadmin_info "Deleting exam user and home"
-	userdel -r "$euser" &>/dev/null && echo -e "Username: ${S_B}${euser}${S_R}" || labadmin_error "ERROR: cant delete user $euser" 1
+	userdel -r "$euser" &>/dev/null && echo -e "Username: ${S_B}${euser}${S_R}" || { labadmin_error "ERROR: cant delete user $euser"; ecode=1; }
 # NEW PASS
 else
 	if [ "$new_pass" ]; then
@@ -525,7 +525,7 @@ else
 $new_pass
 $new_pass
 EOF
-		[ $? -eq 0 ] && echo "New password: ${S_B}${epass}${S_R}" || labadmin_error "ERROR: cant set $euser password to $epass" 1
+		[ $? -eq 0 ] && echo "New password: ${S_B}${epass}${S_R}" || { labadmin_error "ERROR: cant set $euser password to $epass"; ecode=1; }
 		chmod o-rwx "$(eval echo ~"$euser")"
 		sed -i "/#LABADMIN-EXAM/d" /home/$euser/.bashrc
 	fi
@@ -543,14 +543,14 @@ if [ ! "$virtualbox_was_disabled_persistent" ]; then
 fi
 if [ "$virtualbox_was_enabled" ]; then
 	labadmin_info "Enabling Virtualbox bridge network module"
-	modprobe vboxnetflt || labadmin_error "ERROR: cant enable Virtualbox bridged network module"
+	modprobe vboxnetflt || { labadmin_error "ERROR: cant enable Virtualbox bridged network module"; ecode=1; }
 fi
 
 ### STOP AUTOSCREENSHOTS
 if [ "$as_delay" -ne 0 ]; then
 	labadmin_info "Stopping autoscreenshots"
-	systemctl stop labadmin-screenshot.service &>/dev/null || labadmin_error "ERROR: error stopping labadmin-screenshot service"
-	systemctl disable labadmin-screenshot.service || labadmin_error "ERROR: error disabling labadmin-screenshot service"
+	systemctl stop labadmin-screenshot.service &>/dev/null || { labadmin_error "ERROR: error stopping labadmin-screenshot service"; ecode=1; }
+	systemctl disable labadmin-screenshot.service || { labadmin_error "ERROR: error disabling labadmin-screenshot service"; ecode=1; }
 	rm -rf "${labadmin_cache_path}/current_screenshots"
 fi
 
@@ -558,8 +558,8 @@ fi
 ### SCRIPT AUTODESTRUCTION!
 labadmin_info "AUTODESTROYING THIS SCRIPT"
 rm -f "$exam_end_script"
-[ -f "$exam_end_script" ] && labadmin_error "ERROR: Cant remove exam end script: $exam_end_script"
-exit 0
+[ -f "$exam_end_script" ] && { labadmin_error "ERROR: Cant remove exam end script: $exam_end_script"; ecode=1; }
+exit $ecode
 ' > "$exam_end_script"
 chmod +x "$exam_end_script"
 
