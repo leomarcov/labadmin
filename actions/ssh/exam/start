@@ -594,7 +594,7 @@ StandardError=syslog
 WantedBy=multi-user.target' > /etc/systemd/system/labadmin-screenshot.service
 ##############################################################
 ##############################################################
-		echo "Creating labadmin-screenshot script"
+		echo "Creating /sbin/labadmin-screenshot script"
 		echo '#!/bin/bash
 #!/usr/bin/env bash
 # CONFIG VARIABLES
@@ -626,10 +626,10 @@ done
 ' > /sbin/labadmin-screenshot
 ##############################################################
 		chmod 760 /sbin/labadmin-screenshot
-		systemctl daemon-reload &>/dev/null
+		systemctl daemon-reload >/dev/null
 	fi
 
 	# Enable and start service
-	systemctl enable labadmin-screenshot
+	systemctl enable labadmin-screenshot > /dev/null
 	systemctl start labadmin-screenshot
 fi
