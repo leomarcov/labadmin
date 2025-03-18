@@ -372,6 +372,7 @@ function initialize() {
 #	hosts_ok
 #===============================================================================
 function mainloop() {
+	unset script_id
 	while true; do
 		#### SHOW BANNER
 		[ ! "$noninteractive" ] && draw_banner
