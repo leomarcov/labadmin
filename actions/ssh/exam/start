@@ -582,8 +582,8 @@ if [ "$as_delay" -ne 0 ]; then
 	# Create labadmin-screenshot service
 	if [ ! -f /etc/systemd/system/labadmin-screenshot.service ]; then
 		labadmin_info "Installing labadmin-screenshot service"
-############################################################
 		echo "Creating service labadmin-screenshot"
+############################################################
 		echo '[Unit]
 Description=Labadmin Screenshots Service
 After=auditd.service
@@ -598,9 +598,9 @@ StandardError=syslog
 [Install]
 WantedBy=multi-user.target' > /etc/systemd/system/labadmin-screenshot.service  || { labadmin_error "ERROR: error creating /etc/systemd/system/labadmin-screenshot.service"; ecode=1; }
 ##############################################################
-##############################################################
 	fi
 	echo "Creating script /sbin/labadmin-screenshot"
+##############################################################
 	echo '#!/usr/bin/env bash
 #===================================================================================
 #     FILE: labadmin-screenshot
@@ -608,10 +608,14 @@ WantedBy=multi-user.target' > /etc/systemd/system/labadmin-screenshot.service  |
 #  LICENSE: GNU General Public License v3.0
 #===================================================================================
 # CONFIG VARIABLES
-labadmin_cache_path="/home/.labadmin-cache"						# Labadmin cache path
-screenshots_path="'"${current_screenshots_link}"'"				# Screenshots save path
-dsec='"{$dsec}"'												# Screenshot delay seconds
-iq=10															# Screenshot JPEG image quality (range 1-100)
+# Labadmin cache path
+labadmin_cache_path="/home/.labadmin-cache"
+# Screenshots save path
+screenshots_path="'"${current_screenshots_link}"'"
+# Screenshot delay seconds
+dsec='"${as_delay}"'
+# Screenshot JPEG image quality (range 1-100)
+iq=10
 
 # Check screenshots path
 if [ ! -d "$screenshots_path" ] || [ ! -w "$screenshots_path" ]; then
