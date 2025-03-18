@@ -437,6 +437,13 @@ function mainloop() {
 		unset script_id exec_bg
 	done
 }
+handle_sigint() {
+    echo -e "\n[!] Capturado CTRL+C. Volviendo a capturar..."
+    trap handle_sigint SIGINT  # Reestablecer el trap
+}
+
+# Capturar la señal SIGINT
+trap handle_sigint SIGINT
 
 initialize "$@"
 mainloop
