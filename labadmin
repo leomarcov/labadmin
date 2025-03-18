@@ -440,7 +440,7 @@ function mainloop() {
 	done
 }
 
-trap mainloop SIGINT
+trap mainloop INT TERM HUP
 
 initialize "$@"
 mainloop
