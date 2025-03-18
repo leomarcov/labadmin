@@ -373,20 +373,23 @@ function initialize() {
 #===============================================================================
 function mainloop() {
 	while true; do
-		[ ! "$noninteractive" ] && draw_banner			#### SHOW BANNER		
-		search_ips										#### SEARCH IPS									
-		[ ! "$rparam" ] && draw_map						#### DRAW MAP					
-				
-		#### SELECT RANGE
-		if [ ! "$rparam" ]; then 						
-			select_range || continue
-			while ! expand_range; do select_range; done
-		else
-			expand_range || labadmin_error "Invalid host range $rhosts" 1
-		fi
+		if [ ! "$script_id ]; then
+			[ ! "$noninteractive" ] && draw_banner			#### SHOW BANNER		
+			search_ips										#### SEARCH IPS									
+			[ ! "$rparam" ] && draw_map						#### DRAW MAP					
+					
+			#### SELECT RANGE
+			if [ ! "$rparam" ]; then 						
+				select_range || continue
+				while ! expand_range; do select_range; done
+			else
+				expand_range || labadmin_error "Invalid host range $rhosts" 1
+			fi
 		
-		[ ! "$rparam" ] && draw_map	"mark_selected"		#### DRAW MAP WITH SELECTED HOSTS
-		select_script ""  	|| continue					#### SELECT SCRIPT			
+			[ ! "$rparam" ] && draw_map	"mark_selected"		#### DRAW MAP WITH SELECTED HOSTS
+		fi
+
+		select_script "$script_id"  	|| continue					#### SELECT SCRIPT			
 		read_params										#### READ SCRIPT PARAMS								
 
 		#### WRITE LOG EVENT
@@ -426,10 +429,9 @@ function mainloop() {
 
 		### CONTINUE?
 		[ "$noninteractive" ] && exit 0
-echo AAA$script_id
-		echo -e "\n${S_B}[ENTER] to continue${S_R}"; read -e
-
-		unset script_id exec_bg
+		
+		script_id=$(dirname "$script_id")
+		unset exec_bg
 	done
 }
 
