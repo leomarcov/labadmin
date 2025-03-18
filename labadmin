@@ -426,6 +426,7 @@ function mainloop() {
 
 		### CONTINUE?
 		[ "$noninteractive" ] && exit 0
+echo AAA$script_id
 		echo -e "\n${S_B}[ENTER] to continue${S_R}"; read -e
 
 		unset script_id exec_bg
