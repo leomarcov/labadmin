@@ -262,6 +262,7 @@ function select_range() {
 #	1	if no range selected
 #===============================================================================
 function expand_range() {
+echo AAA $rhosts BBB $shosts
 	# Keep previous selected hosts
 	[[ "${rhosts,,}" == @(s|selected) ]] && [ "$shosts" ] && return 0
 	
