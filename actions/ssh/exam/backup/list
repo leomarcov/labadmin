@@ -34,6 +34,7 @@ fi
 
 n=1
 m="${S_B}ID DATE TIME USER DAYS-AGO SIZE HOME SCREENSHOTS${S_R}\n"
+
 IFS=$'\n'
 for e in $backups_list; do
 	d=$(basename "$e"|cut -f2 -d_); 							# Exam DATE
@@ -46,6 +47,7 @@ for e in $backups_list; do
     m="${m} [$n] ${d} ${t} ${u} ${da} ${s} ${sh} ${ss}\n"		# MENU
     n=$(($n+1))													# Exam ID
 done
+IFS=$'\n\t '
 echo
 echo -e "$m" | column -t | sed '1a------------------------------------------------------------------------'
 echo
