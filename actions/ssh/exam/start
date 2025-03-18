@@ -29,7 +29,7 @@ elif [ "$1" = "--readparams" ]; then
     # PARAM5: filter type
     read_param "$script_id" 5 "Network firewall [WHITELIST/blacklist/none]" "whitelist" "^(whitelist|blacklist|none)$"
     # PARAM6: filter list
-    [ "${p5,,}" != "none" ] && read_param "$script_id" 6 "$([ "$p5" = "whitelist" ] && echo "Allowed" || echo "Danyed") list (h for help)" "" "" "\tList of IPs, ranges or domains to add in the $p5 (separated by spaces)\n\tSAMPLES:\n\t   www.google.com\t\tAdd Google domain to the list\n\t   www.a.com www.b.com\t\tAdd two domains to the list\n\t   10.0.20.5\t\t\tAdd specific ip to the list\n\t   10.0.20.5 10.0.2.6\t\tAdd two ips to the list\n\t   10.0.20.0/24\t\t\tAdd subnet to the list\n\t   <empty>\t\t\tEmpty list"
+    [ "${p5,,}" != "none" ] && read_param "$script_id" 6 "$([ "$p5" = "whitelist" ] && echo "Firewall allowed" || echo "Firewall danyed") list (h for help)" "" "" "\tList of IPs, ranges or domains to add in the $p5 (separated by spaces)\n\tSAMPLES:\n\t   www.google.com\t\tAdd Google domain to the list\n\t   www.a.com www.b.com\t\tAdd two domains to the list\n\t   10.0.20.5\t\t\tAdd specific ip to the list\n\t   10.0.20.5 10.0.2.6\t\tAdd two ips to the list\n\t   10.0.20.0/24\t\t\tAdd subnet to the list\n\t   <empty>\t\t\tEmpty list"
     # PARAM7: mins autorecover
     read_param "$script_id" 7 "Minutes for autorecover (h for help)" "300" "^[0-9]+$" "\tSchedule autorestauration in next boot if have spend these minutes\n\tDefault: 300 (5 hours)\n\tValue 0 disable autorestauration"
 	# PARAM8: autoscreenshots delay
