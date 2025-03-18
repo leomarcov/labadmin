@@ -392,7 +392,7 @@ function mainloop() {
 			draw_map "selected"
 		fi
 
-		echo -e "${S_B}ACTIONS:${S_R}"
+		echo -e "    ${S_B}ACTIONS${S_R}"
 		select_script "$script_id"  	|| continue					#### SELECT SCRIPT			
 		read_params										#### READ SCRIPT PARAMS								
 
