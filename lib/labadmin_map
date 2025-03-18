@@ -239,7 +239,7 @@ function select_range() {
 	case "${rhosts,,}" in
 		exit|quit) 	exit 0		;;
 		"")			return 1	;;
-		**)			return 0	;;
+		*)			return 0	;;
 	esac
 }
 
