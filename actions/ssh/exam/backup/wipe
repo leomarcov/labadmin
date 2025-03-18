@@ -43,7 +43,7 @@ for e in $backups_list; do
 	t=$(basename "$e"|cut -f3 -d_ | tr - :)                  # Exam TIME
 	u=$(basename "$e"|cut -f4 -d_)								           # Exam USER
 	s=$(du -sh "$e" | cut -f1)									             # Exam SIZE
-	da=$((($(date +%s)-$(date -r "$e" +%s))/86400))				   # Exam DAYS-AGO
+	da=$((($(date -d "$(date +%Y-%m-%d) 00:00:00" +%s)-$(date -d "$d 00:00:00" +%s))/86400))			# Exam DAYS-AGO
 	sh=$(du -sh "${e}/home/" 2>/dev/null| cut -f1)				   # Exam SIZE-HOME
 	ss=$(du -sh "${e}/screenshots/" 2>/dev/null| cut -f1)    # Ezam SIZE-SCREENSHOTS
   m="${m}[$n] ${d} ${t} ${u} ${da} ${s} ${sh} ${ss}\n"		   # MENU
