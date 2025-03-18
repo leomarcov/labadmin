@@ -60,7 +60,7 @@ if [ !"$enum" ]; then
 	echo
 fi
 
-while [ "$eid" -ge 1 ] && [ "$eid" -lt "$n" ]; do
+until [ "$eid" -ge 1 ] && [ "$eid" -lt "$n" ]; do
 	read -p "  > ${S_U}Select backup ID${S_R}: " eid
 done
 
