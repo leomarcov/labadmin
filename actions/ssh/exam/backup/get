@@ -36,12 +36,14 @@ labadmin_cache_path="/home/.labadmin-cache/"			# Labadmin exam cache path
 # SHOW LIST
 if [ !"$enum" ]; then
 	labadmin_cache_path="/home/.labadmin-cache/"			# Labadmin exam cache path
+	# Get backups list
 	backups_list="$(labdmin_ssh_host_comm "${labadmin_nhost}" "du -sh \"${labadmin_cache_path}/EXAM_\"* 2>/dev/null")"
 	if [ $? -ne 0 ]; then
 	    echo "No exams saved"
 	    exit 0
 	fi
-	
+
+	# Show menu
 	n=1
 	m="${S_B}ID DATE TIME USER DAYS-AGO SIZE${S_R}\n"
 	IFS=$'\n'
@@ -58,14 +60,15 @@ if [ !"$enum" ]; then
 	echo
 	echo -e "$m" | column -t | sed '1a---------------------------------------------------------------'
 	echo
+
+	# Read num
+	until [ "$enum" -ge 1 ] &>/dev/null && [ "$enum" -lt "$n" ] &>/dev/null; do
+		read -p $(echo -e "  > ${S_U}Select backup ID${S_R}: ") enum
+	done
 fi
 
-until [ "$eid" -ge 1 ] &>/dev/null && [ "$eid" -lt "$n" ] &>/dev/null; do
-	read -p $(echo -e "  > ${S_U}Select backup ID${S_R}: ") eid
-done
-
 # CHECK EXAM FILENAME
-
+edir="$(labdmin_ssh_host_comm "${labadmin_nhost}" "ls -d \"${labadmin_cache_path}\"EXAM* | sed -n ${enum}p")"
 [ ! "$edir" ] && labadmin_error "Can't access backup number $enum ($exam_backups)" 1
 
 # DOWNLOAD FILE
