@@ -16,12 +16,12 @@
 #===============================================================================
 #  LOAD LIBS
 #============================================================f===================
-source "$(dirname "$(readlink -f "$0")")/lib/labadmin_lib-admin"			# LABADMIN ADMIN VARIABLES AND FUNCTIONS
-source "${lib_path}/labadmin_lib"											# LABADMIN GLOBAL VARIABLES AND FUNCTIONS
-source "${lib_path}/labadmin_ip"											# LABADMIN IP LIB
-source "${lib_path}/labadmin_map"											# LABADMIN MAP LIB
-source "${lib_path}/labadmin_script"										# LABADMIN SCRIPT LIB
-source "${lib_path}/labadmin_install"										# LABADMIN INSTALL LIB
+#source "$(dirname "$(readlink -f "$0")")/lib/labadmin_lib-admin"			# LABADMIN ADMIN VARIABLES AND FUNCTIONS
+#source "${lib_path}/labadmin_lib"											# LABADMIN GLOBAL VARIABLES AND FUNCTIONS
+#source "${lib_path}/labadmin_ip"											# LABADMIN IP LIB
+#source "${lib_path}/labadmin_map"											# LABADMIN MAP LIB
+#source "${lib_path}/labadmin_script"										# LABADMIN SCRIPT LIB
+#source "${lib_path}/labadmin_install"										# LABADMIN INSTALL LIB
 
 
  
