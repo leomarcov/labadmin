@@ -78,15 +78,16 @@ find "$labadmin_cache_path" -maxdepth 1 -mindepth 1 -type d -mtime +${max_backup
 ### CREATE EXAM PATHS
 exam_cache_path="${labadmin_cache_path}/EXAM_$(date +%F_%H-%M-%S)_${euser}"				# Current exam cache path
 home_backup="${exam_cache_path}/home/" 									       			# Exam user home backup path
-screenshots_backup="${exam_cache_path}/screenshots/"									# Screenshots backup path
+exam_screenshots_path="${exam_cache_path}/screenshots/"									# Exam screenshots backup path
+current_screenshots_link="${labadmin_cache_path}/current_screenshots"					# Current link to exam screnshots path
 iptables_backup="${exam_cache_path}/labadmin_exam-iptables-backup"						# Current iptables backup file for restore when exam ends
 mkdir -p "$exam_cache_path" || labadmin_error "ERROR: cant create exam cache path: $exam_cache_path" 1
 chmod 000 "$exam_cache_path"
 mkdir -p "$home_backup" || labadmin_error "ERROR: cant create home backup path: $home_backup" 1														
 if [ "$as_delay" -gt 0 ]; then
-	mkdir "${screenshots_backup}" || labadmin_error "ERROR: cant create screenshots path: $screenshots_backup" 1
-	[ -e "${labadmin_cache_path}/current_screenshots" ] && labadmin_error "ERROR: "${labadmin_cache_path}/current_screenshots" link exists. Autoscreenshots already running?" 1
-	ln -s "${screenshots_backup}" "${labadmin_cache_path}/current_screenshots"|| labadmin_error "ERROR: cant create screenshots link: ${labadmin_cache_path}/current_screenshots" 1	
+	mkdir "${exam_screenshots_path}" || labadmin_error "ERROR: cant create screenshots path: $exam_screenshots_path" 1
+	[ -e "${current_screenshots_link}" ] && labadmin_error "ERROR: "${current_screenshots_link}" link exists. Autoscreenshots already running?" 1
+	ln -s "${exam_screenshots_path}" "${current_screenshots_link}" || labadmin_error "ERROR: cant create screenshots link: ${current_screenshots_link}" 1	
 fi
 
 
@@ -419,6 +420,7 @@ export PATH="$PATH:'"$PATH"'"
 labadmin_cache_path="/home/.labadmin-cache/"
 exam_cache_path="'"$exam_cache_path"'"
 home_backup="'"$home_backup"'"
+current_screenshots_link="'"$current_screenshots_link"'"
 as_delay="'"$as_delay"'"
 virtualbox_was_enabled="'"$virtualbox_was_enabled"'"
 virtualbox_was_disabled_persistent="'"$virtualbox_was_disabled_persistent"'"
@@ -553,7 +555,7 @@ if [ "$as_delay" -ne 0 ]; then
 	labadmin_info "Stopping autoscreenshots"
 	systemctl stop labadmin-screenshot.service &>/dev/null || { labadmin_error "ERROR: error stopping labadmin-screenshot service"; ecode=1; }
 	systemctl disable labadmin-screenshot.service &>/dev/null || { labadmin_error "ERROR: error disabling labadmin-screenshot service"; ecode=1; }
-	rm -rf "${labadmin_cache_path}/current_screenshots"
+	rm -rf "${current_screenshots_link}"
 fi
 
 
@@ -597,18 +599,19 @@ StandardError=syslog
 WantedBy=multi-user.target' > /etc/systemd/system/labadmin-screenshot.service  || { labadmin_error "ERROR: error creating /etc/systemd/system/labadmin-screenshot.service"; ecode=1; }
 ##############################################################
 ##############################################################
-		echo "Creating script /sbin/labadmin-screenshot"
-		echo '#!/usr/bin/env bash
+	fi
+	echo "Creating script /sbin/labadmin-screenshot"
+	echo '#!/usr/bin/env bash
 #===================================================================================
 #     FILE: labadmin-screenshot
 #   AUTHOR: Leonardo Marco (labadmin@leonardomarco.com)
 #  LICENSE: GNU General Public License v3.0
 #===================================================================================
 # CONFIG VARIABLES
-labadmin_cache_path="/home/.labadmin-cache"								# Labadmin cache path
-screenshots_path="${labadmin_cache_path}/current_screenshots"			# Screenshots save path
-dsec=5																	# Screenshot delay seconds
-iq=10																	# Screenshot JPEG image quality (range 1-100)
+labadmin_cache_path="/home/.labadmin-cache"						# Labadmin cache path
+screenshots_path="'"${current_screenshots_link}"'"				# Screenshots save path
+dsec='"{$dsec}"'												# Screenshot delay seconds
+iq=10															# Screenshot JPEG image quality (range 1-100)
 
 # Check screenshots path
 if [ ! -d "$screenshots_path" ] || [ ! -w "$screenshots_path" ]; then
@@ -631,9 +634,9 @@ done
 ' > /sbin/labadmin-screenshot || { labadmin_error "ERROR: error creating script /sbin/labadmin-screenshot"; ecode=1; }
 		chmod 760 /sbin/labadmin-screenshot
 ##############################################################
-		chmod 750 /sbin/labadmin-screenshot
-		systemctl daemon-reload &>/dev/null
-	fi
+	chmod 750 /sbin/labadmin-screenshot
+	systemctl daemon-reload &>/dev/null
+	
 
 	# Enable and start service
 	labadmin_info "Starting labadmin-screenshot service"
