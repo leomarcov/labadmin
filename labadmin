@@ -451,5 +451,5 @@ exit
 # Capturar la señal SIGINT
 trap handle_sigint SIGINT
 
-initialize "$@"
+#initialize "$@"
 mainloop
