@@ -64,7 +64,7 @@ if [ !"$enum" ]; then
 
 	# Read num
 	until [ "$enum" -ge 1 ] &>/dev/null && [ "$enum" -lt "$n" ] &>/dev/null; do
-		read -p $(echo -e "  > ${S_U}Select backup ID${S_R}: ") enum
+		read -p "$(echo -e "  > ${S_U}Select backup ID${S_R}: ")" enum
 	done
 fi
 
