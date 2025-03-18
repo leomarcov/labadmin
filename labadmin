@@ -378,11 +378,9 @@ function mainloop() {
 		#### SEARCH IPS
 		search_ips
 
-		#### DRAW MAP
-		[ ! "$rparam" ] && draw_map || draw_map "mark_selected"
-				
-		#### SELECT RANGE
-		if [ ! "$rparam" ]; then 						
+		#### DRAW MAP AND SELECT RANGE
+		if [ ! "$rparam" ]; then
+			draw_map
 			select_range || continue
 			while ! expand_range; do select_range; done
 		else
@@ -390,7 +388,8 @@ function mainloop() {
 		fi
 
 		#### DRAW MAP WITH SELECTED HOSTS
-		[ ! "$rparam" ] && { draw_banner; draw_map	"mark_selected"; }
+		[ ! "$rparam" ] && draw_banner
+		draw_map "mark_selected"
 
 		#### SELECT SCRIPT
 		select_script ""  	|| continue
