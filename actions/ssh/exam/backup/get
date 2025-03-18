@@ -57,6 +57,7 @@ if [ !"$enum" ]; then
 	    m="${m} [$n] ${d} ${t} ${u} ${da} ${s}\n"					# MENU
 	    n=$(($n+1))													# Exam ID
 	done
+	IFS=$'\n\t '
 	echo
 	echo -e "$m" | column -t | sed '1a---------------------------------------------------------------'
 	echo
