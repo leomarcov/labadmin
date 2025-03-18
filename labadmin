@@ -372,17 +372,11 @@ function initialize() {
 #	hosts_ok
 #===============================================================================
 function mainloop() {
-	unset script_id
 	while true; do
-		#### SHOW BANNER
-		[ ! "$noninteractive" ] && draw_banner
-
-		#### SEARCH IPS
-		search_ips
-
-		#### DRAW MAP
-		[ ! "$rparam" ] && draw_map || draw_map "mark_selected"
-					
+		[ ! "$noninteractive" ] && draw_banner			#### SHOW BANNER		
+		search_ips										#### SEARCH IPS									
+		[ ! "$rparam" ] && draw_map						#### DRAW MAP					
+				
 		#### SELECT RANGE
 		if [ ! "$rparam" ]; then 						
 			select_range || continue
@@ -390,20 +384,15 @@ function mainloop() {
 		else
 			expand_range || labadmin_error "Invalid host range $rhosts" 1
 		fi
-
-		#### DRAW MAP WITH SELECTED HOSTS
-		[ ! "$rparam" ] && { draw_banner; draw_map	"mark_selected"; }
-
-		#### SELECT SCRIPT
-		echo -e "    ${S_B}ACTIONS${S_R}"
-		select_script "$script_id"  	|| continue					
-
-		#### READ SCRIPT PARAMS
-		read_params
+		
+		[ ! "$rparam" ] && draw_map	"mark_selected"		#### DRAW MAP WITH SELECTED HOSTS
+		select_script ""  	|| continue					#### SELECT SCRIPT			
+		read_params										#### READ SCRIPT PARAMS								
 
 		#### WRITE LOG EVENT
 		[ -w "$log_path" ] && echo -e "[$(date "+%Y-%d-%m %H:%M:%S")] [$(id -un)] [$ipadmin] [$shosts_listen] [${script_id}${exec_bg:+(${exec_bg})}: $p1 | $p2 | $p3 | $p4 | $p5 | $p6 | $p7 | $p8 | $p9 ]" >> "$log_path"
 		
+
 
 		#### EXEC FOR ADMIN
 		if [[ "${scripts_type[$script_id],,}" = admin* ]] && [ ! "$Sparam" ]; then
@@ -437,7 +426,9 @@ function mainloop() {
 
 		### CONTINUE?
 		[ "$noninteractive" ] && exit 0
-		unset exec_bg script_id
+		echo -e "\n${S_B}[ENTER] to continue${S_R}"; read -e
+
+		unset script_id exec_bg
 	done
 }
 
