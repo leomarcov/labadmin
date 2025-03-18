@@ -163,11 +163,11 @@ function select_script() {
 	while [ ! "$script_id" ]; do
 		# READ SCRIPT AS PARAM
 		local help="    ${C_N}Action options:${S_R}
-      ${S_B}poweroff${S_R}     Exec action poweroff
-      ${S_B}poweroff&${S_R}    Exec action poweroff in background
-      ${S_B}conf/${S_R}        Enter to conf menu
-      ${S_B}cd ..${S_R}        Go to upper menu
-      ${S_B}dir${S_R}          List scripts of current menu"
+      ${S_B}<action>${S_R}         Exec action
+      ${S_B}<action>&${S_R}        Exec action in background
+      ${S_B}<dir>/${S_R}           Enter to dir menu
+      ${S_B}cd ..${S_R}            Go to upper menu
+      ${S_B}dir|ls${S_R}           List scripts of current menu"
 		regex=".*"
 		cd "${scripts_path}/${script_current}/"
 		read_param "${script_current:-/}" "0" "$list" "" "$regex" "$help"
