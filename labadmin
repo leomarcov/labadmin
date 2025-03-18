@@ -357,7 +357,9 @@ function initialize() {
 	fi
 }
 
-
+function handle_signint() {
+	mainloop
+}
 
 
 
@@ -442,9 +444,6 @@ function mainloop() {
 	done
 }
 
-function handle_signint() {
-	mainloop
-}
 
 initialize "$@"
 mainloop
