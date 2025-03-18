@@ -23,17 +23,17 @@ elif [ "$1" = "--readparams" ]; then
     # PARAM2: pass
     read_param "$script_id" 2 "User password (h for help)" "" "" "\tPassword for create new user exam or to change in existent user exam"
     # PARAM3: disable options
-    read_param "$script_id" 3 "Disable options (h for help)" "shell poweroff mountpoints" "" "\tDisable options (spareted by spaces)\n\t   none\t\t\tNo disable any option\n\t   screenshots\t\tDisable all screenshooters found\n\t   shell\t\tDisable terminal access\n\t   filemanagers\t\tDisable filemanagers\n\t   poweroff\t\tDisable poweoroff and restart actions\n\t   mountpoints\t\tDisable access to /mnt /media\n\t   browsers\t\tDisable all web browsers found\n\t   com=command\t\tDisable a command. It can be used multiples times\n\t   <empty>|default\tEquals to: shell poweroff mountpoints"
+    read_param "$script_id" 3 "Disable options (h for help)" "shell poweroff mountpoints" "" "\tDisable options (spareted by spaces)\n\t  none\t\t\tNo disable any option\n\t  screenshots\t\tDisable all screenshooters found\n\t  shell\t\tDisable terminal access\n\t  filemanagers\t\tDisable filemanagers\n\t  poweroff\t\tDisable poweoroff and restart actions\n\t  mountpoints\t\tDisable access to /mnt /media\n\t  browsers\t\tDisable all web browsers found\n\t  com=command\t\tDisable a command. It can be used multiples times\n\t   <empty>|default\tEquals to: shell poweroff mountpoints"
     # PARAM4: homepage
     read_param "$script_id" 4 "Homepage (h for help)" "" "" "\tAutostarts Chromium after login whith specific URL homepage.\n\tEmpty value for no user this function"
     # PARAM5: filter type
     read_param "$script_id" 5 "Network firewall [WHITELIST/blacklist/none]" "whitelist" "^(whitelist|blacklist|none)$"
     # PARAM6: filter list
-    [ "${p5,,}" != "none" ] && read_param "$script_id" 6 "$([ "$p5" = "whitelist" ] && echo "Firewall allowed" || echo "Firewall danyed") list (h for help)" "" "" "\tList of IPs, ranges or domains to add in the $p5 (separated by spaces)\n\tSAMPLES:\n\t   www.google.com\t\tAdd Google domain to the list\n\t   www.a.com www.b.com\t\tAdd two domains to the list\n\t   10.0.20.5\t\t\tAdd specific ip to the list\n\t   10.0.20.5 10.0.2.6\t\tAdd two ips to the list\n\t   10.0.20.0/24\t\t\tAdd subnet to the list\n\t   <empty>\t\t\tEmpty list"
+    [ "${p5,,}" != "none" ] && read_param "$script_id" 6 "$([ "$p5" = "whitelist" ] && echo "Firewall allowed" || echo "Firewall danyed") list (h for help)" "" "" "\tList of IPs, ranges or domains to add in the $p5 (separated by spaces)\n\tSAMPLES:\n\t  www.google.com\t\tAdd Google domain to the list\n\t  www.a.com www.b.com\t\tAdd two domains to the list\n\t  10.0.20.5\t\t\tAdd specific ip to the list\n\t  10.0.20.5 10.0.2.6\t\tAdd two ips to the list\n\t  10.0.20.0/24\t\t\tAdd subnet to the list\n\t  <empty>\t\t\tEmpty list"
     # PARAM7: mins autorecover
-    read_param "$script_id" 7 "Minutes for autorecover (h for help)" "300" "^[0-9]+$" "\tSchedule autorestauration in next boot if have spend these minutes\n\t   Default: 300 (5 hours)\n\t   Value 0 disable autorestauration"
+    read_param "$script_id" 7 "Minutes for autorecover (h for help)" "300" "^[0-9]+$" "\tSchedule autorestauration in next boot if have spend these minutes\n\t  Default: 300 (5 hours)\n\t  Value 0 disable autorestauration"
 	# PARAM8: autoscreenshots delay
-	read_param "$script_id" 8 "Autosave screenshots delay (h for help)"  "5" "^([0-9])+$" "\tDelay in seconds to take automatically screenshots\n\t   Default: 5 seconds\n   Value 0 disable autoscreenshots"
+	read_param "$script_id" 8 "Autosave screenshots delay (h for help)"  "5" "^([0-9])+$" "\tDelay in seconds to take automatically screenshots\n\t  Default: 5 seconds\n\t  Value 0 disable autoscreenshots"
 	return
 fi
 
