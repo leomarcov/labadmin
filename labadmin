@@ -369,8 +369,6 @@ function initialize() {
 #	hosts_ok
 #===============================================================================
 function mainloop() {
-	trap handle_signint SIGINT
-
 	while true; do
 		#### SHOW BANNER
 		[ ! "$noninteractive" ] && draw_banner
@@ -438,11 +436,6 @@ function mainloop() {
 
 		unset script_id exec_bg
 	done
-}
-
-function handle_signint() {
-	unset script_id 
-	mainloop
 }
 
 initialize "$@"
