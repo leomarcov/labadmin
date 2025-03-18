@@ -372,7 +372,7 @@ function initialize() {
 #===============================================================================
 function mainloop() {
 	while true; do
-		trap handle_signint SINGINT
+		trap handle_signint SIGINT
 
 		#### SHOW BANNER
 		[ ! "$noninteractive" ] && draw_banner
