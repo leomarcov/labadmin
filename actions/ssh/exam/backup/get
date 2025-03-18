@@ -60,8 +60,8 @@ if [ !"$enum" ]; then
 	echo
 fi
 
-until [ "$eid" -ge 1 ] && [ "$eid" -lt "$n" ]; do
-	read -p "  > ${S_U}Select backup ID${S_R}: " eid
+until [ "$eid" -ge 1 ] &>/dev/null && [ "$eid" -lt "$n" ] &>/dev/null; do
+	read -p $(echo -e "  > ${S_U}Select backup ID${S_R}: ") eid
 done
 
 # CHECK EXAM FILENAME
