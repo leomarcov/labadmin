@@ -372,6 +372,8 @@ function initialize() {
 #===============================================================================
 function mainloop() {
 	while true; do
+		trap mainloop SINGINT
+
 		#### SHOW BANNER
 		[ ! "$noninteractive" ] && draw_banner
 
@@ -439,8 +441,6 @@ function mainloop() {
 		unset script_id exec_bg
 	done
 }
-
-trap mainloop INT TERM HUP
 
 initialize "$@"
 mainloop
