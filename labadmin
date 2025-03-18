@@ -372,6 +372,7 @@ function initialize() {
 #	hosts_ok
 #===============================================================================
 function mainloop() {
+	unset script_id
 	while true; do
 echo AAA$script_id
 		if [ ! "$script_id" ]; then
