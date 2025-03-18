@@ -440,6 +440,8 @@ function mainloop() {
 handle_sigint() {
     echo -e "\n[!] Capturado CTRL+C. Volviendo a capturar..."
     trap handle_sigint SIGINT  # Reestablecer el trap
+	mainloop
+exit
 }
 
 # Capturar la señal SIGINT
