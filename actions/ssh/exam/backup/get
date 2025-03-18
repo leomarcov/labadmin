@@ -36,7 +36,7 @@ labadmin_cache_path="/home/.labadmin-cache/"			# Labadmin exam cache path
 # SHOW LIST
 if [ !"$enum" ]; then
 	labadmin_cache_path="/home/.labadmin-cache/"			# Labadmin exam cache path
-	backups_list="$(labdmin_ssh_host_comm "${labadmin_nhost}" "ls -d \"${labadmin_cache_path}/EXAM_\"* 2>/dev/null)"
+	backups_list="$(labdmin_ssh_host_comm "${labadmin_nhost}" "ls -d \"${labadmin_cache_path}/EXAM_\"* 2>/dev/null")"
 	if [ $? -ne 0 ]; then
 	    echo "No exams saved"
 	    exit 0
