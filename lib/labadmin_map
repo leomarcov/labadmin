@@ -225,6 +225,7 @@ function select_range() {
 		read -e -p " " rhosts
 		if [[ "${rhosts,,}" == @(h|help) ]]; then
 			echo -e "    ${C_N}Range options:${S_R}"
+			echo -e "      ${S_B}s|selected${S_R}    Keep selected hosts"
 			echo -e "      ${S_B}a|all|*${S_R}       Select all hosts"
 			echo -e "      ${S_B}11,23,51${S_R}      Select hosts 11 23 and 51"
 			echo -e "      ${S_B}11-20${S_R}         Select hosts 11 to 20"
@@ -261,6 +262,9 @@ function select_range() {
 #	1	if no range selected
 #===============================================================================
 function expand_range() {
+	# Keep previous selected hosts
+	[[ "${rhosts,,}" == @(s|selected) ]] && [ "$shosts" ] && return 0
+	
 	unset shosts shosts_listen shosts_inactive
 
 	# Check if /odd /even
