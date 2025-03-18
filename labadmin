@@ -379,8 +379,9 @@ function mainloop() {
 		search_ips
 
 		#### DRAW MAP AND SELECT RANGE
+		local mark_selected="$([ "$shosts" ] && echo "true")"
 		if [ ! "$rparam" ]; then
-			draw_map
+			draw_map "$mark_selected"
 			select_range || continue
 			while ! expand_range; do select_range; done
 		else
