@@ -438,5 +438,11 @@ function mainloop() {
 	done
 }
 
+function handle_sigint() {
+	mainloop
+	exit
+}
+    trap handle_sigint SIGINT
+
 initialize "$@"
 mainloop
