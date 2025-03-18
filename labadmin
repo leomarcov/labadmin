@@ -373,6 +373,7 @@ function initialize() {
 #===============================================================================
 function mainloop() {
 	while true; do
+echo AAA$script_id
 		if [ ! "$script_id" ]; then
 			[ ! "$noninteractive" ] && draw_banner			#### SHOW BANNER		
 			search_ips										#### SEARCH IPS									
