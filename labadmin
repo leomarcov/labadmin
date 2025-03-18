@@ -374,7 +374,6 @@ function initialize() {
 function mainloop() {
 	unset script_id
 	while true; do
-echo AAA$script_id
 		if [ ! "$script_id" ]; then
 			[ ! "$noninteractive" ] && draw_banner			#### SHOW BANNER		
 			search_ips										#### SEARCH IPS									
@@ -389,8 +388,11 @@ echo AAA$script_id
 			fi
 		
 			[ ! "$rparam" ] && draw_map	"mark_selected"		#### DRAW MAP WITH SELECTED HOSTS
+		else
+			draw_map "selected"
 		fi
 
+		echo -e "${S_B}ACTIONS:${S_R}"
 		select_script "$script_id"  	|| continue					#### SELECT SCRIPT			
 		read_params										#### READ SCRIPT PARAMS								
 
