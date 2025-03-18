@@ -391,7 +391,7 @@ function mainloop() {
 		fi
 
 		#### DRAW MAP WITH SELECTED HOSTS
-		[ ! "$rparam" ] && draw_map	"mark_selected"		
+		[ ! "$rparam" ] && { draw_banner; draw_map	"mark_selected"; }
 
 		#### SELECT SCRIPT
 		select_script ""  	|| continue
