@@ -98,6 +98,7 @@ function draw_map() {
 			local sel_bg_color="${B_R}"
 			local ashosts="$shosts"
 		fi
+		# draw_banner
 		eval local ashosts=($(echo "$ashosts" | sed 's/\([0-9]\+\)/[\1]=X/g'));	# Convert shosts list into array ([11]=X [12]=X ...)
 	fi
 
