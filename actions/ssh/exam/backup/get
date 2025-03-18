@@ -56,12 +56,13 @@ if [ !"$enum" ]; then
 	    n=$(($n+1))													# Exam ID
 	done
 	echo
-	echo -e "$m" | column -t | sed '1a------------------------------------------------------------------------'
+	echo -e "$m" | column -t | sed '1a---------------------------------------------------------------'
 	echo
 fi
 
-read -p "Select backup ID: " eid
-
+while [ "$eid" -ge 1 ] && [ "$eid" -lt "$n" ]; then
+	read -p "  > ${S_U}Select backup ID${S_R}: " eid
+done
 
 # CHECK EXAM FILENAME
 
