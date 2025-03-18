@@ -252,9 +252,6 @@ function check_params() {
 # DESCRIPTION: read parameters and initialize lab config
 #===============================================================================
 function initialize() {
-	##### SHOW LABADMIN VERSION
-	[ ! "$noninteractive" ] && { labadmin_version=$(cat "${labadmin_path}/version"); echo -e "${S_B}LABADMIN${S_R} ${S_D}v.${labadmin_version}${S_R}"; }
-
 	##### CHECK BASH VERSION >=4.0
 	[ "$({ echo $BASH_VERSION; echo 4.0; } | sort -V | head -1)" = "4.0" ] || labadmin_error "Labadmin must be runned in Bash >=4.0" 1
 	unalias -a
@@ -270,6 +267,9 @@ function initialize() {
 	##### CHECK NON-INTERACTIVE
 	[ "$p0param" = 1 ] && [ "$rparam" = 1 ] && noninteractive="1"
 	[ "$Sparam" ] && noninteractive="1"
+
+	##### SHOW LABADMIN VERSION
+	[ ! "$noninteractive" ] && { labadmin_version=$(cat "${labadmin_path}/version"); echo -e "${S_B}LABADMIN${S_R} ${S_D}v.${labadmin_version}${S_R}"; }
 
 	##### REMOVE TEMP UNLOCK FILES
 	rm "$labadmin_tmp_path/screenlock*" &> /dev/null
