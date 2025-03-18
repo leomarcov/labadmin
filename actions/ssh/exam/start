@@ -33,7 +33,7 @@ elif [ "$1" = "--readparams" ]; then
     # PARAM7: mins autorecover
     read_param "$script_id" 7 "Minutes for autorecover (h for help)" "300" "^[0-9]+$" "\tSchedule autorestauration in next boot if have spend these minutes\n\tDefault: 300 (5 hours)\n\tValue 0 disable autorestauration"
 	# PARAM8: autoscreenshots delay
-	read_param "$script_id" 8 "Delay seconds for autosave screenshots (default 5, 0 for disable)"  "5" "^([0-9])+$"
+	read_param "$script_id" 8 "Autosave screenshots delay (h for help)"  "5" "^([0-9])+$" "Delay in seconds to take automatically screenshots\n\t Defailt: 5 seconds\nValue 0 disable autoscreenshots"
 	return
 fi
 
