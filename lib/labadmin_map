@@ -104,8 +104,9 @@ function draw_map() {
 	labadmin_lock_screen
 	echo "${tab}┌"$(seq -s"─" $(($nc*6)) | tr -d "[0-9]")"┐"
 	local cr=0														# Current row
-	local complete="$(seq -s "__" 1 $n | tr -s "[0-9]" " ")"		# Trick for complete rows with not all hosts defined
+	local complete="$(seq -s "__" 1 $nc | tr -s "[0-9]" " ")"		# Trick for complete rows with not all hosts defined
 
+	IFS=$'\n\t '
 	echo "$map" | while read row; do								# LOOP ROWS
 		cr=$((cr+1))
 		echo -n "$tab│"
