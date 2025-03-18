@@ -441,7 +441,7 @@ function mainloop() {
 }
 
 function handle_signint() {
-	echo AAA; read
+	echo AAA; 
 	mainloop
 }
 
