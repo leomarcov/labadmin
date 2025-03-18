@@ -33,41 +33,6 @@ labadmin_cache_path="/home/.labadmin-cache/"			# Labadmin exam cache path
 # CHECK DEST
 [ ! -w "$dest" ] || [ ! -w "$dest" ] && labadmin_error "Can't write in local path $dest" 1
 
-# SHOW LIST
-if [ !"$enum" ]; then
-	labadmin_cache_path="/home/.labadmin-cache/"			# Labadmin exam cache path
-	# Get backups list
-	backups_list="$(labdmin_ssh_host_comm "${labadmin_nhost}" "du -sh \"${labadmin_cache_path}/EXAM_\"* 2>/dev/null")"
-	if [ $? -ne 0 ]; then
-	    echo "No exams saved"
-	    exit 0
-	fi
-
-	# Show menu
-	n=1
-	m="${S_B}ID DATE TIME USER DAYS-AGO SIZE${S_R}\n"
-	IFS=$'\n'
-	for l in $backups_list; do
-		e=$(echo "$l" | cut -f2);									# Exam PATH
-		d=$(basename "$e"|cut -f2 -d_); 							# Exam DATE
-		t=$(basename "$e"|cut -f3 -d_ | tr - :)						# Exam TIME
-		u=$(basename "$e"|cut -f4 -d_)								# Exam USER
-		s=$(echo "$l" | cut -f1)									# Exam SIZE
-		da=$((($(date -d "$(date +%Y-%m-%d) 00:00:00" +%s)-$(date -d "$d 00:00:00" +%s))/86400))			# Exam DAYS-AGO
-	    m="${m} [$n] ${d} ${t} ${u} ${da} ${s}\n"					# MENU
-	    n=$(($n+1))													# Exam ID
-	done
-	IFS=$'\n\t '
-	echo
-	echo -e "$m" | column -t | sed '1a---------------------------------------------------------------'
-	echo
-
-	# Read num
-	until [ "$enum" -ge 1 ] &>/dev/null && [ "$enum" -lt "$n" ] &>/dev/null; do
-		read -p "$(echo -e "  > ${S_U}Select backup ID${S_R}: ")" enum
-	done
-fi
-
 # CHECK EXAM FILENAME
 edir="$(labdmin_ssh_host_comm "${labadmin_nhost}" "ls -d \"${labadmin_cache_path}\"EXAM* | sed -n ${enum}p")"
 [ ! "$edir" ] && labadmin_error "Can't access backup number $enum ($exam_backups)" 1
