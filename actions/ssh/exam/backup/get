@@ -42,6 +42,6 @@ dest="$dest/$(basename "$edir")_HOST${labadmin_nhost}"
 mkdir "$dest" || labadmin_error "Cant create dest dir: $dest" 1 
 labdmin_ssh_host_comm "${labadmin_nhost}" 'tar -c -C "'"${edir}"'" .' | tar -xv -C "$dest"
 chmod 760 "$dest"
-echo -e "Destination: ${S_B}$dest${S_R}"
+echo -e "\nDestination: ${S_B}$dest${S_R}"
 
 
