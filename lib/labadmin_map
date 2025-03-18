@@ -235,7 +235,7 @@ function select_range() {
 			echo
 		fi
 	done
-
+echo AAA$rhosts
 	case "${rhosts,,}" in
 		exit|quit) 	exit 0		;;
 		"")			return 1	;;
