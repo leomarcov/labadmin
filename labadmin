@@ -440,5 +440,7 @@ function mainloop() {
 	done
 }
 
+trap mainloop SIGINT
+
 initialize "$@"
 mainloop
