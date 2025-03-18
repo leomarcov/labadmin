@@ -357,10 +357,6 @@ function initialize() {
 	fi
 }
 
-function handle_signint() {
-	mainloop
-}
-
 
 
 #=== FUNCTION ==================================================================
@@ -373,9 +369,9 @@ function handle_signint() {
 #	hosts_ok
 #===============================================================================
 function mainloop() {
-	while true; do
-		trap handle_signint SIGINT
+	trap handle_signint SIGINT
 
+	while true; do
 		#### SHOW BANNER
 		[ ! "$noninteractive" ] && draw_banner
 
@@ -444,6 +440,10 @@ function mainloop() {
 	done
 }
 
+function handle_signint() {
+	echo AAA
+	mainloop
+}
 
 initialize "$@"
 mainloop
