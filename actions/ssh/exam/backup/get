@@ -36,24 +36,23 @@ labadmin_cache_path="/home/.labadmin-cache/"			# Labadmin exam cache path
 # SHOW LIST
 if [ !"$enum" ]; then
 	labadmin_cache_path="/home/.labadmin-cache/"			# Labadmin exam cache path
-	backups_list="$(labdmin_ssh_host_comm "${labadmin_nhost}" "ls -d \"${labadmin_cache_path}/EXAM_\"* 2>/dev/null")"
+	backups_list="$(labdmin_ssh_host_comm "${labadmin_nhost}" "du -sh \"${labadmin_cache_path}/EXAM_\"* 2>/dev/null")"
 	if [ $? -ne 0 ]; then
 	    echo "No exams saved"
 	    exit 0
 	fi
 	
 	n=1
-	m="${S_B}ID DATE TIME USER DAYS-AGO SIZE HOME SCREENSHOTS${S_R}\n"
+	m="${S_B}ID DATE TIME USER DAYS-AGO SIZE${S_R}\n"
 	IFS=$'\n'
-	for e in $backups_list; do
+	for l in $backups_list; do
+		e=$(echo "$l" | cut -f2);									# Exam PATH
 		d=$(basename "$e"|cut -f2 -d_); 							# Exam DATE
 		t=$(basename "$e"|cut -f3 -d_ | tr - :)						# Exam TIME
 		u=$(basename "$e"|cut -f4 -d_)								# Exam USER
-		s=$(du -sh "$e" | cut -f1)									# Exam SIZE
-		da=$((($(date +%s)-$(date -r "$e" +%s))/86400))				# Exam DAYS-AGO
-		sh=$(du -sh "${e}/home/" 2>/dev/null| cut -f1)				# Exam SIZE-HOME
-		ss=$(du -sh "${e}/screenshots/" 2>/dev/null| cut -f1)		# Ezam SIZE-SCREENSHOTS
-	    m="${m} [$n] ${d} ${t} ${u} ${da} ${s} ${sh} ${ss}\n"		# MENU
+		s=$(echo "$l" | cut -f1)									# Exam SIZE
+		da=$((($(date +%s)-$(date -d "$d $t" +%s))/86400))			# Exam DAYS-AGO
+	    m="${m} [$n] ${d} ${t} ${u} ${da} ${s}\n"					# MENU
 	    n=$(($n+1))													# Exam ID
 	done
 	echo
