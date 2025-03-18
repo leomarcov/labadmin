@@ -373,7 +373,7 @@ function initialize() {
 #===============================================================================
 function mainloop() {
 	while true; do
-		if [ ! "$script_id ]; then
+		if [ ! "$script_id" ]; then
 			[ ! "$noninteractive" ] && draw_banner			#### SHOW BANNER		
 			search_ips										#### SEARCH IPS									
 			[ ! "$rparam" ] && draw_map						#### DRAW MAP					
