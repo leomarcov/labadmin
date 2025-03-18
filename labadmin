@@ -370,12 +370,16 @@ function initialize() {
 #===============================================================================
 function mainloop() {
 	while true; do
+	echo AAA
+sleep 1
+continue
+
 		#### SHOW BANNER
 		[ ! "$noninteractive" ] && draw_banner
-read -p "AAA"
+
 		#### SEARCH IPS
 		search_ips
-read -p "BBB"
+
 		#### DRAW MAP AND SELECT RANGE
 		local mark_selected="$([ "$shosts" ] && echo "true")"
 		if [ ! "$rparam" ]; then
@@ -385,17 +389,17 @@ read -p "BBB"
 		else
 			expand_range || labadmin_error "Invalid host range $rhosts" 1
 		fi
-read -p "CCC"
+
 		#### DRAW MAP WITH SELECTED HOSTS
 		[ ! "$rparam" ] && draw_banner
 		draw_map "mark_selected"
-read -p "CCC"
+
 		#### SELECT SCRIPT
 		select_script ""  	|| continue
-read -p "DDD"
+
 		#### READ SCRIPT PARAMS
 		read_params
-read -p "EEE"
+
 		#### WRITE LOG EVENT
 		[ -w "$log_path" ] && echo -e "[$(date "+%Y-%d-%m %H:%M:%S")] [$(id -un)] [$ipadmin] [$shosts_listen] [${script_id}${exec_bg:+(${exec_bg})}: $p1 | $p2 | $p3 | $p4 | $p5 | $p6 | $p7 | $p8 | $p9 ]" >> "$log_path"
 		
