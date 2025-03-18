@@ -53,7 +53,7 @@ if [ !"$enum" ]; then
 		t=$(basename "$e"|cut -f3 -d_ | tr - :)						# Exam TIME
 		u=$(basename "$e"|cut -f4 -d_)								# Exam USER
 		s=$(echo "$l" | cut -f1)									# Exam SIZE
-		da=$((($(date +%s)-$(date -d "$d $t" +%s))/86400))			# Exam DAYS-AGO
+		da=$((($(date -d "$(date +%Y-%m-%d) 00:00:00" +%s)-$(date -d "$d 00:00:00" +%s))/86400))			# Exam DAYS-AGO
 	    m="${m} [$n] ${d} ${t} ${u} ${da} ${s}\n"					# MENU
 	    n=$(($n+1))													# Exam ID
 	done
@@ -75,8 +75,8 @@ edir="$(labdmin_ssh_host_comm "${labadmin_nhost}" "ls -d \"${labadmin_cache_path
 # DOWNLOAD FILE
 dest="$dest/$(basename "$edir")_HOST${labadmin_nhost}"
 mkdir "$dest" || labadmin_error "Cant create dest dir: $dest" 1 
-echo -e "Destination: ${S_B}$dest${S_R}"
 labdmin_ssh_host_comm "${labadmin_nhost}" 'tar -c -C "'"${edir}"'" .' | tar -xv -C "$dest"
 chmod 760 "$dest"
+echo -e "Destination: ${S_B}$dest${S_R}"
 
 
