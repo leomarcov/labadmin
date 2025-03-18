@@ -372,7 +372,7 @@ function initialize() {
 #===============================================================================
 function mainloop() {
 	while true; do
-		trap mainloop SINGINT
+		trap handle_signint SINGINT
 
 		#### SHOW BANNER
 		[ ! "$noninteractive" ] && draw_banner
@@ -440,6 +440,10 @@ function mainloop() {
 
 		unset script_id exec_bg
 	done
+}
+
+function handle_signint() {
+	mainloop
 }
 
 initialize "$@"
