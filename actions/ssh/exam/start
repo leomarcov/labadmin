@@ -622,7 +622,7 @@ if [ ! -d "$screenshots_path" ] || [ ! -w "$screenshots_path" ]; then
 	exit 1
 fi
 
-xset b off
+xset b off		# Diasble beep when import
 while true; do
 	# Active tty
 	atty=$(cat /sys/class/tty/tty0/active)
