@@ -38,8 +38,10 @@ if [ "${labadmin_script_type}" = "local" ]; then
 	[ ! -w "$dir_dest" ] && labadmin_error "Can't write in directory $dir_dest" 1
 	[ "$iq" -lt 10 ] && iq=10; [ "$iq" -gt 100 ] && iq=100
 
+echo AAA
     while [ ! -f "$dir_dest/stop" ]; do
-        file_tmp="$dir_dest/${labadmin_nhost}.jpg"
+echo BBB
+file_tmp="$dir_dest/${labadmin_nhost}.jpg"
         echo -e " ${S_B}${file_tmp}${S_R}"
         labdmin_ssh_host_comm "${labadmin_nhost}" '
 u=($(labadmin_users-display | head -1))
