@@ -38,10 +38,8 @@ if [ "${labadmin_script_type}" = "local" ]; then
 	[ ! -w "$dir_dest" ] && labadmin_error "Can't write in directory $dir_dest" 1
 	[ "$iq" -lt 10 ] && iq=10; [ "$iq" -gt 100 ] && iq=100
 
-echo AAA
     while [ ! -f "$dir_dest/stop" ]; do
-echo BBB
-file_tmp="$dir_dest/${labadmin_nhost}.jpg"
+		file_tmp="$dir_dest/${labadmin_nhost}.jpg"
         echo -e " ${S_B}${file_tmp}${S_R}"
         labdmin_ssh_host_comm "${labadmin_nhost}" '
 u=($(labadmin_users-display | head -1))
@@ -65,6 +63,7 @@ elif [ "${labadmin_script_type}" = "admin" ]; then
 	labadmin_info-list "Close webrowser to ${S_B}stop${S_R} screenshots\n"
 	[ $UID -eq 0 ] && labadmin_error "WARNING: labadmin is running as root, some web browsers only support run as regular user"
 	x-www-browser "${screenshot_grid_url}" &>/dev/null
+	read -p "$(echo -e "Press \e[1m[ENTER]\e[0m to stop recording")"
     touch "$dir_dest/stop"
     ( sleep 10; rm "$dir_dest/stop" &>/dev/null)& 
 fi
