@@ -23,7 +23,7 @@ elif [ "$1" = "--readparams" ]; then
     # PARAM2: time displaying
     [ "${p2,,}" ] && read_param "$script_id" 2 "Time recording in seconds (default forever)" "" "^[1-9]([0-9])*$|^$"
     # PARAM3: directory for save
-    read_param "$script_id" 3 "Directory to save pictures (default tmp folder)"  "$(mktemp -d "$labadmin_tmp_path/screenshot-display.XXXXXXXX")" ""
+	read_param "$script_id" 3 "Destination path (default $HOME/LABADMIN-SCREENSHOTS-<date>)" "${HOME}/LABADMIN-SCREENSHOTS-$(date +%Y-%m-%d_%H.%M.%S)" ""
     # PARAM4: image quality
     read_param "$script_id" 4 "Image quality (default 10, range 10-100)"  "10" "^[1-9]([0-9])*$"
     return
@@ -65,6 +65,7 @@ su -l "${u[0]}" -c "DISPLAY="${u[1]}" xset b off; import -window root -display "
 elif [ "${labadmin_script_type}" = "admin" ]; then
     dir_dest="$3"
     [ "$dir_dest" ] && dir_dest="$(eval echo "$dir_dest")"          # Resolve scape characteres like \ ,*, etc.
+	[ ! -d "$dir_dest ] && mkdir -p "$dir_dest"
     [ ! -w "$dir_dest" ] && labadmin_error "Can't write in directory $dir_dest" 1 
 
     labadmin_info-list "Saving screenshots in: ${S_B}$dir_dest${S_R}"
