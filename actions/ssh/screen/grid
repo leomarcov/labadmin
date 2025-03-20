@@ -61,6 +61,7 @@ elif [ "${labadmin_script_type}" = "admin" ]; then
 	screenshot_grid_url="file://${labadmin_path}/lib/screnshot-grid/view.html?lab=$(echo -n "$labname" | base64 -w0)&dir=$(echo -n "$dir_dest" | base64 -w0)&map=$( echo -n "$map" | base64 -w0)&ref=${dsec}"
 	labadmin_info-list "Opening Labadmin Screenshot Grid: ${S_B}$screenshot_grid_url${S_R}"
 	labadmin_info-list "Close webrowser to ${S_B}stop${S_R} screenshots\n"
+	[ $UID -eq 0 ] && labadmin_error "WARNING: labadmin is running as root, some web browsers only support run as regular user
 	x-www-browser "${screenshot_grid_url}" &>/dev/null
     touch "$dir_dest/stop"
     ( sleep 10; rm "$dir_dest/stop" &>/dev/null)& 
