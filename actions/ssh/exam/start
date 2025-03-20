@@ -23,7 +23,7 @@ elif [ "$1" = "--readparams" ]; then
     # PARAM2: pass
     read_param "$script_id" 2 "User password (h for help)" "" "" "\tPassword for create new user exam or to change in existent user exam"
     # PARAM3: disable options
-    read_param "$script_id" 3 "Disable options (h for help)" "shell poweroff mountpoints" "" "\tDisable options (spareted by spaces)\n\t  none\t\t\tNo disable any option\n\t  screenshots\t\tDisable all screenshooters found\n\t  shell\t\tDisable terminal access\n\t  filemanagers\t\tDisable filemanagers\n\t  poweroff\t\tDisable poweoroff and restart actions\n\t  mountpoints\t\tDisable access to /mnt /media\n\t  browsers\t\tDisable all web browsers found\n\t  com=command\t\tDisable a command. It can be used multiples times\n\t   <empty>|default\tEquals to: shell poweroff mountpoints"
+    read_param "$script_id" 3 "Disable options (h for help)" "shell poweroff mountpoints" "" "\tDisable options (spareted by spaces)\n\t  none\t\t\tNo disable any option\n\t  screenshots\t\tDisable all screenshooters found\n\t\t  shell\t\tDisable terminal access\n\t  filemanagers\t\tDisable filemanagers\n\t  poweroff\t\tDisable poweoroff and restart actions\n\t  mountpoints\t\tDisable access to /mnt /media\n\t  browsers\t\tDisable all web browsers found\n\t  com=command\t\tDisable a command. It can be used multiples times\n\t   <empty>|default\tEquals to: shell poweroff mountpoints"
     # PARAM4: homepage
     read_param "$script_id" 4 "Homepage (h for help)" "" "" "\tAutostarts Chromium after login whith specific URL homepage.\n\tEmpty value for no user this function"
     # PARAM5: filter type
