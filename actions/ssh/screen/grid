@@ -63,7 +63,8 @@ elif [ "${labadmin_script_type}" = "admin" ]; then
 	labadmin_info-list "Close webrowser to ${S_B}stop${S_R} screenshots\n"
 	[ $UID -eq 0 ] && labadmin_error "WARNING: labadmin is running as root, some web browsers only support run as regular user"
 	x-www-browser "${screenshot_grid_url}" &>/dev/null
-	read -p "$(echo -e "Press \e[1m[ENTER]\e[0m to stop recording")"
+	read -p "$(echo -e "Press \e[1m[ENTER]\e[0m to stop recording\n")"
+
     touch "$dir_dest/stop"
     ( sleep 10; rm "$dir_dest/stop" &>/dev/null)& 
 fi
