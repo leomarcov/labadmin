@@ -49,19 +49,18 @@ if [ "${labadmin_script_type}" = "local" ]; then
     n=0
 	while [ $[$(date +%s)-$t0] -le "$tdisp" ]; do
         [ -f "$dir_dest/stop" ] && break
-		[ ! "${u[0]}" ] && labadmin_error "No users logged" 1
-        file_tmp="$dir_dest/[${labadmin_nhost}]_$(date +%Y-%m-%d_%H-%M-%S).jpg"
-        echo -e " [$n] ${S_B}${file_tmp}${S_R}"
         labdmin_ssh_host_comm "${labadmin_nhost}" '
 u=($(labadmin_users-display | head -1))
 xset b off
 su -l "${u[0]}" -c "import -window root -display "${u[1]}" -quality '${iq}' -interlace Plane jpg:-"' > "${file_tmp}"
-
+		[ ! "${u[0]}" ] && labadmin_error "No users logged" 1
+        file_tmp="$dir_dest/[${labadmin_nhost}]_$(date +%Y-%m-%d_%H-%M-%S).jpg"
+        echo -e " [$n] ${S_B}${file_tmp}${S_R}"
         n=$((n+1))
+
         [ -f "$dir_dest/stop" ] && break
         sleep $dsec
     done
-	xset b on
 
 # ADMIN EXEC
 elif [ "${labadmin_script_type}" = "admin" ]; then
