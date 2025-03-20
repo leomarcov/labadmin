@@ -23,7 +23,7 @@ elif [ "$1" = "--readparams" ]; then
     # PARAM2: time displaying
     [ "${p2,,}" ] && read_param "$script_id" 2 "Time recording in seconds (default forever)" "" "^[1-9]([0-9])*$|^$"
     # PARAM3: directory for save
-	read_param "$script_id" 3 "Destination path (default $HOME/LABADMIN-SCREENSHOTS-<date>)" "${HOME}/LABADMIN-SCREENSHOTS-$(date +%Y-%m-%d_%H.%M.%S)/" ""
+	read_param "$script_id" 3 "Destination path (default $HOME/LABADMIN-SCREENSHOTS-<date>)" "${HOME}/LABADMIN-SCREENSHOTS-$(date +%Y-%m-%d_%H.%M.%S)" ""
     # PARAM4: image quality
     read_param "$script_id" 4 "Image quality (default 10, range 10-100)"  "10" "^[1-9]([0-9])*$"
     return
