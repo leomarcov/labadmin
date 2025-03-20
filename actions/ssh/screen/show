@@ -73,7 +73,7 @@ elif [ "${labadmin_script_type}" = "local" ]; then
         labdmin_ssh_host_comm "${labadmin_nhost}" '
 u=($(labadmin_users-display | head -1))
 [ ! "${u[0]}" ] && labadmin_error "No users logged" 1
-modprobe -r pcspkr
+xset b off
 su -l "${u[0]}" -c "import -window root -display "${u[1]}" -quality '${iq}' -interlace Plane jpg:-"' > "${file_img}.tmp" 
         if [ "$?" -eq 0 ]; then
 			[ ! "$c" ] && echo "Connection successful"; c=1
