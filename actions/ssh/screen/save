@@ -51,8 +51,7 @@ if [ "${labadmin_script_type}" = "local" ]; then
         [ -f "$dir_dest/stop" ] && break
         labdmin_ssh_host_comm "${labadmin_nhost}" '
 u=($(labadmin_users-display | head -1))
-xset b off
-su -l "${u[0]}" -c "import -window root -display "${u[1]}" -quality '${iq}' -interlace Plane jpg:-"' > "${file_tmp}"
+su -l "${u[0]}" -c "DISPLAY=${u[1]} xset b off; import -window root -display "${u[1]}" -quality '${iq}' -interlace Plane jpg:-"' > "${file_tmp}"
 		[ ! "${u[0]}" ] && labadmin_error "No users logged" 1
         file_tmp="$dir_dest/[${labadmin_nhost}]_$(date +%Y-%m-%d_%H-%M-%S).jpg"
         echo -e " [$n] ${S_B}${file_tmp}${S_R}"
