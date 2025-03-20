@@ -581,7 +581,7 @@ fi
 if [ "$as_delay" -ne 0 ]; then
 	labadmin_info "Enablig auto-screenshots service"
 	# Create labadmin-screenshot service
-	if [ -f /etc/systemd/system/labadmin-screenshot.service ]; then
+	if [ ! -f /etc/systemd/system/labadmin-screenshot.service ]; then
 		echo "Installing labadmin-screenshot service"
 		echo "Creating service labadmin-screenshot"
 ############################################################
