@@ -434,7 +434,7 @@ function mainloop() {
 		[ "$noninteractive" ] && exit 0
 		echo -e "\n${S_B}[ENTER] to continue${S_R}"; read -e
 
-		unset script_id exec_bg
+		unset script_id exec_bg shosts
 	done
 }
 
