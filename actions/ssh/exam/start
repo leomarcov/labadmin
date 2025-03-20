@@ -622,6 +622,7 @@ if [ ! -d "$screenshots_path" ] || [ ! -w "$screenshots_path" ]; then
 	exit 1
 fi
 
+xset b off
 while true; do
 	# Active tty
 	atty=$(cat /sys/class/tty/tty0/active)
@@ -634,6 +635,7 @@ while true; do
 	[ "$u" ] && [ "$d" ] && su -l "${u}" -c "import -window root -display ${d} -quality ${iq} -interlace Plane jpg:-" > "${sp}"
 	sleep "$dsec"
 done
+xset b on
 ' > /sbin/labadmin-screenshot || { labadmin_error "ERROR: error creating script /sbin/labadmin-screenshot"; ecode=1; }
 		chmod 760 /sbin/labadmin-screenshot
 ##############################################################
