@@ -41,7 +41,6 @@ if [ "${labadmin_script_type}" = "local" ]; then
 
     [ ! "$tdisp" ] && tdisp="999999999"
     [ "$dir_dest" ] && dir_dest="$(eval echo "$dir_dest")"          # Resolve scape characteres like \ ,*, etc.
-    [ ! -w "$dir_dest" ] && labadmin_error "Can't write in directory $dir_dest" 1 
 	[ "$iq" -lt 10 ] && iq=10; [ "$iq" -gt 100 ] && iq=100
 
     sleep 2
