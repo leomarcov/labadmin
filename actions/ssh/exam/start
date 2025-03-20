@@ -593,8 +593,6 @@ After=auditd.service
 Type=simple
 Restart=always
 ExecStart=/usr/bin/env bash /sbin/labadmin-screenshot
-StandardOutput=syslog
-StandardError=syslog
 
 [Install]
 WantedBy=multi-user.target' > /etc/systemd/system/labadmin-screenshot.service  || { labadmin_error "ERROR: error creating /etc/systemd/system/labadmin-screenshot.service"; ecode=1; }
