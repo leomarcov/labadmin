@@ -631,7 +631,7 @@ while true; do
 	sp="${screenshots_path}/$(date +%Y-%m-%d_%H-%M-%S)_${u}.jpg"
 
 	# Take screenshot if user logged
-	[ "$u" ] && [ "$d" ] && su -l "${u}" -c "xset b off; import -window root -display ${d} -quality ${iq} -interlace Plane jpg:-" > "${sp}"
+	[ "$u" ] && [ "$d" ] && su -l "${u}" -c "DISPLAY=${d} xset b off; import -window root -display ${d} -quality ${iq} -interlace Plane jpg:-" > "${sp}"
 	sleep "$dsec"
 done
 ' > /sbin/labadmin-screenshot || { labadmin_error "ERROR: error creating script /sbin/labadmin-screenshot"; ecode=1; }
