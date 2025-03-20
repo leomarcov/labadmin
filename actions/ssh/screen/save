@@ -47,20 +47,21 @@ if [ "${labadmin_script_type}" = "local" ]; then
     sleep 2
     t0=$(date +%s)
     n=0
-    while [ $[$(date +%s)-$t0] -le "$tdisp" ]; do
+	xset b off		# Diasble beep when import
+	while [ $[$(date +%s)-$t0] -le "$tdisp" ]; do
         [ -f "$dir_dest/stop" ] && break
         file_tmp="$dir_dest/[${labadmin_nhost}]_$(date +%Y-%m-%d_%H-%M-%S).jpg"
         echo -e " [$n] ${S_B}${file_tmp}${S_R}"
         labdmin_ssh_host_comm "${labadmin_nhost}" '
 u=($(labadmin_users-display | head -1))
 [ ! "${u[0]}" ] && labadmin_error "No users logged" 1
-modprobe -r pcspkr
 su -l "${u[0]}" -c "import -window root -display "${u[1]}" -quality '${iq}' -interlace Plane jpg:-"' > "${file_tmp}"
 
         n=$((n+1))
         [ -f "$dir_dest/stop" ] && break
         sleep $dsec
     done
+	xset b on
 
 # ADMIN EXEC
 elif [ "${labadmin_script_type}" = "admin" ]; then
