@@ -158,8 +158,8 @@ function select_script() {
 
 	unset script_id
 	while [ ! "$script_id" ]; do
-		# READ SCRIPT AS PARAM
-		local help="${S_D}Actions options${S_R}
+		# READ SCRIPT AS PARAMf
+		local help="${S_D}Action options${S_R}
 ${C_Y}action${S_R}                Exec action
 ${C_LY}action${S_R} &              Exec action in background (all in this panel)
 ${C_LY}action${S_R} &&             Exec action in background (in separate panles)

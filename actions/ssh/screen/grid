@@ -8,7 +8,7 @@ script_id="$(echo ${BASH_SOURCE[0]} | sed 's\^'"$scripts_path"'/*\\g')"     # Sc
 
 #=== LOAD INFO =====================================================================
 if [ "$1" = "--load-scriptinfo" ]; then
-    script_desc="Show screenshots for selected hosts in a grid view"
+    script_desc="Show screenshots for selected hosts in a web grid view"
     script_type="local+admin"
     script_bg="force sub"
     script_admindeps=""
@@ -33,35 +33,33 @@ if [ "${labadmin_script_type}" = "local" ]; then
     dsec="$1"
 	iq="$2"
     
-	sleep 2
-	dir_dest=$(ls -dt "${labadmin_tmp_path}/screenshot-grid."* | head -1)
-	[ ! -w "$dir_dest" ] && labadmin_error "Can't write in directory $dir_dest" 1
-	[ "$iq" -lt 10 ] && iq=10; [ "$iq" -gt 100 ] && iq=100
+	sleep 1
+	
+    dir_dest=$(ls -dt "${labadmin_tmp_path}/screenshot-grid."* | head -1)
+	[ ! -w "$dir_dest" ] && labadmin_error "Can't write in directory $dir_dest" 1  # Check dir_dest
+	[ "$iq" -lt 10 ] && iq=10; [ "$iq" -gt 100 ] && iq=100     # Min iq 10
 
-    n=0
+    # Create 5 initial links to ensure javascript is always slow
+    file_tmp="$dir_dest/${labadmin_nhost}.jpg"
+    touch $file_tmp
+    ln "$file_tmp" "$dir_dest/${labadmin_nhost}-1.jpg"
+    ln "$file_tmp" "$dir_dest/${labadmin_nhost}-2.jpg"
+    ln "$file_tmp" "$dir_dest/${labadmin_nhost}-3.jpg"
+    ln "$file_tmp" "$dir_dest/${labadmin_nhost}-4.jpg"
+    ln "$file_tmp" "$dir_dest/${labadmin_nhost}-5.jpg"    
+    n=6
+
     while [ ! -f "$dir_dest/stop" ]; do
-		file_tmp="$dir_dest/${labadmin_nhost}.jpg"
         echo -e " ${S_B}${file_tmp}${S_R}"
         labdmin_ssh_host_comm "${labadmin_nhost}" '
 u=($(labadmin_users-display | head -1))
 [ ! "${u[0]}" ] && labadmin_error "No users logged" 1
 su -l "${u[0]}" -c "DISPLAY="${u[1]}" xset b off; import -window root -display "${u[1]}" -quality '${iq}' -interlace Plane jpg:-"' > "${file_tmp}"
-    
-        # Create links
-        if [ $n -eq 0 ]; then
-            ln "$file_tmp" "$dir_dest/${labadmin_nhost}-1.jpg"
-            ln "$file_tmp" "$dir_dest/${labadmin_nhost}-2.jpg"
-            ln "$file_tmp" "$dir_dest/${labadmin_nhost}-3.jpg"
-            ln "$file_tmp" "$dir_dest/${labadmin_nhost}-4.jpg"
-            ln "$file_tmp" "$dir_dest/${labadmin_nhost}-5.jpg"
-            n=5
-        else
-            ln "$file_tmp" "$dir_dest/${labadmin_nhost}-${n}.jpg"
-        fi
-
+        ln "$file_tmp" "$dir_dest/${labadmin_nhost}-${n}.jpg"
         n=$((n+1))
         sleep $dsec
     done
+
 
 # ADMIN EXEC
 elif [ "${labadmin_script_type}" = "admin" ]; then
@@ -73,6 +71,7 @@ elif [ "${labadmin_script_type}" = "admin" ]; then
 
 	screenshot_grid_url="file://${labadmin_path}/lib/screenshot-grid/view.html?lab=$(echo -n "$labname" | base64 -w0)&dir=$(echo -n "$dir_dest" | base64 -w0)&map=$( echo -n "$map" | base64 -w0)&ref=${dsec}"
 	labadmin_info-list "Opening Labadmin Screenshot Grid: ${S_B}$screenshot_grid_url${S_R}"
+    echo
 	labadmin_info-list "Press  ${S_B}[ENTER]${S_R} to stop recording screenshots\n"
 
 	[ $EUID -eq 0 ] && labadmin_error "WARNING: labadmin is running as root, some web browsers only support run as regular user"

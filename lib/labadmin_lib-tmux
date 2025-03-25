@@ -40,7 +40,7 @@ function tmux_kill-session() {
 
 #=== FUNCTION ==================================================================
 #        NAME: tmux_close-windows
-# DESCRIPTION: close a list of windows by name.
+# DESCRIPTION: close a list of windows by name
 #              If name is not uniq close the last opened
 #              If no names supplied close active window
 # PARAMETERS
