@@ -61,7 +61,6 @@ elif [ "${labadmin_script_type}" = "ssh" ]; then
 	[ ! "${u[0]}" ] && labadmin_error "No users logged" 1
 
 	su -l "${u[0]}" -c "DISPLAY=${u[1]} xhost si:localuser:$(id -un)" &>/dev/null
-	labdmin_config_terminator "${u[0]}"
 	su -l "${u[0]}" -c "DISPLAY=${u[1]} terminator $([ "${fs,,}" = "y" ] && echo "-f" ) -b -x bash -c \"cat $msg_temp; read\"" 2>/dev/null
 	rm -v "$msg_temp"
 fi

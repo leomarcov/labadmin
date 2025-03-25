@@ -38,7 +38,6 @@ u=($(labadmin_users-display | head -1))
 
 
 if [ "${term,,}" = "y" ]; then
-	labdmin_config_terminator "${u[0]}"
 	com="terminator -x bash -c \"$com\""
 fi
 

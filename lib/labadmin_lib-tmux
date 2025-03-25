@@ -1,0 +1,256 @@
+#!/usr/bin/env bash
+#===================================================================================
+# LABADMIN TMUX LIB
+#         FILE: labadmin_lib-tmux
+#  DESCRIPTION: labadmin lib for manage tmux
+#
+#       AUTHOR: Leonardo Marco (labadmin@leonardomarco.com)
+#	   LICENSE: GNU General Public License v3.0
+#===================================================================================
+
+
+
+#===============================================================================
+#  GLOBAL VARIABLES
+#===============================================================================
+unset tmux_sid										# tmux session ID
+unset tmux_nw 										# tmux number of main windows in session (1 or 3)
+unset tmux_pid_map									# tmux panel map global ID (%id)
+unset tmux_pid_status								# tmux panel status global ID (%id)
+unset tmux_pid_script								# tmux panl script golbal ID (%id)
+tmux_last_ctrlc=0 									# Time last ctrl-c pressed
+
+
+#===============================================================================
+#  GLOBAL CONFIG
+#===============================================================================
+
+
+#=== FUNCTION ==================================================================
+#        NAME: tmux_kill-session
+# DESCRIPTION: kill current tmux session
+# PARAMETERS
+#	$1 exit code
+#===============================================================================
+function tmux_kill-session() {
+	tmux kill-session -t ${tmux_sid}
+	exit "$1"
+}
+
+
+#=== FUNCTION ==================================================================
+#        NAME: tmux_close-windows
+# DESCRIPTION: close a list of windows by name.
+#              If name is not uniq close the last opened
+#              If no names supplied close active window
+# PARAMETERS
+#	$*	window list names
+#===============================================================================
+function tmux_close-windows() {
+	# Close active
+	if [ $# -eq 0 ]; then
+		aw=$(tmux list-window -t $tmux_sid -F '#{window_active} #{window_name}' | awk '$1 == "1" {print $2}')
+		[[ "$aw" != @(LABADMIN|MAP|EXEC|LOG) ]] && tmux kill-window -t $tmux_sid
+		return
+	fi
+
+	# Close list
+	for wn in "$@"; do
+		wnum=$(tmux list-windows -t $tmux_sid -F "#{window_index} #{window_name}" | grep "\b${wn}$" | tail -1 | cut -f1 -d" ")
+		[ "$wnum" ] && tmux kill-window -t ${tmux_sid}:${wnum} 
+	done
+}
+
+
+
+#=== FUNCTION ==================================================================
+#        NAME: tmux_list-windows
+# DESCRIPTION: list all windows in session
+#===============================================================================
+function tmux_list-windows() {
+	local wn_old="$1"
+	local wn_new="$2"
+
+	tmux list-window -t $tmux_sid -F '#{window_name}'
+}
+
+
+
+#=== FUNCTION ==================================================================
+#        NAME: tmux_ctrlc_action
+# DESCRIPTION: ctrl+c tmux action exit
+#===============================================================================
+function tmux_ctrlc_action() {
+    # TMUX WIN PANEL-> CLOSE WINDOW
+    local aw=$(tmux list-window -t "$tmux_sid" -F '#{window_active} #{window_name}' | awk '$1 == "1" {print $2}')
+    [[ "$aw" != @(LABADMIN|MAP|EXEC|LOG) ]] && { tmux kill-window -t "$tmux_sid"; return; }
+
+	local t=$(date +%s)
+	# 2 consecutive CTRL+C -> kill session
+	if [ $((t-tmux_last_ctrlc)) -le 1 ]; then
+		tmux_kill-session
+
+	# Only 1 CTRL+c -> show tmux message
+	else
+		tmux_last_ctrlc="$t"
+
+		# If reading params and ctrl+c restart script panel
+		if [ "$reading_params" ]; then
+			tmux respawn-pane -k -t $tmux_pid_script
+			return
+		fi
+
+		tmux display-message -t ${tmux_sid} " Exit? Press CTRL+C again"
+		return
+	fi
+}
+
+
+
+#=== FUNCTION ==================================================================
+#        NAME: tmux_create-session-panels
+# DESCRIPTION: create and initialize tmux sessions with 3 panels: map, status and script
+#===============================================================================
+function tmux_create-session-panels() {
+	local tmux_sid="labadmin-$USER-$$"
+	local tmux_wid="LABADMIN"
+
+	# Create sessión and panles
+	tmux new-session -s ${tmux_sid} -n $tmux_wid -d "${labadmin_path}/bin/labadmin-tui-map ${labadmin_PID}"
+	tmux split-window -t $tmux_sid -h "${labadmin_path}/bin/labadmin-tui-script ${labadmin_PID}"
+	tmux select-pane -t $tmux_sid -L
+	tmux split-window -t $tmux_sid -v "${labadmin_path}/bin/labadmin-tui-status ${labadmin_PID}"
+	local tmux_pid_map=$(tmux list-panes -t ${tmux_sid}  -F "#{pane_id}" | sed -n '1p')
+	local tmux_pid_status=$(tmux list-panes -t ${tmux_sid}  -F "#{pane_id}" | sed -n '2p')
+	local tmux_pid_script=$(tmux list-panes -t ${tmux_sid}  -F "#{pane_id}" | sed -n '3p')
+
+	# tmux status bar
+	tmux set -t ${tmux_sid} -g default-terminal "screen-256color"
+	tmux set -t ${tmux_sid} -g status-bg colour233
+	tmux set -t ${tmux_sid} -g status-fg white
+	tmux set -t ${tmux_sid} -g status-left " "
+	tmux set -t ${tmux_sid} -g status-right "[#S]"
+	tmux set -t ${tmux_sid} -g window-status-format "#W"
+	tmux set -t ${tmux_sid} -g window-status-current-format "#[fg=colour111]#W#[fg=DEFAULT]"
+	tmux set -t ${tmux_sid} -g message-style "bg=colour25,fg=white"
+
+	# tmux borders
+	tmux set -t ${tmux_sid} -g pane-border-style fg=colour238,bg=default
+	tmux set -t ${tmux_sid} -g pane-active-border-style fg=colour238,bg=default
+
+	tmux set -t ${tmux_sid} -g mouse on
+	tmux set -t ${tmux_sid} -g display-time 2000
+	tmux select-pane -t ${tmux_pid_script}
+
+	tmux attach-session -t $tmux_sid
+}
+
+
+#=== FUNCTION ==================================================================
+#        NAME: tmux_create-session-panels
+# DESCRIPTION: create and initialize tmux sessions with 3 windows: map, status and script
+#===============================================================================
+function tmux_create-session-windows() {
+	local tmux_sid="labadmin-$USER-$$"
+	local tmux_wid_map="MAP"
+	local tmux_wid_script="EXEC"
+	local tmux_wid_status="LOG"
+
+	# Create sessión and panles
+	tmux new-session -d -s ${tmux_sid} -n $tmux_wid_map "${labadmin_path}/bin/labadmin-tui-map ${labadmin_PID}"
+	tmux new-window -d -t ${tmux_sid} -n $tmux_wid_script "${labadmin_path}/bin/labadmin-tui-script ${labadmin_PID}"
+	tmux new-window -d -t ${tmux_sid} -n $tmux_wid_status "${labadmin_path}/bin/labadmin-tui-status ${labadmin_PID}"
+
+	local tmux_pid_map=$(tmux list-panes -t ${tmux_sid}:MAP  -F "#{pane_id}")
+	local tmux_pid_script=$(tmux list-panes -t ${tmux_sid}:EXEC  -F "#{pane_id}")
+	local tmux_pid_status=$(tmux list-panes -t ${tmux_sid}:LOG  -F "#{pane_id}")
+
+	# tmux status bar
+	tmux set -t ${tmux_sid} -g default-terminal "screen-256color"
+	tmux set -t ${tmux_sid} -g status-bg colour233
+	tmux set -t ${tmux_sid} -g status-fg white
+	tmux set -t ${tmux_sid} -g status-left " "
+	tmux set -t ${tmux_sid} -g status-right "[#S]"
+	tmux set -t ${tmux_sid} -g window-status-format "#W"
+	tmux set -t ${tmux_sid} -g window-status-current-format "#[fg=colour111]#W#[fg=DEFAULT]"
+	tmux set -t ${tmux_sid} -g message-style "bg=colour25,fg=white"
+
+	# tmux borders
+	tmux set -t ${tmux_sid} -g pane-border-fg colour238
+	tmux set -t ${tmux_sid} -g pane-active-border-fg colour238
+	tmux set -t ${tmux_sid} -g pane-active-border-bg default
+
+	tmux set -t ${tmux_sid} -g mouse on
+	tmux set -t ${tmux_sid} -g display-time 2000
+	tmux select-pane -t ${tmux_pid_map}
+
+	tmux attach-session -t $tmux_sid
+}
+
+
+#=== FUNCTION ==================================================================
+#        NAME: tmux_init-panel
+# DESCRIPTION: initialize init panel after running session (load variables and sets)
+#===============================================================================
+function tmux_init-panel() {
+	# LOAD TMUX VARIABLES
+	tmux_sid="labadmin-${USER}-${labadmin_PID}"
+	tmux list-sessions -F "#{session_name}" | grep -wq "${tmux_sid}" || labadmin_error "ERROR: tmux session $tmux_sid not found" 1
+	tmux_nw=$(tmux list-window -t $tmux_sid | wc -l)
+
+	# 1 window with 3 panles
+	if [ "$tmuxmode" -eq 1 ]; then
+		tmux_pid_map=$(tmux list-panes -t ${tmux_sid}  -F "#{pane_id}" | sed -n '1p')
+		tmux_pid_status=$(tmux list-panes -t ${tmux_sid}  -F "#{pane_id}" | sed -n '2p')
+		tmux_pid_script=$(tmux list-panes -t ${tmux_sid}  -F "#{pane_id}" | sed -n '3p')
+	# 3 windows with 1 panel
+	elif [ "$tmuxmode" -eq 2 ]; then
+		tmux_pid_map=$(tmux list-panes -t ${tmux_sid}:MAP  -F "#{pane_id}")
+		tmux_pid_status=$(tmux list-panes -t ${tmux_sid}:LOG  -F "#{pane_id}")
+		tmux_pid_script=$(tmux list-panes -t ${tmux_sid}:EXEC  -F "#{pane_id}")
+	else
+		labadmin_error "ERROR: tmux window number window incorrect!" 1
+	fi
+
+	# SETS
+	trap tmux_ctrlc_action INT 							# Capture CTRL+C to tmux_ctrlc_action function
+	trap '' SIGTSTP										# Disable CTRL+Z
+	stty -echoctl  										# Hide control output like ^C
+}
+
+
+#=== FUNCTION ==================================================================
+#        NAME: tmux_create-window-com
+# DESCRIPTION: create new tmux windows and exec command 
+#
+# PARAMETERS
+#	$1 window name
+#	$2 command to exec
+# 	$3 if present create window and focus it
+#===============================================================================
+function tmux_create-window-com() {
+	local wn="$1"
+	local com="$2"
+	local focus="$3"; [ "$focus" ] && focus="" || focus="-d"
+
+	tmux new-window $focus -t ${tmux_sid} -n "$wn" "$com"
+}
+
+
+
+#=== FUNCTION ==================================================================
+#        NAME: tmux_fix-map-panel
+# DESCRIPTION: fix map panel dimensions
+#===============================================================================
+function tmux_fix-map-panel() {
+	# FIX MAP PANEL DIMENSIONS ON PANEL MAP
+	if [ "$TMUX_PANE" = "$tmux_pid_map" ]; then
+		local x=$((map_nc*6+17)); [ $x -lt 50 ] && x=50
+		local y=$((map_nr*3+9)); [ $y -lt 10 ] && y=10
+		tmux set-hook -t $tmux_sid -g client-resized 'run-shell "tmux resize-pane -t '$tmux_pid_map' -x '$x' -y '$y'"'
+		tmux resize-pane -t $tmux_pid_map -x $x -y $y 		
+	fi
+}
+
+
+

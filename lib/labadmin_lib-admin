@@ -13,47 +13,45 @@
 #===============================================================================
 #  GLOBAL CONFIG
 #===============================================================================
-shopt -s checkwinsize																# To get $COLUMNS AND $LINES working
-
-readonly labadmin_path="$(dirname "$(readlink -f "$0")")/"							# Script labadmin directory path
 readonly labadmin_script="$(readlink -f "$0")"                      				# Main script labadmin with path
 readonly labadmin_install="${labadmin_path}/install"								# Install script path
-readonly lib_path="$(dirname "$(readlink -f "$0")")/lib/"							# Libs path
 readonly labs_path="$labadmin_path/labs/"					    					# Labs configs directory path
-scripts_path="$labadmin_path/actions/"		                						# Scripts directory
 readonly log_path="/var/log/$(basename "$labadmin_path").log"						# Logs file path
-readonly labadmin_tmp_path="/tmp/labadmin-$(id -u)"									# Temp path for save labadmin temp files
-readonly sshagent_path="${labadmin_tmp_path}/sshagent-${USER}"						# SSH Agent info 
-screen_lock="${labadmin_tmp_path}/screenlock"           							# SCREEN LOCK (one file per process)
+readonly bin_path="$labadmin_path/bin/"                                             # Labadmin bin path
+readonly config_path="${labadmin_path}/conf/labadmin.conf"                          # Labadmin global config file path
+scripts_path="$labadmin_path/actions/"                                              # Scripts directory
 
+
+#=== FUNCTION ==================================================================
+# NAME: labadmin_show_version
+# DESCRIPTION: show current labadmin version
+#===============================================================================
+function labadmin_show_version() {
+    local lv=$(cat "${labadmin_path}/version")
+     echo -e "${S_B}LABADMIN${S_R} ${S_D}v${lv}${S_R}"
+}
 
 
 
 
 #=== FUNCTION ==================================================================
-# NAME: labadmin_lock_screen-list
-# DESCRIPTION: while if screen is locked and then locks the screen
+# NAME: labadmin_lock_screen
+# DESCRIPTION: block keyaboard and hide cursor
 #===============================================================================
 function labadmin_lock_screen() {
-    local i=0
-    while [ -e "$screen_lock" ] && [ "$i" -le 4 ]; do
-        i=$((i+1))
-        sleep 0.5
-    done
     stty -echo &> /dev/null             # Block keyboard drawing
     cursor_hide                         # Hide cursor
-    touch "$screen_lock"
 }
+
 
 
 #=== FUNCTION ==================================================================
 # NAME: labadmin_unlock_screen
-# DESCRIPTION: unock the screen
+# DESCRIPTION: unblock keyaboard and show cursor
 #===============================================================================
 function labadmin_unlock_screen() {
     stty echo &> /dev/null              # Restore keyboard
     cursor_show                         # Restore cursor
-    rm "$screen_lock" &> /dev/null
 }
 
 
@@ -73,8 +71,8 @@ function labdmin_ssh_host_comm() {
     local ip="${ips[$nhost]}"
 
     # CHECKS
-    [ ! "$ip" ] && labadmin_error "INTERNAL ERROR: labadmin_exec_ssh_hos cant find IP address from host $nhost" 1
-    [ ! "$commands" ] && labadmin_error "INTERNAL ERROR: labadmin_exec_ssh_hos no commands to exec" 1
+    [ ! "$ip" ] && labadmin_error "INTERNAL ERROR: labadmin_exec_ssh_host_comm cant find IP address from host $nhost" 1
+    [ ! "$commands" ] && labadmin_error "INTERNAL ERROR: labadmin_exec_ssh_host_comm no commands to exec" 1
 
     # EXEC SSH EXEC COMMANDS
     ssh $ssh_params ${sshuser}@${ip} -p ${sshport} -oStrictHostKeyChecking=no  "
@@ -104,8 +102,8 @@ function labdmin_ssh_host_comm_stdin() {
 	local ip="${ips[$nhost]}"
 
     # CHECKS
-    [ ! "$ip" ] && labadmin_error "INTERNAL ERROR: labadmin_exec_ssh_hos cant find IP address from host $nhost" 1
-    [ ! "$commands" ] && labadmin_error "INTERNAL ERROR: labadmin_exec_ssh_hos no commands to exec" 1
+    [ ! "$ip" ] && labadmin_error "INTERNAL ERROR: labadmin_exec_ssh_host_comm_stdin cant find IP address from host $nhost" 1
+    [ ! "$commands" ] && labadmin_error "INTERNAL ERROR: labadmin_exec_ssh_host_comm_stdin no commands to exec" 1
 
     # EXEC SSH EXEC COMMANDS
     cat - | ssh $ssh_params ${sshuser}@${ip} -p ${sshport} -oStrictHostKeyChecking=no  "
@@ -131,7 +129,7 @@ function labdmin_ssh_host_login() {
     local ip="${ips[$nhost]}"
 
     # CHECKS
-    [ ! "$ip" ] && labadmin_error "INTERNAL ERROR: labadmin_exec_ssh_hos cant find IP address from host $nhost" 1
+    [ ! "$ip" ] && labadmin_error "INTERNAL ERROR: labadmin_exec_ssh_host_login cant find IP address from host $nhost" 1
     
     ssh $ssh_params ${sshuser}@${ip} -p ${sshport} -oStrictHostKeyChecking=no 
     return

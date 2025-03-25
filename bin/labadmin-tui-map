@@ -1,0 +1,91 @@
+#!/usr/bin/env bash
+#===================================================================================
+# LABADMIN MAP
+#         FILE: labadmin-map
+#        USAGE: labdmin-map labadminPID
+#
+#  DESCRIPTION: Manage labadmin map interface in labadmin TUI mode
+#
+#       AUTHOR: Leonardo Marco (labadmin@leonardomarco.com)
+#	   LICENSE: GNU General Public License v3.0
+#      VERSION: 2019.03
+#      CREATED: 2025.03.20
+#=================================================================================== 
+
+#===============================================================================
+#  LOAD LIBS
+#===============================================================================
+readonly labadmin_path="$(dirname $(dirname $(readlink -f "${0}")))"		# LABADMIN script root directory path
+readonly lib_path="${labadmin_path}/lib/"									# LABADMIN LIB PATH
+source "${lib_path}/labadmin_lib-admin"										# LABADMIN GLOBAL VARIABLES AND FUNCTIONS FOR ADMIN
+source "${lib_path}/labadmin_lib"											# LABADMIN GLOBAL VARIABLES AND FUNCTIONS
+source "${lib_path}/labadmin_lib-ip"										# LABADMIN IP LIB
+source "${lib_path}/labadmin_lib-map"										# LABADMIN MAP LIB
+source "${lib_path}/labadmin_lib-tmux"										# LABADMIN TMUX LIB
+source "${lib_path}/labadmin_lib-tmp"										# LABADMIN TMP LIB
+
+
+#===============================================================================
+# INITIALIZATION
+#===============================================================================
+# SET TUIMODE
+tuimode=true
+
+# LABADMIN PID
+readonly labadmin_PID="$1" 
+ps -p "$labadmin_PID" &>/dev/null || { labadmin_error "Cant found labadmin main process $labadmin_PID"; read; tmux kill-session; }
+
+# LOAD LABADMIN CONFIG FILE
+source "$config_path" || labadmin_error "ERROR: error loading labadmin config file: $config_path" 1
+
+# LABADMIN TMP DIR INIT
+labadmin_tmp-init
+labadmin_tmp-vars-load ipadmin macadmin iface lab_file Lparam Wparam Fparam srvmode tmuxmode rhosts
+map_PID="$$"; labadmin_tmp-vars-save map_PID
+
+# LOAD LAB FILE
+srvmode2="$srvmode"
+source "$lab_file" ||labadmin_error "ERROR: error loading lab file: $lab_file" 1
+srvmode="$srvmode2"
+
+# TMUX INIT PANEL
+tmux_init-panel
+
+# INITIALIZE MAP
+[ ! "$map" ] && labadmin_error "ERROR: no map defines in lab config file" 1
+map="$(echo "$map" | sed '/^\s*$/d')"								# Delete empty lines
+map_nr="$(echo "$map" | wc -l)"										# Row number
+map_nc="$(echo "$map" | awk '{print NF}' | sort -nu | tail -n 1)"	# Column number
+
+# TMUX FIX MAP PANEL ACCORDING MAP DIMENSIONS
+tmux_fix-map-panel
+
+# SIGNAL SIGUSR1: REFRESH MAP 
+trap 'labadmin_tmp-vars-save rhosts; exec bash "$0" $labadmin_PID' SIGUSR1
+# SIGNAL SIGUSR2: SELECT NEW RANGE
+trap 'exec bash "$0" $labadmin_PID' SIGUSR2
+
+#===============================================================================
+# MAIN LOOP
+#===============================================================================
+# First map showed
+draw_banner; draw_map
+search_ips
+[ ! "$rhosts" ] && rhosts="all"
+expand_range 
+labadmin_tmp-vars-save ips shosts shosts_listen shosts_inactive
+draw_banner; draw_map
+
+while true; do
+	# Select hosts range
+	select_range || search_ips
+
+	# Expand range
+	expand_range 
+
+	# Save vars in tmp
+	labadmin_tmp-vars-save kkk ips shosts shosts_listen shosts_inactive
+
+	# Draw map
+	draw_banner; draw_map
+done

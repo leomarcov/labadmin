@@ -12,65 +12,72 @@
 #===================================================================================
 
 # BASH OPTIONS
-shopt -s extglob                # Activate expanded expansions
+shopt -s extglob												# Activate expanded expansions
+shopt -s checkwinsize											# To get $COLUMNS AND $LINES working
+unalias -a														# Delete all alias
+
 
 #===============================================================================
 #  COLORS AND TEXT
 #===============================================================================
-S_R="\e[0m"            	# Reset all attributes
-S_B="\e[1m"             # Style BOLD
-S_D="\e[2m"             # Style DIM
-S_U="\e[4m"            	# Style UNDERLINE
-S_I="\e[7m"             # Style INVERTED
-S_DL="\e[K"             # Style DELETE TO END OF LINE
+S_R="\e[0m"														# Reset all attributes
+S_B="\e[1m"														# Style BOLD
+S_D="\e[2m"														# Style DIM
+S_U="\e[4m"														# Style UNDERLINE
+S_I="\e[7m"														# Style INVERTED
+S_DL="\e[K"														# Style DELETE TO END OF LINE
 
-cursor_save()		 { echo -en "\e[s"; }			# Cursor SAVE POSITION
-cursor_restore()	 { echo -en "\e[u"; }			# Cursor RESTORE POSITION
-cursor_hide()		 { echo -en "\e[?25l"; }		# Cursor HIDE CURSOR
-cursor_show()		 { echo -en "\e[?25h"; }		# Cursor SHOW CURSOR
-cursor_move-up()	 { echo -en "\e[${1}A"; }		# Cursor MOVE UP $1 LINES
-cursor_move-down()	 { echo -en "\e[${1}B"; }		# Cursor MOVE DOWN $1 LINES
-cursor_move-left()	 { echo -en "\e[${1}D"; }		# Cursor MOVE LEFT $1 COLS
-cursor_move-right()  { echo -en "\e[${1}C"; }		# Cursor MOVE RIGHT $1 COLS
-cursor_move-begin()  { echo -en "\r"; }             # Cursor MOVE BEGIN POSITION IN CURRENT LINE
-cursor_move-pos()    { echo -en "\e[${1};${2}H"; }  # Cursor MOVE LINE $1 COL $2
+cursor_save()			{ echo -en "\e[s"; }					# Cursor SAVE POSITION
+cursor_restore()		{ echo -en "\e[u"; }					# Cursor RESTORE POSITION
+cursor_hide()			{ echo -en "\e[?25l"; }					# Cursor HIDE CURSOR
+cursor_show()			{ echo -en "\e[?25h"; }					# Cursor SHOW CURSOR
+cursor_move-up()		{ echo -en "\e[${1}A"; }				# Cursor MOVE UP $1 LINES
+cursor_move-down()		{ echo -en "\e[${1}B"; }				# Cursor MOVE DOWN $1 LINES
+cursor_move-left()		{ echo -en "\e[${1}D"; }				# Cursor MOVE LEFT $1 COLS
+cursor_move-right()		{ echo -en "\e[${1}C"; }				# Cursor MOVE RIGHT $1 COLS
+cursor_move-begin()		{ echo -en "\r"; }						# Cursor MOVE BEGIN POSITION IN CURRENT LINE
+cursor_move-pos() 		{ echo -en "\e[${1};${2}H"; }     		# Cursor MOVE LINE $1 COL $2
+clear_line() 			{ echo -en "\r\e[${COLUMNS}C\e[1K\r"; }	# CLEAR current line
+clear_line_tobegin()	{ echo -en "\e[1K"; } 					# CLEAR line from cursor to begin
 
-C_D="\e[39m"            # Color DEFAULT
-C_R="\e[31m"            # Color RED
-C_BR="\e[1m\e[31m"      # Color BOLD RED
-C_LR="\e[91m"           # Color LIGHT RED
-C_G="\e[32m"            # Color GREEN
-C_BG="\e[1m\e[32m"      # Color BOLD GREEN
-C_LG="\e[92m"           # Color LIGHT GREEN
-C_Y="\e[33m"            # Color YELLOW
-C_BY="\e[1m\e[33m"      # Color BOLD YELLOW
-C_LY="\e[93m"           # Color LIGHT YELLOW
-C_B="\e[34m"            # Color BLUE
-C_BB="\e[1m\e[34m"      # Color BOLD BLUE
-C_LB="\e[94m"           # Color LIGHT BLUE
-C_M="\e[35m"            # Color MAGENTA
-C_BM="\e[1m\e[35m"      # Color BOLD MAGENTA
-C_LM="\e[95m"           # Color LIGHT MAGENTA
-C_C="\e[36m"            # Color CYAN
-C_BC="\e[1m\e[36m"      # Color BOLD CYAN
-C_LC="\e[96m"           # Color LIGHT CYAN
-C_N="\e[90m"            # Color GREY
-C_LN="\e[37m"           # Color LIGHT GREY
-B_R="\e[41m"            # Background RED
-B_G="\e[42m"            # Background GREEN
-B_Y="\e[43m"            # Background YELLOW
-B_B="\e[44m"            # Background BLUE
-B_M="\e[45m"            # Background MAGENTA
-B_C="\e[46m"            # Background CYAN
-B_LG="\e[47m"           # Background LIGHT GREY
-B_DG="\e[100m"          # Background DARK GREY
-B_LR="\e[101m"          # Background LIGHT RED
-B_LG="\e[102m"          # Background LIGHT GREEN
-B_LY="\e[103m"          # Background LIGHT YELLOW
-B_LB="\e[104m"          # Background LIGHT BLUE
-B_LM="\e[105m"          # Background LIGHT MAGENTA
-B_LC="\e[106m"          # Background LIGHT CYAN
-B_W="\e[107m"           # Background LIGHT WHITE
+
+C_D="\e[39m"				# Color DEFAULT
+C_R="\e[31m"				# Color RED
+C_BR="\e[1m\e[31m"			# Color BOLD RED
+C_LR="\e[91m" 				# Color LIGHT RED
+C_G="\e[32m"				# Color GREEN
+C_BG="\e[1m\e[32m"			# Color BOLD GREEN
+C_LG="\e[92m"				# Color LIGHT GREEN
+C_Y="\e[33m"				# Color YELLOW
+C_BY="\e[1m\e[33m"			# Color BOLD YELLOW
+C_LY="\e[93m"				# Color LIGHT YELLOW
+C_B="\e[34m"				# Color BLUE
+C_BB="\e[1m\e[34m" 			# Color BOLD BLUE
+C_LB="\e[94m"				# Color LIGHT BLUE
+C_M="\e[35m" 				# Color MAGENTA
+C_BM="\e[1m\e[35m" 			# Color BOLD MAGENTA
+C_LM="\e[95m"				# Color LIGHT MAGENTA
+C_C="\e[36m"				# Color CYAN
+C_BC="\e[1m\e[36m"			# Color BOLD CYAN
+C_LC="\e[96m"				# Color LIGHT CYAN
+C_N="\e[90m" 				# Color GREY
+C_LN="\e[37m" 				# Color LIGHT GREY
+C_DN="\e[38;5;242m"         # Color DARK GREY
+B_R="\e[41m"				# Background RED
+B_G="\e[42m"				# Background GREEN
+B_Y="\e[43m"				# Background YELLOW
+B_B="\e[44m"				# Background BLUE
+B_M="\e[45m" 				# Background MAGENTA
+B_C="\e[46m"				# Background CYAN
+B_LG="\e[47m" 				# Background LIGHT GREY
+B_DG="\e[48;5;238m"			# Background DARK GREY
+B_LR="\e[101m"				# Background LIGHT RED
+B_LG="\e[102m"				# Background LIGHT GREEN
+B_LY="\e[103m"				# Background LIGHT YELLOW
+B_LB="\e[104m"				# Background LIGHT BLUE
+B_LM="\e[105m"				# Background LIGHT MAGENTA
+B_LC="\e[106m"				# Background LIGHT CYAN
+B_W="\e[107m" 				# Background LIGHT WHITE
 
 
 
@@ -99,10 +106,43 @@ function labadmin_info-list() {
 #   $2  optional exit code to exit
 #===============================================================================
 function labadmin_error() {
+    local ec="$2"
     echo -e "${C_BR}${1}${S_R}" 1>&2
-    # If $2 exists and is a number exit
-    [ "$2" -eq "$2" ] &> /dev/null && exit "$2"
+    [ ! "$ec" ] && return
+
+    [ "$tmux_sid" ] && read     # in TUI pause before exit
+    labadmin_exit "$ec"
 }
+
+
+
+#=== FUNCTION ==================================================================
+# NAME: labadmin_exit
+# DESCRIPTION: exit from labadmin
+# PARAMETERS
+#   $1  exit code
+#===============================================================================
+function labadmin_exit() {
+    local ec="$1"
+
+    # TMUX EXIT
+    if [ "$tmux_sid" ]; then
+        # TMUX WIN PANEL-> EXIT
+        local aw=$(tmux list-window -t "$tmux_sid" -F '#{window_active} #{window_name}' | awk '$1 == "1" {print $2}')
+        if [[ "$aw" == @(LABADMIN|MAP|EXEC|LOG) ]]; then
+            exit "$ec"
+        # TMUX MAIN PANEL-> KILL SESSION
+        else
+            tmux_kill-session
+            exit "$ec"
+        fi
+
+    # CLI EXIT
+    else
+        exit "$ec"
+    fi
+}
+
 
 #=== FUNCTION ==================================================================
 # NAME: labadmin_info
@@ -113,8 +153,40 @@ function labadmin_info() {
 }
 
 
+#=== FUNCTION ==================================================================
+# NAME: labadmin_draw-box
+# DESCRIPTION: draw box full with tabbed text on specific line
+# PARAMETERS
+#   $1 line number to start (0 for current line)
+#   $2 left spaces tabs
+#   $3 message to print in the box
+#   $4 header text (optional)
+#===============================================================================
+function labadmin_draw-box() {
+    local nl="$1"
+    local tab="$2"
+    local msg="$3"
+    local header="$4"
 
 
+    [ "$nl" -ne 0 ] && cursor_move-pos "$nl" 1
+
+    # Header
+    [ "$header" ] && header="$(cursor_move-begin)$(cursor_move-right 4) ${header} "         # Format header text
+    echo -e " ${S_R}${C_DN}┌$(seq -s"─" $((COLUMNS-3)) | tr -d "[0-9]")┐${header}"
+ 
+    # Print tabbed text
+    IFS=$'\n'
+    echo -e "$msg" | while read line; do
+        echo -en "$(clear_line)${C_DN} │$(seq -s" " "$tab" | tr -d "[0-9]")${S_R}${line}${S_R}${C_DN}"; cursor_move-begin; cursor_move-right $(($COLUMNS-2)); echo -e "│"
+    done
+    IFS=$'\n\t '
+
+    # Footer
+    echo -e " └$(seq -s"─" $((COLUMNS-3)) | tr -d "[0-9]")┘${S_R}"
+    
+    labadmin_unlock_screen
+}
 
 
 #===============================================================================
@@ -359,41 +431,6 @@ function labadmin_search_alternative() {
 #===============================================================================
 function labadmin_check_dependence() {
     which "$1" &>/dev/null || labadmin_error "ERROR DEPENDENCE: $1 not found" 1
-}
-
-
-#=== FUNCTION ==================================================================
-# NAME: labdmin_config_terminator
-# DESCRIPTION: check if user has a config file for terminator and crete it with
-#              defualt config in not exists
-# PARAMETERS
-#   $1  username 
-#===============================================================================
-function labdmin_config_terminator() {
-    local u="$1"
-    [ ! "$u" ] && labadmin_error "INTERNAL ERROR: labdmin_config_terminator needs a username" 1
-    
-    local conf_file="$(eval echo ~${u}/.config/terminator/config)"
-    local conf_dir="$(dirname "$conf_file")"
-    
-    [ ! -d "$conf_dir" ] && su -l "$u" -c "mkdir -p \"$conf_dir\""
-    [ ! -f "$conf_file" ] && echo '[global_config]
-[profiles]
-  [[default]]
-    background_color = "#2e3436"
-    background_darkness = 0.83
-    background_type = transparent
-    color_scheme = custom
-    cursor_color = "#d8d8d8"
-    font = Monospace 11
-    foreground_color = "#d8d8d8"
-    palette = "#000000:#cc0000:#4e9a06:#c4a000:#3465a4:#75507b:#06989a:#d3d7cf:#555753:#ef2929:#8ae234:#fce94f:#729fcf:#ad7fa8:#34e2e2:#eeeeec"
-    scrollback_infinite = True
-    scrollback_lines = 5000
-    scrollbar_position = hidden
-    show_titlebar = False
-    use_system_font = False
-' > "$conf_file"
 }
 
 

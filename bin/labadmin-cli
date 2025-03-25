@@ -1,0 +1,213 @@
+#!/usr/bin/env bash
+#===================================================================================
+# LABADMIN CONTROLLER
+#         FILE: labadmin-cli
+#        USAGE: labadmin [-l lab_config] [-i iface] [-r range] [-a script] [-1 value1] [-2 value2]...
+#
+#  DESCRIPTION: Manage labadmin execution in CLI mode
+#
+#       AUTHOR: Leonardo Marco (labadmin@leonardomarco.com)
+#	   LICENSE: GNU General Public License v3.0
+#      VERSION: 2019.04
+#      CREATED: 23.03.2025
+#=================================================================================== 
+
+#===============================================================================
+#  LOAD LIBS
+#===============================================================================
+readonly labadmin_path="$(dirname $(dirname $(readlink -f "${0}")))"		# LABADMIN script root directory path
+readonly lib_path="${labadmin_path}/lib/"									# LABADMIN LIB PATH
+source "${lib_path}/labadmin_lib"											# LABADMIN GLOBAL LIB
+source "${lib_path}/labadmin_lib-admin"										# LABADMIN ADMIN LIB
+source "${lib_path}/labadmin_lib-ip"										# LABADMIN IP LIB
+source "${lib_path}/labadmin_lib-map"										# LABADMIN MAP LIB
+source "${lib_path}/labadmin_lib-tmp"										# LABADMIN TMP LIB
+source "${lib_path}/labadmin_lib-script"									# LABADMIN SCRIPT LIB
+source "${lib_path}/labadmin_lib-install"									# LABADMIN SCRIPT LIB
+source "${lib_path}/labadmin_lib-auth"										# LABADMIN AUTHENTICATION LIB
+
+
+#=== FUNCTION ==================================================================
+#        NAME: check_params
+# DESCRIPTION: Checks input parameters and load values
+# PARAMETERS:
+#	$@	All parameter from command line
+#===============================================================================
+function check_params() {
+	while getopts ":hl:i:r:a:1:2:3:4:5:6:7:8:9:SWLFM" o
+	do
+		case $o in
+			l) # -l:LAB
+				lparam=1
+				lab_id="$OPTARG"
+				if [ "${lab_id:0:1}" = "-" ]; then
+					echo "Param -l needs a valid lab ID" 1>&2
+					echo "Available lab IDs: $(ls "$labs_path" |  sed -z 's/\n/, /g' | sed 's/, $//g')" 1>&2
+					exit 1
+				fi
+				lab_file="$labs_path/${lab_id}"
+				;;
+			i) # -i:IFACE
+				iparam=1
+				piface="$OPTARG"
+				;;
+			r) # -r:hostS
+				rparam=1
+				rhosts="$OPTARG"
+				;;
+			a) # -a:script_id (saved in p0)
+				aparam=1
+				p0param=1
+				p0="$OPTARG"
+				;;
+			W) # -W:WINRM mode
+				Wparam=1;
+				;;
+			L) # -L:SSH mode
+				Lparam=1;
+				;;
+			F) # -F: force exec missing dependencies
+				Fparam=1
+				;;
+			M) # -M: show map on cli mode
+				Mparam=1
+				;;
+			1) # -1: PARAM1
+				p1param=1
+				p1="$OPTARG"
+				;;
+			2) # -2: PARAM2
+				p2param=1
+				p2="$OPTARG"
+				;;
+			3) # -3: PARAM3
+				p3param=1
+				p3="$OPTARG"
+				;;
+			4) # -4: PARAM4
+				p4param=1
+				p4="$OPTARG"
+				;;
+			5) # -5: PARAM5
+				p5param=1
+				p5="$OPTARG"
+				;;
+			6) # -6: PARAM6
+				p6param=1
+				p6="$OPTARG"
+				;;
+			7) # -7: PARAM7
+				p7param=1
+				p7="$OPTARG"
+				;;
+			8) # -8: PARAM8
+				p8param=1
+				p8="$OPTARG"
+				;;
+			9) # -9: PARAM9
+				p9param=1
+				p9="$OPTARG"
+				;;
+			\?)
+				labadmin_error "Unknown option: -$OPTARG" 1
+				;;
+		esac
+	done
+}
+
+
+#===============================================================================
+# INITIALIZATION
+#===============================================================================
+# SET CLIMODE
+climode=1
+
+# CHECK PARAMETERS
+check_params "$@"
+ 
+# LABADMIN TMP DIR INIT
+readonly labadmin_PID="$$"
+labadmin_tmp-init
+readonly sshagent_path="${labadmin_tmp_path}/sshagent"      						# SSH Agent info 
+
+# LOAD LABADMIN CONFIG FILE
+source "$config_path" || labadmin_error "ERROR: error loading labadmin config file: $config_path" 1
+
+# LOAD LAB FILE
+default_lab_path="${labadmin_path}/conf/lab.default"
+[ ! "$lab_id" ] && [ -r "$default_lab_path" ] && lab_id=$(cat "$default_lab_path" | xargs)		# Get defaul lab
+[ ! "$lab_id" ] && labadmin_error "Lab not defined\n${S_R}Config default lab in ${S_B}$default_lab_path${S_R} or use -l param" 1
+lab_file="${labs_path}/${lab_id}"
+[ ! -r "$lab_file" ] && labadmin_error "ERROR: can't access lab config file: $lab_file" 1
+source "$lab_file"	# Import variables from lab file
+
+# INITIALIZE MAP
+if [ "$Mparam" ]; then
+	# If no map defied distribute host in colunmns to fill the screen
+	[ ! "$map" ] && map="$(echo "${!macs[*]}" | sed 's/\([0-9]\+ \)\{'$((($COLUMNS-19)/6))'\}/&\n/g')"	
+	map="$(echo "$map" | sed '/^\s*$/d')"								# Delete empty lines
+	map_nr="$(echo "$map" | wc -l)"										# Row number
+	map_nc="$(echo "$map" | awk '{print NF}' | sort -nu | tail -n 1)"	# Column number
+fi
+
+# SERVER MODE
+if [ "$Lparam" ]; then
+	srvmode="ssh";
+elif  [ "$Wparam" ]; then
+	srvmode="winrm";
+elif [ ! "$srvmode" ]; then
+	srvmode="ssh"										# Default server mode ssh
+fi
+
+# IP-MAC ADMIN
+[ "$iparam" ] && iface="$piface"
+ipadmin="$(labadmin_ip "$iface")"
+! [ "$ipadmin" ] && labadmin_error "ERROR: cant get IP from iface $iface\nCheck iface config in $config_path or use -i param" 1
+macadmin="$(labadmin_mac "$iface")"
+
+# LOAD SCRIPTS
+scripts_path="${scripts_path}/${srvmode}/"
+load_scripts "$(echo "${scripts_path}/${p0}" | sed 's/[& ]*$//g')"		# Load only script to exec (without last &)
+
+# INIT REMOTE AUTENTICACION
+[ "$aparam" ] && auth_init
+
+
+#===============================================================================
+# SCRIPT EXECUTION
+#===============================================================================
+search_ips
+expand_range || labadmin_error "ERROR: invalid host range $rhosts" 1
+[ "$Mparam" ] && { draw_map; echo; }
+[ ! "$aparam" ] && exit
+select_script
+read_params
+
+[ "${scripts_type[$script_id],,}" = "inactive" ] && shosts="$shosts_inactive" || shosts="$shosts_listen"
+[ "$shosts" ]  && echo -e "${S_B}${C_Y}Selected hosts:${S_R}$shosts" || labadmin_error "ERROR: no hosts selected" 1
+echo -e "${S_B}${C_Y}Selected script:${S_R} $script_id"
+[ "$exec_bg" ] && echo -e "${S_B}${C_Y}Background mode:${S_R} $exec_bg"
+
+# EXEC ADMIN 
+if [[ "${scripts_type[$script_id],,}" = admin* ]]; then
+	script_type_state="1"
+	exec_bg="" exec_script 
+fi
+
+# EXEC FOR EACH HOST		
+unset hosts_err hosts_ok
+for p in $shosts; do
+	# EXEC BACKGROUND
+	if [ "$exec_bg" = "sub" ]; then
+		exec_script "$p" &
+	# EXEC FOREGROUND
+	else
+		exec_script "$p" 
+	fi
+done
+
+# EXEC ADMIN
+if [[ "${scripts_type[$script_id],,}" = *admin ]]; then
+	script_type_state="2"
+	exec_bg=""  exec_script 
+fi

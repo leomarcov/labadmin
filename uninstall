@@ -16,7 +16,7 @@ source $(dirname $(readlink -f "$0"))"/lib/labadmin_lib"
 source $(dirname $(readlink -f "$0"))"/lib/labadmin_lib-admin"
 
 #### LOAD INSTALL FUNCTIONS
-source "${lib_path}/labadmin_install"										
+source "${lib_path}/labadmin_lib-install"										
 
 
 #=== FUNCTION ==================================================================

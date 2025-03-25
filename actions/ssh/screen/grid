@@ -38,6 +38,7 @@ if [ "${labadmin_script_type}" = "local" ]; then
 	[ ! -w "$dir_dest" ] && labadmin_error "Can't write in directory $dir_dest" 1
 	[ "$iq" -lt 10 ] && iq=10; [ "$iq" -gt 100 ] && iq=100
 
+    n=0
     while [ ! -f "$dir_dest/stop" ]; do
 		file_tmp="$dir_dest/${labadmin_nhost}.jpg"
         echo -e " ${S_B}${file_tmp}${S_R}"
@@ -45,7 +46,20 @@ if [ "${labadmin_script_type}" = "local" ]; then
 u=($(labadmin_users-display | head -1))
 [ ! "${u[0]}" ] && labadmin_error "No users logged" 1
 su -l "${u[0]}" -c "DISPLAY="${u[1]}" xset b off; import -window root -display "${u[1]}" -quality '${iq}' -interlace Plane jpg:-"' > "${file_tmp}"
+    
+        # Create links
+        if [ $n -eq 0 ]; then
+            ln "$file_tmp" "$dir_dest/${labadmin_nhost}-1.jpg"
+            ln "$file_tmp" "$dir_dest/${labadmin_nhost}-2.jpg"
+            ln "$file_tmp" "$dir_dest/${labadmin_nhost}-3.jpg"
+            ln "$file_tmp" "$dir_dest/${labadmin_nhost}-4.jpg"
+            ln "$file_tmp" "$dir_dest/${labadmin_nhost}-5.jpg"
+            n=5
+        else
+            ln "$file_tmp" "$dir_dest/${labadmin_nhost}-${n}.jpg"
+        fi
 
+        n=$((n+1))
         sleep $dsec
     done
 
@@ -61,7 +75,7 @@ elif [ "${labadmin_script_type}" = "admin" ]; then
 	labadmin_info-list "Opening Labadmin Screenshot Grid: ${S_B}$screenshot_grid_url${S_R}"
 	labadmin_info-list "Press  ${S_B}[ENTER]${S_R} to stop recording screenshots\n"
 
-	[ $UID -eq 0 ] && labadmin_error "WARNING: labadmin is running as root, some web browsers only support run as regular user"
+	[ $EUID -eq 0 ] && labadmin_error "WARNING: labadmin is running as root, some web browsers only support run as regular user"
 	x-www-browser "${screenshot_grid_url}" &>/dev/null
 	read
 

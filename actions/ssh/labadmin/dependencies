@@ -58,7 +58,7 @@ ${install_code}
 # Add install lib code
 install_code="
 ${install_code}
-"$(cat "${lib_path}/labadmin_install")"
+"$(cat "${lib_path}/labadmin_lib-install")"
 check_dependencies ${mode} scripts_hostdeps"
 
 

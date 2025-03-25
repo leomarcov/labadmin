@@ -14,11 +14,13 @@
 #===============================================================================
 #  LOAD LIBS
 #===============================================================================
-source "$(dirname "$(readlink -f "$0")")/lib/labadmin_lib-admin"				# LABADMIN ADMIN VARIABLES AND FUNCTIONS
+readonly labadmin_path="$(dirname $(readlink -f "${0}"))"                       # LABADMIN script root directory path
+readonly lib_path="${labadmin_path}/lib/"                                       # LABADMIN LIB PATH
+source "${lib_path}/labadmin_lib-admin"                                         # LABADMIN ADMIN VARIABLES AND FUNCTIONS
 source "${lib_path}/labadmin_lib"												# LABADMIN GLOBAL VARIABLES AND FUNCTIONS
-source "${lib_path}/labadmin_script"											# LABADMIN SCRIPT MODULE
-source "${lib_path}/labadmin_install"											# LABADMIN INSTALL MODULE
-
+source "${lib_path}/labadmin_lib-script"										# LABADMIN SCRIPT MODULE
+source "${lib_path}/labadmin_lib-install"										# LABADMIN INSTALL MODULE
+	
 
 
 #=== FUNCTION ==================================================================

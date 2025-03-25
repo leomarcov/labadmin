@@ -54,7 +54,7 @@ if [ "${labadmin_script_type}" = "local" ]; then
 msg_temp="'"$msg_temp"'"
 dd of="$msg_temp"
 '
-	[ $? -ne 0 ] && exit 1
+[ $? -ne 0 ] && exit 1
 
 
 # REMOTE EXEC
@@ -112,7 +112,6 @@ elif [ "${labadmin_script_type}" = "ssh" ]; then
 	Exec=terminator -b --geometry +30+30 -x '"$show_file"' '"$([ "${wconfirm,,}" = "y" ] && echo "understand")"'
 	X-GNOME-Autostart-enabled=true' > "$autostart_file"
 	    chown $u:$u "${autostart_file}"
-	    labdmin_config_terminator "$u"
 	done
 
 fi

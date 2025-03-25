@@ -103,7 +103,6 @@ while true; do
     k=$((k % 2 + 1))
 done' > /tmp/labadmin-xmas.sh
 
-labdmin_config_terminator "${u[0]}"
 com="terminator -x bash /tmp/labadmin-xmas.sh"
 su -l "${u[0]}" -c "DISPLAY=${u[1]} xhost si:localuser:$(id -un)" &>/dev/null
 su -l "${u[0]}" -c "DISPLAY=${u[1]} $com" 2>/dev/null

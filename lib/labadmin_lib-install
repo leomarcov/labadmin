@@ -1,0 +1,410 @@
+#!/usr/bin/env bash
+#===================================================================================
+# LABADMIN INSTALL LIB
+#         FILE: labadmin_lib-install
+#  DESCRIPTION: labadmin lib for install, uninstall and check dependencies
+#
+#       AUTHOR: Leonardo Marco (labadmin@leonardomarco.com)
+#	   LICENSE: GNU General Public License v3.0
+#      VERSION: 2019.03
+#      CREATED: 16.02.2017
+#===================================================================================
+
+
+#===============================================================================
+#  INSTALL CONFIG
+#===============================================================================
+readonly dir_install="/opt/labadmin/"                   				# /opt/labadmin/
+readonly script_install="$dir_install/labadmin"         				# /opt/labadmin/labadmin
+readonly labadmin_group="labadmin"   									# Group allowed to use labadmin	
+readonly installers_path="$labadmin_path/lib/installers/"				# Installers path
+declare -A dependence_errors											# Array with dependence errors in last check: dependence_errors[action_id]=dependencies(packages)...
+
+# List of global labadmin dependencies                   																			
+scripts_admindeps["labadmin-base"]="ssh(openssh-client|openssh-clients) systemctl(systemd) arp-scan awk ip beep tmux wmctrl" 		
+# List of global host dependencies
+scripts_hostdeps["labadmin-base"]="sshd(openssh-server) awk ip"
+
+
+
+
+
+#=== FUNCTION ==================================================================
+#        NAME: load_installer
+# DESCRIPTION: load suitable installer in $installers_paths for current system
+# EXIT CODE
+#	0	if found suitable installer for current system
+#	1	if no found suitable installer for current system
+#===============================================================================
+function load_installer() {
+	for s in "$installers_path/"*; do
+		source "$s" 
+		installer_check && return 0
+	done
+	unset installer_name installer_check installer_install
+	return 1
+}
+
+
+
+
+#=== FUNCTION ==================================================================
+#        NAME: check_dependence
+# DESCRIPTION: check one system dependence
+# PARAMETERS:  
+#	$1:	dependence posibilities (separated by |). 
+#		if starts with / check if file exists
+#		if starts with / and end with / check if directory exists
+#		in other case check if command is in PATH (which)
+#		Examples:
+#			iptables 
+#			chromium|chromium-stable
+#			/etc/apt/sources.list|/etc/apt/sources.list.d/
+#
+# EXIT CODE:
+#	0: if success checking dependence (if multi-possibility at least one ok)
+#	1: if error checking dependence
+#===============================================================================
+function check_dependence() {
+	dep="$1"		
+	local d
+	
+	for d in $(echo "$dep" | tr "|" " "); do
+		# Check directory
+		if [ "${d:0:1}" = "/" ] && [ "${d: -1:1}" = "/" ]; then
+			[ -d "$d" ] && return 0
+		# Check file
+		elif [ "${d:0:1}" = "/" ]; then
+			[ -f "$d" ] && return 0
+		# Check command in path
+		else
+			which "$d" &>/dev/null && return 0
+		fi
+	done
+
+	return 1
+}
+
+
+
+#=== FUNCTION ==================================================================
+#        NAME: check_admin_dependencies
+# DESCRIPTION: check if dependencies in list are found in system
+# PARAMETERS:  
+#	$1: action to do when some dependence are needed
+#		autoinstall:     autoinstall dependencies
+#		noinstall:       no install dependencies
+#		ask:             ask if install dependencies
+#
+#	$2:	array name with actions and dependencies (scripts_admindeps or scripts_hostdeps) 
+#		Array index must be the module (script name)
+#		Array content must be a list of depenences in format com1|com2|...(pack1|pack2|pack3)
+#			Examples: 	crontab(cron) systemctl(systemd) awk
+#						chrome|google-crome
+#
+# EXIT CODE
+#	0 if check is ok
+#	1 if any dependence has not found
+#	2 if any dependence on labadmin-base module has not found
+#===============================================================================
+function check_dependencies() {
+	local action="$1"
+	local aname="$2"
+
+	#eval [[ ! -v ${aname}[@] ]] && labadmin_error "Error checking dependencies (incorrect arrayname $aname in check_dependencies function)" 1
+
+	echo "Checking modules dependencies"
+
+	# CHECK DEPENDENCIES
+	local error_code=0 packages_error m d
+	for m in $(eval echo \${!${aname}[*]}); do
+		echo " $m"
+		deps="$(eval echo \${${aname}[$m]})"
+		local mod_errors=""
+		for d in $deps; do
+			com="$(echo "$d" | sed "s/([^ ]*)//g")"					# Filter only commands (remove packages): aaa|bbb(CCC|DDD) -> aaa|bbb
+			pkg="$(echo "$d" | sed "s/^[^(]*//g" | tr -d "()")"		# Filter only packages (reomve commands): aaa|bbb(CCC|DDD) -> CCC|DDD
+			[ ! "$pkg" ] && pkg="$com"								# If no package then use command name
+			check_dependence "$com"
+			if [ $? -ne 0 ]; then
+				dependence_errors["$m"]="$deps"
+				mod_errors="1"
+				packages_error="${packages_error}${packages_error:+\n}$pkg"
+				[  "$error_code" != "2" ] && error_code="$([ "$m" = "labadmin-base" ] && echo 2 || echo 1)"
+				echo -e "    ${C_BR}${com}\r\e[50CFAIL!${S_R}" 1>&2
+			fi
+		done
+		[ ! "$mod_errors" ] && echo -e "$(cursor_move-up 1)\r\e[50C${C_BG}OK${S_R}" 
+	done
+	if [ "${packages_error}" ]; then
+		packages_error="$(echo -e "$packages_error" | sort -u | tr "\n" " ")"			# Delete duplicate package names
+		echo -e "\nSuggested packages: ${S_B}${packages_error}${S_R}"
+	fi
+
+	# EXIT IF NO NEED INSTALL
+	[ "$error_code" -eq 0 ] || [ "$action" = "noinstall" ] && return "$error_code"
+
+
+	# TRY INSTALL 
+	# Ask if install
+	if [ "$action" = "ask" ]; then
+		while true; do
+			read -p "Try to install packages? (Y/n) " q
+			[ ! "$q" ] && q="y"
+			case "${q,,}" in
+				y) break 					;;
+				n) echo; return "$error_code"		;;
+			esac
+		done
+	fi
+
+
+	# Try load installer
+	if [ ! "$installer_name" ]; then
+		echo
+		load_installer
+		if [ $? -ne 0 ]; then
+			labadmin_error "Can't find installer for your current system. Dependencies must be installed manually"
+			return "$error_code"
+		else
+			echo -e "Installing using ${S_B}${installer_name}${S_R} installer..."
+		fi
+	fi
+
+	# Check root
+	[ "$(id -u)" -ne 0 ] && labadmin_error "Install must be runed as root" 1
+
+	# Search packages in repositories
+	local packages_error_notfound
+	local packages_error_found
+	for p in $packages_error; do
+		# Single package name
+		if [[ "$p" != *"|"* ]]; then
+			installer_search "$p" && packages_error_found="${packages_error_found} $p" || packages_error_notfound="${packages_error_notfound} $p"
+		# Multi package name
+		else
+			local mp_found=""
+			for mp in $(echo "$p" | tr "|" " "); do
+				installer_search "$mp" && mp_found="$mp" && break
+			done
+			[ "$mp_found" ] && 	packages_error_found="${packages_error_found} $mp_found" || packages_error_notfound="${packages_error_notfound} $p"
+		fi
+	done
+
+	if [ "$packages_error_notfound" ]; then
+		labadmin_error "Some packages are not available in system repositories"
+		echo -e " Packages not found: ${C_BR}${packages_error_notfound}${S_R}"
+		echo -e " Packages found: ${S_B}${packages_error_found:-none}${S_R}"
+		
+		if [ "$packages_error_found" ] && [ "$action" = "ask" ]; then
+			while true; do
+				read -p "Continue install? (Y/n) " q
+				[ ! "$q" ] && q="y"
+				case "${q,,}" in
+					y) break 						;;
+					n) echo; return "$error_code"	;;
+				esac
+			done
+		fi
+	fi
+
+	# Install packages
+	if [ "$packages_error_found" ]; then
+		echo -e "Installing dependencies:${S_B}${packages_error_found}${S_R}"
+		echo
+		installer_install $packages_error_found
+		echo
+		check_dependencies "noinstall" "dependence_errors"
+		return $?
+	else
+		echo
+		return "$error_code"
+	fi
+
+
+}
+
+
+
+
+#=== FUNCTION ==================================================================
+# NAME: install_admin
+# DESCRIPTION: install or reinstall admin script in $dir_install directory
+# PARAMETERS:
+#	$1   lab_id (without path) for set as default lab (in ./labs/default)
+#===============================================================================
+function install_admin() {
+    lab_id="$1"
+    lab_file="$labs_path/${lab_id}"
+
+	# CHECKS
+	[ "$(id -u)" -ne 0 ] && labadmin_error "Install must be runed as root" 1
+	[ ! "$lab_id" ] && labadmin_error "Default lab ID must be specified" 1
+	[ ! -r "$lab_file" ] && labadmin_error "Can't access lab config file $lab_file" 1
+
+
+	# DEPENDENCIES
+	check_dependencies "ask" "scripts_admindeps"
+	case "$?" in
+	2)
+		labadmin_error "Some dependencies in labadmin-base was not found\nIf continue labadmin could not work properly"
+		while true; do
+			read -p "Continue install (y/N) " q
+			[ ! "$q" ] && q="n"
+			case "$q" in
+				y|Y) break 		;;
+				n|N) return 1	;;
+			esac
+		done
+	;;
+	1)
+		labadmin_info "Some module dependencies were not found. If continue afected modules could not work properly"
+		while true; do
+			read -p "Continue install (y/N) " q
+			[ ! "$q" ] && q="n"
+			case "$q" in
+				y|Y) break 		;;
+				n|N) return 1	;;
+			esac
+		done
+	;;
+	esac
+	echo
+
+	# INSTALL
+	labadmin_info "Creating $labadmin_group group"
+	cat /etc/group | grep -q "^labadmin:" || groupadd "$labadmin_group"
+
+	labadmin_info "Copying directory $dir_install"
+	if [ "$labadmin_path" != "$dir_install" ]; then
+		rm -rf "$dir_install"
+		cp -r "$labadmin_path" "$dir_install"
+	fi
+	[ -f "${dir_install}/conf/labadmin.conf" ] && rm -f "${dir_install}/conf/test-labadmin.conf" || mv "${dir_install}/conf/test-labadmin.conf" "${dir_install}/conf/labadmin.conf"
+	chown -R root."$labadmin_group" "$dir_install"
+	find "$dir_install" -type f -exec chmod 640 {} \;
+	find "$dir_install" -type d -exec chmod 650 {} \;
+	chmod ug+x "$script_install"
+	chmod ug+x "$dir_install/install"
+	chmod ug+x "$dir_install/uninstall"
+
+	labadmin_info "Creating /usr/bin links"
+	rm -rf "/usr/bin/$(basename "$script_install")" &> /dev/null
+	ln -s "$script_install" "/usr/sbin/$(basename "$script_install")"
+
+	labadmin_info "Activating SUID for arp-scan command"
+	chmod u+s "$(which arp-scan)"
+
+	labadmin_info "Creating log file: $log_path"
+	touch "$log_path"
+	chmod 660 "$log_path"
+	chown :"$labadmin_group" "$log_path"
+
+	labadmin_info "Copying desktop files"
+	cp "$labadmin_path/desktop/labadmin.desktop" /usr/share/applications/
+	chmod a+r /usr/share/applications/labadmin.desktop
+	cp "$labadmin_path/desktop/labadmin.png" /usr/share/pixmaps/
+	chmod a+r /usr/share/pixmaps/labadmin.png
+
+	labadmin_info "Config labs/${lab_id} as default lab"
+	echo "$lab_id" > "${dir_install}/conf/lab.default"
+	if [ "${lab_id,,}" != "ask" ]; then
+		echo
+		read -p "Copy all labs config files? (y/N) " r
+		[ "${r,,}" = "n" ] && rm -f "$dir_install/labs/"!("$lab_id")
+	fi
+
+	echo -e "\nFinished! Add users to ${C_BY}$labadmin_group${S_R} group to allow use labadmin\n"
+}
+
+
+
+
+#=== FUNCTION ==================================================================
+# NAME: install_host
+# DESCRIPTION: config and install dependencies in host computer for control it
+#	and add host MAC in lab file
+#
+# PARAMETERS:
+# 	[$1]    host number for add macs[nhost] in lab file
+#   [$2]    lab id from file to add line macs[nhost]= currecut MAC host
+#===============================================================================
+function install_host() {
+	nhost="$1"
+	lab_id="$2"
+	lab_file="$labs_path/${lab_id}"
+
+	# CHECKS
+	[ "$(id -u)" -ne 0 ] && labadmin_error "Install must be runed as root" 1
+	[ ! "$lab_id" ] && labadmin_error "Lab ID must be specified" 1
+	[ "$nhost" ] && [ "$nhost" -ne "$nhost" ] && labadmin_error "Host number must be a number" 1
+	[ "$nhost" ] && [ ! -w "${lab_file}" ] && labadmin_error "Can't write lab file: ${lab_file}" 1
+
+	# LOAD CONFIG FILE
+	source "$lab_file"	# Import variables from lab file
+
+	# DEPENDENCIES
+	check_dependencies "ask" "scripts_hostdeps"
+	case "$?" in
+	2)
+		echo
+		labadmin_error "Some dependencies in labadmin-base was not found\nPlease, install it and try again" 1
+	;;
+	1)
+		echo
+		echo "Some module dependencies were not found. If continue afected modules could not work properly"
+		while true; do
+			read -p "Continue install (y/N) " q
+			[ ! "$q" ] && q="n"
+			case "$q" in
+				y|Y) break 		;;
+				n|N) return 1	;;
+			esac
+		done
+	;;
+	esac
+	echo
+
+
+	# INSTALL
+	labadmin_info "Configuring openssh-server"
+	sed -i "/^Port[[:blank:]]\+[0-9]\+/Id" /etc/ssh/sshd_config; echo "Port $sshport" >> /etc/ssh/sshd_config
+	sed -i "/^AllowUsers/Id" /etc/ssh/sshd_config; echo "AllowUsers $sshuser" >> /etc/ssh/sshd_config
+	sed -i "/^PermitRootLogin/Id" /etc/ssh/sshd_config; echo "PermitRootLogin without-password" >> /etc/ssh/sshd_config
+	sed -i "/^PubkeyAuthentication/Id" /etc/ssh/sshd_config; echo "PubkeyAuthentication yes" >> /etc/ssh/sshd_config
+	sed -i "/^PasswordAuthentication/Id" /etc/ssh/sshd_config; echo "PasswordAuthentication no" >> /etc/ssh/sshd_config
+	sed -i "/^PrintMotd/Id" /etc/ssh/sshd_config; echo "PrintMotd no" >> /etc/ssh/sshd_config
+	sed -i "/^PrintLastLog/Id" /etc/ssh/sshd_config; echo "PrintLastLog no">> /etc/ssh/sshd_config
+	[ -f /etc/pam.d/sshd ] && sed -i '/motd/s/^/#/' /etc/pam.d/sshd
+	ssh_service_name="$(systemctl list-units --type=service --all | egrep "\bssh(d)?\.service" | awk '{print $1}'| head -1)"
+	systemctl enable "$ssh_service_name" || labadmin_error "ERROR: SSH server enable failed"
+	systemctl restart "$ssh_service_name" || labadmin_error "ERROR: SSH server start failded"
+
+	labadmin_info "Copying public key to a /root/.ssh/authorized_keys"
+	[ ! -d "/root/.ssh" ] && (eval mkdir ~"$sshuser"/.ssh; eval chmod 700 ~"$sshuer"/.ssh)
+	echo "$sshpubkey" | eval tee ~"$sshuser"/.ssh/authorized_keys
+	eval chmod 600 ~"$sshuser"/.ssh/authorized_keys
+
+	[ ! "$nhost" ] && exit
+
+	# INSERT MAC IN LAB FILE
+  	labadmin_info "Adding MAC in lab file $lab_file"
+
+    iface=$(labadmin_iface 8.8.8.8)
+	mac=$(labadmin_mac "$iface")
+
+	[ ! "$mac" ] && labadmin_error "Please, insert MAC manually in lab file ${lab_file}\nmacs[${nhost:-nhost}]=${mac:-mac}" 1 
+
+	echo MAC $iface: $mac
+	if grep "^macs\[$nhost\]=" $lab_file &> /dev/null; then
+		echo -e "\nHost $nhost is already configured"
+		echo -en "Press ${S_B}[ENTER]${S_R} to substitute it or ${S_B}CTRL+C${S_R} to end installation"
+		read 
+		sed -i "/^macs\[$nhost\]=/d" "$lab_file"
+	fi
+
+	echo -e "macs[$nhost]=$mac\t\t# AUTO-ADDED [$lab_file] - $(date +%F_%T)" | tee -a "$lab_file"
+	echo
+}
+
+

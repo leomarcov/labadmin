@@ -12,67 +12,17 @@
 #      CREATED: 16.02.2017
 #=================================================================================== 
 
-
 #===============================================================================
 #  LOAD LIBS
-#============================================================f===================
-source "$(dirname "$(readlink -f "$0")")/lib/labadmin_lib-admin"			# LABADMIN ADMIN VARIABLES AND FUNCTIONS
-source "${lib_path}/labadmin_lib"											# LABADMIN GLOBAL VARIABLES AND FUNCTIONS
-source "${lib_path}/labadmin_ip"											# LABADMIN IP LIB
-source "${lib_path}/labadmin_map"											# LABADMIN MAP LIB
-source "${lib_path}/labadmin_script"										# LABADMIN SCRIPT LIB
-source "${lib_path}/labadmin_install"										# LABADMIN INSTALL LIB
-
-
- 
 #===============================================================================
-#  GLOBAL VARIABLES
-#===============================================================================
-# PARAMS
-unset hparam			# Param -h found
-unset lparam			# Param -l found
-unset iparam			# Param -i found
-unset piface			# Param -i argument (iface)
-unset rparam			# Param -r found
-unset rhosts			# Param -r argument (hosts range no exapnded)
-unset Sparam			# Param -S found
-unset aparam			# Param -a found
-unset Wparam			# Param -W found
-unset Lparam			# Param -L found
-unset Fparam			# Param -F found
-unset p0param			# Param -a found
-unset p0				# Main script action to exec
-unset p1param			# Param -1 found
-unset p1				# 1st parameter value (-1 param or read)
-unset p2param			# Param -2 found
-unset p2				# 2st parameter value (-2 param or read)
-unset p3param			# Param -3 found
-unset p3				# 3st parameter value (-3 param or read)
-unset p4param			# Param -4 found
-unset p4				# 4st parameter value (-4 param or read)
-unset p5param			# Param -5 found
-unset p5				# 5st parameter value (-5 param or read)
-unset p6param			# Param -6 found
-unset p6				# 6st parameter value (-6 param or read)
-unset p7param			# Param -7 found
-unset p7				# 7st parameter value (-7 param or read)
-unset p8param			# Param -8 found
-unset p8				# 8st parameter value (-8 param or read)
-unset p9param			# Param -9 found
-unset p9				# 9st parameter value (-9 param or read)
+readonly labadmin_path="$(dirname $(readlink -f "${0}"))"			# LABADMIN script root directory path
+readonly lib_path="${labadmin_path}/lib/"									# LABADMIN LIB PATH
+source "${lib_path}/labadmin_lib"											# LABADMIN GLOBAL LIB
+source "${lib_path}/labadmin_lib-admin"									# LABADMIN ADMIN LIB
+source "${lib_path}/labadmin_lib-tmux"										# LABADMIN TMUX LIB
+source "${lib_path}/labadmin_lib-tmp"										# LABADMIN TMP LIB
+source "${lib_path}/labadmin_lib-install"									# LABADMIN INSTALL LIB
 
-# CONFIG
-unset noninteractive	# No empty if exec in non-interactive mode (-a and -r parameters found) for display reduced messages
-unset ipadmin			# Admin IP address
-unset macadmin			# Admin MAC address
-unset lab_id			# Lab config file id (filename without extension)
-unset lab_file			# Lab config file with path
-unset iface				# Network iface for use in admin
-unset map 				# Map distribution
-unset map_color			# Map host colors
-unset nr				# Row number
-unset nc				# Column number
-unset srvmode			# Server mode: ssh or winrm
 
 
 
@@ -84,76 +34,49 @@ unset srvmode			# Server mode: ssh or winrm
 #	[$1]: exit code
 #===============================================================================
 function help() {
-	echo -e 'Admin remotely hosts in a computer lab environment.
-   '"${S_B}$(basename $0)${S_R}"' [-l '"${S_U}"'lab_config'"${S_R}"'] [-i '"${S_U}"'face'"${S_R}"'] [-r '"${S_U}"'range'"${S_R}"'] [-a '"${S_U}"'action'"${S_R}"'] [-1|-2|-3|-4|-5|-6|-7|-8|-9 '"${S_U}"'param'"${S_R}"'] [-W|-L] [-F]
+	echo -e "  Labadmin TUI interface:
+   ${S_B}$(basename $0)${S_R} [-l ${S_U}lab_config${S_R}] [-i ${S_U}face${S_R}] [-W|-L] [-F]
+
+  Labadmin CLI interface:
+   ${S_B}$(basename $0)${S_R} [-l ${S_U}lab_config${S_R}] [-i ${S_U}face${S_R}] -r ${S_U}range${S_R} [-a ${S_U}action${S_R}] [-1|-2|-3|-4|-5|-6|-7|-8|-9 ${S_U}param${S_R}] [-W|-L] [-F] [-M]
 
   OPTIONS
-   '"${S_B}"'-l '"${S_U}"'lab_config'"${S_R}"'
+   ${S_B}-l ${S_U}lab_config${S_R}
 \tLab config filename to use
-\tLab config files must be placed in '"${S_B}"'labs/'"${S_R}"' directory
-\tWhen not specified '"${S_B}"'default'"${S_R}"' file is used.
+\tLab config files must be placed in ${S_B}labs/${S_R} directory
+\tWhen not specified ${S_B}default${S_R} file is used.
 
-   '"${S_B}"'-i '"${S_U}"'iface'"${S_R}"'
-\tNetwork interface to use. Overrides iface variable in lab config file.
+   ${S_B}-i ${S_U}iface${S_R}
+\tNetwork interface to use. Overrides iface variable in labadmin config file.
 
-   '"${S_B}"'-a '"${S_U}"'action'"${S_R}"'
-\tAction to exec. For example: user/add
-
-   '"${S_B}"'-r '"${S_U}"'range'"${S_R}"'
+   ${S_B}-r ${S_U}range${S_R}
 \tHosts range to apply actions. For example: 11,34,23,21-28
 
-   '"${S_B}"'-1|-2|-3|-4|-5|-6|-7|-8|-9 '"${S_U}"'param'"${S_R}"'
+   ${S_B}-a ${S_U}action${S_R}
+\tAction to exec. For example: user/add
+
+   ${S_B}-1|-2|-3|-4|-5|-6|-7|-8|-9 ${S_U}param${S_R}
 \tAction parameter value to exec.
 
-   '"${S_B}"'-W '"${S_R}"'
+   ${S_B}-W ${S_R}
 \tForce Windows WINRM server mode. Overrides srvmode variable in lab config file.
 
-   '"${S_B}"'-L '"${S_R}"'
+   ${S_B}-L ${S_R}
 \tForce Linux SSH server mode. Overrides srvmode variable in lab config file.
 
-  SAMPLES
-    '"${S_B}$(basename $0)${S_R}"' -l a11 -i eth0
-    '"${S_B}$(basename $0)${S_R}"' -r 5,12,15-20 -a exec/com -1 "du -sh /home/*"
-    '"${S_B}$(basename $0)${S_R}"' -r all -a "software/packages/upgrade &" -1 y -2 y
-'
+   ${S_B}-F ${S_R}
+\tForce continue even check dependencies fail
+
+   ${S_B}-M ${S_R}
+\tShow MAP with selected hosts (CLI mode)
+
+  CLI SAMPLES
+    ${S_B}$(basename $0)${S_R} -r 5,12,15-20 -a exec/com -1 \"du -sh /home/*\"
+    ${S_B}$(basename $0)${S_R} -r all -a \"software/packages/upgrade &\" -1 y -2 y
+"
 	exit $1
 }
 
-
-
-
-#=== FUNCTION ==================================================================
-#        NAME: ssh_init
-# DESCRIPTION: Initialize ssh clint config:
-#	- Copy private key to $HOME/.ssh/rakey as fifo pipe and load it in user keys
-#	  repository to prevent save it permanently in system
-#	- Remove .knownhost if is 24h older (in dhcp avoids ip server has changed warning)
-# GLOBAL VARIABLES READED
-#	$sshprivatekey
-#===============================================================================
-function ssh_init() {
-	#### INIT SSH CONIFG
-	# Copy $sshprivatekey content to fifo pipe .ssh/rakey (for no save it permanently)
-	local sshkey_file="$HOME/.ssh/rakey"
-	[ ! -d "$HOME/.ssh" ] && mkdir "$HOME/.ssh"
-	[ ! -r  "$sshkey_file" ] &&	mkfifo -m=600 "$sshkey_file"
-	# Load ssh-agent
-	if [ ! $SSH_AGENT_PID ]; then
-		[ ! -e "${sshagent_path}" ] && ssh-agent -s > "${sshagent_path}"
-		chmod 600 "${sshagent_path}"
-		source "${sshagent_path}" &>/dev/null
-	fi
-	# Check if current pubkey is on ssh-agent
-	if ! ssh-add -L | grep "$sshpubkey" &> /dev/null; then
-		(unset DISPLAY; echo "$sshprivatekey" > "$sshkey_file" | ssh-add "$sshkey_file")
-		[ $? -ne 0 ] && labadmin_error "Error adding labadmin private key to ssh agent" 1
-	fi
-	# Reset .ssh/knownhosts if is 24h or older (in dhcp avoids ip server has changed warning)
-	if [ $(find "$HOME/.ssh/knownhosts" -mtime +0 2>/dev/null | wc -l) -ne 0 ]; then
-		echo -e "Removing file $HOME/.ssh/knownhosts${S_R}"
-		rm "$HOME/.ssh/knownhosts"
-	fi
-}
 
 
 
@@ -164,7 +87,7 @@ function ssh_init() {
 #	$@	All parameter from command line
 #===============================================================================
 function check_params() {
-	while getopts ":hl:i:r:a:1:2:3:4:5:6:7:8:9:SWLF" o
+	while getopts ":hl:i:r:a:1:2:3:4:5:6:7:8:9:SWLFMv" o
 	do
 		case $o in
 			h) hparam=1; help 0 ;;
@@ -176,7 +99,6 @@ function check_params() {
 					echo "Available lab IDs: $(ls "$labs_path" |  sed -z 's/\n/, /g' | sed 's/, $//g')" 1>&2
 					exit 1
 				fi
-				lab_file="$labs_path/${lab_id}"
 				;;
 			i) # -i:IFACE
 				iparam=1
@@ -186,10 +108,8 @@ function check_params() {
 				rparam=1
 				rhosts="$OPTARG"
 				;;
-			S) # -S: sub exec mode
-				Sparam=1
-				;;
 			a) # -a:script_id (saved in p0)
+				aparam=1
 				p0param=1
 				p0="$OPTARG"
 				;;
@@ -201,6 +121,9 @@ function check_params() {
 				;;
 			F) # -F: force exec missing dependencies
 				Fparam=1
+				;;
+			M) # -M: show map on cli mode
+				Mparam=1
 				;;
 			1) # -1: PARAM1
 				p1param=1
@@ -238,6 +161,10 @@ function check_params() {
 				p9param=1
 				p9="$OPTARG"
 				;;
+			v) # -v: version
+				labadmin_show_version
+				exit 0
+				;;				
 			\?)
 				labadmin_error "Unknown option: -$OPTARG" 1
 				;;
@@ -247,196 +174,102 @@ function check_params() {
 
 
 
-#=== FUNCTION ==================================================================
-#        NAME: initialize
-# DESCRIPTION: read parameters and initialize lab config
+
 #===============================================================================
-function initialize() {
-	##### CHECK BASH VERSION >=4.0
-	[ "$({ echo $BASH_VERSION; echo 4.0; } | sort -V | head -1)" = "4.0" ] || labadmin_error "Labadmin must be runned in Bash >=4.0" 1
-	unalias -a
+# INITIALIZATION
+#===============================================================================
+# CHECK PARAMETERS
+check_params "$@"
 
-	##### CREATE TMP DIR
-	mkdir "$labadmin_tmp_path" &>/dev/null
-	[ ! -d "$labadmin_tmp_path" ] && labadmin "Cant create tmp directory $labadmin_tmp_path" 1
-	chmod 700 "$labadmin_tmp_path"
+# SHOW VERSION
+labadmin_show_version
 
-	##### CHECK PARAMETERS
-	check_params "$@"
+# CHECK ROOT
+[ ! "$Fparam" ] && [ "$EUID" -eq 0 ] && labadmin_error "Labadmin must be exec as regular user (no root)" 1
 
-	##### CHECK NON-INTERACTIVE
-	[ "$p0param" = 1 ] && [ "$rparam" = 1 ] && noninteractive="1"
-	[ "$Sparam" ] && noninteractive="1"
+# CHECK CONFIG FILE
+[ ! -r "$config_path" ] && labadmin_error "Can't access labadmin config file ${config_path//\/\//\/}" 1
+source "$config_path" || labadmin_error "ERROR: error loading labadmin config file: $config_path" 1
 
-	##### SHOW LABADMIN VERSION
-	[ ! "$noninteractive" ] && { labadmin_version=$(cat "${labadmin_path}/version"); echo -e "${S_B}LABADMIN${S_R} ${S_D}v${labadmin_version}${S_R}"; }
+# CHECK LAB
+default_lab_path="${labadmin_path}/conf/lab.default"
+[ ! "$lab_id" ] && [ -r "$default_lab_path" ] && lab_id=$(cat "$default_lab_path" | xargs)		# Get defaul lab
+[ ! "$lab_id" ] && labadmin_error "Lab not defined\n${S_R}Config default lab in ${S_B}$default_lab_path${S_R} or use -l param" 1
+lab_file="${labs_path}/${lab_id}"
+[ ! -r "$lab_file" ] && labadmin_error "Can't access lab config file: $lab_file" 1
 
-	##### REMOVE TEMP UNLOCK FILES
-	rm "$labadmin_tmp_path/screenlock*" &> /dev/null
-	readonly screen_lock="$(mktemp -u "${labadmin_tmp_path}/screenlock".XXXXXXXX)"      # SCREEN LOCK (one file per process)
+# CLI MODE
+if [ "$rparam" ]; then
+	unset tuimode
+	climode=true
+	[ ! "$Mparam" ] && [ ! "$aparam" ] && labadmin_error "Select action to do" 1
 
-	#### LOAD CONFIG FILE
-	[ ! "$noninteractive" ] && labadmin_info "Loading config file"
-	local config_path="${labadmin_path}/conf/labadmin.conf"							# Labadmin global config file path
-	[ ! -f "$config_path" ] || [ ! -r "$config_path" ] && labadmin_error "Can't access labadmin config file ${config_file//\/\//\/}" 1
-	source "$config_path"	# Import variables from config file
+# TUI MODE
+else
+	[[ "$p1param" || "$p2param" || "$p3param" || "$p4param" || "$p5param" || "$p6param" || "$p7param" || "$p8param" || "$p9param" || "$Mparam" ]] && labadmin_error "ERROR: invalid CLI mode parameters" 1
+	tuimode=true
+	unset climode
+fi
 
-	##### LOAD LAB FILE
-	[ ! "$noninteractive" ] && labadmin_info "Loading lab file"
-	if [ ! "$lab_id" ]; then
-		local defaultlab_path="${labadmin_path}/conf/lab.default"						# Labadmin default lab file path
-		if [ ! -f "$defaultlab_path" ] || [ ! -r "$defaultlab_path" ]; then
-			lab_id="ask"
-			lab_file="$labs_path/${lab_id}"
-		else
-			lab_id=$(cat "$defaultlab_path" | xargs)
-			lab_file="$labs_path/${lab_id}"
-		fi
-	fi
-	if [ ! -r "$lab_file" ]; then
-		labadmin_error "Can't access lab file ${lab_file//\/\//\/}" 1
-	fi
-	source "$lab_file"	# Import variables from lab file
-
-	##### SERVER MODE
-	if [ "$Lparam" ]; then
-		srvmode="ssh";
-	elif  [ "$Wparam" ]; then
-		srvmode="winrm";
-	elif [ ! "$srvmode" ]; then
-		srvmode="ssh"					# Default server mode ssh
-	fi
-	scripts_path="${scripts_path}/${srvmode}/"
-
-	##### INIT ARP FILE
-	init_arpfile
-
-	#### INITIALIZE MAP
-	# If no map defied distribute host in colunmns to fill the screen
-	[ ! "$map" ] && map="$(echo "${!macs[*]}" | sed 's/\([0-9]\+ \)\{'$((($COLUMNS-19)/6))'\}/&\n/g')"	
-	map="$(echo "$map" | sed '/^\s*$/d')"							# Delete empty lines
-	nr="$(echo "$map" | wc -l)"										# Row number
-	nc="$(echo "$map" | awk '{print NF}' | sort -nu | tail -n 1)"	# Column number
-
-	##### IFACE AND IPADMIN
-	[ "$iparam" ] && iface="$piface"
-	ipadmin="$(labadmin_ip "$iface")"
-	! [ "$ipadmin" ] && labadmin_error "Cant get IP from iface $iface\nCheck iface config in $config_path or use -i param" 1
-	macadmin="$(labadmin_mac "$iface")"
-
-	##### LOAD SCRIPTS
-	if [ ! "$p0param" ]; then
-		labadmin_info "Loading action scripts"
-		load_scripts "$scripts_path"											# Load all scripts recursively
+# CHECK ADMIN DEPENDENCIES
+check_dependencies "noinstall" "scripts_admindeps" >/dev/null
+if [ $? -ne 0 ]; then
+	if [ ! "$Fparam" ]; then
+		labadmin_error "Some dependencies was not found"
+		echo "$od" | tail -n +2
+		echo -e "Install dependencies: ${S_B}${labadmin_path}/install -A -D ask${S_R}" | tr -s "/"
+		echo -e "Or use ${S_B}labadmin -F${S_R} parameter to force exec"
+		exit 1
 	else
-		load_scripts "$(echo "${scripts_path}/${p0}" | sed 's/[& ]*$//g')"		# Load only script to exec (without last &)
-	fi	
+		labadmin_error "Some dependencies was not found. Continue in force mode (-F)"; read
+	fi
+fi
 
-	##### CHECK ADMIN DEPENDENCIES
-	[ ! "$noninteractive" ] && labadmin_info "Checking modules dependencies"
-	check_dependencies "noinstall" "scripts_admindeps" >/dev/null
-	if [ $? -ne 0 ]; then
-		if [ ! "$Fparam" ]; then
-			echo "$od" | tail -n +2
-			labadmin_error "Some dependencies was not found"
-			echo -e "Install dependencies: ${S_B}${labadmin_path}/install -A -D ask${S_R}" | tr -s "/"
-			echo -e "Or use ${S_B}labadmin -F${S_R} parameter to force exec"
-			exit 1
-		else
-			labadmin_error "Some dependencies was not found. Continue in force mode (-F)"
-		fi
+# IP-MAC ADMIN
+[ "$iparam" ] && iface="$piface"
+ipadmin="$(labadmin_ip "$iface")"
+! [ "$ipadmin" ] && labadmin_error "ERROR: cant get IP from iface $iface\nCheck iface config in $config_path or use -i param" 1
+macadmin="$(labadmin_mac "$iface")"
+
+# TMP INIT
+readonly labadmin_PID="$$"												# set labadmin_PID
+labadmin_tmp-init															# initialize tmp directories
+
+# SERVER MODE
+if [ "$Lparam" ]; then
+	srvmode="ssh";
+elif  [ "$Wparam" ]; then
+	srvmode="winrm";
+elif [ ! "$srvmode" ]; then
+	srvmode="ssh"										# Default server mode ssh
+fi
+
+
+#### TUI EXECUTION
+if [ "$tuimode" ]; then
+	# TMUX mode
+	wmctrl -r :ACTIVE: -b add,maximized_vert,maximized_horz &> /dev/null && sleep 0.2
+	[ "$COLUMNS" -ge 140 ] && tmuxmode="1" || tmuxmode="2"		# tmuxmode=1 for tmux in 3panles, tmuxmode=2 for tmux in 3 windows
+
+	# Save vars in tmp
+	labadmin_tmp-vars-save ipadmin macadmin lab_file iface Lparam Wparam Fparam srvmode tmuxmode lab_id
+
+	# Exec TMUX 3 panels
+	if [ "$tmuxmode" -eq 1 ]; then
+		tmux_create-session-panels
+	# Exec TMUX 3 windows
+	else
+		tmux_create-session-windows
 	fi
 
-	##### INIT REMOTE AUTENTICACION
-	if [ "$srvmode" = "ssh" ]; then
-		[ ! "$noninteractive" ] && labadmin_info "Initializing ssh config"
-		ssh_init
-	elif [ "$srvmode" = "winrm" ]; then
-		[ ! "$noninteractive" ] && labadmin_info "Initializing WINRM config"
-		winrmpass=$(echo -n "$winrmpass" | base64 -d | openssl enc -aes-256-cbc -a -d -salt -pbkdf2) || labadmin_error "Incorrect decryption pass for WinRM password" 1
-	fi
-}
+#### CLI EXECUTIOM
+else
+	exec "${labadmin_path}/bin/labadmin-cli" "$@"
+fi
 
 
 
-#=== FUNCTION ==================================================================
-#        NAME: mainloop
-# DESCRIPTION: main loop that call maps and exec scripts
-#
-# GLOBAL VARIABLES WRITTEN
-#	exec_bg
-#	hosts_err
-#	hosts_ok
-#===============================================================================
-function mainloop() {
-	while true; do
-		#### SHOW BANNER
-		[ ! "$noninteractive" ] && draw_banner
 
-		#### SEARCH IPS
-		search_ips
 
-		#### DRAW MAP AND SELECT RANGE
-		local mark_selected="$([ "$shosts" ] && echo "true")"
-		if [ ! "$rparam" ]; then
-			draw_map "$mark_selected"
-			select_range || continue
-			while ! expand_range; do select_range; done
-		else
-			expand_range || labadmin_error "Invalid host range $rhosts" 1
-		fi
 
-		#### DRAW MAP WITH SELECTED HOSTS
-		[ ! "$rparam" ] && draw_banner
-		draw_map "mark_selected"
 
-		#### SELECT SCRIPT
-		select_script ""  	|| continue
-
-		#### READ SCRIPT PARAMS
-		read_params
-
-		#### WRITE LOG EVENT
-		[ -w "$log_path" ] && echo -e "[$(date "+%Y-%d-%m %H:%M:%S")] [$(id -un)] [$ipadmin] [$shosts_listen] [${script_id}${exec_bg:+(${exec_bg})}: $p1 | $p2 | $p3 | $p4 | $p5 | $p6 | $p7 | $p8 | $p9 ]" >> "$log_path"
-		
-
-		#### EXEC FOR ADMIN
-		if [[ "${scripts_type[$script_id],,}" = admin* ]] && [ ! "$Sparam" ]; then
-			script_type_state="1"
-			exec_bg="" exec_script || exit 1
-		fi
-
-		#### EXEC FOR EACH HOST		
-		unset hosts_err hosts_ok
-		[ "$exec_bg" = "win" ] && terminator_dbusconfig true		# INIT TERMINATOR FOR EXEC WIN (config terminator for open windows in new tabs)
-		
-		for p in $([ "${scripts_type[$script_id],,}" = "inactive" ] && echo $shosts_inactive || echo $shosts_listen); do
-			# EXEC BACKGROUND
-			if [ "$exec_bg" = "sub" ]; then				# (exec_bg=win execs in foreground but run terminator in background)
-				exec_script "$p" &
-			# EXEC FOREGROUND
-			else
-				exec_script "$p" 
-			fi
-		done
-		[ "$exec_bg" = "win" ] && ( (sleep 5; terminator_dbusconfig false)& ) 	# RESTART TERMINATOR FOR EXEC WIN (config terminator for no open windows in new tabs (prevent new labadmin terminator open in other existent terminator)
-
-		#### EXEC FOR ADMIN
-		if [[ "${scripts_type[$script_id],,}" = *admin ]] && [ ! "$Sparam" ]; then
-			script_type_state="2"
-			exec_bg=""  exec_script 
-		fi
-
-		### SHOW ERRORS
-		[ ${#hosts_err[*]} -gt 0 ] && echo -e "\n [${C_LR}*${S_R}] ${C_BR}ERRORS:${S_R} ${!hosts_err[*]}"
-
-		### CONTINUE?
-		[ "$noninteractive" ] && exit 0
-		echo -e "\n${S_B}[ENTER] to continue${S_R}"; read -e
-
-		unset script_id exec_bg shosts
-	done
-}
-
-initialize "$@"
-mainloop

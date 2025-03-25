@@ -1,0 +1,295 @@
+#!/usr/bin/env bash
+#===================================================================================
+# LABADMIN MAP LIB
+#         FILE: labadmin_lib-map
+#  DESCRIPTION: labadmin lib for manage map and selected host range
+#
+#       AUTHOR: Leonardo Marco (labadmin@leonardomarco.com)
+#	   LICENSE: GNU General Public License v3.0
+#===================================================================================
+
+#### EXTERNAL VARIABLES USED
+# rparam
+# rhosts
+# ips[]
+# macs[]
+# hosts_status[]
+# map_nr
+# map_nc
+# iface
+
+#### GLOBAL VARIABLES
+unset shosts				# List (space separated) with all selected hosts numbers (range expanded)
+unset shosts_listen			# List (space separated) with all selected host numbers with IP and listen
+unset shosts_inactive		# List (space separated) with all selected host numbers selected with no IP found
+
+
+#=== FUNCTION ==================================================================
+# NAME: draw_banner
+# DESCRIPTION: draw LABADMIN banner
+#===============================================================================
+function draw_banner() {
+	local banner="${S_B}${labname}"
+	local tab=4
+	clear
+	labadmin_draw-box 1 "$tab" "$banner"
+}
+
+
+
+#=== FUNCTION ==================================================================
+# NAME: print_map_prompt
+# DESCRIPTION: print notification line before map
+# PARAMETERS
+#	$1	Message
+#===============================================================================
+function print_map_prompt() {
+	local msg="$1"
+	labadmin_lock_screen
+	cursor_move-pos $((8+map_nr*3)) 1
+	clear_line
+	echo -en "    $msg"
+	labadmin_unlock_screen
+}
+
+
+#=== FUNCTION ==================================================================
+# NAME: clear_map_prompt
+# DESCRIPTION: clear notification line befor map
+#===============================================================================
+function clear_map_prompt() {
+	labadmin_lock_screen
+	cursor_move-pos $((8+map_nr*3)) 1
+	clear_line
+	labadmin_unlock_screen
+}
+
+
+
+#=== FUNCTION ==================================================================
+# NAME: draw_map
+# DESCRIPTION: draw ascii map with hosts, IPs and active marks found in local network
+#===============================================================================
+function draw_map() {
+	local tab="$(clear_line)    "																# Left tab
+	local color_listen="$([ "$srvmode" = "winrm" ] && echo "${C_BB}" || echo "${C_BG}")"		# Color for listen ip
+
+	eval local ashosts_listen=($(echo "$shosts_listen" | sed 's/\([0-9]\+\)/[\1]=X/g'));		# Convert list into array ([11]=X [12]=X ...)
+	eval local ashosts_inactive=($(echo "$shosts_inactive" | sed 's/\([0-9]\+\)/[\1]=X/g'));	# Convert list into array ([11]=X [12]=X ...)
+
+	labadmin_lock_screen
+	echo "${tab}┌"$(seq -s"─" $(($map_nc*6)) | tr -d "[0-9]")"┐"
+	local cr=0															# Current row
+	local complete="$(seq -s "__" 1 $map_nc | tr -s "[0-9]" " ")"		# Trick for complete rows with not all hosts defined
+
+	IFS=$'\n\t '
+	echo "$map" | while read row; do								# LOOP ROWS
+		cr=$((cr+1))
+		echo -n "$tab│"
+		local cc=0													# Current column
+		for n in $row $complete; do									# LOOP COLUMNS (print host number)
+			[ "$((++cc-1))" -eq "$map_nc" ] && break
+			if ! [ "$n" -eq "$n" ] &> /dev/null || [ ! "${macs[$n]}" ]; then
+				echo -ne "     "
+			elif [ "${macs[$n]}" ]; then
+				[ "${ashosts_listen["$n"]}" ] && echo -ne "${B_B}"
+				[ "${ashosts_inactive["$n"]}" ] && echo -ne "${B_DG}"
+				[ "${map_color[$n]}" ] && echo -ne "${map_color[$n]}"
+				[ "${#n}" -le 2 ] && echo -n " "
+				echo -ne " ${S_B}$n"
+				[ "${#n}" -le 1 ] && echo -n " "
+				[ "${#n}" -le 3 ] && echo -n " "
+			fi
+			echo -en "${S_R}│"
+		done
+
+		echo
+		echo -n "${tab}│"
+		local cc=0						# Current column
+		for n in $row $complete; do		# LOOP COLUMNS (print ip)
+			[ "$((++cc-1))" -eq "$map_nc" ] && break
+			if ! [ "$n" -eq "$n" ] &> /dev/null || [ ! "${macs[$n]}" ]; then
+				echo -ne "     │"
+				continue;
+			fi
+			[ ${ashosts_listen["$n"]} ] && echo -ne "${B_B}"
+			[ "${ashosts_inactive["$n"]}" ] && echo -ne "${B_DG}"
+			local ip=$(echo ${ips[$n]} | cut -f 4 -d .)
+			if [ "$ip" ]; then
+				case "${hosts_status[$n]}" in
+					listen)		echo -ne "${color_listen}.$(printf %03d $ip) ${S_R}│"	;;
+					inactive)	echo -ne "${B_R}.$(printf %03d $ip) ${S_R}│"	;;
+					off)		echo -ne "${C_BR}.$(printf %03d $ip) ${S_R}│"	;;
+				esac
+			else
+				echo -ne "  ${C_BR}•${C_D}  ${S_R}│"
+			fi
+		done
+
+		echo
+		ei="├"; ed="┤"; [ $cr -eq "$map_nr" ] && ei="└" && ed="┘"
+		echo "${tab}${ei}$(seq -s"─" $(($map_nc*6)) | tr -d "[0-9]")${ed}"
+	done
+
+	# Print hosts counters
+	local nh="     ${#macs[*]}"
+	local nl=${#ashosts_listen[*]} ni=${#ashosts_inactive[*]}
+	local e=""; [ "$nl" -eq 0 ] && unset nl || e=" "; [ "$ni" -eq 0 ] && unset ni
+	echo -en "${nh}$(seq -s " " 1 "$((10+${map_nc}*6-5-${#nl}-${#ni}-${#e}-${#nh}))" | tr -d "[0-9]")${B_DG}${ni}${S_R}${e}${B_B}${nl}${S_R}"
+
+	# Print map updates
+	if [ "$map_updates" ]; then
+		IFS=$'\n'
+		n=1
+		echo -e "$map_updates" | while read line; do
+			cursor_move-pos $((3+n)) $((map_nc*6+7))
+			echo -n "$line"
+			n=$((n+1))
+		done
+		IFS=$'\n\t '
+		
+	fi
+
+	labadmin_unlock_screen
+	echo
+}
+
+
+#=== FUNCTION ==================================================================
+# NAME: register_map-update
+# DESCRIPTION: add update line to map_updates list
+#
+# PARAMETERS
+#   $1  nhost
+#   $2  event: up|down
+#
+# GLOBAL VARIABLES WRITTEN
+#   map_updates     List with last updates
+#===============================================================================
+function register_map-update() {
+    local nhost="$1"        # nhost to show update
+    local event="$2"        # Event to show: up|down
+
+
+    case "$event" in
+        up)     map_updates="${map_updates}\n${C_BG}▲${S_R} HOST ${nhost}"      ;;
+        down)   map_updates="${map_updates}\n${C_BR}▼${S_R} HOST ${nhost}"      ;;
+    esac
+}
+
+
+#=== FUNCTION ==================================================================
+# NAME: select_range
+# DESCRIPTION: ask user for a host range and save it in rhosts variable
+#              show help if necessary
+#
+# GLOBAL VARIALBES WRITTEN
+#   rhosts			Selected range (no expanded)
+#
+# EXIT CODE
+# 	1	if empty range selected
+#	0	if any range selected (correct or not)
+#===============================================================================
+function select_range() {
+	local rh
+	local help="
+ ${S_B}*${S_R}             Select all
+ ${S_B}11,23,51${S_R}      Select 11 23 and 51
+ ${S_B}11-20${S_R}         Select 11 to 20
+ ${S_B}2,3,11-15${S_R}     Select 2 3 11 12 13 14 15
+ ${S_B}* !31-34${S_R}      Select all except 31 32 33 34
+ ${S_B}* /odd${S_R}        Select all odds
+ ${S_B}11-20 /even${S_R}   Select 12 14 16 18 20
+"
+
+	print_map_prompt " > ${S_U}Select hosts${S_R}:"
+	read -e -p " " rh
+
+	case "${rh,,}" in
+		h|help)
+			labadmin_draw-box 6 2 "$help" "${C_N}Host selection options${S_R}"
+			cursor_hide; read; cursor_show; draw_map
+			return 0
+		;;
+		"")	
+			return 1
+		;;
+		*)	
+			rhosts="$rh"
+			return 0
+		;;
+	esac
+}
+
+
+
+
+#=== FUNCTION ==================================================================
+# NAME: expand_range
+# DESCRIPTION: expands rhost range to list of selected hosts and write global 
+#			   variables: shosts, shosts_listen and shosts_inactive
+# 	EXAMPLE: 12,23,9,4-7 -> 12 23 9 4 5 6 7
+#   EXAMPLE: 1-9 /odd    -> 1 3 5 7 9
+#
+# GLOBAL VARIALBES WRITTEN
+#   shosts 				List (space separated) with all selected hosts numbers (range expanded)
+#   shosts_listen 		List (space separated) with all selected host numbers with IP and listen
+#   shosts_inactive 	List (space separated) with all selected host numbers selected with no IP found
+#
+# EXIT CODE
+#	1	if no range selected
+#===============================================================================
+function expand_range() {
+	unset shosts shosts_listen shosts_inactive
+	local ehosts				# Excluded hosts (!host)
+
+	# Check if /odd /even
+	local mod2
+	echo "$rhosts" | grep -qw "/even" && mod2=0
+	echo "$rhosts" | grep -qw "/odd" && mod2=1
+
+	# Select ALL
+	[[ "${rhosts,,}" == @(a|a *|all|all *|\*|\* *) ]] && shosts="${!macs[@]}"
+
+	# Expand range n-m to list
+	for p in $(echo "$rhosts" | tr "," " "); do
+		# Is a num-num
+		echo "$p" | grep -qE "^[0-9]+-[0-9]+$" && shosts="$shosts $(eval echo {$(echo $p|sed "s/-/../")})"
+		# Is a num
+		[ "$p" -eq "$p" ] &>/dev/null && shosts="$shosts $p"
+		# Is !num
+		echo "$p" | grep -qE "^\![0-9]+$" && ehosts="$ehosts ${p/\!/}"
+		# Is !num-num
+		echo "$p" | grep -qE "^\![0-9]+-[0-9]+$" && ehosts="$ehosts $(eval echo {$(echo "${p/\!/}"|sed "s/-/../")})"		
+	done
+
+	# Exclude ! hosts
+	for eh in $ehosts; do
+			shosts=$(echo "$shosts" | sed "s/\b${eh}\b//g")
+	done
+
+	# Remove odds or evens and host not configured in macs[]
+	local hosts_tmp
+	for p in $shosts; do
+		[ "$mod2" ] && [ $[p%2] -ne "$mod2" ] && continue		# Skip hosts no %mod2
+		[ ! "${macs[$p]}" ] && continue							# Skip hosts without config MAC
+		hosts_tmp="$hosts_tmp $p"
+	done
+	shosts="$hosts_tmp"
+
+	[ ! "$shosts" ] && return 1
+
+	# Update shosts_listen and shosts_inactive 
+	for i in $shosts; do
+		if [ "${ips[$i]}" ] && [ "${hosts_status[$i]}" = "listen" ]; then			
+			shosts_listen="${shosts_listen} ${i}"
+		else
+			shosts_inactive="${shosts_inactive} ${i}"
+		fi
+	done
+	shosts_listen=$(echo "$shosts_listen" | tr -s " ")
+ 	shosts_inactive=$(echo "$shosts_inactive" | tr -s " ")
+
+ 	[ ! "$shosts_listen" ] && [ ! "$shosts_inactive" ] && return 1
+ 	return 0
+}

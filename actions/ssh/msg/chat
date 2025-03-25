@@ -112,7 +112,6 @@ if [ "${labadmin_script_type}" = "ssh" ]; then
 
 	su -l "${u[0]}" -c "DISPLAY=${u[1]} xhost si:localuser:$(id -un)" >/dev/null
 
-	labdmin_config_terminator "${u[0]}"
 	su -l "${u[0]}" -c "DISPLAY=${u[1]} terminator $([ "${fs,,}" = "y" ] && echo "-f" ) -b -e \"bash /tmp/labadmin_chat.sh '$port'\" &"
 
 # LOCAL EXEC

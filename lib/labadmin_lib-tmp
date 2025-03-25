@@ -1,0 +1,132 @@
+#!/usr/bin/env bash
+#===================================================================================
+# LABADMIN TMP LIB
+#         FILE: labadmin_lib-tmp
+#  DESCRIPTION: labadmin lib for manage tmp files and process comunication
+#
+#       AUTHOR: Leonardo Marco (labadmin@leonardomarco.com)
+#	   LICENSE: GNU General Public License v3.0
+#===================================================================================
+
+
+#=== FUNCTION ==================================================================
+#        NAME: labadmin_tmp-init
+# DESCRIPTION: Create and initialize tmp labadmin dir
+#===============================================================================
+function labadmin_tmp-init() {
+	[ ! "$labadmin_PID" ] && labadmin_error "ERROR: labadmin_PID not defined" 1
+	readonly labadmin_tmp_path="/tmp/labadmin/labadmin-${USER}-${labadmin_PID}"
+
+	# In labadmin subscript only update labadmin_tmp_path variable
+	if [ -d "$labadmin_tmp_path" ]; then
+		[ -d "$labadmin_tmp_path" ] && [ -r "$labadmin_tmp_path" ] && [ -w "$labadmin_tmp_path" ] && return 0
+		labadmin_error "ERROR: cant access tmp directory: $labadmin_tmp_path"
+	fi
+
+	# Create tmp directories
+	[ -d "$labadmin_tmp_path" ] && labadmin_error "ERROR: labadmin tmp directory exist: $labadmin_tmp_path" 1
+	[ ! -d "/tmp/labadmin/" ] && { mkdir "/tmp/labadmin"; chmod 777 "/tmp/labadmin/"; }
+	mkdir "$labadmin_tmp_path" || labadmin "ERROR: cant create tmp directory: $labadmin_tmp_path" 1
+	chmod 700 "$labadmin_tmp_path"
+	mkdir "${labadmin_tmp_path}/var/"
+}
+
+#=== FUNCTION ==================================================================
+#        NAME: labadmin_status-send
+# DESCRIPTION: Send status message to status panel
+#===============================================================================
+function labadmin_status-send() {
+	local msg="$1"
+	echo -e " ${msg}" >> "${labadmin_tmp_path}/status-panel"
+}
+
+#=== FUNCTION ==================================================================
+#        NAME: abadmin_status-show
+# DESCRIPTION: Show status messages (continously) sendt to status panel
+#===============================================================================
+function labadmin_status-show() {
+	[ ! -f "${labadmin_tmp_path}/status-panel" ] && touch "${labadmin_tmp_path}/status-panel" || : > "${labadmin_tmp_path}/status-panel"
+	tail -f "${labadmin_tmp_path}/status-panel"
+}
+
+
+#=== FUNCTION ==================================================================
+#        NAME: labadmin_tmp-vars-save
+# DESCRIPTION: Save a list of var values in labadmin tmp files
+#
+# PARAMETERS
+# 	$*	Variable names to save
+#===============================================================================
+function labadmin_tmp-vars-save() {
+	local vn 			# Var name
+	local vs 			# Var script declaration
+	local vp			# Vars path
+
+
+	for vn in "$@"; do
+		vs=$(declare -p "$vn" 2>/dev/null) || vs="unset $vn"	# Var script definition
+		vp="${labadmin_tmp_path}/var/${vn}"						# Var path
+		echo "$vs" | sed 's/^declare/declare -g/' > "$vp"		# Save variable script and make declared variables global
+	done
+}
+
+
+#=== FUNCTION ==================================================================
+#        NAME: labadmin_tmp-var-load
+# DESCRIPTION: Load a list of vars values from labadmin tmp files
+#
+# PARAMETERS
+# 	$*	Variable names to load
+#===============================================================================
+function labadmin_tmp-vars-load() {
+	local vn 			# Var name
+	local vp			# Var path
+	local vs 			# Var script declaration
+
+	for vn in "$@"; do
+		vp="${labadmin_tmp_path}/var/${vn}"						# Var path
+		[ -f "$vp" ] && source "$vp" 2>/dev/null				# Load variable from script
+	done
+}
+
+
+
+#=== FUNCTION ==================================================================
+#        NAME: labadmin_tmp-vars-save-1file
+# DESCRIPTION: Save a list of var values in labadmin tmp all in 1 file
+#
+# PARAMETERS
+#	$1 	tmp filename to save values
+# 	$*	Variable names to save
+#===============================================================================
+function labadmin_tmp-vars-save-1file() {
+	local fn 			# tmp filename to save values
+	local vn 			# Var name
+	local vs 			# Var script declaration
+	local vp			# tmp filename path
+
+	fn="$1"; shift
+	vp="${labadmin_tmp_path}/var/${fn}"
+	rm -rf "$vp"
+	for vn in "$@"; do
+		vs=$(declare -p "$vn" 2>/dev/null) || continue		# Var script definition
+		echo "$vs" | sed 's/^declare/declare -g/' >> "$vp"	# Save variable script and make declared variables global
+	done
+}
+
+
+#=== FUNCTION ==================================================================
+#        NAME: labadmin_tmp-var-load-1file
+# DESCRIPTION: Load a list of vars values from labadmin tmp all in 1 file
+#
+# PARAMETERS
+#	$1 	temp filename to load values
+#===============================================================================
+function labadmin_tmp-vars-load-1file() {
+	local fn 			# tmp filename to load values	
+	local vp			# Var path
+
+	fn="$1"; shift
+	vp="${labadmin_tmp_path}/var/${fn}"
+	[ -f "$vp" ] && source "$vp" 2>/dev/null				# Load variable from script
+}

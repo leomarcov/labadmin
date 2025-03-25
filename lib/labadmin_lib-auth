@@ -1,0 +1,80 @@
+#!/usr/bin/env bash
+#===================================================================================
+# LABADMIN AUTHENTICATION LIB
+#         FILE: labadmin_lib-auth
+#  DESCRIPTION: labadmin lib for remote authentication
+#
+#       AUTHOR: Leonardo Marco (labadmin@leonardomarco.com)
+#      LICENSE: GNU General Public License v3.0
+#      VERSION: 2019.03
+#      CREATED: 19.03.2025
+#===================================================================================
+
+
+
+#=== FUNCTION ==================================================================
+#        NAME: auth_init
+# DESCRIPTION: Initialize ssh or winrm authentication according srvmode value
+#===============================================================================
+function auth_init() {
+	if [ "$srvmode" = "ssh" ]; then
+		auth_ssh-init
+	elif [ "$srvmode" = "winrm" ]; then
+		auth_winrm-init
+	fi
+}
+
+
+
+#=== FUNCTION ==================================================================
+#        NAME: auth_ssh-init
+# DESCRIPTION: Initialize ssh clint config:
+#	- Copy private key to $HOME/.ssh/rakey as fifo pipe and load it in user keys
+#	  repository to prevent save it permanently in system
+#	- Remove .knownhost if is 24h older (in dhcp avoids ip server has changed warning)
+# GLOBAL VARIABLES READED
+#	$sshprivatekey
+#===============================================================================
+function auth_ssh-init() {
+	#### INIT SSH CONIFG
+	# Copy $sshprivatekey content to fifo pipe .ssh/rakey (for no save it permanently)
+	local sshkey_file="$HOME/.ssh/rakey"
+	[ ! -d "$HOME/.ssh" ] && mkdir "$HOME/.ssh"
+	[ ! -r  "$sshkey_file" ] &&	mkfifo -m=600 "$sshkey_file"
+	# Load ssh-agent
+	if [ ! $SSH_AGENT_PID ]; then
+		[ ! -e "${sshagent_path}" ] && ssh-agent -s > "${sshagent_path}"
+		chmod 600 "${sshagent_path}"
+		source "${sshagent_path}" &>/dev/null
+	fi
+	# Check if current pubkey is on ssh-agent
+	if ! ssh-add -L | grep "$sshpubkey" &> /dev/null; then
+		(unset DISPLAY; echo "$sshprivatekey" > "$sshkey_file" | ssh-add "$sshkey_file")
+		[ $? -ne 0 ] && labadmin_error "ERROR: error adding labadmin private key to ssh agent" 1
+	fi
+	# Reset .ssh/knownhosts if is 24h or older (in dhcp avoids ip server has changed warning)
+	if [ $(find "$HOME/.ssh/knownhosts" -mtime +0 2>/dev/null | wc -l) -ne 0 ]; then
+		echo -e "Removing file $HOME/.ssh/knownhosts${S_R}"
+		rm "$HOME/.ssh/knownhosts"
+	fi
+}
+
+
+#=== FUNCTION ==================================================================
+#        NAME: auth_winrm-init
+# DESCRIPTION: Initialize winrm clint config: read and decrypt winrmpass
+#
+# GLOBAL VARIABLES READED
+#   $winrmpass
+#
+# GLOBAL VARIABLES WRITEN
+#   $winrmpass
+#===============================================================================
+function auth_winrm-init() {
+	local pd
+	while true; do
+		pd=$(echo -n "$winrmpass" | base64 -d | openssl enc -aes-256-cbc -a -d -salt -pbkdf2 2>/dev/null)
+		[ $? -eq 0 ] && { winrmpass="$pd"; break; }
+		labadmin_error "ERROR: incorrect decryption pass for WinRM password"
+	done
+}

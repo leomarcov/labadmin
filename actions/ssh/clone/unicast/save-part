@@ -46,4 +46,4 @@ labdmin_ssh_host_comm "${labadmin_nhost}" '
 f=$(file -s "'"$src"'");
 if echo "$f" | grep -iq ntfs ; then t="ntfs"; elif echo "$f" | grep -iq "ext[1-4]"; then t="extfs"; elif echo "$f" | grep -iq "fat"; then t="fat32"; else t="dd"; fi;
 echo "Detected $t filesystem" 1>&2
-partclone.${t} -c -s "'"$src"'"' > "${dest}/$(date +%Y-%m-%d)_$(basename "$src").partclone"
+partclone.${t} -c -s "'"$src"'" | gzip -c' > "${dest}/$(date +%Y-%m-%d)_HOST${labadmin_nhost}_$(basename "$src").ptcl.gz"
