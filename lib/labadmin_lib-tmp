@@ -31,6 +31,28 @@ function labadmin_tmp-init() {
 	mkdir "${labadmin_tmp_path}/var/"
 }
 
+
+#=== FUNCTION ==================================================================
+#        NAME: labadmin_mkdir-autocomplete
+# DESCRIPTION: Generate files/dirs for actions and internal commands for read autocomplete
+#===============================================================================
+function labadmin_mkdir-autocomplete() {
+	local ic="new-panel,close-panel,refresh-map,select-map,lab,mode,exit"	# Internal commands
+
+	rm -rf "${labadmin_tmp_path}/actions/" &>/dev/null
+	mkdir -p "${labadmin_tmp_path}/actions/"
+
+	cd "${labadmin_path}/actions"
+	find . -type d -exec mkdir -p "${labadmin_tmp_path}/actions/{}" \; 2>/dev/null
+	find . -type f -exec touch "${labadmin_tmp_path}/actions/{}" \; 2>/dev/null
+	find "${labadmin_tmp_path}/actions/" -type d | while read d; do
+		eval touch "${d}/"{$ic}
+	done
+	cd -
+}
+
+
+
 #=== FUNCTION ==================================================================
 #        NAME: labadmin_status-send
 # DESCRIPTION: Send status message to status panel
