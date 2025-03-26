@@ -37,7 +37,7 @@ function labadmin_tmp-init() {
 # DESCRIPTION: Generate files/dirs for actions and internal commands for read autocomplete
 #===============================================================================
 function labadmin_generate-autocomplete() {
-	local ic="new-panel,close-panel,refresh-map,select-hosts,lab,mode,exit"	# Internal commands
+	local ic="new-panel,close-panel,refresh-map,select-hosts,list-hosts,lab,mode,exit"	# Internal commands
 
 	rm -rf "${labadmin_tmp_path}/actions/" &>/dev/null
 	mkdir -p "${labadmin_tmp_path}/actions/"
