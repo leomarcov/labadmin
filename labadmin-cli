@@ -183,7 +183,7 @@ default_lab_path="${labadmin_path}/conf/lab.default"
 [ ! "$lab_id" ] && [ -r "$default_lab_path" ] && lab_id=$(cat "$default_lab_path" | xargs)		# Get defaul lab
 if [ ! "$lab_id" ]; then
 		labadmin_error "Lab not defined"
-		echo -e "AVIALABE LABS: ${S_B}$(ls "${labs_path}" | tr "\n" " ")${S_R}"
+		echo -e "AVAILABLE LABS: $(ls "${labs_path}" | tr "\n" " ")"
 		echo -e "  * Config default lab in ${S_B}$default_lab_path${S_R}"
 		echo -e "  * Or use ${S_B}-l${S_R} param"
 		exit 1

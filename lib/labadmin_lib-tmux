@@ -248,7 +248,7 @@ function tmux_fix-map-panel() {
 		local x=$((map_nc*6+17)); [ $x -lt 50 ] && x=50
 		local y=$((map_nr*3+9)); [ $y -lt 10 ] && y=10
 		tmux set-hook -t $tmux_sid -g client-resized 'run-shell "tmux resize-pane -t '$tmux_pid_map' -x '$x' -y '$y'"'
-		tmux resize-pane -t $tmux_pid_map -x $x -y $y 		
+		tmux resize-pane -t $tmux_pid_map -x $x -y $y &>/dev/null
 	fi
 }
 

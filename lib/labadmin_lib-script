@@ -160,21 +160,21 @@ function select_script() {
 	while [ ! "$script_id" ]; do
 		# READ SCRIPT AS PARAM
 		local help="${S_D}Action options${S_R}
-${C_Y}action${S_R}                   Exec action
-${C_LY}action${S_R} &                 Exec action in background (all in this panel)
-${C_LY}action${S_R} &&                Exec action in background (in separate panles)
-${C_LB}dir${S_R}                      Enter to dir menu     
-cd ..                    Up to parent menu
-${C_N}${S_U}d${S_R}ir                      List scripts of current menu
+ ${C_Y}action${S_R}                   Exec action
+ ${C_LY}action${S_R} &                 Exec action in background (all in this panel)
+ ${C_LY}action${S_R} &&                Exec action in background (in separate panles)
+ ${C_LB}dir${S_R}                      Enter to dir menu     
+ cd ..                    Up to parent menu
+ ${C_N}${S_U}d${S_R}ir                      List scripts of current menu
 
 ${S_D}Internal commands${S_R}
-${C_N}${S_U}n${S_R}ew-panel                Open extra script panel
-${C_N}${S_U}c${S_R}lose-panel              Close extra script panel
-${C_N}${S_U}r${S_R}efresh-map              Refresh map with current selection
-${C_N}${S_U}s${S_R}elect-hosts <range>     Select new host range
-${C_N}${S_U}l${S_R}ab <lab>                Change lab
-${C_N}${S_U}m${S_R}ode lin|win             Set hosts OS: linux or windows
-${C_N}${S_U}e${S_R}xit                     Exit labadmin session"
+ ${C_N}${S_U}n${S_R}ew-panel                Open extra script panel
+ ${C_N}${S_U}c${S_R}lose-panel              Close current script panel
+ ${C_N}${S_U}r${S_R}efresh-map              Refresh map with current selection
+ ${C_N}${S_U}s${S_R}elect-hosts <range>     Select new host range
+ ${C_N}${S_U}l${S_R}ab <lab>                Change lab
+ ${C_N}${S_U}m${S_R}ode lin|win             Set hosts OS: linux or windows
+ ${C_N}${S_U}e${S_R}xit                     Exit labadmin session"
 		regex=".*"
 		cd "${labadmin_tmp_path}/actions/$srvmode/${script_current}"
 		read_param "${script_current:-/}" "0" "$list" "" "$regex" "$help"
