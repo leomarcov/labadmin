@@ -19,7 +19,7 @@ if [ "$1" = "--load-scriptinfo" ]; then
 #=== READ PARAMS ===================================================================
 elif [ "$1" = "--readparams" ]; then
 	# PARAM1: list ip
-	read_param "$script_id" 1 "List of IPs or domains (h for help)" "" "." "\tList of IPs, domains or subnets to allow separated by spaces.\n\tSAMPLES:\n\t   www.mydomain.com\t\tAllow Google domain\n\t   10.0.20.5\t\t\tAllow specific ip\n\t   10.0.20.5 10.0.2.6\t\tAllow two ips\n\t   10.0.20.0/24\t\t\tAllow subnet"
+	read_param "$script_id" 1 "List of IPs or domains (h for help)" "" "." "List of IPs, domains or subnets to allow separated by spaces.\nSAMPLES:\n   www.mydomain.com\tAllow Google domain\n   10.0.20.5\t\tAllow specific ip\n   10.0.20.5 10.0.2.6\tAllow two ips\n   10.0.20.0/24\t\tAllow subnet"
 	# PARAM2: persistent?
 	read_param "$script_id" 2 "Persistent [Y/n]" "y" "^(y|n)$"
 	return

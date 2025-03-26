@@ -165,18 +165,18 @@ ${C_LY}action${S_R} &                 Exec action in background (all in this pan
 ${C_LY}action${S_R} &&                Exec action in background (in separate panles)
 ${C_LB}dir${S_R}                      Enter to dir menu     
 cd ..                    Up to parent menu
-${S_B}${C_LB}d${S_R}ir                      List scripts of current menu
+${C_N}${S_U}d${S_R}ir                      List scripts of current menu
 
 ${S_D}Internal commands${S_R}
-${S_B}${C_LB}n${S_R}ew-panel                Open extra script panel
-${S_B}${C_LB}c${S_R}lose-panel              Close extra script panel
-${S_B}${C_LB}r${S_R}efresh-map              Refresh map with current selection
-${S_B}${C_LB}s${S_R}elect-hosts <range>     Select new host range
-set-${S_B}${C_LB}l${S_R}ab <lab>            Change lab
-set-${S_B}${C_LB}m${S_R}ode lin|win         Set hosts OS: linux or windows
-${S_B}${C_LB}e${S_R}xit                     Exit labadmin session"
+${C_N}${S_U}n${S_R}ew-panel                Open extra script panel
+${C_N}${S_U}c${S_R}lose-panel              Close extra script panel
+${C_N}${S_U}r${S_R}efresh-map              Refresh map with current selection
+${C_N}${S_U}s${S_R}elect-hosts <range>     Select new host range
+${C_N}${S_U}l${S_R}ab <lab>                Change lab
+${C_N}${S_U}m${S_R}ode lin|win             Set hosts OS: linux or windows
+${C_N}${S_U}e${S_R}xit                     Exit labadmin session"
 		regex=".*"
-		cd "${labadmin_tmp_path}/actions/"
+		cd "${labadmin_tmp_path}/actions/$srvmode/${script_current}"
 		read_param "${script_current:-/}" "0" "$list" "" "$regex" "$help"
 
 		# P0: remove starting cd
@@ -203,23 +203,23 @@ ${S_B}${C_LB}e${S_R}xit                     Exit labadmin session"
 		# ACTION r: refresh map panel
 		elif [[ "${p0,,}" = @(r?( )|refresh-map?( )) ]]; then
 			[ ! "$map_PID" ] && labadmin_tmp-vars-load map_PID
-			kill -SIGUSR1 "$map_PID"
+			kill -35 "$map_PID"
 			unset script_id; list="Action"; continue			
 
 		# ACTION s: select range in map panel
-		elif [[ "${p0,,}" = @(s *|select-map *) ]]; then
+		elif [[ "${p0,,}" = @(s *|select-hosts *) ]]; then
 			[ ! "$map_PID" ] && labadmin_tmp-vars-load map_PID
 			rhosts=$(echo "$p0" | cut -f2- -d" "); labadmin_tmp-vars-save rhosts
-			kill -SIGUSR2 "$map_PID"
+			kill -36 "$map_PID"
 			unset script_id; list="Action"; continue	
 
 		# ACTION l: show labs
-		elif [[ "${p0,,}" = @(l?( )|set-lab?( )) ]]; then
-			echo -e "    LABS: $(ls "${labs_path}" | tr "\n" " ")\n"
+		elif [[ "${p0,,}" = @(l?( )|lab?( )) ]]; then
+			echo -e "    ${S_B}LABS${S_R}: $(ls "${labs_path}" | tr "\n" " ")\n"
 			unset script_id; list="Action"; continue	
 
 		# ACTION l: change lab
-		elif [[ "${p0,,}" = @(l *|set-lab *) ]]; then
+		elif [[ "${p0,,}" = @(l *|lab *) ]]; then
 			l=$(echo "$p0" | cut -f2- -d" " | xargs); lf="${labs_path}/${l}"			
 			# lab not found
 			[ ! -r "$lf" ] && { labadmin_error "    Lab $l not found"; echo -e "    LABS: $(ls "${labs_path}" | tr "\n" " " | sed 's/ask//')\n"; unset script_id; list="Action"; continue; }
@@ -227,22 +227,24 @@ ${S_B}${C_LB}e${S_R}xit                     Exit labadmin session"
 			[ "$l" = "$lab_id" ] && { unset script_id; list="Action"; continue; }
 
 			[ ! "$map_PID" ] && labadmin_tmp-vars-load map_PID
-			lab_file="$lf"; labadmin_tmp-vars-save lab_file
-			kill -SIGUSR1 "$map_PID"
-			labadmin_status-send "\n ${C_DN}───${S_R} ${S_B}MAP ${l} SELECTED${S_R} ${C_DN}────────────────────────────${S_R}"
-			exec bash "$0" $labadmin_PID		
+			lab_file="$lf"; lab_id="$l"; rhosts=""; labadmin_tmp-vars-save lab_file lab_id rhosts
+			kill -37 "$map_PID"
+			labadmin_status-send "\n ${C_N}###${S_R} ${S_B}MAP SELECTED: ${C_Y}${l}${S_R}"
+			clear; exec bash "$0" $labadmin_PID		
 
 		# ACTION m: change srvmode
-		elif [[ "${p0,,}" = @(m *|set-mode *) ]]; then
+		elif [[ "${p0,,}" = @(m *|mode *) ]]; then
 			m=$(echo "$p0" | cut -f2- -d" " | xargs); [ "${m,,}" = win ] && m="winrm"; [[ "${m,,}" == @(lin|linux) ]] && m="ssh"; 
 			[[ "$m" != @(ssh|winrm) ]] && { labadmin_error "    Incorrect mode $m"; unset script_id; list="Action"; continue; }
+			# mode is current mode
+			[ "$m" = "$srvmode" ] && { unset script_id; list="Action"; continue; }
 
 			[ ! "$map_PID" ] && labadmin_tmp-vars-load map_PID
-			srvmode="$m"; labadmin_tmp-vars-save srvmode
-			kill -SIGUSR1 "$map_PID" && clear
+			srvmode="$m"; rhosts=""; labadmin_tmp-vars-save srvmode rhosts
+			kill -38 "$map_PID" && clear
 
-			labadmin_status-send "\n ${C_DN}───${S_R} ${S_B}${m^^} MODE SELECTED${S_R} ${C_DN}────────────────────────────${S_R}"
-			exec bash "$0" $labadmin_PID
+			labadmin_status-send "\n ${C_N}##${S_R} SRV MODE SELECTED: ${C_Y}${m^^}${S_R}"
+			clear; exec bash "$0" $labadmin_PID
 
 		# ACTION exit|quit: exit script
 		elif [[ "${p0,,}" == @(e?( )|exit?( )|quit?( )) ]]; then

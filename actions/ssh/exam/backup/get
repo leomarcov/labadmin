@@ -19,7 +19,7 @@ if [ "$1" = "--load-scriptinfo" ]; then
 #=== READ PARAMS ===================================================================
 elif [ "$1" = "--readparams" ]; then
 	# PARAM1: backup number
-	read_param "$script_id" 1 "Backup number (h for help)" "" "(^[0-9]+|$)|^$" "\tExam backup ID number\n\t Empty value for select from list"
+	read_param "$script_id" 1 "Backup number (h for help)" "" "^[0-9]+$" ""
 	read_param "$script_id" 2 "Destination path (default $HOME)" "$HOME" ""
     return
 fi

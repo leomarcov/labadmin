@@ -48,7 +48,7 @@ source "$config_path" || labadmin_error "ERROR: error loading labadmin config fi
 #===============================================================================
 reset 
 clear
-labadmin_draw-box 0 0 "   EXECUTION STATUS LOG"
+echo -e "${S_B}EXECUTION STATUS LOG${S_R}"
 
 stty -echo										# Disable keyboard write
 while true; do 

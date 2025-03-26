@@ -42,7 +42,7 @@ map_PID="$$"; labadmin_tmp-vars-save map_PID
 
 # LOAD LAB FILE
 srvmode2="$srvmode"
-source "$lab_file" ||labadmin_error "ERROR: error loading lab file: $lab_file" 1
+source "$lab_file" || labadmin_error "ERROR: error loading lab file: $lab_file" 1
 srvmode="$srvmode2"
 
 # TMUX INIT PANEL
@@ -57,11 +57,17 @@ map_nc="$(echo "$map" | awk '{print NF}' | sort -nu | tail -n 1)"	# Column numbe
 # TMUX FIX MAP PANEL ACCORDING MAP DIMENSIONS
 tmux_fix-map-panel
 
-# SIGNAL SIGUSR1: REFRESH MAP 
-trap 'labadmin_tmp-vars-save rhosts; exec bash "$0" $labadmin_PID' SIGUSR1
+# SIGNAL 35: REFRESH MAP 
+trap 'search_ips; stty sane; return' 35
 
-# SIGNAL SIGUSR2: SELECT NEW RANGE
-trap 'labadmin_tmp-vars-load rhosts; stty sane; return' SIGUSR2  
+# SIGNAL 36: SELECT NEW RANGE
+trap 'labadmin_tmp-vars-load rhosts; stty sane; return' 36  
+
+# SIGNAL 37: SET LAB
+trap 'exec bash "$0" $labadmin_PID' 37  
+
+# SIGNAL 38: SET SRVMODE
+trap 'exec bash "$0" $labadmin_PID' 38
 
 #===============================================================================
 # MAIN LOOP
