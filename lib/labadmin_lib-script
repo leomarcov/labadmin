@@ -217,7 +217,7 @@ ${S_D}Internal commands${S_R}
 		# ACTION h: list selected hosts
 		elif [[ "${p0,,}" = @(t?( )|list-hosts?( )) ]]; then
 			labadmin_tmp-vars-load shosts_listen
-			echo -e "    ${S_B}HOSTS${S_R}: $(echo "$shosts_listen" | xargs)\n"
+			echo -e "    ${S_B}HOSTS${S_R} ($(echo "$shosts_listen" | wc -w)): $(echo "$shosts_listen" | xargs)\n"
 			unset script_id; list="Action"; continue
 
 		# ACTION l: show labs

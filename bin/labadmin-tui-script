@@ -75,14 +75,15 @@ while true; do
 
 	# LOAD SELECTED HOSTS
 	unset shosts 
-	while [ ! "$shosts" ]; do
-		labadmin_tmp-vars-load ips shosts shosts_listen shosts_inactive
-		[ "${scripts_type[$script_id],,}" = "inactive" ] && shosts="$shosts_inactive" || shosts="$shosts_listen"
-		[ ! "$shosts" ] && read -e -p "$(echo -e '   ! No hosts selected\n     Select hosts in MAP panel and press '"${S_B}[ENTER]${S_R}") "
-	done
+	labadmin_tmp-vars-load ips shosts shosts_listen shosts_inactive
+	[ "${scripts_type[$script_id],,}" = "inactive" ] && shosts="$shosts_inactive" || shosts="$shosts_listen"
+	[ ! "$shosts" ] && { echo -e '   ! No hosts selected\n'; continue; }
 
 	# SEND STATUS LOG
 	labadmin_status-send "\n ${S_B}→ EXEC ${C_Y}${script_id}${S_R} to $(set -- $shosts; echo $#) hosts $([ "$exec_bg" ] && echo "($exec_bg)" | sed 's/sub/\&/' | sed 's/win/\&\&/')"
+
+	# LOG EVENT
+	# TO-DO
 
 	# EXEC ADMIN 
 	if [[ "${scripts_type[$script_id],,}" = admin* ]]; then
