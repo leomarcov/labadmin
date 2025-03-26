@@ -7,7 +7,7 @@
 #  DESCRIPTION: Admin remotely hosts in a computer lab environment
 #
 #       AUTHOR: Leonardo Marco (labadmin@leonardomarco.com)
-#	   LICENSE: GNU General Public License v3.0
+#	    LICENSE: GNU General Public License v3.0
 #      VERSION: 2019.04
 #      CREATED: 16.02.2017
 #=================================================================================== 
@@ -34,11 +34,8 @@ source "${lib_path}/labadmin_lib-install"									# LABADMIN INSTALL LIB
 #	[$1]: exit code
 #===============================================================================
 function help() {
-	echo -e "  Labadmin TUI interface:
+	echo -e "  Labadmin TUI
    ${S_B}$(basename $0)${S_R} [-l ${S_U}lab_config${S_R}] [-i ${S_U}face${S_R}] [-W|-L] [-F]
-
-  Labadmin CLI interface:
-   ${S_B}$(basename $0)${S_R} [-l ${S_U}lab_config${S_R}] [-i ${S_U}face${S_R}] -r ${S_U}range${S_R} [-a ${S_U}action${S_R}] [-1|-2|-3|-4|-5|-6|-7|-8|-9 ${S_U}param${S_R}] [-W|-L] [-F] [-M]
 
   OPTIONS
    ${S_B}-l ${S_U}lab_config${S_R}
@@ -49,15 +46,6 @@ function help() {
    ${S_B}-i ${S_U}iface${S_R}
 \tNetwork interface to use. Overrides iface variable in labadmin config file.
 
-   ${S_B}-r ${S_U}range${S_R}
-\tHosts range to apply actions. For example: 11,34,23,21-28
-
-   ${S_B}-a ${S_U}action${S_R}
-\tAction to exec. For example: user/add
-
-   ${S_B}-1|-2|-3|-4|-5|-6|-7|-8|-9 ${S_U}param${S_R}
-\tAction parameter value to exec.
-
    ${S_B}-W ${S_R}
 \tForce Windows WINRM server mode. Overrides srvmode variable in lab config file.
 
@@ -66,13 +54,6 @@ function help() {
 
    ${S_B}-F ${S_R}
 \tForce continue even check dependencies fail
-
-   ${S_B}-M ${S_R}
-\tShow MAP with selected hosts (CLI mode)
-
-  CLI SAMPLES
-    ${S_B}$(basename $0)${S_R} -r 5,12,15-20 -a exec/com -1 \"du -sh /home/*\"
-    ${S_B}$(basename $0)${S_R} -r all -a \"software/packages/upgrade &\" -1 y -2 y
 "
 	exit $1
 }
@@ -87,7 +68,7 @@ function help() {
 #	$@	All parameter from command line
 #===============================================================================
 function check_params() {
-	while getopts ":hl:i:r:a:1:2:3:4:5:6:7:8:9:SWLFMv" o
+	while getopts ":hl:i:WLFv" o
 	do
 		case $o in
 			h) hparam=1; help 0 ;;
@@ -104,15 +85,6 @@ function check_params() {
 				iparam=1
 				piface="$OPTARG"
 				;;
-			r) # -r:hostS
-				rparam=1
-				rhosts="$OPTARG"
-				;;
-			a) # -a:script_id (saved in p0)
-				aparam=1
-				p0param=1
-				p0="$OPTARG"
-				;;
 			W) # -W:WINRM mode
 				Wparam=1;
 				;;
@@ -121,45 +93,6 @@ function check_params() {
 				;;
 			F) # -F: force exec missing dependencies
 				Fparam=1
-				;;
-			M) # -M: show map on cli mode
-				Mparam=1
-				;;
-			1) # -1: PARAM1
-				p1param=1
-				p1="$OPTARG"
-				;;
-			2) # -2: PARAM2
-				p2param=1
-				p2="$OPTARG"
-				;;
-			3) # -3: PARAM3
-				p3param=1
-				p3="$OPTARG"
-				;;
-			4) # -4: PARAM4
-				p4param=1
-				p4="$OPTARG"
-				;;
-			5) # -5: PARAM5
-				p5param=1
-				p5="$OPTARG"
-				;;
-			6) # -6: PARAM6
-				p6param=1
-				p6="$OPTARG"
-				;;
-			7) # -7: PARAM7
-				p7param=1
-				p7="$OPTARG"
-				;;
-			8) # -8: PARAM8
-				p8param=1
-				p8="$OPTARG"
-				;;
-			9) # -9: PARAM9
-				p9param=1
-				p9="$OPTARG"
 				;;
 			v) # -v: version
 				labadmin_show_version
@@ -187,29 +120,16 @@ labadmin_show_version
 # CHECK ROOT
 [ ! "$Fparam" ] && [ "$EUID" -eq 0 ] && labadmin_error "Labadmin must be exec as regular user (no root)" 1
 
-# CHECK CONFIG FILE
+# LOAD LABADMIN CONFIG FILE
 [ ! -r "$config_path" ] && labadmin_error "Can't access labadmin config file ${config_path//\/\//\/}" 1
 source "$config_path" || labadmin_error "ERROR: error loading labadmin config file: $config_path" 1
 
-# CHECK LAB
+# LOAD LAB FILE
 default_lab_path="${labadmin_path}/conf/lab.default"
 [ ! "$lab_id" ] && [ -r "$default_lab_path" ] && lab_id=$(cat "$default_lab_path" | xargs)		# Get defaul lab
 [ ! "$lab_id" ] && labadmin_error "Lab not defined\n${S_R}Config default lab in ${S_B}$default_lab_path${S_R} or use -l param" 1
 lab_file="${labs_path}/${lab_id}"
 [ ! -r "$lab_file" ] && labadmin_error "Can't access lab config file: $lab_file" 1
-
-# CLI MODE
-if [ "$rparam" ]; then
-	unset tuimode
-	climode=true
-	[ ! "$Mparam" ] && [ ! "$aparam" ] && labadmin_error "Select action to do" 1
-
-# TUI MODE
-else
-	[[ "$p1param" || "$p2param" || "$p3param" || "$p4param" || "$p5param" || "$p6param" || "$p7param" || "$p8param" || "$p9param" || "$Mparam" ]] && labadmin_error "ERROR: invalid CLI mode parameters" 1
-	tuimode=true
-	unset climode
-fi
 
 # CHECK ADMIN DEPENDENCIES
 check_dependencies "noinstall" "scripts_admindeps" >/dev/null
@@ -231,9 +151,10 @@ ipadmin="$(labadmin_ip "$iface")"
 ! [ "$ipadmin" ] && labadmin_error "ERROR: cant get IP from iface $iface\nCheck iface config in $config_path or use -i param" 1
 macadmin="$(labadmin_mac "$iface")"
 
-# TMP INIT
+# TMP INITIALIZATION
 readonly labadmin_PID="$$"												# set labadmin_PID
 labadmin_tmp-init															# initialize tmp directories
+labadmin_generate-autocomplete										# initialize autocomplete directory
 
 # SERVER MODE
 if [ "$Lparam" ]; then
@@ -241,31 +162,18 @@ if [ "$Lparam" ]; then
 elif  [ "$Wparam" ]; then
 	srvmode="winrm";
 elif [ ! "$srvmode" ]; then
-	srvmode="ssh"										# Default server mode ssh
+	srvmode="ssh"															# Default server mode ssh
 fi
 
 
-#### TUI EXECUTION
-if [ "$tuimode" ]; then
-	# TMUX mode
-	wmctrl -r :ACTIVE: -b add,maximized_vert,maximized_horz &> /dev/null && sleep 0.2
-	[ "$COLUMNS" -ge 140 ] && tmuxmode="1" || tmuxmode="2"		# tmuxmode=1 for tmux in 3panles, tmuxmode=2 for tmux in 3 windows
+# CHECK TMUX MODE: full|compact
+wmctrl -r :ACTIVE: -b add,maximized_vert,maximized_horz &> /dev/null && sleep 0.2
+[ "$COLUMNS" -ge 140 ] && tmuxmode="full" || tmuxmode="compact"		# tmuxmode=full for tmux in 3panles, tmuxmode=compact for tmux in 3 windows
 
-	# Save vars in tmp
-	labadmin_tmp-vars-save ipadmin macadmin lab_file iface Lparam Wparam Fparam srvmode tmuxmode lab_id
+# EXEC LABADMIN-TUI
+labadmin_tmp-vars-save ipadmin macadmin lab_file iface Lparam Wparam Fparam srvmode tmuxmode lab_id
+[ "$tmuxmode" =  full ] && tmux_create-session-panels || tmux_create-session-windows
 
-	# Exec TMUX 3 panels
-	if [ "$tmuxmode" -eq 1 ]; then
-		tmux_create-session-panels
-	# Exec TMUX 3 windows
-	else
-		tmux_create-session-windows
-	fi
-
-#### CLI EXECUTIOM
-else
-	exec "${labadmin_path}/bin/labadmin-cli" "$@"
-fi
 
 
 

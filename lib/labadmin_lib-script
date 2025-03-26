@@ -160,23 +160,23 @@ function select_script() {
 	while [ ! "$script_id" ]; do
 		# READ SCRIPT AS PARAM
 		local help="${S_D}Action options${S_R}
-${C_Y}action${S_R}                Exec action
-${C_LY}action${S_R} &              Exec action in background (all in this panel)
-${C_LY}action${S_R} &&             Exec action in background (in separate panles)
-${C_LB}dir${S_R}                   Enter to dir menu     
-cd ..                 Up to parent menu
-[d]ir                 List scripts of current menu
+${C_Y}action${S_R}                   Exec action
+${C_LY}action${S_R} &                 Exec action in background (all in this panel)
+${C_LY}action${S_R} &&                Exec action in background (in separate panles)
+${C_LB}dir${S_R}                      Enter to dir menu     
+cd ..                    Up to parent menu
+${S_B}${C_LB}d${S_R}ir                      List scripts of current menu
 
 ${S_D}Internal commands${S_R}
-[n]ew                 Open extra script panel
-[c]lose               Close extra script panel
-[r]efresh             Refresh map with current selection
-[s]select <range>     Select new host range
-[l]ab <lab>           Change lab
-[m]ode lin|win        Set hosts OS: linux or windows
-[e]xit                Exit labadmin session"
+${S_B}${C_LB}n${S_R}ew-panel                Open extra script panel
+${S_B}${C_LB}c${S_R}lose-panel              Close extra script panel
+${S_B}${C_LB}r${S_R}efresh-map              Refresh map with current selection
+${S_B}${C_LB}s${S_R}elect-hosts <range>     Select new host range
+set-${S_B}${C_LB}l${S_R}ab <lab>            Change lab
+set-${S_B}${C_LB}m${S_R}ode lin|win         Set hosts OS: linux or windows
+${S_B}${C_LB}e${S_R}xit                     Exit labadmin session"
 		regex=".*"
-		cd "${scripts_path}/${script_current}/"
+		cd "${labadmin_tmp_path}/actions/"
 		read_param "${script_current:-/}" "0" "$list" "" "$regex" "$help"
 
 		# P0: remove starting cd
@@ -191,35 +191,35 @@ ${S_D}Internal commands${S_R}
 			continue
 
 		# ACTION n: new extra script panel
-		elif [[ "${p0,,}" = @(n|new) ]]; then
+		elif [[ "${p0,,}" = @(n?( )|new-panel?( )) ]]; then
 			tmux_create-window-com "SP$(($(tmux_list-windows | egrep "^SP[0-9]+$" | tail -1 | egrep -o "[0-9]+")+1))" "${labadmin_path}/bin/labadmin-tui-script ${labadmin_PID}" "focus"
 			return 1
 
 		# ACTION c: close extra script panel
-		elif [[ "${p0,,}" = @(c|close) ]]; then
+		elif [[ "${p0,,}" = @(c?( )|close-panel?( )) ]]; then
 			tmux_close-windows
 			return 1			
 
 		# ACTION r: refresh map panel
-		elif [[ "${p0,,}" = @(r|refresh) ]]; then
+		elif [[ "${p0,,}" = @(r?( )|refresh-map?( )) ]]; then
 			[ ! "$map_PID" ] && labadmin_tmp-vars-load map_PID
 			kill -SIGUSR1 "$map_PID"
 			unset script_id; list="Action"; continue			
 
 		# ACTION s: select range in map panel
-		elif [[ "${p0,,}" = @(s *|select *) ]]; then
+		elif [[ "${p0,,}" = @(s *|select-map *) ]]; then
 			[ ! "$map_PID" ] && labadmin_tmp-vars-load map_PID
 			rhosts=$(echo "$p0" | cut -f2- -d" "); labadmin_tmp-vars-save rhosts
-			kill -SIGUSR1 "$map_PID"
+			kill -SIGUSR2 "$map_PID"
 			unset script_id; list="Action"; continue	
 
 		# ACTION l: show labs
-		elif [[ "${p0,,}" = @(l|lab) ]]; then
+		elif [[ "${p0,,}" = @(l?( )|set-lab?( )) ]]; then
 			echo -e "    LABS: $(ls "${labs_path}" | tr "\n" " ")\n"
 			unset script_id; list="Action"; continue	
 
 		# ACTION l: change lab
-		elif [[ "${p0,,}" = @(l *|lab *) ]]; then
+		elif [[ "${p0,,}" = @(l *|set-lab *) ]]; then
 			l=$(echo "$p0" | cut -f2- -d" " | xargs); lf="${labs_path}/${l}"			
 			# lab not found
 			[ ! -r "$lf" ] && { labadmin_error "    Lab $l not found"; echo -e "    LABS: $(ls "${labs_path}" | tr "\n" " " | sed 's/ask//')\n"; unset script_id; list="Action"; continue; }
@@ -233,19 +233,19 @@ ${S_D}Internal commands${S_R}
 			exec bash "$0" $labadmin_PID		
 
 		# ACTION m: change srvmode
-		elif [[ "${p0,,}" = @(m *|mode *) ]]; then
+		elif [[ "${p0,,}" = @(m *|set-mode *) ]]; then
 			m=$(echo "$p0" | cut -f2- -d" " | xargs); [ "${m,,}" = win ] && m="winrm"; [[ "${m,,}" == @(lin|linux) ]] && m="ssh"; 
 			[[ "$m" != @(ssh|winrm) ]] && { labadmin_error "    Incorrect mode $m"; unset script_id; list="Action"; continue; }
 
 			[ ! "$map_PID" ] && labadmin_tmp-vars-load map_PID
 			srvmode="$m"; labadmin_tmp-vars-save srvmode
-			kill -SIGUSR2 "$map_PID"
+			kill -SIGUSR1 "$map_PID" && clear
 
 			labadmin_status-send "\n ${C_DN}───${S_R} ${S_B}${m^^} MODE SELECTED${S_R} ${C_DN}────────────────────────────${S_R}"
 			exec bash "$0" $labadmin_PID
 
 		# ACTION exit|quit: exit script
-		elif [[ "${p0,,}" == @(e|exit|quit) ]]; then
+		elif [[ "${p0,,}" == @(e?( )|exit?( )|quit?( )) ]]; then
 			labadmin_exit
 
 		# ACTION LIST: list menu script again
@@ -541,11 +541,11 @@ function exec_script() {
 		[ "$exec_bg" = "sub" ] && labadmin_beep "error1"
 		[ "$nhost" ] && hosts_err[$nhost]=$out  
 		echo -e "${S_R}└─── ${S_B}[${nhost:-ADMIN}] ${C_LB}${iphost:-LOCALHOST}${C_D} ← ${C_LR}ERROR ($out)${C_D}${S_R} $(seq -s"─" $((${COLUMNS}-21-${#nhost}-${#iphost}-${#out}$([ ! "$nhost" ] && echo "-5")$([ ! "$iphost" ] && echo "-9")))| tr -d "[0-9]")─┘"
-		[ "$tuimode" ] && labadmin_status-send "  [${nhost:-AD}] ${S_B}${C_Y}${script_id} ${C_R}EXEC ERROR${S_R}"
+		[ "$tmuxmode" ] && labadmin_status-send "  [${nhost:-AD}] ${S_B}${C_Y}${script_id} ${C_R}EXEC ERROR${S_R}"
 	else
 		[ "$nhost" ] && hosts_ok[$nhost]=$out  
 		echo -e "${S_R}└─── ${S_B}[${nhost:-ADMIN}] ${C_LB}${iphost:-LOCALHOST}${C_D} ← ${C_LG}OK${C_D}${S_R} $(seq -s"─" $((${COLUMNS}-15-${#nhost}-${#iphost}$([ ! "$nhost" ] && echo "-5")$([ ! "$iphost" ] && echo "-9")))| tr -d "[0-9]")─┘"
-		[ "$tuimode" ] && labadmin_status-send "  [${nhost:-AD}] ${S_B}${C_Y}${script_id} ${C_G}EXEC OK${S_R}"
+		[ "$tmuxmode" ] && labadmin_status-send "  [${nhost:-AD}] ${S_B}${C_Y}${script_id} ${C_G}EXEC OK${S_R}"
 	fi
 
 	return $out

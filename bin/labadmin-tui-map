@@ -28,9 +28,6 @@ source "${lib_path}/labadmin_lib-tmp"										# LABADMIN TMP LIB
 #===============================================================================
 # INITIALIZATION
 #===============================================================================
-# SET TUIMODE
-tuimode=true
-
 # LABADMIN PID
 readonly labadmin_PID="$1" 
 ps -p "$labadmin_PID" &>/dev/null || { labadmin_error "Cant found labadmin main process $labadmin_PID"; read; tmux kill-session; }

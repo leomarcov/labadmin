@@ -1,0 +1,66 @@
+#!/usr/bin/env bash
+#===================================================================================
+#        FILE: labs/test
+# DESCRIPTION: Sample file for a lab config
+#      AUTHOR: Leonardo Marco (labadmin@leonardomarco.com)
+#     LICENSE: GNU General Public License v3.0
+#===================================================================================
+
+#===============================================================================
+# GLOBAL CONFIG
+#===============================================================================
+# Lab name to show in interface
+labname="TEST LAB"
+
+# Server default mode
+# Possible values: ssh|winrm
+# Use parameters -L (ssh) or -W (winrm) for override default mode
+srvmode="ssh"
+
+
+#===============================================================================
+# LAB HOSTS DISTRIBUTION
+#===============================================================================
+# LIST OF MACS FOR EACH HOST 
+# macs[<host_id>]="<host_mac>""
+macs[11]="08:00:27:B5:EE:E8"
+macs[12]="08:00:27:2a:f0:f2"
+macs[13]="08:00:27:bb:07:9d"
+macs[14]="08:00:27:a3:71:09"
+macs[21]="08:00:27:4A:53:DE"
+macs[22]="08:00:27:9C:36:A0"
+macs[23]="08:00:27:4B:42:51"
+macs[24]="08:00:27:27:B6:5E"
+macs[31]="08:00:27:78:b8:5c"	
+macs[32]="08:00:27:7F:9D:BC"
+macs[33]="08:00:27:05:64:37"
+macs[33]="08:00:27:DC:CF:11"
+macs[34]="08:00:27:ba:42:62"
+macs[35]="08:00:27:ba:42:61"
+macs[36]="08:00:27:ba:42:61"
+macs[41]="08:00:27:14:65:f7"
+macs[42]="08:00:27:a3:71:79"
+macs[43]="08:00:27:a3:71:89"
+macs[44]="08:00:27:a3:71:99"
+macs[45]="08:00:27:a3:71:09"
+macs[46]="08:00:27:a3:71:09"
+macs[51]="08:00:27:a3:71:09"
+macs[52]="08:00:27:a3:71:09"
+macs[53]="08:00:27:a3:71:09"
+macs[54]="08:00:27:a3:71:09"
+macs[55]="08:00:27:a3:71:09"
+macs[56]="08:00:27:31:BD:42"
+
+
+# MAP DISTRIBUTION FOR EACH HOST IN MAP
+# Break line is used for row separator
+# Space is used for column separator
+# Each character not iqual a number is discarted
+ map='
+ 56 55 54 53 52 51
+ 46 45 34 33 32 31
+ 36 35 34 33 32 31
+ __ __ 24 23 22 21
+ __ __ 14 13 12 11
+ '
+

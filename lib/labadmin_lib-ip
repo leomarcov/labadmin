@@ -45,10 +45,10 @@ function search_ips() {
 	unset map_updates
 
 	# UPDATE ARP INFO
-	[ "$tuimode" ] && print_map_prompt " ${C_N}Scanning ${iface}...${S_R}"	# Show notifiction messaage before map
+	[ "$tmuxmode" ] && print_map_prompt " ${C_N}Scanning ${iface}...${S_R}"	# Show notifiction messaage before map
 	local arp_out="$(arp-scan -l -I $iface -q -r 1 -N -t ${scan_timeout:-500} 2>/dev/null)" 
 	if [ $? -ne 0 ]; then
-		if [ "$tuimode" ]; then
+		if [ "$tmuxmode" ]; then
 			print_map_prompt "${S_B}${C_R}! Failed to scan network hosts${S_R}"
 			cursor_hide; read; cursor_show
 		else
@@ -71,19 +71,19 @@ function search_ips() {
 		if [ "$ip" ]; then
 			ips[$n]=$(echo $ip | awk '{print $1}')
 			if nc -z -w 1 "$ip" "$port" &> /dev/null; then
-				[ "$tuimode" ] && [[ "${hosts_status[$n]}" = @(off|inactive) ]] && register_map-update "$n" "up"
+				[ "$tmuxmode" ] && [[ "${hosts_status[$n]}" = @(off|inactive) ]] && register_map-update "$n" "up"
 				hosts_status[$n]="listen"
 			else
-				[ "$tuimode" ] && [[ "${hosts_status[$n]}" = listen ]] && register_map-update "$n" "down"
+				[ "$tmuxmode" ] && [[ "${hosts_status[$n]}" = listen ]] && register_map-update "$n" "down"
 				hosts_status[$n]="inactive" 
 			fi
 		else
-			[ "$tuimode" ] && [[ "${hosts_status[$n]}" = @(listen|inactive) ]] && register_map-update "$n" "down"
+			[ "$tmuxmode" ] && [[ "${hosts_status[$n]}" = @(listen|inactive) ]] && register_map-update "$n" "down"
 			hosts_status[$n]="off"
 		fi
 	done
 
-	[ "$tuimode" ] && print_map_prompt " > ${S_U}Select hosts${S_R}:"
+	[ "$tmuxmode" ] && print_map_prompt " > ${S_U}Select hosts${S_R}:"
 }
 
 

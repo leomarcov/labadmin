@@ -199,17 +199,17 @@ function tmux_init-panel() {
 	tmux_nw=$(tmux list-window -t $tmux_sid | wc -l)
 
 	# 1 window with 3 panles
-	if [ "$tmuxmode" -eq 1 ]; then
+	if [ "$tmuxmode" = full ]; then
 		tmux_pid_map=$(tmux list-panes -t ${tmux_sid}  -F "#{pane_id}" | sed -n '1p')
 		tmux_pid_status=$(tmux list-panes -t ${tmux_sid}  -F "#{pane_id}" | sed -n '2p')
 		tmux_pid_script=$(tmux list-panes -t ${tmux_sid}  -F "#{pane_id}" | sed -n '3p')
 	# 3 windows with 1 panel
-	elif [ "$tmuxmode" -eq 2 ]; then
+	elif [ "$tmuxmode" = compact ]; then
 		tmux_pid_map=$(tmux list-panes -t ${tmux_sid}:MAP  -F "#{pane_id}")
 		tmux_pid_status=$(tmux list-panes -t ${tmux_sid}:LOG  -F "#{pane_id}")
 		tmux_pid_script=$(tmux list-panes -t ${tmux_sid}:EXEC  -F "#{pane_id}")
 	else
-		labadmin_error "ERROR: tmux window number window incorrect!" 1
+		labadmin_error "ERROR: tmux init mode incorrect!" 1
 	fi
 
 	# SETS

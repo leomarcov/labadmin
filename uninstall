@@ -67,7 +67,7 @@ function uninstall_admin() {
 	rm -rf "$dir_install"
 
 	labadmin_info "Removing /usr/bin links"
-	rm -rf "/usr/bin/$(basename "$script_install")"
+	rm -rf "/usr/bin/$(basename "$labadmin_file")"
 
 	labadmin_info "Deactivate SUID for arp-scan command"
 	chmod u-s "$(which arp-scan)"

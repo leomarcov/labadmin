@@ -28,8 +28,7 @@ source "${lib_path}/labadmin_lib-auth"										# LABADMIN AUTHENTICATION LIB
 #===============================================================================
 # INIT
 #===============================================================================
-# SET TUIMODE and WINMODE
-tuimode=true
+# SET WINMODE
 winmode=true
 
 # LABADMIN PID

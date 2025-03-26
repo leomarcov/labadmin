@@ -15,7 +15,7 @@
 #===============================================================================
 #  LOAD LIBS
 #===============================================================================
-readonly labadmin_path="$(dirname $(dirname $(readlink -f "${0}")))"		# LABADMIN script root directory path
+readonly labadmin_path="$(dirname $(readlink -f "${0}"))"					# LABADMIN script root directory path
 readonly lib_path="${labadmin_path}/lib/"									# LABADMIN LIB PATH
 source "${lib_path}/labadmin_lib"											# LABADMIN GLOBAL LIB
 source "${lib_path}/labadmin_lib-admin"										# LABADMIN ADMIN LIB
@@ -27,6 +27,55 @@ source "${lib_path}/labadmin_lib-install"									# LABADMIN SCRIPT LIB
 source "${lib_path}/labadmin_lib-auth"										# LABADMIN AUTHENTICATION LIB
 
 
+
+#=== FUNCTION ==================================================================
+#        NAME: help
+# DESCRIPTION: Show help and exit
+# PARAMETERS:
+#	[$1]: exit code
+#===============================================================================
+function help() {
+	echo -e "  Labadmin CLI
+   ${S_B}$(basename $0)${S_R} [-l ${S_U}lab_config${S_R}] [-i ${S_U}face${S_R}] [-r ${S_U}range${S_R}] [-a ${S_U}action${S_R}] [-1|-2|-3|-4|-5|-6|-7|-8|-9 ${S_U}param${S_R}] [-W|-L] [-F] [-M]
+
+  OPTIONS
+   ${S_B}-l ${S_U}lab_config${S_R}
+\tLab config filename to use
+\tLab config files must be placed in ${S_B}labs/${S_R} directory
+\tWhen not specified ${S_B}default${S_R} file is used.
+
+   ${S_B}-i ${S_U}iface${S_R}
+\tNetwork interface to use. Overrides iface variable in labadmin config file.
+
+   ${S_B}-r ${S_U}range${S_R}
+\tHosts range to apply actions. For example: 11,34,23,21-28
+
+   ${S_B}-a ${S_U}action${S_R}
+\tAction to exec. For example: user/add
+
+   ${S_B}-1|-2|-3|-4|-5|-6|-7|-8|-9 ${S_U}param${S_R}
+\tAction parameter value to exec.
+
+   ${S_B}-W ${S_R}
+\tForce Windows WINRM server mode. Overrides srvmode variable in lab config file.
+
+   ${S_B}-L ${S_R}
+\tForce Linux SSH server mode. Overrides srvmode variable in lab config file.
+
+   ${S_B}-F ${S_R}
+\tForce continue even check dependencies fail
+
+   ${S_B}-M ${S_R}
+\tShow MAP with selected hosts
+
+  CLI SAMPLES
+    ${S_B}$(basename $0)${S_R} -r 5,12,15-20 -a exec/com -1 \"du -sh /home/*\"
+    ${S_B}$(basename $0)${S_R} -r all -a \"software/packages/upgrade &\" -1 y -2 y
+"
+	exit $1
+}
+
+
 #=== FUNCTION ==================================================================
 #        NAME: check_params
 # DESCRIPTION: Checks input parameters and load values
@@ -34,9 +83,10 @@ source "${lib_path}/labadmin_lib-auth"										# LABADMIN AUTHENTICATION LIB
 #	$@	All parameter from command line
 #===============================================================================
 function check_params() {
-	while getopts ":hl:i:r:a:1:2:3:4:5:6:7:8:9:SWLFM" o
+	while getopts ":hl:i:r:a:1:2:3:4:5:6:7:8:9:SWLFMv" o
 	do
 		case $o in
+			h) hparam=1; help 0 ;;			
 			l) # -l:LAB
 				lparam=1
 				lab_id="$OPTARG"
@@ -108,6 +158,10 @@ function check_params() {
 				p9param=1
 				p9="$OPTARG"
 				;;
+			v) # -v: version
+				labadmin_show_version
+				exit 0
+				;;						
 			\?)
 				labadmin_error "Unknown option: -$OPTARG" 1
 				;;
@@ -119,16 +173,12 @@ function check_params() {
 #===============================================================================
 # INITIALIZATION
 #===============================================================================
-# SET CLIMODE
-climode=1
-
 # CHECK PARAMETERS
 check_params "$@"
- 
-# LABADMIN TMP DIR INIT
-readonly labadmin_PID="$$"
-labadmin_tmp-init
-readonly sshagent_path="${labadmin_tmp_path}/sshagent"      						# SSH Agent info 
+[ ! "$Mparam" ] && [[ ! "$rparam" || ! "$aparam" ]] && labadmin_error "Incorrect parameters"
+
+# CHECK ROOT
+[ ! "$Fparam" ] && [ "$EUID" -eq 0 ] && labadmin_error "Labadmin must be exec as regular user (no root)" 1
 
 # LOAD LABADMIN CONFIG FILE
 source "$config_path" || labadmin_error "ERROR: error loading labadmin config file: $config_path" 1
@@ -141,14 +191,30 @@ lab_file="${labs_path}/${lab_id}"
 [ ! -r "$lab_file" ] && labadmin_error "ERROR: can't access lab config file: $lab_file" 1
 source "$lab_file"	# Import variables from lab file
 
-# INITIALIZE MAP
-if [ "$Mparam" ]; then
-	# If no map defied distribute host in colunmns to fill the screen
-	[ ! "$map" ] && map="$(echo "${!macs[*]}" | sed 's/\([0-9]\+ \)\{'$((($COLUMNS-19)/6))'\}/&\n/g')"	
-	map="$(echo "$map" | sed '/^\s*$/d')"								# Delete empty lines
-	map_nr="$(echo "$map" | wc -l)"										# Row number
-	map_nc="$(echo "$map" | awk '{print NF}' | sort -nu | tail -n 1)"	# Column number
+# CHECK ADMIN DEPENDENCIES
+check_dependencies "noinstall" "scripts_admindeps" >/dev/null
+if [ $? -ne 0 ]; then
+	if [ ! "$Fparam" ]; then
+		labadmin_error "Some dependencies was not found"
+		echo "$od" | tail -n +2
+		echo -e "Install dependencies: ${S_B}${labadmin_path}/install -A -D ask${S_R}" | tr -s "/"
+		echo -e "Or use ${S_B}labadmin -F${S_R} parameter to force exec"
+		exit 1
+	else
+		labadmin_error "Some dependencies was not found. Continue in force mode (-F)"; read
+	fi
 fi
+
+# IP-MAC ADMIN
+[ "$iparam" ] && iface="$piface"
+ipadmin="$(labadmin_ip "$iface")"
+! [ "$ipadmin" ] && labadmin_error "ERROR: cant get IP from iface $iface\nCheck iface config in $config_path or use -i param" 1
+macadmin="$(labadmin_mac "$iface")"
+
+# TMP INITIALIZATION
+readonly labadmin_PID="$$"												# set labadmin_PID
+labadmin_tmp-init														# initialize tmp directories
+labadmin_generate-autocomplete											# initialize autocomplete directory
 
 # SERVER MODE
 if [ "$Lparam" ]; then
@@ -159,11 +225,15 @@ elif [ ! "$srvmode" ]; then
 	srvmode="ssh"										# Default server mode ssh
 fi
 
-# IP-MAC ADMIN
-[ "$iparam" ] && iface="$piface"
-ipadmin="$(labadmin_ip "$iface")"
-! [ "$ipadmin" ] && labadmin_error "ERROR: cant get IP from iface $iface\nCheck iface config in $config_path or use -i param" 1
-macadmin="$(labadmin_mac "$iface")"
+
+# INITIALIZE MAP
+if [ "$Mparam" ]; then
+	# If no map defied distribute host in colunmns to fill the screen
+	[ ! "$map" ] && map="$(echo "${!macs[*]}" | sed 's/\([0-9]\+ \)\{'$((($COLUMNS-19)/6))'\}/&\n/g')"	
+	map="$(echo "$map" | sed '/^\s*$/d')"								# Delete empty lines
+	map_nr="$(echo "$map" | wc -l)"										# Row number
+	map_nc="$(echo "$map" | awk '{print NF}' | sort -nu | tail -n 1)"	# Column number
+fi
 
 # LOAD SCRIPTS
 scripts_path="${scripts_path}/${srvmode}/"
@@ -173,11 +243,13 @@ load_scripts "$(echo "${scripts_path}/${p0}" | sed 's/[& ]*$//g')"		# Load only 
 [ "$aparam" ] && auth_init
 
 
+
 #===============================================================================
 # SCRIPT EXECUTION
 #===============================================================================
 search_ips
-expand_range || labadmin_error "ERROR: invalid host range $rhosts" 1
+expand_range
+[ $? -ne 0 ] && [ ! "$Mparam" ] && labadmin_error "ERROR: no hosts selected for range $rhosts" 1
 [ "$Mparam" ] && { draw_map; echo; }
 [ ! "$aparam" ] && exit
 select_script

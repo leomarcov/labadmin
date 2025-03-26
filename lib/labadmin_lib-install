@@ -15,7 +15,7 @@
 #  INSTALL CONFIG
 #===============================================================================
 readonly dir_install="/opt/labadmin/"                   				# /opt/labadmin/
-readonly script_install="$dir_install/labadmin"         				# /opt/labadmin/labadmin
+readonly labadmin_file="$dir_install/labadmin"         					# /opt/labadmin/labadmin
 readonly labadmin_group="labadmin"   									# Group allowed to use labadmin	
 readonly installers_path="$labadmin_path/lib/installers/"				# Installers path
 declare -A dependence_errors											# Array with dependence errors in last check: dependence_errors[action_id]=dependencies(packages)...
@@ -284,13 +284,14 @@ function install_admin() {
 	chown -R root."$labadmin_group" "$dir_install"
 	find "$dir_install" -type f -exec chmod 640 {} \;
 	find "$dir_install" -type d -exec chmod 650 {} \;
-	chmod ug+x "$script_install"
+	chmod ug+x "$labadmin_file"
 	chmod ug+x "$dir_install/install"
 	chmod ug+x "$dir_install/uninstall"
 
 	labadmin_info "Creating /usr/bin links"
-	rm -rf "/usr/bin/$(basename "$script_install")" &> /dev/null
-	ln -s "$script_install" "/usr/sbin/$(basename "$script_install")"
+	rm -rf "/usr/bin/$(basename "$labadmin_file")" &> /dev/null
+	ln -s "$labadmin_file" "/usr/sbin/$(basename "$labadmin_file")"
+	ln -s "${labadmin_file}-cli" "/usr/sbin/$(basename "${labadmin_file}-cli")"
 
 	labadmin_info "Activating SUID for arp-scan command"
 	chmod u+s "$(which arp-scan)"
