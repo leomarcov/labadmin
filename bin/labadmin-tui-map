@@ -62,8 +62,9 @@ tmux_fix-map-panel
 
 # SIGNAL SIGUSR1: REFRESH MAP 
 trap 'labadmin_tmp-vars-save rhosts; exec bash "$0" $labadmin_PID' SIGUSR1
+
 # SIGNAL SIGUSR2: SELECT NEW RANGE
-trap 'exec bash "$0" $labadmin_PID' SIGUSR2
+trap 'labadmin_tmp-vars-load rhosts; stty sane; return' SIGUSR2  
 
 #===============================================================================
 # MAIN LOOP
@@ -84,7 +85,7 @@ while true; do
 	expand_range 
 
 	# Save vars in tmp
-	labadmin_tmp-vars-save kkk ips shosts shosts_listen shosts_inactive
+	labadmin_tmp-vars-save ips shosts shosts_listen shosts_inactive
 
 	# Draw map
 	draw_banner; draw_map
