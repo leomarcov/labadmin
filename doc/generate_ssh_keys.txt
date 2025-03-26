@@ -1,5 +1,0 @@
-# GENERATE NEW RSA-KEY
-ssh-keygen -t rsa -f rsa-key
-
-# CHANGE SIMETRIC PASSWORD TO GENERATED KEY
-ssh-keygen -p -f rsa-key

@@ -1,9 +1,0 @@
-Enable-PSRemoting -Force
-winrm set winrm/config/service/auth '@{Basic="true"}'
-winrm set winrm/config/service '@{AllowUnencrypted="true"}'
-winrm set winrm/config/winrs '@{MaxMemoryPerShellMB="1024"}'
-sc.exe config winrm start= auto
-Set-Item wsman:\localhost\client\trustedhosts *
-
-# Config network as private network
-# Windows 7: install last version of Windows Management Framework: https://docs.microsoft.com/es-es/powershell/wmf/5.1/install-configure

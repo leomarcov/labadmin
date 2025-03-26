@@ -75,11 +75,7 @@ function check_params() {
 			l) # -l:LAB
 				lparam=1
 				lab_id="$OPTARG"
-				if [ "${lab_id:0:1}" = "-" ]; then
-					echo "Param -l needs a valid lab ID" 1>&2
-					echo "Available lab IDs: $(ls "$labs_path" |  sed -z 's/\n/, /g' | sed 's/, $//g')" 1>&2
-					exit 1
-				fi
+				[ "${lab_id:0:1}" = "-" ] && labadmin_error "Param -l needs a valid lab ID" 1
 				;;
 			i) # -i:IFACE
 				iparam=1
@@ -127,7 +123,13 @@ source "$config_path" || labadmin_error "ERROR: error loading labadmin config fi
 # LOAD LAB FILE
 default_lab_path="${labadmin_path}/conf/lab.default"
 [ ! "$lab_id" ] && [ -r "$default_lab_path" ] && lab_id=$(cat "$default_lab_path" | xargs)		# Get defaul lab
-[ ! "$lab_id" ] && labadmin_error "Lab not defined\n${S_R}Config default lab in ${S_B}$default_lab_path${S_R} or use -l param" 1
+if [ ! "$lab_id" ]; then
+		labadmin_error "Lab not defined"
+		echo -e "AVIALABE LABS: ${S_B}$(ls "${labs_path}" | tr "\n" " ")${S_R}"
+		echo -e "  * Config default lab in ${S_B}$default_lab_path${S_R}"
+		echo -e "  * Or use ${S_B}-l${S_R} param"
+		exit 1
+fi
 lab_file="${labs_path}/${lab_id}"
 [ ! -r "$lab_file" ] && labadmin_error "Can't access lab config file: $lab_file" 1
 

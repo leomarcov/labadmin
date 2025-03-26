@@ -53,4 +53,21 @@ elif [ "$1" = "--readparams" ]; then
 fi
 
 #=== EXEC SCRIPT ===================================================================
-# Action commands...
+# ACTION SCRIPT
+# Available global variables:
+#	labadmin_iface
+#	labadmin_sshuser
+#	labadmin_sshport
+#	labadmin_ipadmin
+#	labadmin_iphost
+#	labadmin_nhost
+#	labadmin_script_type
+#	labadmin_winrmuser
+#	labadmin_winrmport
+#	labadmin_shosts_listen
+#	labadmin_machost
+#	labadmin_script_type_state
+
+
+
+
