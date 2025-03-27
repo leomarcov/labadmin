@@ -21,7 +21,7 @@ Labadmin aims to be a tool useful for IT **teachers** and computer lab **sysadmi
   * It's easy to create your own actions using Bash or Powershell languages.
 
 <p align="center">
- <img src="https://github.com/user-attachments/assets/e63e642f-674e-4f89-97e4-6c2eb3367619">
+ <img src="https://github.com/user-attachments/assets/3a84a6f7-2a19-485d-9cb8-dcb2f5273be1">
 </p>
 
 ## Working schema
