@@ -53,20 +53,22 @@ You can see labadmin in action in short animations:
 
 &nbsp;  
 # Install
-Once downloaded or cloned the project, labadmin must be configured for each lab and installed in admin and each controlled host.
+## Admin install
+  * Admin must be installed in a Linux machine (Debian, Fedora and Ubuntu has been tested).
+```bash
+git clone https://github.com/leomarcov/labadmin			# Clone repository
+cd labadmin												# Access dir
+cp templates/labadmin.config conf/						# Copy labadmin.config template to config
+cp templates/labtest labs/								# Copy lab template to labs
+
+```
 
 ## Create lab config files
   * Each lab must be defined in a config file and placed in `labadmin/labs/` directory. This file is a Bash script where config variables are defined.
   * You can use the provided [labs/test](labs/test) file as template. For more information refer to this config file comments.
     
 
-## Admin install
-  * Admin must be installed in a Linux machine (Debian, Fedora and Ubuntu has been tested).
-  * Exec: `install -A -l lab_file`, where lab_file is the name of the file located in `labs` directory to use as a default config when labadmin is open. 
-  * Optionally you can use `ask` lab as default config. This lab config file asks in each execution what lab to use.
-```bash
-install -A a11          # Install labadmin in admin machine using a11 lab file as default lab 
-```
+
 
 ## Controlled hosts install (Linux)
   * In Linux controlled hosts installer only need to install all needed dependences and configure the remote SSH access method. Not agent labadmin software is installed.
