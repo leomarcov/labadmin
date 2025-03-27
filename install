@@ -30,81 +30,66 @@ source "${lib_path}/labadmin_lib-install"										# LABADMIN INSTALL MODULE
 #	$1	exit code
 #===============================================================================
 function help() {
-	echo -e 'Install, uninstall and check labadmin dependencies for admin and host.
-  HOST INSTALL
-   \e[1m'$(basename $0)'\e[0m -H -l \e[4mid_lab\e[0m            Install host and no insert MAC in lab file
-   \e[1m'$(basename $0)'\e[0m -H -l \e[4mid_lab\e[0m -n \e[4mnhost\e[0m   Install host and insert in \e[4mid_lab\e[0m: macs[\e[4mnhost\e[0m]=<host MAC>
-
+	echo -e "Install and check labadmin dependencies for admin and host
   ADMIN INSTALL
-   \e[1m'$(basename $0)'\e[0m -A -l \e[4mid_lab_def\e[0m        Install admin and set \e[4mid_lab_def\e[0m as default lab
+   ${S_B}$(basename $0)${S_R} admin                                  Install admin controller
+
+  HOSTS INSTALL
+   ${S_B}$(basename $0)${S_R} host                                   Install and config hosts
 
   CHECK DEPENDENCIES
-   \e[1m'$(basename $0)'\e[0m -H -D ask|autoinstall|noinstall      Check host dependencies
-   \e[1m'$(basename $0)'\e[0m -A -D ask|autoinstall|noinstall      Check admin dependencies'
+   ${S_B}$(basename $0)${S_R} admin -d ask|autoinstall|noinstall     No install, only check admin dependencies
+   ${S_B}$(basename $0)${S_R} host  -d ask|autoinstall|noinstall     No install, only check host dependencies
+"
 
 	exit $1
 }
 
 
-#### READ PARAMETERS
+#### CHECK PARAMETERS
 [ $# -eq 0 ] && help
-while getopts ":D:n:Hl:A" o
+install_type="$1"
+[[ "$install_type" != @(admin|host) ]] && labadmin_error "Incorrect install type parameter. Select admin or host installation" 1
+shift
+
+while getopts ":d:h" o
 do
     case $o in
-        l) # -l:LAB
-            lparam=1
-            lab_id="$OPTARG"
-            if [ "${lab_id:0:1}" = "-" ]; then
-                echo "Param -l needs a lab ID" 1>&2
-                echo "Available lab IDs: $(ls $"labs_path" | sed -z 's/\n/, /g' | sed 's/, $//g')" 1>&2
-                exit 1
-            fi
+        d) # -d:dependencies
+            dparam=1
+            daction="$OPTARG"
+            [[ "$daction" != @(ask|autoinstall|noinstall) ]] && labadmin_error "Incorrect check dependence action ${daction}\nSupported actions: ask, autoinstall and noinstall" 1            
             ;;
-        D) # -d:dependencies
-            Dparam=1
-            Daction="$OPTARG"
-            [[ "$Daction" != @(ask|autoinstall|noinstall) ]] && labadmin_error "Incorrect check dependence action $daction\nSupported actions: ask, autoinstall and noinstall" 1            
-            ;;
-        H) # -h:nhost
-            Hparam=1
-            ;;
-        n) # -n:nhost
-            nparam=1
-            nhost="$OPTARG"
-            [ "$nhost" -ne "$nhost" ] && labadmin_error "Host number must be a number" 1
-            ;;
-        A) # -a:admin
-            Aparam=1
-            ;;
-        \?)
+        h)
             help
+            ;;
+        *)
+            labadmin_error "Error parameter" 1
             ;;
     esac
 done
 
 
-
-
-
-#### ACTION: INSTALL/UNINSTALL/CHECK
-
+#### ACTION: INSTALL/CHECK
 ## DEPENDENCIES HOST
-if [ "$Dparam" ] && [ "$Hparam" ]; then
+if [ "$install_type" = admin ] && [ "$dparam" ]; then
 	load_scripts "$scripts_path"
-    check_dependencies "$Daction" "scripts_hostdeps" 
+    check_dependencies "$daction" "scripts_admindeps"
+    echo
 
 ## DEPENDENCIES ADMIN
-elif [ "$Dparam" ] && [ "$Aparam" ]; then
+elif [ "$install_type" = host ] && [ "$dparam" ]; then
 	load_scripts "$scripts_path"
-    check_dependencies "$Daction" "scripts_admindeps"
+    check_dependencies "$daction" "scripts_hostdeps" 
+    echo
 
 ## INSTALL ADMIN
-elif [ "$Aparam" ] && [ "$lparam" ]; then
+elif [ "$install_type" = admin ]; then
 	load_scripts "$scripts_path"
     install_admin "$lab_id"
 
 ## INSTALL HOST
-elif [ "$Hparam" ] && [ "$lparam" ]; then
+elif [ "$install_type" = host ]; then
 	load_scripts "$scripts_path"
     install_host "$nhost" "$lab_id"
 

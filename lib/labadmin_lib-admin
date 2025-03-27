@@ -16,7 +16,7 @@
 readonly labadmin_script="$(readlink -f "$0")"                      				# Main script labadmin with path
 readonly labadmin_install="${labadmin_path}/install"								# Install script path
 readonly labs_path="$labadmin_path/labs/"					    					# Labs configs directory path
-readonly log_path="/var/log/$(basename "$labadmin_path").log"						# Logs file path
+readonly log_path="/var/log/labadmin.log"	                      					# Logs file path
 readonly bin_path="$labadmin_path/bin/"                                             # Labadmin bin path
 readonly config_path="${labadmin_path}/conf/labadmin.conf"                          # Labadmin global config file path
 scripts_path="$labadmin_path/actions/"                                              # Scripts directory

@@ -22,6 +22,7 @@ declare -A dependence_errors											# Array with dependence errors in last ch
 
 # List of global labadmin dependencies                   																			
 scripts_admindeps["labadmin-base"]="ssh(openssh-client|openssh-clients) systemctl(systemd) arp-scan awk ip beep tmux wmctrl" 		
+
 # List of global host dependencies
 scripts_hostdeps["labadmin-base"]="sshd(openssh-server) awk ip"
 
@@ -111,11 +112,8 @@ function check_dependencies() {
 	local action="$1"
 	local aname="$2"
 
-	#eval [[ ! -v ${aname}[@] ]] && labadmin_error "Error checking dependencies (incorrect arrayname $aname in check_dependencies function)" 1
-
-	echo "Checking modules dependencies"
-
 	# CHECK DEPENDENCIES
+	labadmin_info "Checking modules dependencies"
 	local error_code=0 packages_error m d
 	for m in $(eval echo \${!${aname}[*]}); do
 		echo " $m"
@@ -230,18 +228,10 @@ function check_dependencies() {
 #=== FUNCTION ==================================================================
 # NAME: install_admin
 # DESCRIPTION: install or reinstall admin script in $dir_install directory
-# PARAMETERS:
-#	$1   lab_id (without path) for set as default lab (in ./labs/default)
 #===============================================================================
 function install_admin() {
-    lab_id="$1"
-    lab_file="$labs_path/${lab_id}"
-
-	# CHECKS
-	[ "$(id -u)" -ne 0 ] && labadmin_error "Install must be runed as root" 1
-	[ ! "$lab_id" ] && labadmin_error "Default lab ID must be specified" 1
-	[ ! -r "$lab_file" ] && labadmin_error "Can't access lab config file $lab_file" 1
-
+	# CHECK ROOT
+	[ $EUID -ne 0 ] && labadmin_error "Install must be runed as root" 1
 
 	# DEPENDENCIES
 	check_dependencies "ask" "scripts_admindeps"
@@ -271,27 +261,31 @@ function install_admin() {
 	esac
 	echo
 
-	# INSTALL
+	# INSTALL ADMIN
 	labadmin_info "Creating $labadmin_group group"
 	cat /etc/group | grep -q "^labadmin:" || groupadd "$labadmin_group"
 
 	labadmin_info "Copying directory $dir_install"
-	if [ "$labadmin_path" != "$dir_install" ]; then
+	if [ $(readlink -f "$labadmin_path") != $(readlink -f "$dir_install") ]; then
 		rm -rf "$dir_install"
 		cp -r "$labadmin_path" "$dir_install"
+	else
+		echo "  Labadmin installation dir match install dir"
 	fi
-	[ -f "${dir_install}/conf/labadmin.conf" ] && rm -f "${dir_install}/conf/test-labadmin.conf" || mv "${dir_install}/conf/test-labadmin.conf" "${dir_install}/conf/labadmin.conf"
+
+	labadmin_info "Setting install permissions"	
 	chown -R root."$labadmin_group" "$dir_install"
 	find "$dir_install" -type f -exec chmod 640 {} \;
 	find "$dir_install" -type d -exec chmod 650 {} \;
-	chmod ug+x "$labadmin_file"
+	chmod ug+x "${labadmin_file}"
+	chmod ug+x "${labadmin_file}-cli"
 	chmod ug+x "$dir_install/install"
 	chmod ug+x "$dir_install/uninstall"
 
 	labadmin_info "Creating /usr/bin links"
-	rm -rf "/usr/bin/$(basename "$labadmin_file")" &> /dev/null
-	ln -s "$labadmin_file" "/usr/sbin/$(basename "$labadmin_file")"
-	ln -s "${labadmin_file}-cli" "/usr/sbin/$(basename "${labadmin_file}-cli")"
+	rm -rf /usr/sbin/labadmin /usr/sbin/labadmin-cli &> /dev/null
+	ln -s "${labadmin_file}" "/usr/sbin/labadmin"
+	ln -s "${labadmin_file}-cli" "/usr/sbin/labadmin-cli"
 
 	labadmin_info "Activating SUID for arp-scan command"
 	chmod u+s "$(which arp-scan)"
@@ -307,15 +301,16 @@ function install_admin() {
 	cp "$labadmin_path/desktop/labadmin.png" /usr/share/pixmaps/
 	chmod a+r /usr/share/pixmaps/labadmin.png
 
-	labadmin_info "Config labs/${lab_id} as default lab"
-	echo "$lab_id" > "${dir_install}/conf/lab.default"
-	if [ "${lab_id,,}" != "ask" ]; then
-		echo
-		read -p "Copy all labs config files? (y/N) " r
-		[ "${r,,}" = "n" ] && rm -f "$dir_install/labs/"!("$lab_id")
-	fi
-
-	echo -e "\nFinished! Add users to ${C_BY}$labadmin_group${S_R} group to allow use labadmin\n"
+	labadmin_info "\nINSTALL FINISHED!"
+	installed_labs=$(ls "${labs_path}" 2>/dev/null| tr "\n" " ")
+	labadmin_config_path="${labadmin_path}/conf/labadmin.conf"
+	echo -e " 1) SET PERMISSIONS: add users to ${S_B}${labadmin_group}${S_R} group for allow exec labadmin"
+	[ ! -f "${labadmin_config_path}" ] && echo -e " 2) LABADMIN CONFIG: copy template config ${S_B}${dir_install}/templates/labadmin.conf${S_R} to ${S_B}${dir_install}/conf/labadmin.conf${S_R} and set labadmin config" || echo -e " 2) LABADMIN CONFIG: edit ${S_B}${dir_install}/conf/labadmin.conf${S_R} and set labadmin global config and authentication"
+	echo -e " 3) CONFIG LABS FILES: "
+	[ ! "$installed_labs" ] && echo -e "    - No lab files installed\n    - Copy ${S_B}${dir_install}/templates/labtest${S_B} to ${S_B}${dir_install}/labs${S_R}, rename with lab name and edit it for each lab you need"
+	[ "$installed_labs" ] && echo -e "    - Installed labs($(echo "$installed_labs"|wc -w)): ${S_B}${installed_labs}${S_R}\n    - Edit, create and delete labs files as you need"
+	echo -e "    - Set default lab name on file ${S_B}${dir_install}/conf/lab.default${S_R}"
+	echo
 }
 
 
