@@ -129,7 +129,7 @@ function labadmin_exit() {
     if [ "$tmux_sid" ]; then
         # TMUX WIN PANEL-> EXIT
         local aw=$(tmux list-window -t "$tmux_sid" -F '#{window_active} #{window_name}' | awk '$1 == "1" {print $2}')
-        if [[ "$aw" == @(LABADMIN|MAP|EXEC|LOG) ]]; then
+        if [[ "$aw" != @(LABADMIN|MAP|EXEC|LOG) ]]; then
             exit "$ec"
         # TMUX MAIN PANEL-> KILL SESSION
         else
