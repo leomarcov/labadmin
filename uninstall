@@ -80,7 +80,7 @@ function uninstall_host() {
 	load_installer
 	if [ "$?" -eq 0 ]; then
 		installer_uninstall openssh-server
-		rm -v /etc/ssh/sshd_config
+		rm -v /etc/ssh/sshd_config &>/dev/null
 	else 
 		labadmin_error "Unable to find uninstaller for openssh-server"
 	fi
