@@ -2,7 +2,7 @@
 Labadmin is a Linux software, based on Bash shellcript, capable to remotely admin a set of hosts running Linux or Windows. Labadmin is focused to work in educational environment controlling hosts in a computer laboratory. 
 Labadmin aims to be a tool useful for IT teachers and computer lab sysadmins. 
 <p align="center">
- <img src="https://private-user-images.githubusercontent.com/32820131/427778526-565e0211-14d7-4957-a45d-3fd2c5c6fb3f.png">
+![image](https://github.com/user-attachments/assets/d8436e20-996a-485f-88df-523c2d204a0b)
 </p>
 &nbsp; 
 ## Main features
