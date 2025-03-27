@@ -325,7 +325,7 @@ function install_host() {
 	[ $EUID -ne 0 ] && labadmin_error "Install must be runed as root" 1
 
 	# LOAD CONFIG FILE
-	[ ! -f "$config_path" ] && labadmin_error "Cant access labadmin config file: $config_path"
+	[ ! -f "$config_path" ] && labadmin_error "Cant access labadmin config file: $config_path" 1
 	source "$config_path"
 
 	# DEPENDENCIES
@@ -361,7 +361,7 @@ function install_host() {
 	sed -i "/^PrintMotd/Id" /etc/ssh/sshd_config; echo "PrintMotd no" >> /etc/ssh/sshd_config
 	sed -i "/^PrintLastLog/Id" /etc/ssh/sshd_config; echo "PrintLastLog no">> /etc/ssh/sshd_config
 	[ -f /etc/pam.d/sshd ] && sed -i '/motd/s/^/#/' /etc/pam.d/sshd
-	ssh_service_name="$(systemctl list-units --type=service --all | egrep "\bssh(d)?\.service" | awk '{print $1}'| head -1)"
+	ssh_service_name="$(systemctl list-units --type=service --all | egrep -o "\bssh(d)?\.service" | cut -f1 -d. | head -1)"
 	systemctl enable "$ssh_service_name" || labadmin_error "ERROR: SSH server enable failed"
 	systemctl restart "$ssh_service_name" || labadmin_error "ERROR: SSH server start failded"
 
