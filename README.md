@@ -4,24 +4,25 @@ Labadmin aims to be a tool useful for IT teachers and computer lab sysadmins.
 
 &nbsp; 
 ## Main features
-  * Discover the host network status in a laboratory classroom by MAC address (works on DHCP networks!).
-  * Show the status of each machine in a grid map according the preconfigured position in the lab. It's easy to identificate students computers by classroom location.
+  * Discover the hosts network status in a laboratory classroom by MAC address (works on DHCP networks!).
+  * Show the status of each machine in a grid map according the preconfigured position in the lab. It's easy to identificate students computers by map location.
   * Flexible host selection using ranges. Can select all machines, only a row, odd and even machines, a specific list, etc.
   * Labadmin incorporate a full set of administrative actions ready to use (currently 133 for Linux and 40 for Windows). Some key actions are:
-    * Config a restrictive environment in a exam time (block all users, block usb drivers, set restrictive firewall rules, autobackup exam user data, block Virtualbox bridge mode and others restrictions).
-    * Send heavy files using multiple modes (unicast, local network torrent or multicast).
+    * Config a restrictive environment in a exam time (block all users, block usb drivers, set restrictive firewall rules, autobackup exam user data, block Virtualbox bridge mode, autocapture screnshoots and others restrictions).
+    * Send heavy files using multiple modes: unicast, torrent or multicast.
     * Send and schedule messages to users.
     * Config firewall settings.
     * Virtualbox management (import ovas, play, delete, snapshots, etc.)
-    * Transfer and copy disk partition images.
-    * Show and save screenshots.
+    * Transfer and copy disk partition images using ''partclone'' and ''dd''.
+    * Show and save screenshots of selected hosts.
+    * Show thumnails screenshots of map lab.
     * Other administrative tasks, like software installation, user accounts, process management, Windows activation, etc. 
 	* Much more!
   * Monitorization of action execution status. If any error has ocurred in some host is noticed.
   * It's easy to create your own actions using Bash or Powershell languages.
 
 ## Working schema
-  * Labadmin use a dedicated machine to admin the students hosts (usually teacher computer). Admin must be installed in a Linux OS. Controlled hosts can be Linux or Windows OS computers.
+  * Labadmin use a dedicated machine to admin the students hosts (usually teacher computer or server). Admin must be installed in a Linux OS. Controlled hosts can be Linux or Windows OS computers.
   * All machines must be placed in the same broadcast domain. Labadmin uses MAC address to discover computers, so works in DHCP environments. 
   * Each lab must be defined previously in a config file. Lab config file stores:
     * Authentication config to use (SSH and/or WinRM).
