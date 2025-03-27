@@ -27,8 +27,7 @@ Labadmin aims to be a tool useful for IT **teachers** and computer lab **sysadmi
 ## Working schema
   * Labadmin use a dedicated machine to admin the students hosts (usually teacher computer or server). Admin must be installed in a Linux OS. Controlled hosts can be Linux or Windows OS computers.
   * All machines must be placed in the same broadcast domain. Labadmin uses MAC address to discover computers, so works in DHCP environments. 
-  * Each lab must be defined previously in a config file. Lab config file stores:
-    * Authentication config to use (SSH and/or WinRM).
+  * Each lab must be defined previously in a config file ([templates/labtest](templates/labtest)). Lab config file stores:
     * MAC address for each host and a identification number.
     * Lab distribution: each id host must be placed in a grid according the real position in the lab.
   * When labadmin starts it discover the computers configured in the lab file, show a map to select them and exec actions in all selected hosts.
