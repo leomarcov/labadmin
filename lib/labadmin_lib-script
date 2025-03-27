@@ -229,7 +229,7 @@ ${S_D}Internal commands${S_R}
 			unset script_id; list="Action"; continue	
 
 		# ACTION a: change lab
-		elif [[ "${p0,,}" = @(a *|lab *) ]]; then
+		elif [[ "${p0,,}" = @(l *|lab *) ]]; then
 			l=$(echo "$p0" | cut -f2- -d" " | xargs); lf="${labs_path}/${l}"			
 			# lab not found
 			[ ! -r "$lf" ] && { labadmin_error "    Lab $l not found"; echo -e "    LABS: $(ls "${labs_path}" | tr "\n" " " | sed 's/ask//')\n"; unset script_id; list="Action"; continue; }
