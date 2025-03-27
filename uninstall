@@ -11,12 +11,15 @@
 #      CREATED: 16.02.2017
 #===================================================================================
 
-#### LOAD GLOBAL CONFIG
-source $(dirname $(readlink -f "$0"))"/lib/labadmin_lib"
-source $(dirname $(readlink -f "$0"))"/lib/labadmin_lib-admin"
+#===============================================================================
+#  LOAD LIBS
+#===============================================================================
+readonly labadmin_path="$(dirname $(readlink -f "${0}"))"                       # LABADMIN script root directory path
+readonly lib_path="${labadmin_path}/lib/"                                       # LABADMIN LIB PATH
+source "${lib_path}/labadmin_lib-admin"                                         # LABADMIN ADMIN VARIABLES AND FUNCTIONS
+source "${lib_path}/labadmin_lib"												# LABADMIN GLOBAL VARIABLES AND FUNCTIONS
+source "${lib_path}/labadmin_lib-install"										# LABADMIN INSTALL MODULE
 
-#### LOAD INSTALL FUNCTIONS
-source "${lib_path}/labadmin_lib-install"										
 
 
 #=== FUNCTION ==================================================================
@@ -25,32 +28,11 @@ source "${lib_path}/labadmin_lib-install"
 # DESCRIPTION: Show help and exit
 #===============================================================================
 function help() {
-	echo -e 'Uninstall labadmin from host and admin.
-   \e[1m'$(basename $0)'\e[0m -H            Uninstall host
-   \e[1m'$(basename $0)'\e[0m -A            Uninstall admin'
+	echo -e "Uninstall labadmin from host and admin
+   ${S_B}$(basename $0)${S_R} admin            Uninstall admin
+   ${S_B}$(basename $0)${S_R} host             Uninstall host
+"
 	exit $1
-}
-
-
-
-#=== FUNCTION ==================================================================
-# NAME: uninstall_host
-# DESCRIPTION: uninstall labadmin from host computer
-#===============================================================================
-function uninstall_host() {
-	[ "$(id -u)" -ne 0 ] &&	labadmin_error "Install must be runed as root" 1
-
-	# Remove ssh authentication
-	rm -v /root/.ssh/authorized_keys
-
-	# Remove SSH server
-	load_installer
-	if [ "$?" -eq 0 ]; then
-		installer_uninstall openssh-server
-		rm -v /etc/ssh/sshd_config
-	else 
-		labadmin_error "Unable to find uninstaller for openssh-server"
-	fi
 }
 
 
@@ -61,7 +43,7 @@ function uninstall_host() {
 # USAGE: uninstall_admin 
 #===============================================================================
 function uninstall_admin() {
-	[ "$(id -un)" -ne 0 ] &&	labadmin_error "Install must be runed as root" 1
+	[ $EUID -ne 0 ] && labadmin_error "Install must be runed as root" 1
 
 	labadmin_info "Removing directory $dir_install"
 	rm -rf "$dir_install"
@@ -84,10 +66,32 @@ function uninstall_admin() {
 }
 
 
+#=== FUNCTION ==================================================================
+# NAME: uninstall_host
+# DESCRIPTION: uninstall labadmin from host computer
+#===============================================================================
+function uninstall_host() {
+	[ $EUID -ne 0 ] && labadmin_error "Install must be runed as root" 1
+
+	# Remove ssh authentication
+	rm -v /root/.ssh/authorized_keys
+
+	# Remove SSH server
+	load_installer
+	if [ "$?" -eq 0 ]; then
+		installer_uninstall openssh-server
+		rm -v /etc/ssh/sshd_config
+	else 
+		labadmin_error "Unable to find uninstaller for openssh-server"
+	fi
+}
+
+
+
 #### READ PARAMETERS
 [ $# -ne 1 ] && help 1
 case "$1" in
-    -H) uninstall_host      ;;
-    -A) uninstall_admin     ;;
-    *) help 1
+    admin)	uninstall_admin     ;;
+    host) 	uninstall_host      ;;
+    *) 		help 1				;;
 esac
