@@ -19,7 +19,7 @@ if [ "$1" = "--load-scriptinfo" ]; then
 #=== READ PARAMS ===================================================================
 elif [ "$1" = "--readparams" ]; then
     # PARAM1: euser
-    read_param "$script_id" 1 "User exam (h for help)" "" "^[a-z_][a-z0-9_]*$" "Username to use in exam. Others users will be blocked in exam time.\n  - If user NOT EXISTS: create it\n  - If user EXISTS: use existent user\nIn boths, when exam ends the user can be removed or blocked"
+    read_param "$script_id" 1 "User exam (h for help)" "" "^[a-z_][a-z0-9_]*$" "Username to use in exam. Other users will be blocked in exam time.\n  - If user NOT EXISTS: create it\n  - If user EXISTS: use existent user\nWhen exam ends this user can be removed or locked"
     # PARAM2: pass
     read_param "$script_id" 2 "User password (h for help)" "" "" "Password for create new user exam or to change in existent user exam"
     # PARAM3: disable options
