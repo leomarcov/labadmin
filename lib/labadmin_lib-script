@@ -172,8 +172,8 @@ ${S_D}Internal commands${S_R}
  ${C_N}${S_U}c${S_R}lose-panel              Close current script panel
  ${C_N}${S_U}r${S_R}efresh-map              Refresh map with current selection
  ${C_N}${S_U}s${S_R}elect-hosts <range>     Select new host range
- lis${C_N}${S_U}t${S_R}-hosts               List current selected hosts
- ${C_N}${S_U}l${S_R}ab <lab>                Change lab
+ ${C_N}${S_U}l${S_R}ist-hosts               List current selected hosts
+ l${C_N}${S_U}a${S_R}b <lab>                Change lab
  ${C_N}${S_U}m${S_R}ode lin|win             Set hosts OS: linux or windows
  ${C_N}${S_U}e${S_R}xit                     Exit labadmin session"
 		regex=".*"
@@ -214,19 +214,20 @@ ${S_D}Internal commands${S_R}
 			kill -36 "$map_PID"
 			unset script_id; list="Action"; continue	
 
-		# ACTION h: list selected hosts
-		elif [[ "${p0,,}" = @(t?( )|list-hosts?( )) ]]; then
+		# ACTION l: list selected hosts
+		elif [[ "${p0,,}" = @(l?( )|list-hosts?( )) ]]; then
 			labadmin_tmp-vars-load shosts_listen
-			echo -e "    ${S_B}HOSTS${S_R} ($(echo "$shosts_listen" | wc -w)): $(echo "$shosts_listen" | xargs)\n"
+			echo -e "    ${S_B}HOSTS${S_R}($(echo "$shosts_listen" | wc -w)): $(echo "$shosts_listen" | xargs)\n"
 			unset script_id; list="Action"; continue
 
-		# ACTION l: show labs
-		elif [[ "${p0,,}" = @(l?( )|lab?( )) ]]; then
-			echo -e "    ${S_B}LABS${S_R}: $(ls "${labs_path}" | tr "\n" " ")\n"
+		# ACTION a: show labs
+		elif [[ "${p0,,}" = @(a?( )|lab?( )) ]]; then
+			l=$(ls "${labs_path}" | tr "\n" " ")
+			echo -e "    ${S_B}LABS${S_R}($(echo "$l" | wc -w)): ${l}\n"
 			unset script_id; list="Action"; continue	
 
-		# ACTION l: change lab
-		elif [[ "${p0,,}" = @(l *|lab *) ]]; then
+		# ACTION a: change lab
+		elif [[ "${p0,,}" = @(a *|lab *) ]]; then
 			l=$(echo "$p0" | cut -f2- -d" " | xargs); lf="${labs_path}/${l}"			
 			# lab not found
 			[ ! -r "$lf" ] && { labadmin_error "    Lab $l not found"; echo -e "    LABS: $(ls "${labs_path}" | tr "\n" " " | sed 's/ask//')\n"; unset script_id; list="Action"; continue; }
