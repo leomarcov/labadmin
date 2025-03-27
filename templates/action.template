@@ -56,7 +56,8 @@ fi
 # ACTION SCRIPT
 # Available global variables:
 #	labadmin_iface
-#	labadmin_sshuser
+#   labadmin_map
+#   labadmin_labname
 #	labadmin_sshport
 #	labadmin_ipadmin
 #	labadmin_iphost

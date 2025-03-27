@@ -256,7 +256,7 @@ function labadmin_users-display() {
 
 #=== FUNCTION ==================================================================
 # NAME: labadmin_users-logged
-# DESCRIPTION: output all users logged in system except $sshuser, one per line
+# DESCRIPTION: output all users logged in system except root, one per line
 #===============================================================================
 function labadmin_users-logged() {
     w -oshu | cut -f 1 -d " " | grep -v "^${USER}$" | sort -u

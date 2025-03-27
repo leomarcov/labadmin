@@ -33,6 +33,6 @@ user="$2"
 
 for u in $user; do
 	! id "$u" &>/dev/null && continue
-	[ "$u" = "${labadmin_sshuser}" ] && continue		# Prevent lock $sshuser
-	passwd -u "$u"										# unlock user
+	[ "$u" = root ] && continue		# Prevent lock root
+	passwd -u "$u"					# unlock user
 done

@@ -18,7 +18,7 @@ readonly labadmin_install="${labadmin_path}/install"								# Install script pat
 readonly labs_path="$labadmin_path/labs/"					    					# Labs configs directory path
 readonly log_path="/var/log/labadmin.log"	                      					# Logs file path
 readonly bin_path="$labadmin_path/bin/"                                             # Labadmin bin path
-readonly config_path="${labadmin_path}/conf/labadmin.conf"                          # Labadmin global config file path
+readonly config_path="${labadmin_path}/conf/labadmin.conf"                          # Labadmin global config file path                                                          
 scripts_path="$labadmin_path/actions/"                                              # Scripts directory
 
 
@@ -75,7 +75,7 @@ function labdmin_ssh_host_comm() {
     [ ! "$commands" ] && labadmin_error "INTERNAL ERROR: labadmin_exec_ssh_host_comm no commands to exec" 1
 
     # EXEC SSH EXEC COMMANDS
-    ssh $ssh_params ${sshuser}@${ip} -p ${sshport} -oStrictHostKeyChecking=no  "
+    ssh $ssh_params root@${ip} -p ${sshport} -oStrictHostKeyChecking=no  "
 $(cat "${lib_path}/labadmin_lib")
 
 $(labadmin_export_vars_code)
@@ -106,7 +106,7 @@ function labdmin_ssh_host_comm_stdin() {
     [ ! "$commands" ] && labadmin_error "INTERNAL ERROR: labadmin_exec_ssh_host_comm_stdin no commands to exec" 1
 
     # EXEC SSH EXEC COMMANDS
-    cat - | ssh $ssh_params ${sshuser}@${ip} -p ${sshport} -oStrictHostKeyChecking=no  "
+    cat - | ssh $ssh_params root@${ip} -p ${sshport} -oStrictHostKeyChecking=no  "
 $(cat "${lib_path}/labadmin_lib")
 
 $(labadmin_export_vars_code)
@@ -131,7 +131,7 @@ function labdmin_ssh_host_login() {
     # CHECKS
     [ ! "$ip" ] && labadmin_error "INTERNAL ERROR: labadmin_exec_ssh_host_login cant find IP address from host $nhost" 1
     
-    ssh $ssh_params ${sshuser}@${ip} -p ${sshport} -oStrictHostKeyChecking=no 
+    ssh $ssh_params root@${ip} -p ${sshport} -oStrictHostKeyChecking=no 
     return
 }
 

@@ -170,7 +170,7 @@ if [ "$dshell" ]; then
 	# 	continue if are in the same tty as useradmin
 	#	continue if are tty has error (no tty)
 	#	exit if are in a different tty
-	echo 'tty &>/dev/null && t="$(tty | cut -f3- -d/)" && [ "'$labadmin_sshuser'" != "$(who | grep "\b$t\b" | awk \{\ print\ \$1\ \})" ] && if [[ "$t" != tty[0-9] ]]; then exit; else startx && exit; fi     #LABADMIN-EXAM' >> /home/$euser/.bashrc
+	echo 'tty &>/dev/null && t="$(tty | cut -f3- -d/)" && [ root != "$(who | grep "\b$t\b" | awk \{\ print\ \$1\ \})" ] && if [[ "$t" != tty[0-9] ]]; then exit; else startx && exit; fi     #LABADMIN-EXAM' >> /home/$euser/.bashrc
 fi
 
 
@@ -179,7 +179,7 @@ labadmin_info "Locking existing users"
 busers=""
 for u in $(cat /etc/passwd | cut -f1,3 -d: | grep -E :[0-9]{4}$ | cut -f1 -d:); do
     [ "$u" = "$euser" ] && continue
-    [ "$u" = "$labadmin_sshuser" ] && continue
+    [ "$u" = root ] && continue
     [ "$(passwd -S "$u" | awk '{print $2}')" = "L" ] && continue
     passwd -l "$u" &>/dev/null && echo -e "Locked ${S_B}${u}${S_R}" || { labadmin_error "ERROR: cant lock user $u"; ecode=1; }
     busers="${u} ${busers}"
@@ -303,7 +303,7 @@ fi
 ### KILL ALL USERS
 labadmin_info "Killing all users process"
 for u in $(who | awk "{print \$1}"| sort -u); do
-    [ "$u" = "$labadmin_sshuser" ] && continue
+    [ "$u" = root ] && continue
     pkill -KILL -u "$u" 2>/dev/null && echo -e "User ${S_B}${u}${S_R} killed"
 done
 if ! labadmin_display_manager &>/dev/null; then
@@ -414,7 +414,6 @@ new_pass="$2"								# new user password or empty if no change password
 euser="'"$euser"'"
 perms0="'"$perms0"'" 
 busers="'"$busers"'"
-sshuser="'"$labadmin_sshuser"'"
 exam_end_script="'"$exam_end_script"'"
 export PATH="$PATH:'"$PATH"'"
 labadmin_cache_path="/home/.labadmin-cache/"
@@ -453,7 +452,7 @@ fi
 ### KILL ALL USERS
 labadmin_info "Killing all users process"
 for u in $(who | awk "{print \$1}"| sort -u); do
-	[ "$u" = "$sshuser" ] && continue
+	[ "$u" = root ] && continue
 	pkill -9 -u "$u" 2>/dev/null && echo -e "User ${S_B}${u}${S_R} killed"
 done
 if ! labadmin_display_manager &>/dev/null; then

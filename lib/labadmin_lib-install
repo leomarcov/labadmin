@@ -319,25 +319,14 @@ function install_admin() {
 #=== FUNCTION ==================================================================
 # NAME: install_host
 # DESCRIPTION: config and install dependencies in host computer for control it
-#	and add host MAC in lab file
-#
-# PARAMETERS:
-# 	[$1]    host number for add macs[nhost] in lab file
-#   [$2]    lab id from file to add line macs[nhost]= currecut MAC host
 #===============================================================================
 function install_host() {
-	nhost="$1"
-	lab_id="$2"
-	lab_file="$labs_path/${lab_id}"
-
-	# CHECKS
-	[ "$(id -u)" -ne 0 ] && labadmin_error "Install must be runed as root" 1
-	[ ! "$lab_id" ] && labadmin_error "Lab ID must be specified" 1
-	[ "$nhost" ] && [ "$nhost" -ne "$nhost" ] && labadmin_error "Host number must be a number" 1
-	[ "$nhost" ] && [ ! -w "${lab_file}" ] && labadmin_error "Can't write lab file: ${lab_file}" 1
+	# CHECK ROOT
+	[ $EUID -ne 0 ] && labadmin_error "Install must be runed as root" 1
 
 	# LOAD CONFIG FILE
-	source "$lab_file"	# Import variables from lab file
+	[ ! -f "$config_path" ] && labadmin_error "Cant access labadmin config file: $config_path"
+	source "$config_path"
 
 	# DEPENDENCIES
 	check_dependencies "ask" "scripts_hostdeps"
@@ -362,10 +351,10 @@ function install_host() {
 	echo
 
 
-	# INSTALL
+	# INSTALL HOST
 	labadmin_info "Configuring openssh-server"
 	sed -i "/^Port[[:blank:]]\+[0-9]\+/Id" /etc/ssh/sshd_config; echo "Port $sshport" >> /etc/ssh/sshd_config
-	sed -i "/^AllowUsers/Id" /etc/ssh/sshd_config; echo "AllowUsers $sshuser" >> /etc/ssh/sshd_config
+	sed -i "/^AllowUsers/Id" /etc/ssh/sshd_config; echo "AllowUsers root" >> /etc/ssh/sshd_config
 	sed -i "/^PermitRootLogin/Id" /etc/ssh/sshd_config; echo "PermitRootLogin without-password" >> /etc/ssh/sshd_config
 	sed -i "/^PubkeyAuthentication/Id" /etc/ssh/sshd_config; echo "PubkeyAuthentication yes" >> /etc/ssh/sshd_config
 	sed -i "/^PasswordAuthentication/Id" /etc/ssh/sshd_config; echo "PasswordAuthentication no" >> /etc/ssh/sshd_config
@@ -376,30 +365,11 @@ function install_host() {
 	systemctl enable "$ssh_service_name" || labadmin_error "ERROR: SSH server enable failed"
 	systemctl restart "$ssh_service_name" || labadmin_error "ERROR: SSH server start failded"
 
-	labadmin_info "Copying public key to a /root/.ssh/authorized_keys"
-	[ ! -d "/root/.ssh" ] && (eval mkdir ~"$sshuser"/.ssh; eval chmod 700 ~"$sshuer"/.ssh)
-	echo "$sshpubkey" | eval tee ~"$sshuser"/.ssh/authorized_keys
-	eval chmod 600 ~"$sshuser"/.ssh/authorized_keys
+	labadmin_info "Installing public key in /root/.ssh/authorized_keys"
+	[ ! -d "/root/.ssh" ] && { mkdir /root/.ssh; chmod 700 /root/.ssh; }
+	echo "$sshpubkey" |  tee /root/.ssh/authorized_keys
+	chmod 600 /root/.ssh/authorized_keys
 
-	[ ! "$nhost" ] && exit
-
-	# INSERT MAC IN LAB FILE
-  	labadmin_info "Adding MAC in lab file $lab_file"
-
-    iface=$(labadmin_iface 8.8.8.8)
-	mac=$(labadmin_mac "$iface")
-
-	[ ! "$mac" ] && labadmin_error "Please, insert MAC manually in lab file ${lab_file}\nmacs[${nhost:-nhost}]=${mac:-mac}" 1 
-
-	echo MAC $iface: $mac
-	if grep "^macs\[$nhost\]=" $lab_file &> /dev/null; then
-		echo -e "\nHost $nhost is already configured"
-		echo -en "Press ${S_B}[ENTER]${S_R} to substitute it or ${S_B}CTRL+C${S_R} to end installation"
-		read 
-		sed -i "/^macs\[$nhost\]=/d" "$lab_file"
-	fi
-
-	echo -e "macs[$nhost]=$mac\t\t# AUTO-ADDED [$lab_file] - $(date +%F_%T)" | tee -a "$lab_file"
 	echo
 }
 

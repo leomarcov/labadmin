@@ -41,7 +41,7 @@ function uninstall_host() {
 	[ "$(id -u)" -ne 0 ] &&	labadmin_error "Install must be runed as root" 1
 
 	# Remove ssh authentication
-	eval rm -v ~"$sshuser"/.ssh/authorized_keys
+	rm -v /root/.ssh/authorized_keys
 
 	# Remove SSH server
 	load_installer

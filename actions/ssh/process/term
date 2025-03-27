@@ -30,7 +30,7 @@ users="$(who | awk '{print $1}')"
 
 
 for u in $users; do
-	[ "$u" = "${labadmin_sshuser}" ] && continue		# Prevent term $sshuser
+	[ "$u" = root ] && continue			# Prevent term root
 	echo -e "${C_LY}USER $u${C_D}"
 	pkill -TERM -u "$u"
 done

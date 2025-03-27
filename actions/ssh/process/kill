@@ -30,7 +30,7 @@ users="$(who | awk '{print $1}')"
 
 
 for u in $users; do
-	[ "$u" = "${labadmin_sshuser}" ] && continue		# Prevent stop $sshuser
+	[ "$u" = root ] && continue				# Prevent stop root
 	echo -e "${C_LY}USER $u${C_D}"
 	pkill -KILL -u "$u"
 done

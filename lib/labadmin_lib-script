@@ -571,7 +571,8 @@ function exec_script() {
 #
 #              Variables exported are:
 #                labadmin_iface
-#                labadmin_sshuser
+#				 labadmin_map
+#                labadmin_labname   
 #                labadmin_sshport
 #                labadmin_ipadmin
 #                labadmin_iphost
@@ -585,7 +586,7 @@ function exec_script() {
 #
 #===============================================================================
 function labadmin_export_vars_code() {
-	vars_export="iface sshuser sshport ipadmin iphost nhost script_type winrmuser winrmport shosts_listen script_type_state"
+	vars_export="iface map labname sshport ipadmin iphost nhost script_type winrmuser winrmport shosts_listen script_type_state"
 
     for vn in $vars_export; do
         echo "labadmin_${vn}=\"${!vn}\""
@@ -628,7 +629,7 @@ function exec_script_ssh() {
 		cat "${lib_path}/labadmin_lib" 
 		script_type="ssh" labadmin_export_vars_code
 		cat "$script_file" 
-	) | ssh -T $sshuser@$iphost -p $sshport -oStrictHostKeyChecking=no 'cat | bash /dev/stdin' "'""$p1""'" "'""$p2""'" "'""$p3""'" "'""$p4""'" "'""$p5""'" "'""$p6""'" "'""$p7""'" "'""$p8""'" "'""$p9""'"
+	) | ssh -T root@$iphost -p $sshport -oStrictHostKeyChecking=no 'cat | bash /dev/stdin' "'""$p1""'" "'""$p2""'" "'""$p3""'" "'""$p4""'" "'""$p5""'" "'""$p6""'" "'""$p7""'" "'""$p8""'" "'""$p9""'"
 	
 	return $?
 }
