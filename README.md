@@ -2,7 +2,6 @@
 Labadmin is a Linux software, based on Bash shellcript, capable to remotely admin a set of hosts running Linux or Windows. Labadmin is focused to work in educational environment controlling hosts in a computer laboratory. 
 Labadmin aims to be a tool useful for IT teachers and computer lab sysadmins. 
 
-&nbsp; 
 ## Main features
   * Discover the hosts network status in a laboratory classroom by MAC address (works on DHCP networks!).
   * Show the status of each machine in a grid map according the preconfigured position in the lab. It's easy to identificate students computers by map location.
@@ -20,6 +19,10 @@ Labadmin aims to be a tool useful for IT teachers and computer lab sysadmins.
 	* Much more!
   * Monitorization of action execution status. If any error has ocurred in some host is noticed.
   * It's easy to create your own actions using Bash or Powershell languages.
+
+<p align="center">
+ <img src="https://github.com/user-attachments/assets/d8436e20-996a-485f-88df-523c2d204a0b">
+</p>
 
 ## Working schema
   * Labadmin use a dedicated machine to admin the students hosts (usually teacher computer or server). Admin must be installed in a Linux OS. Controlled hosts can be Linux or Windows OS computers.
