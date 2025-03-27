@@ -171,9 +171,8 @@ ${S_D}Internal commands${S_R}
  ${C_N}${S_U}n${S_R}ew-panel                Open extra script panel
  ${C_N}${S_U}c${S_R}lose-panel              Close current script panel
  ${C_N}${S_U}r${S_R}efresh-map              Refresh map with current selection
- ${C_N}${S_U}s${S_R}elect-hosts <range>     Select new host range
- ${C_N}${S_U}l${S_R}ist-hosts               List current selected hosts
- l${C_N}${S_U}a${S_R}b <lab>                Change lab
+ ${C_N}${S_U}s${S_R}elect-hosts [range]     Select new host range or show current host selected
+ ${C_N}${S_U}l${S_R}ab [lab]                Change lab or show available labs
  ${C_N}${S_U}m${S_R}ode lin|win             Set hosts OS: linux or windows
  ${C_N}${S_U}e${S_R}xit                     Exit labadmin session"
 		regex=".*"
@@ -212,16 +211,19 @@ ${S_D}Internal commands${S_R}
 			[ ! "$map_PID" ] && labadmin_tmp-vars-load map_PID
 			rhosts=$(echo "$p0" | cut -f2- -d" "); labadmin_tmp-vars-save rhosts
 			kill -36 "$map_PID"
-			unset script_id; list="Action"; continue	
+			sleep 0.3
+			labadmin_tmp-vars-load shosts_listen
+			echo -e "    ${S_B}HOSTS${S_R}($(echo "$shosts_listen" | wc -w)): ${C_BG}$(echo "$shosts_listen" | xargs)${S_R}${S_R}\n"
+			unset script_id; list="Action"; continue			
 
 		# ACTION l: list selected hosts
-		elif [[ "${p0,,}" = @(l?( )|list-hosts?( )) ]]; then
+		elif [[ "${p0,,}" = @(s?( )|select-hosts?( )) ]]; then
 			labadmin_tmp-vars-load shosts_listen
-			echo -e "    ${S_B}HOSTS${S_R}($(echo "$shosts_listen" | wc -w)): $(echo "$shosts_listen" | xargs)\n"
+			echo -e "    ${S_B}HOSTS${S_R}($(echo "$shosts_listen" | wc -w)): ${C_BG}$(echo "$shosts_listen" | xargs)${S_R}\n"
 			unset script_id; list="Action"; continue
 
 		# ACTION a: show labs
-		elif [[ "${p0,,}" = @(a?( )|lab?( )) ]]; then
+		elif [[ "${p0,,}" = @(l?( )|lab?( )) ]]; then
 			l=$(ls "${labs_path}" | tr "\n" " ")
 			echo -e "    ${S_B}LABS${S_R}($(echo "$l" | wc -w)): ${l}\n"
 			unset script_id; list="Action"; continue	
