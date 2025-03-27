@@ -353,7 +353,7 @@ function install_host() {
 
 	# INSTALL HOST
 	labadmin_info "Configuring openssh-server"
-	sed -i "/^Port[[:blank:]]\+[0-9]\+/Id" /etc/ssh/sshd_config; echo "Port $sshport" >> /etc/ssh/sshd_config
+	sed -i "/^Port[[:blank:]]\+/Id" /etc/ssh/sshd_config; echo "Port $sshport" >> /etc/ssh/sshd_config
 	sed -i "/^AllowUsers/Id" /etc/ssh/sshd_config; echo "AllowUsers root" >> /etc/ssh/sshd_config
 	sed -i "/^PermitRootLogin/Id" /etc/ssh/sshd_config; echo "PermitRootLogin without-password" >> /etc/ssh/sshd_config
 	sed -i "/^PubkeyAuthentication/Id" /etc/ssh/sshd_config; echo "PubkeyAuthentication yes" >> /etc/ssh/sshd_config
