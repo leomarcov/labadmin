@@ -44,6 +44,11 @@ labadmin_tmp-init
 labadmin_tmp-vars-load ipadmin iface lab_file Lparam Wparam Fparam srvmode tmuxmode lab_id
 readonly sshagent_path="${labadmin_tmp_path}/sshagent"      						# SSH Agent info 
 
+# LOAD LAB FILE
+srvmode2="$srvmode"
+source "$lab_file" || labadmin_error "ERROR: error loading lab file: $lab_file" 1
+srvmode="$srvmode2"
+
 # TMUX INIT PANEL
 tmux_init-panel
 

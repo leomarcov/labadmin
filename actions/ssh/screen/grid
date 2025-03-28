@@ -22,7 +22,10 @@ elif [ "$1" = "--readparams" ]; then
     read_param "$script_id" 1 "Delay seconds (default 5)"  "5" "^[1-9]([0-9])*$"
     # PARAM2: image quality
     read_param "$script_id" 2 "Image quality (default 10, range 10-100)"  "10" "^[1-9]([0-9])*$"
-	return
+	
+    # Create dir_dest
+    mktemp -d "${labadmin_tmp_path}/screenshot-grid.XXXXXXXX"
+    return
 fi
 
 
@@ -33,30 +36,25 @@ if [ "${labadmin_script_type}" = "local" ]; then
     dsec="$1"
 	iq="$2"
     
-	sleep 1
-	
+    # Get last temp screenshot dir created	
     dir_dest=$(ls -dt "${labadmin_tmp_path}/screenshot-grid."* | head -1)
 	[ ! -w "$dir_dest" ] && labadmin_error "Can't write in directory $dir_dest" 1  # Check dir_dest
 	[ "$iq" -lt 10 ] && iq=10; [ "$iq" -gt 100 ] && iq=100     # Min iq 10
 
-    # Create 5 initial links to ensure javascript is always slow
     file_tmp="$dir_dest/${labadmin_nhost}.jpg"
-    touch $file_tmp
-    ln "$file_tmp" "$dir_dest/${labadmin_nhost}-1.jpg"
-    ln "$file_tmp" "$dir_dest/${labadmin_nhost}-2.jpg"
-    ln "$file_tmp" "$dir_dest/${labadmin_nhost}-3.jpg"
-    ln "$file_tmp" "$dir_dest/${labadmin_nhost}-4.jpg"
-    ln "$file_tmp" "$dir_dest/${labadmin_nhost}-5.jpg"    
-    n=6
+    
+    # Create initial links to ensure javascript is always on the back
+    touch "$file_tmp" "$dir_dest/recording"
+    ln "$file_tmp" "$dir_dest/${labadmin_nhost}-$((($(date +%s)-dsec)/5)).jpg"
+    ln "$file_tmp" "$dir_dest/${labadmin_nhost}-$(($(date +%s)/5)).jpg"
 
-    while [ ! -f "$dir_dest/stop" ]; do
+    while [ -f "$dir_dest/recording" ]; do
         echo -e " ${S_B}${file_tmp}${S_R}"
         labdmin_ssh_host_comm "${labadmin_nhost}" '
 u=($(labadmin_users-display | head -1))
 [ ! "${u[0]}" ] && labadmin_error "No users logged" 1
 su -l "${u[0]}" -c "DISPLAY="${u[1]}" xset b off; import -window root -display "${u[1]}" -quality '${iq}' -interlace Plane jpg:-"' > "${file_tmp}"
-        ln "$file_tmp" "$dir_dest/${labadmin_nhost}-${n}.jpg"
-        n=$((n+1))
+        ln "$file_tmp" "$dir_dest/${labadmin_nhost}-$((($(date +%s)+dsec)/5)).jpg"
         sleep $dsec
     done
 
@@ -64,8 +62,8 @@ su -l "${u[0]}" -c "DISPLAY="${u[1]}" xset b off; import -window root -display "
 # ADMIN EXEC
 elif [ "${labadmin_script_type}" = "admin" ]; then
     dsec="$1"
-    dir_dest=$(mktemp -d "${labadmin_tmp_path}/screenshot-grid.XXXXXXXX")
-    [ ! -w "$dir_dest" ] && labadmin_error "Can't write in directory $dir_dest" 1 
+    dir_dest=$(ls -dt "${labadmin_tmp_path}/screenshot-grid."* | head -1)
+    [ ! -w "$dir_dest" ] && labadmin_error "Can't write in directory $dir_dest" 1  # Check dir_dest
 
 	labadmin_info-list "Saving screenshots in: ${S_B}$dir_dest${S_R}"
 
@@ -75,9 +73,8 @@ elif [ "${labadmin_script_type}" = "admin" ]; then
 	labadmin_info-list "Press  ${S_B}[ENTER]${S_R} to stop recording screenshots\n"
 
 	[ $EUID -eq 0 ] && labadmin_error "WARNING: labadmin is running as root, some web browsers only support run as regular user"
-	x-www-browser "${screenshot_grid_url}" &>/dev/null
-	read
-
-    touch "$dir_dest/stop"
-    ( sleep 10; rm "$dir_dest/stop" &>/dev/null)& 
+	x-www-browser "${screenshot_grid_url}" &>/dev/null &
+    read
+    labadmin_info-list "Stopping screenshots\n"
+    rm -rf  "$dir_dest"
 fi
