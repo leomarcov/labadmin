@@ -8,7 +8,7 @@ Labadmin aims to be a tool useful for IT teachers and computer lab sysadmins.
   * Flexible host selection using ranges. Can select all machines, only a row, odd and even machines, a specific list, etc.
   * Labadmin incorporate a **full set of administrative actions** ready to use (currently **113 for Linux** and **42 for Windows**). Some key actions are:
     * Config a restrictive environment in a exam time: block all users, block usb drivers, set restrictive firewall rules, autobackup exam user data, block Virtualbox bridge mode, autocapture screnshoots and others restrictions.
-    * Send heavy files using multiple modes: unicast, torrent or multicast.
+    * Send heavy files using multiple protocols: unicast, torrent or multicast.
     * Send and schedule messages to users.
     * Config firewall settings.
     * Virtualbox management (import ovas, play, delete, snapshots, etc.)
