@@ -1,14 +1,16 @@
 # labadmin
-Labadmin is a Linux tool, writed on Bash shellscript, capable to remotely admin a set of hosts running Linux or Windows. Is focused to work in **educational environment** controlling hosts in a computer laboratory. 
+<img align="left" src="https://cdn4.iconfinder.com/data/icons/online-marketing-hand-drawn-vol-3/52/monitor__television__computer__desktop__seo__service__marketing-128.png" width="80" >
+Labadmin is a Linux tool, writed on Bash shellscript, capable to **remotely admin** a set of hosts running Linux or Windows. Is focused to work in educational environment controlling hosts in a computer laboratory. 
 Labadmin aims to be a tool useful for IT teachers and computer lab sysadmins. 
 
+&nbsp; 
 ## Main features
   * Discover hosts network status in a laboratory classroom by MAC address (works on **DHCP** networks!).
   * Show the status of each machine in a grid map according the preconfigured position in the lab. It's easy to identificate students computers by map location.
   * Flexible host selection using ranges. Can select all machines, only a row, odd and even machines, a specific list, etc.
   * Labadmin incorporate a **full set of administrative actions** ready to use (currently **113 for Linux** and **42 for Windows**). Some key actions are:
-    * Config a restrictive environment in a exam time** (block all users, block usb drivers, set restrictive firewall rules, autobackup exam user data, block Virtualbox bridge mode, autocapture screnshoots and others restrictions).
-    * Send heavy files using multiple modes: unicast, torrent or multicast.
+    * **Config a restrictive environment in a exam time**: block all users, block usb drivers, set restrictive firewall rules, autobackup exam user data, block Virtualbox bridge mode, autocapture screnshoots and others restrictions.
+    * **Send heavy files using multiple protocols**: unicast, torrent or multicast.
     * Send and schedule messages to users.
     * Config firewall settings.
     * Virtualbox management (import ovas, play, delete, snapshots, etc.)
@@ -25,12 +27,15 @@ Labadmin aims to be a tool useful for IT teachers and computer lab sysadmins.
 </p>
 
 ## Working schema
-  * Labadmin use a dedicated machine to admin the students hosts (usually teacher computer or server). Admin must be installed in a Linux OS. Controlled hosts can be Linux or Windows OS computers.
+  * Labadmin use a dedicated machine to admin the students hosts (usually teacher computer or server).
+    * **Admin must be installed in a Linux OS**.
+    * Controlled hosts can be **Linux** or **Windows** OS computers.
   * All machines must be placed in the same broadcast domain. Labadmin uses MAC address to discover computers, so works in DHCP environments. 
   * Each lab must be defined previously in a config file ([templates/labtest](templates/labtest)). Lab config file stores:
     * MAC address for each host and a identification number.
     * Lab distribution: each id host must be placed in a grid according the real position in the lab.
   * When labadmin starts it discover the computers configured in the lab file, show a map to select them and exec actions in all selected hosts.
+  * Labadmin works in real time, all actions all send synchronously at the moment. For manage scripts execution asynchronously may see [Labadmin Script Server](https://github.com/leomarcov/labadmin-script_server).
 
 <p align="center">
   <img src="https://user-images.githubusercontent.com/32820131/66718797-596caa00-ede8-11e9-81fd-ed2d3af4e1b2.png">
@@ -53,20 +58,22 @@ You can see labadmin in action in short animations:
 
 &nbsp;  
 # Install
-Once downloaded or cloned the project, labadmin must be configured for each lab and installed in admin and each controlled host.
+## Admin install
+  * Admin must be installed in a Linux machine (Debian, Fedora and Ubuntu has been tested).
+```bash
+git clone https://github.com/leomarcov/labadmin  # Clone repository
+cd labadmin                                      # Access dir
+cp templates/labadmin.config conf/               # Copy labadmin.config template to config
+cp templates/labtest labs/                       # Copy lab template to labs
+
+```
 
 ## Create lab config files
   * Each lab must be defined in a config file and placed in `labadmin/labs/` directory. This file is a Bash script where config variables are defined.
   * You can use the provided [labs/test](labs/test) file as template. For more information refer to this config file comments.
     
 
-## Admin install
-  * Admin must be installed in a Linux machine (Debian, Fedora and Ubuntu has been tested).
-  * Exec: `install -A -l lab_file`, where lab_file is the name of the file located in `labs` directory to use as a default config when labadmin is open. 
-  * Optionally you can use `ask` lab as default config. This lab config file asks in each execution what lab to use.
-```bash
-install -A a11          # Install labadmin in admin machine using a11 lab file as default lab 
-```
+
 
 ## Controlled hosts install (Linux)
   * In Linux controlled hosts installer only need to install all needed dependences and configure the remote SSH access method. Not agent labadmin software is installed.
