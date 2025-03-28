@@ -56,10 +56,10 @@ You can see labadmin in action in short animations:
 ## Admin install
   * Admin must be installed in a Linux machine (Debian, Fedora and Ubuntu has been tested).
 ```bash
-git clone https://github.com/leomarcov/labadmin			# Clone repository
-cd labadmin												# Access dir
-cp templates/labadmin.config conf/						# Copy labadmin.config template to config
-cp templates/labtest labs/								# Copy lab template to labs
+git clone https://github.com/leomarcov/labadmin  # Clone repository
+cd labadmin                                      # Access dir
+cp templates/labadmin.config conf/               # Copy labadmin.config template to config
+cp templates/labtest labs/                       # Copy lab template to labs
 
 ```
 
