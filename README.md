@@ -129,7 +129,7 @@ winrm set winrm/config/winrs '@{MaxMemoryPerShellMB="1024"}'
 sc.exe config winrm start= auto
 Set-Item wsman:\localhost\client\trustedhosts *
 ```
-  * Create user to connect with WinRM and hide user from login:
+  * Create `labadmin` user to connect with WinRM and hide user from login:
 
  ```powershell
 $labadmin_user="labadmin"
