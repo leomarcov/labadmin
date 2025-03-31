@@ -45,7 +45,7 @@ function search_ips() {
 	unset map_updates
 
 	# UPDATE ARP INFO
-	[ "$tmuxmode" ] && print_map_prompt " ${C_Y}Scanning ${iface}...${S_R}"	# Show notifiction messaage before map
+	[ "$tmuxmode" ] && print_map_prompt " ${C_BY}Scanning ${iface}...${S_R}"	# Show notifiction messaage before map
 	local arp_out="$(arp-scan -l -I $iface -q -r 1 -N -t ${scan_timeout} 2>/dev/null)" 
 	if [ $? -ne 0 ]; then
 		if [ "$tmuxmode" ]; then
