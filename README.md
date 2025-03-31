@@ -74,7 +74,7 @@ vi conf/labadmin.conf
  winrmpass="<your_encrypted__pass>"     # GENERATE: read -p "Windows localuser pass to encrypt: " p; echo "$p" | openssl enc -aes-256-cbc  -a -salt -pbkdf2 | base64
  sshport="58888"                        # SSH port to connect with hosts
  sshpubkey='<your_public_key>'          # GENERATE: ssh-keygen -t rsa and copy pubkey and privatekey content in sshpubkey and sshprivatekey variables
- sshprivatekey='<your_private_key>'                 you can delete id_rsa and id_rsa.pub generated after
+ sshprivatekey='<your_private_key>'     #           you can delete id_rsa and id_rsa.pub generated after
 
 #### INSTALL ADMIN
 bash install admin
