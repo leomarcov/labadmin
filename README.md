@@ -64,7 +64,7 @@ You can see labadmin in action in short animations:
 ```bash
 git clone https://github.com/leomarcov/labadmin  # Clone repository
 cd labadmin                                      # Access dir
-cp templates/labadmin.config conf/               # Copy labadmin.config template to config
+cp templates/labadmin.conf conf/                 # Copy labadmin.config template to config
 cp templates/labtest labs/                       # Copy lab template to labs
 
 #### EDIT LABADMIN CONFIG: conf/labadmin.conf
