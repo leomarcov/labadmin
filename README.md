@@ -136,8 +136,9 @@ $labadmin_user="labadmin"
 while(!$labadmin_user_cred -OR $labadmin_user_cred.Username -ne "labadmin") { $labadmin_user_cred = Get-Credential -Credential $labadmin_user }
 New-LocalUser -Name $labadmin_user -FullName "Labadmin user" -Password $labadmin_user_cred.Password
 Set-LocalUser -Name $labadmin_user -PasswordNeverExpires:$true
-Add-LocalGroupMember -Member $labadmin_user -SID "S-1-5-32-544"			# Add user to local Administrators group
-# Hide user from login screen:
+Add-LocalGroupMember -Member $labadmin_user -SID "S-1-5-32-544"
+
+# Hide user from login screen
 New-Item 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon\SpecialAccounts\UserList' -Force | New-ItemProperty -Name $labadmin_user -Value 0 -PropertyType DWord -Force
 ```
 
