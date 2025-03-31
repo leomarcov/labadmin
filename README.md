@@ -69,8 +69,6 @@ cp templates/labtest labs/                       # Copy lab template to labs
 
 #### EDIT LABADMIN CONFIG: conf/labadmin.conf
 vi conf/labadmin.conf
- iface                # Network interface to connecto with hosts
- scan_timeout         # Arp-scan timeout in milliseconds (defualt 500)
  winrmuser            # Windows labadmin local user to connecto with hosts
  winrmport            # Windows WINRM port to use  
  winrmpass            # Windows labadmin local user password  AES-256 encrypted
@@ -103,19 +101,17 @@ vi /opt/labadmin/labs/A11
 
 #### INSTALL ADMIN
 bash install admin
-
-### Create labs config files
-  * Each lab must be defined in a config file and placed in `/opt/labadmin/labs/` directory.
-  * You can use the provided [labs/test](labs/test) file as template. For more information refer to this config file comments.
 ```  
 
 
 
 ## Hosts install on Linux
   * Not agent labadmin software is installed, installer only need to install all needed dependences and configure the remote SSH access method.
-  * Exec: `install.sh -H -l lab_file`, where lab_file is the name of the lab config file located in `labs` directory where the host is placed. It's important that SSH variables are correctly set in config file. 
 ```bash
-install host                                      # Install and config labadmin in host machine
+git clone https://github.com/leomarcov/labadmin        # Clone repository
+cd labadmin                                            # Access dir
+cp xxxxx/labadmin.conf conf/                           # Copy your previus labadmin.conf with authentication data used for admin installation to conf/
+bash install host                                      # Install and config labadmin in host machine
 ```  
   
 ## Hosts install on Windows
