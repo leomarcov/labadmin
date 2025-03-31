@@ -154,6 +154,7 @@ labadmin -l A15 -L      # Start labadin using a15 lab file and Linux mode (SSH)
 ```
 
 <details><summary>Parameter options</summary><p>
+	
 ```
 $ labadmin -h
   Labadmin TUI
