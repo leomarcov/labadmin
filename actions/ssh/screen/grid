@@ -42,11 +42,11 @@ if [ "${labadmin_script_type}" = "local" ]; then
 	[ "$iq" -lt 10 ] && iq=10; [ "$iq" -gt 100 ] && iq=100     # Min iq 10
     
     # Create initial links to ensure javascript is always on the back
-    ln "$file_tmp" "$dir_dest/${labadmin_nhost}-$((($(date +%s)-dsec)/5)).jpg"
-    ln "$file_tmp" "$dir_dest/${labadmin_nhost}-$(($(date +%s)/5)).jpg"
-
 	file_tmp="$dir_dest/${labadmin_nhost}.jpg"
 	touch "$file_tmp" "$file_tmp_" 
+	ln "$file_tmp" "$dir_dest/${labadmin_nhost}-$((($(date +%s)-dsec)/5)).jpg"
+    ln "$file_tmp" "$dir_dest/${labadmin_nhost}-$(($(date +%s)/5)).jpg"
+
 	touch "$dir_dest/recording"
     while [ -f "$dir_dest/recording" ]; do
         echo -e " ${S_B}${file_tmp}${S_R}"
