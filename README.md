@@ -70,14 +70,12 @@ cp templates/labtest labs/
 
 #### EDIT LABADMIN CONFIG
 vi conf/labadmin.conf
- winrmuser                              # Windows labadmin local user to connecto with hosts
- winrmport                              # Windows WINRM port to use  
- winrmpass                              # Windows labadmin local user password  AES-256 encrypted
-                                        # GENERATE: read -p "Windows localuser pass to encrypt: " p; echo "$p" | openssl enc -aes-256-cbc  -a -salt -pbkdf2 | base64
- sshport                                # SSH port to connect with hosts
- sshpubkey                              # SSH pub key authentication hosts
- sshprivatekey                          # SSH private key authentication hosts
-                                        # GENERATE: ssh-keygen -t rsa
+ winrmuser="labadmin"                   # Windows labadmin local user to connecto with hosts
+ winrmport="5985"                       # Windows WINRM port to use  
+ winrmpass=                             # GENERATE: read -p "Windows localuser pass to encrypt: " p; echo "$p" | openssl enc -aes-256-cbc  -a -salt -pbkdf2 | base64
+ sshport="58888"                        # SSH port to connect with hosts
+ sshpubkey=''                           # GENERATE: ssh-keygen -t rsa 
+ sshprivatekey=''
 
 #### FOR EACH LAB CREATE AND EDIT LAB CONFIG
 mv labs/labtest labs/A11                # Set lab config filename to your lab ID name
