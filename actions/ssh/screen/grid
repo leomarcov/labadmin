@@ -23,8 +23,8 @@ elif [ "$1" = "--readparams" ]; then
     # PARAM2: image quality
     read_param "$script_id" 2 "Image quality (default 10, range 10-100)"  "10" "^[1-9]([0-9])*$"
 	
-    # Create dir_dest
-    mktemp -d "${labadmin_tmp_path}/screenshot-grid.XXXXXXXX"
+    # PARAM3 (hidden): temp dir dest
+    p3=$(mktemp -d "${labadmin_tmp_path}/screenshot-grid.XXXXXXXX")
     return
 fi
 
@@ -35,19 +35,19 @@ fi
 if [ "${labadmin_script_type}" = "local" ]; then
     dsec="$1"
 	iq="$2"
+	dir_dest="$3"
     
-    # Get last temp screenshot dir created	
-    dir_dest=$(ls -dt "${labadmin_tmp_path}/screenshot-grid."* | head -1)
+    # Check dir dest
 	[ ! -w "$dir_dest" ] && labadmin_error "Can't write in directory $dir_dest" 1  # Check dir_dest
 	[ "$iq" -lt 10 ] && iq=10; [ "$iq" -gt 100 ] && iq=100     # Min iq 10
 
     file_tmp="$dir_dest/${labadmin_nhost}.jpg"
     
     # Create initial links to ensure javascript is always on the back
-    touch "$file_tmp" "$dir_dest/recording"
     ln "$file_tmp" "$dir_dest/${labadmin_nhost}-$((($(date +%s)-dsec)/5)).jpg"
     ln "$file_tmp" "$dir_dest/${labadmin_nhost}-$(($(date +%s)/5)).jpg"
 
+	touch "$file_tmp" "$dir_dest/recording"
     while [ -f "$dir_dest/recording" ]; do
         echo -e " ${S_B}${file_tmp}${S_R}"
         labdmin_ssh_host_comm "${labadmin_nhost}" '
@@ -63,7 +63,7 @@ su -l "${u[0]}" -c "DISPLAY="${u[1]}" xset b off; import -window root -display "
 # ADMIN EXEC
 elif [ "${labadmin_script_type}" = "admin" ]; then
     dsec="$1"
-    dir_dest=$(ls -dt "${labadmin_tmp_path}/screenshot-grid."* | head -1)
+    dir_dest="$3"
     [ ! -w "$dir_dest" ] && labadmin_error "Can't write in directory $dir_dest" 1  # Check dir_dest
 
 	labadmin_info-list "Saving screenshots in: ${S_B}$dir_dest${S_R}"
