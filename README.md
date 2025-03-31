@@ -83,7 +83,7 @@ vi /opt/labadmin/labs/A11
  labadmin="AULA 11"                     # Lab name
  srvmode="ssh"                          # Server mode (ssh or winrm)
 
- # List of <host_id> and <MAC> for each host in MAP:
+ # List of <host_id> and <MAC> for each host in map
  macs[11]="08:00:27:B5:EE:E8"
  macs[12]="08:00:27:2a:f0:f2"
  macs[13]="08:00:27:bb:07:9d"
