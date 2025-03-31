@@ -147,14 +147,13 @@ New-Item 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon\SpecialAcc
 When labadmin starts loads default lab config file and operate in configured as default mode (Linux or Windows).
 You can select other lab config and mode with parameters: ``-l <lab_file>`` and ``-L`` or ``-W``. 
 ```bash
-labadmin            # Start labadmin using defualt config lab
-labadmin -l a15     # Start labadin using a15 lab file and default mode defined in a15
-labadmin -l 15 -W   # Start labadin using a15 lab file and Windows mode (WinRM)
-labadmin -l 15 -L   # Start labadin using a15 lab file and Linux mode (SSH)
+labadmin                # Start labadmin using defualt config lab
+labadmin -l A15         # Start labadin using a15 lab file and default mode defined in a15
+labadmin -l A15 -W      # Start labadin using a15 lab file and Windows mode (WinRM)
+labadmin -l A15 -L      # Start labadin using a15 lab file and Linux mode (SSH)
 ```
 
 <details><summary>Parameter options</summary><p>
-	
 ```
 $ labadmin -h
   Labadmin TUI
