@@ -70,12 +70,15 @@ cp templates/labadmin.conf conf/
 #### EDIT LABADMIN CONFIG
 vi conf/labadmin.conf
  winrmuser="labadmin"                   # Windows labadmin local user to connecto with hosts
- winrmport="5985"                       # Windows WINRM port to use  
- winrmpass="<your_encrypted__pass>"     # GENERATE: read -p "Windows localuser pass to encrypt: " p; echo "$p" | openssl enc -aes-256-cbc  -a -salt -pbkdf2 | base64
+ winrmport="5985"                       # Windows WinRM port to use  
+ winrmpass="<your_encrypted__pass>"     # Windows labadmin local user AES-256 encrypted password
+                                        #  GENERATE: read -p "Windows localuser pass to encrypt: " p; echo "$p" | openssl enc -aes-256-cbc  -a -salt -pbkdf2 | base64
  sshport="58888"                        # SSH port to connect with hosts
- sshpubkey='<your_public_key>'          # GENERATE: ssh-keygen -t rsa and copy pubkey and privatekey content in sshpubkey and sshprivatekey variables
- sshprivatekey='<your_private_key>'     #           you can delete id_rsa and id_rsa.pub generated after
-
+ sshpubkey='<your_public_key>'          # SSH public key authentication 
+ sshprivatekey='<your_private_key>'     # SSH private key authentication
+                                        #  GENERATE: ssh-keygen -t rsa
+                                        #            Copy id_rsa and id_rsa.pub content in sshprivatekey and sshpubkey variables
+                                        #            and delete id_rsa and id_rsa.pub files
 #### INSTALL ADMIN
 bash install admin
 ```  
