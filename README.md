@@ -73,7 +73,7 @@ vi conf/labadmin.conf
  winrmport="5985"                       # Windows WINRM port to use  
  winrmpass="<your_user_pass>"           # GENERATE: read -p "Windows localuser pass to encrypt: " p; echo "$p" | openssl enc -aes-256-cbc  -a -salt -pbkdf2 | base64
  sshport="58888"                        # SSH port to connect with hosts
- sshpubkey='<your_public_key>'          # GENERATE: ssh-keygen -t rsa 
+ sshpubkey='<your_public_key>'          # GENERATE: ssh-keygen -t rsa and copy pubkey and privatekey content in variables. Delete id_rsa and id_rsa.pub generated
  sshprivatekey='<your_private_key>'
 
 #### INSTALL ADMIN
