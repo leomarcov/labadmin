@@ -62,27 +62,28 @@ You can see labadmin in action in short animations:
 ## Admin install (only Linux)
   * Admin must be installed in a Linux OS (Debian, Fedora and Ubuntu has been tested).
 ```bash
-git clone https://github.com/leomarcov/labadmin  # Clone repository
-cd labadmin                                      # Access dir
-cp templates/labadmin.conf conf/                 # Copy labadmin.config template to config
-cp templates/labtest labs/                       # Copy lab template to labs
+#### CLONE REPOSITORY AND COPY CONFIG TEMPLATES
+git clone https://github.com/leomarcov/labadmin
+cd labadmin
+cp templates/labadmin.conf conf/
+cp templates/labtest labs/
 
 #### EDIT LABADMIN CONFIG
 vi conf/labadmin.conf
- winrmuser                   # Windows labadmin local user to connecto with hosts
- winrmport                   # Windows WINRM port to use  
- winrmpass                   # Windows labadmin local user password  AES-256 encrypted
-                             # GENERATE: read -p "Windows localuser pass to encrypt: " p; echo "$p" | openssl enc -aes-256-cbc  -a -salt -pbkdf2 | base64
- sshport                     # SSH port to connect with hosts
- sshpubkey                   # SSH pub key authentication hosts
- sshprivatekey               # SSH private key authentication hosts
-                             # GENERATE: ssh-keygen -t rsa
+ winrmuser                              # Windows labadmin local user to connecto with hosts
+ winrmport                              # Windows WINRM port to use  
+ winrmpass                              # Windows labadmin local user password  AES-256 encrypted
+                                        # GENERATE: read -p "Windows localuser pass to encrypt: " p; echo "$p" | openssl enc -aes-256-cbc  -a -salt -pbkdf2 | base64
+ sshport                                # SSH port to connect with hosts
+ sshpubkey                              # SSH pub key authentication hosts
+ sshprivatekey                          # SSH private key authentication hosts
+                                        # GENERATE: ssh-keygen -t rsa
 
 #### FOR EACH LAB CREATE AND EDIT LAB CONFIG
-mv labs/labtest labs/A11     # Set lab config filename to your lab ID name
+mv labs/labtest labs/A11                # Set lab config filename to your lab ID name
 vi /opt/labadmin/labs/A11
- labadmin="AULA 11"          # Lab name
- srvmode="ssh"               # Server mode (ssh or winrm)
+ labadmin="AULA 11"                     # Lab name
+ srvmode="ssh"                          # Server mode (ssh or winrm)
 
  # List of <host_id> and <MAC> for each host in MAP:
  macs[11]="08:00:27:B5:EE:E8"
