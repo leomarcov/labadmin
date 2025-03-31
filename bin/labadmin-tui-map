@@ -41,9 +41,7 @@ labadmin_tmp-vars-load ipadmin macadmin iface lab_file Lparam Wparam Fparam srvm
 map_PID="$$"; labadmin_tmp-vars-save map_PID
 
 # LOAD LAB FILE
-srvmode2="$srvmode"
-source "$lab_file" || labadmin_error "ERROR: error loading lab file: $lab_file" 1
-srvmode="$srvmode2"
+labadmin_load-lab
 
 # TMUX INIT PANEL
 tmux_init-panel

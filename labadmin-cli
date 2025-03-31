@@ -189,6 +189,8 @@ if [ ! "$lab_id" ]; then
 		exit 1
 fi
 lab_file="${labs_path}/${lab_id}"
+labadmin_load-lab
+
 [ ! -r "$lab_file" ] && labadmin_error "ERROR: can't access lab config file: $lab_file" 1
 source "$lab_file"	# Import variables from lab file
 

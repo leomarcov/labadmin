@@ -36,7 +36,7 @@ function labadmin_show_version() {
 
 #=== FUNCTION ==================================================================
 # NAME: labadmin_load-config-file
-# DESCRIPTION: load labadmin config file and set deault values if no present
+# DESCRIPTION: load labadmin config file and initialize values
 #===============================================================================
 function labadmin_load-config-file() {
     [ ! -r "$config_path" ] && labadmin_error "ERROR: can't access labadmin config file ${config_path//\/\//\/}" 1
@@ -50,9 +50,31 @@ function labadmin_load-config-file() {
     [ ! "$sshport" ] && sshport=58888
 
     [ ! "$winrmpass" ] && [[ ! "$sshpubkey" || ! "$sshprivatekey" ]] && labadmin_error "ERROR: can't load authentication data on labadmin config file ${config_path//\/\//\/}" 1
-
 }
 
+
+
+#=== FUNCTION ==================================================================
+# NAME: labadmin_load-lab
+# DESCRIPTION: load lab config file and initialize values
+#===============================================================================
+function labadmin_load-lab() {
+    local sm="$srvmode"
+    source "$lab_file" || labadmin_error "ERROR: error loading lab file: $lab_file" 1
+
+    # Set deault values
+    [ ! "$labname" ] && labname=$(basename "$lab_file")
+    [ "$sm" ] && srvmode="$sm"
+    [ ! "$srvmode" ] && srvmode="ssh"
+
+    [ ! "$map" ] && labadmin_error "ERROR: no map defined in lab config file $lab_file" 1
+    [ "${#macs[*]}" -eq 0 ] && labadmin_error "ERROR: no MACs defined in lab config file $lab_file" 1
+
+    # INITIALIZE MAP
+    map="$(echo "$map" | sed '/^\s*$/d')"								# Delete empty lines
+    map_nr="$(echo "$map" | wc -l)"										# Row number
+    map_nc="$(echo "$map" | awk '{print NF}' | sort -nu | tail -n 1)"	# Column number
+}
 
 
 

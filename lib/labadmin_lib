@@ -110,7 +110,7 @@ function labadmin_error() {
     echo -e "${C_BR}${1}${S_R}" 1>&2
     [ ! "$ec" ] && return
 
-    [ "$tmux_sid" ] && read     # in TUI pause before exit
+    [ "$TMUX" ] && read     # in TUI pause before exit
     labadmin_exit "$ec"
 }
 
@@ -126,7 +126,7 @@ function labadmin_exit() {
     local ec="$1"
 
     # TMUX EXIT
-    if [ "$tmux_sid" ]; then
+    if [ "$TMUX" ]; then
         # TMUX WIN PANEL-> EXIT
         local aw=$(tmux list-window -t "$tmux_sid" -F '#{window_active} #{window_name}' | awk '$1 == "1" {print $2}')
         if [[ "$aw" != @(LABADMIN|MAP|EXEC|LOG) ]]; then
