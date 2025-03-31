@@ -144,13 +144,20 @@ New-Item 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon\SpecialAcc
 
 &nbsp;  
 # Usage
-Labadmin can operate in interactive or parametrized mode. 
+When labadmin starts loads default lab config file and operate in configured as default mode (Linux or Windows).
+You can select other lab config and mode with parameters: ``-l <lab_file>`` and ``-L`` or ``-W``. 
+```bash
+labadmin            # Start labadmin using defualt config lab
+labadmin -l a15     # Start labadin using a15 lab file and default mode defined in a15
+labadmin -l 15 -W   # Start labadin using a15 lab file and Windows mode (WinRM)
+labadmin -l 15 -L   # Start labadin using a15 lab file and Linux mode (SSH)
+
 <details><summary>Parameter options</summary><p>
 	
 ```
 $ labadmin -h
-Admin remotely hosts in a computer lab environment.
-   labadmin [-l lab_config] [-i face] [-r range] [-a action] [-1|-2|-3|-4|-5|-6|-7|-8|-9 param] [-W|-L] [-F]
+  Labadmin TUI
+   labadmin [-l lab_config] [-i face] [-W|-L] [-F]
 
   OPTIONS
    -l lab_config
@@ -159,16 +166,7 @@ Admin remotely hosts in a computer lab environment.
 	When not specified default file is used.
 
    -i iface
-	Network interface to use. Overrides iface variable in lab config file.
-
-   -a action
-	Action to exec. For example: user/add
-
-   -r range
-	Hosts range to apply actions. For example: 11,34,23,21-28
-
-   -1|-2|-3|-4|-5|-6|-7|-8|-9 param
-	Action parameter value to exec.
+	Network interface to use. Overrides iface variable in labadmin config file.
 
    -W 
 	Force Windows WINRM server mode. Overrides srvmode variable in lab config file.
@@ -176,22 +174,11 @@ Admin remotely hosts in a computer lab environment.
    -L 
 	Force Linux SSH server mode. Overrides srvmode variable in lab config file.
 
-  SAMPLES
-    labadmin -l a11 -i eth0
-    labadmin -r 5,12,15-20 -a exec/com -1 "du -sh /home/*"
-    labadmin -r all -a "software/packages/upgrade &" -1 y -2 y
-
+   -F 
+	Force continue even check dependencies fail
 ```
 </p></details>
 
-
-When labadmin starts loads default lab config file and operate in configured as default mode (Linux or Windows).
-You can select other lab config and mode with parameters: ``-l <lab_file>`` and ``-L`` or ``-W``. 
-```bash
-labadmin            # Start labadmin using defualt config lab
-labadmin -l a15     # Start labadin using a15 lab file and default mode defined in a15
-labadmin -l 15 -W   # Start labadin using a15 lab file and Windows mode (WinRM)
-labadmin -l 15 -L   # Start labadin using a15 lab file and Linux mode (SSH)
 ```
 
 Each action execution has 5 stages: discover, host selection, action selection, action parametrization and action monitorization.
