@@ -35,4 +35,4 @@ u=($(labadmin_users-display | head -1))
 
 labadmin_info "Sending message to user $u"
 echo " > $msg"
-su "${u[0]}" -c "DISPLAY=${u[1]} DBUS_SESSION_BUS_ADDRESS=${u[3]} notify-send -u critical '$msg'"
+su "${u[0]}" -c "DISPLAY=${u[1]} DBUS_SESSION_BUS_ADDRESS=${u[3]} notify-send -u critical '$(echo -e "$msg")'"

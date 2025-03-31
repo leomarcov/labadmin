@@ -39,6 +39,9 @@ if [ "${labadmin_script_type}" = "local" ]; then
 		msg="$(eval echo "$msg")"			# Resolve scape characteres like \ ,*, etc.
 		[ ! -r "$msg" ] && labadmin_error "Can't access host file $msg" 1
 		msg="$(cat "$msg")"
+	# Read message from variable
+	else
+		msg=$(echo -e "$msg")
 	fi
 
 	# Copy msg to host temp file

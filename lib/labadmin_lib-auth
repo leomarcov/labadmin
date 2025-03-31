@@ -36,7 +36,8 @@ function auth_init() {
 #	$sshprivatekey
 #===============================================================================
 function auth_ssh-init() {
-	#### INIT SSH CONIFG
+	[[ ! "$sshpubkey" || ! "$sshprivatekey" ]] && labadmin_error "ERROR: can't load SSH authentication data on labadmin config file ${config_path//\/\//\/}" 1
+
 	# Copy $sshprivatekey content to fifo pipe .ssh/rakey (for no save it permanently)
 	local sshkey_file="$HOME/.ssh/rakey"
 	[ ! -d "$HOME/.ssh" ] && mkdir "$HOME/.ssh"
@@ -72,6 +73,7 @@ function auth_ssh-init() {
 #===============================================================================
 function auth_winrm-init() {
 	local pd
+	[ ! "$winrmpass" ] && labadmin_error "ERROR: can't load WinRM authentication data on labadmin config file ${config_path//\/\//\/}" 1
 	while true; do
 		pd=$(echo -n "$winrmpass" | base64 -d | openssl enc -aes-256-cbc -a -d -salt -pbkdf2 2>/dev/null)
 		[ $? -eq 0 ] && { winrmpass="$pd"; break; }

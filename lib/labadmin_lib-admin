@@ -49,7 +49,7 @@ function labadmin_load-config-file() {
     [ ! "$winrmport" ] && winrmport=5985
     [ ! "$sshport" ] && sshport=58888
 
-    [ ! "$winrmpass" ] && [[ ! "$sshpubkey" || ! "$sshpublickey" ]] && labadmin_error "ERROR: can't load authentication data on labadmin config file ${config_path//\/\//\/}" 1
+    [ ! "$winrmpass" ] && [[ ! "$sshpubkey" || ! "$sshprivatekey" ]] && labadmin_error "ERROR: can't load authentication data on labadmin config file ${config_path//\/\//\/}" 1
 
 }
 
