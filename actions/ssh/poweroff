@@ -19,7 +19,7 @@ if [ "$1" = "--load-scriptinfo" ]; then
 #=== READ PARAMS ===================================================================
 elif [ "$1" = "--readparams" ]; then
 	# PARAM1: continue if active user
-	read_param "$script_id" 1 "Poweroff if active user? [y/N]" "n" "^(y|n)$"
+	read_param "$script_id" 1 "Poweroff if active user? [Y/]" "y" "^(y|n)$"
 	return
 fi
 
