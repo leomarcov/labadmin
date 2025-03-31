@@ -46,7 +46,7 @@ function draw_banner() {
 function print_map_prompt() {
 	local msg="$1"
 	labadmin_lock_screen
-	cursor_move-pos $((8+map_nr*3)) 1
+	cursor_move-pos $((7+map_nr*3)) 1
 	clear_line
 	echo -en "    $msg"
 	labadmin_unlock_screen
@@ -59,7 +59,7 @@ function print_map_prompt() {
 #===============================================================================
 function clear_map_prompt() {
 	labadmin_lock_screen
-	cursor_move-pos $((8+map_nr*3)) 1
+	cursor_move-pos $((7+map_nr*3)) 1
 	clear_line
 	labadmin_unlock_screen
 }
@@ -151,7 +151,6 @@ function draw_map() {
 	fi
 
 	labadmin_unlock_screen
-	echo
 }
 
 
