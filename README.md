@@ -59,8 +59,8 @@ You can see labadmin in action in short animations:
 
 &nbsp;  
 # Install
-## Admin install
-  * Admin must be installed in a Linux machine (Debian, Fedora and Ubuntu has been tested).
+## Admin install (only Linux)
+  * Admin must be installed in a Linux OS (Debian, Fedora and Ubuntu has been tested).
 ```bash
 git clone https://github.com/leomarcov/labadmin  # Clone repository
 cd labadmin                                      # Access dir
@@ -68,8 +68,10 @@ cp templates/labadmin.config conf/               # Copy labadmin.config template
 cp templates/labtest labs/                       # Copy lab template to labs
 
 ```
-
-## Create lab config files
+### Edit labadmin config file
+  * Edit ''/opt/labadmin/conf/labadmin.conf'' file set config variables
+    
+### Create labs config files
   * Each lab must be defined in a config file and placed in `labadmin/labs/` directory. This file is a Bash script where config variables are defined.
   * You can use the provided [labs/test](labs/test) file as template. For more information refer to this config file comments.
     
