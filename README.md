@@ -67,8 +67,8 @@ cd labadmin                                      # Access dir
 cp templates/labadmin.config conf/               # Copy labadmin.config template to config
 cp templates/labtest labs/                       # Copy lab template to labs
 
-#### EDIT LABADMIN CONFIG: /opt/labadmin/labadmin.conf
-vi /opt/labadmin/labadmin.conf
+#### EDIT LABADMIN CONFIG: conf/labadmin.conf
+vi conf/labadmin.conf
  iface                # Network interface to connecto with hosts
  scan_timeout         # Arp-scan timeout in milliseconds (defualt 500)
  winrmuser            # Windows labadmin local user to connecto with hosts
@@ -80,11 +80,11 @@ vi /opt/labadmin/labadmin.conf
  sshprivatekey        # SSH private key authentication hosts
                       # GENERATE: ssh-keygen -t rsa
 
-#### EDIT LAB CONFIG: /opt/labadmins/labs/*
-mv /opt/labadmin/labs/labtest /opt/labadmin/labs/A11     # Set lab config filename to your lab ID name
+#### EDIT LAB CONFIG: /labs/*
+mv labs/labtest labs/A11     # Set lab config filename to your lab ID name
 vi /opt/labadmin/labs/A11
- labadmin="AULA 11"   # Lab name
- srvmode="ssh"        # Server mode (ssh or winrm)
+ labadmin="AULA 11"          # Lab name
+ srvmode="ssh"                # Server mode (ssh or winrm)
 
  # List of <host_id> and <MAC> for each host in MAP:
  macs[11]="08:00:27:B5:EE:E8"
