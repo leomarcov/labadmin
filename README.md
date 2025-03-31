@@ -62,11 +62,10 @@ You can see labadmin in action in short animations:
 ## Admin install (only Linux)
   * Admin must be installed in a Linux OS (Debian, Fedora and Ubuntu has been tested).
 ```bash
-#### CLONE REPOSITORY AND COPY CONFIG TEMPLATES
+#### CLONE REPOSITORY AND COPY CONFIG TEMPLATE
 git clone https://github.com/leomarcov/labadmin
 cd labadmin
 cp templates/labadmin.conf conf/
-cp templates/labtest labs/
 
 #### EDIT LABADMIN CONFIG
 vi conf/labadmin.conf
@@ -77,8 +76,16 @@ vi conf/labadmin.conf
  sshpubkey=''                           # GENERATE: ssh-keygen -t rsa 
  sshprivatekey=''
 
-#### FOR EACH LAB CREATE AND EDIT LAB CONFIG
-mv labs/labtest labs/A11                # Set lab config filename to your lab ID name
+#### INSTALL ADMIN
+bash install admin
+```  
+
+#### Create config lab files
+  * For each lab create a file in /opt/labadmin/labs with config lab:
+
+```bash
+cd /opt/labadmin
+cp labs/labtest labs/A11                # Set lab config filename to your lab ID name
 vi /opt/labadmin/labs/A11
  labadmin="AULA 11"                     # Lab name
  srvmode="ssh"                          # Server mode (ssh or winrm)
@@ -97,12 +104,7 @@ vi /opt/labadmin/labs/A11
  __ __ 24 23 22 21
  __ __ 14 13 12 11
  ' 
-
-#### INSTALL ADMIN
-bash install admin
 ```  
-
-
 
 ## Hosts install on Linux
   * Not agent labadmin software is installed, installer only need to install all needed dependences and configure the remote SSH access method.
