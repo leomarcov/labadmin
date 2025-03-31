@@ -128,7 +128,16 @@ winrm set winrm/config/service '@{AllowUnencrypted="true"}'
 winrm set winrm/config/winrs '@{MaxMemoryPerShellMB="1024"}'
 sc.exe config winrm start= auto
 Set-Item wsman:\localhost\client\trustedhosts *
+```
+  * Create user to connect with WinRM and hide user from login:
 
+ ```powershell
+	Write-Host "`nCreating local user $agent_user" -ForegroundColor Green
+	New-LocalUser -Name $agent_user -FullName "Labadmin Script Server Agent" -Password $agent_user_cred.Password
+    Set-LocalUser -Name $agent_user -PasswordNeverExpires:$true
+	Add-LocalGroupMember -Member $agent_user -SID "S-1-5-32-544"			# Add user to local Administrators group
+	# Hide user from login screen:
+	New-Item 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon\SpecialAccounts\UserList' -Force | New-ItemProperty -Name $agent_user -Value 0 -PropertyType DWord -Force
 ```
 
 &nbsp;  
