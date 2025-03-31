@@ -324,9 +324,8 @@ function install_host() {
 	# CHECK ROOT
 	[ $EUID -ne 0 ] && labadmin_error "Install must be runed as root" 1
 
-	# LOAD CONFIG FILE
-	[ ! -f "$config_path" ] && labadmin_error "Cant access labadmin config file: $config_path" 1
-	source "$config_path"
+	# LOAD LABADMIN CONFIG FILE
+	labadmin_load-config-file
 
 	# DEPENDENCIES
 	check_dependencies "ask" "scripts_hostdeps"

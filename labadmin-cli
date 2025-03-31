@@ -176,7 +176,7 @@ check_params "$@"
 [ ! "$Fparam" ] && [ "$EUID" -eq 0 ] && labadmin_error "Labadmin must be exec as regular user (no root)" 1
 
 # LOAD LABADMIN CONFIG FILE
-source "$config_path" || labadmin_error "ERROR: error loading labadmin config file: $config_path" 1
+labadmin_load-config-file
 
 # LOAD LAB FILE
 default_lab_path="${labadmin_path}/conf/lab.default"

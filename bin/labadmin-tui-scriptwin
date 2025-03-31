@@ -40,7 +40,7 @@ nhost="$2"
 [ "$nhost" -eq "$nhost" ] &>/dev/null || labadmin_error "ERROR: invalid nhost $nhost" 1
 
 # LOAD LABADMIN CONFIG FILE
-source "$config_path" || labadmin_error "ERROR: error loading labadmin config file: $config_path" 1
+labadmin_load-config-file
 
 # LABADMIN TMP DIR INIT
 labadmin_tmp-init

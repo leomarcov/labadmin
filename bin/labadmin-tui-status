@@ -40,7 +40,7 @@ labadmin_tmp-vars-load tmuxmode
 tmux_init-panel
 
 # LOAD LABADMIN CONFIG FILE
-source "$config_path" || labadmin_error "ERROR: error loading labadmin config file: $config_path" 1
+labadmin_load-config-file
 
 
 #===============================================================================

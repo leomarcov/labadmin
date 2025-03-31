@@ -22,6 +22,8 @@ readonly config_path="${labadmin_path}/conf/labadmin.conf"                      
 scripts_path="$labadmin_path/actions/"                                              # Scripts directory
 
 
+
+
 #=== FUNCTION ==================================================================
 # NAME: labadmin_show_version
 # DESCRIPTION: show current labadmin version
@@ -29,6 +31,26 @@ scripts_path="$labadmin_path/actions/"                                          
 function labadmin_show_version() {
     local lv=$(cat "${labadmin_path}/version")
      echo -e "${S_B}LABADMIN${S_R} ${S_D}v${lv}${S_R}"
+}
+
+
+#=== FUNCTION ==================================================================
+# NAME: labadmin_load-config-file
+# DESCRIPTION: load labadmin config file and set deault values if no present
+#===============================================================================
+function labadmin_load-config-file() {
+    [ ! -r "$config_path" ] && labadmin_error "ERROR: can't access labadmin config file ${config_path//\/\//\/}" 1
+    source "$config_path" || labadmin_error "ERROR: error loading labadmin config file: ${config_path//\/\//\/}" 1
+
+    # Set deault values
+    [ ! "$iface" ] && iface=$(labadmin_iface 8.8.8.8)
+    [ ! "$scan_timeout" ] && scan_timeout=500
+    [ ! "$winrmuser" ] && winrmuser="labadmin"
+    [ ! "$winrmport" ] && winrmport=5985
+    [ ! "$sshport" ] && sshport=58888
+
+    [ ! "$winrmpass" ] && [[ ! "$sshpubkey" || ! "$sshpublickey" ]] && labadmin_error "ERROR: can't load authentication data on labadmin config file ${config_path//\/\//\/}" 1
+
 }
 
 
