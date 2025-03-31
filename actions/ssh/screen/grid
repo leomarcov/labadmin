@@ -43,7 +43,7 @@ if [ "${labadmin_script_type}" = "local" ]; then
     
     # Create initial links to ensure javascript is always on the back
 	file_tmp="$dir_dest/${labadmin_nhost}.jpg"
-	touch "$file_tmp" "$file_tmp_" 
+	touch "$file_tmp" "${file_tmp}_" 
 	ln "$file_tmp" "$dir_dest/${labadmin_nhost}-$((($(date +%s)-dsec)/5)).jpg"
     ln "$file_tmp" "$dir_dest/${labadmin_nhost}-$(($(date +%s)/5)).jpg"
 
