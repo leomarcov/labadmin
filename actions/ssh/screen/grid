@@ -40,14 +40,14 @@ if [ "${labadmin_script_type}" = "local" ]; then
     # Check dir dest
 	[ ! -w "$dir_dest" ] && labadmin_error "Can't write in directory $dir_dest" 1  # Check dir_dest
 	[ "$iq" -lt 10 ] && iq=10; [ "$iq" -gt 100 ] && iq=100     # Min iq 10
-
-    file_tmp="$dir_dest/${labadmin_nhost}.jpg"
     
     # Create initial links to ensure javascript is always on the back
     ln "$file_tmp" "$dir_dest/${labadmin_nhost}-$((($(date +%s)-dsec)/5)).jpg"
     ln "$file_tmp" "$dir_dest/${labadmin_nhost}-$(($(date +%s)/5)).jpg"
 
-	touch "$file_tmp" "$dir_dest/recording"
+	file_tmp="$dir_dest/${labadmin_nhost}.jpg"
+	touch "$file_tmp" "$file_tmp_" 
+	touch "$dir_dest/recording"
     while [ -f "$dir_dest/recording" ]; do
         echo -e " ${S_B}${file_tmp}${S_R}"
         labdmin_ssh_host_comm "${labadmin_nhost}" '
