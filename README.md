@@ -151,6 +151,7 @@ labadmin            # Start labadmin using defualt config lab
 labadmin -l a15     # Start labadin using a15 lab file and default mode defined in a15
 labadmin -l 15 -W   # Start labadin using a15 lab file and Windows mode (WinRM)
 labadmin -l 15 -L   # Start labadin using a15 lab file and Linux mode (SSH)
+```
 
 <details><summary>Parameter options</summary><p>
 	
@@ -179,7 +180,7 @@ $ labadmin -h
 ```
 </p></details>
 
-```
+
 
 Each action execution has 5 stages: discover, host selection, action selection, action parametrization and action monitorization.
   
