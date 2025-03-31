@@ -112,7 +112,11 @@ vi /opt/labadmin/labs/A11
  __ __ 24 23 22 21
  __ __ 14 13 12 11
  ' 
-```  
+```
+  * Edit `/opt/labadmin/conf/lab.default` and copy lab filename of the default lab
+```bash
+echo "A11" > /opt/labadmin/conf/lab.default
+```
 
 ## Hosts install on Linux
   * Not agent labadmin software is installed, installer only need to install all needed dependences and configure the remote SSH access method.
