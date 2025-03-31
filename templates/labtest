@@ -52,7 +52,7 @@ macs[55]="08:00:27:a3:71:09"
 macs[56]="08:00:27:31:BD:42"
 
 
-# MAP DISTRIBUTION FOR EACH HOST IN MAP
+# MAP DISTRIBUTION FOR EACH HOST IN LAB
 # Break line is used for row separator
 # Space is used for column separator
 # Each character not iqual a number is discarted
