@@ -87,8 +87,8 @@ while true; do
 	# SEND STATUS LOG
 	labadmin_status-send "\n ${S_B}→ EXEC ${C_Y}${script_id}${S_R} to $(set -- $shosts; echo $#) hosts $([ "$exec_bg" ] && echo "($exec_bg)" | sed 's/sub/\&/' | sed 's/win/\&\&/')"
 
-	# LOG EVENT
-	# TO-DO
+	# LOG EXEC
+	[ -w "$log_path" ] && echo -e "[$(date "+%Y-%d-%m %H:%M:%S")] [$(id -un)] [$ipadmin] [$shosts_listen] [${script_id}${exec_bg:+(${exec_bg})}: $p1 | $p2 | $p3 | $p4 | $p5 | $p6 | $p7 | $p8 | $p9 ]" >> "$log_path"
 
 	# EXEC ADMIN 
 	if [[ "${scripts_type[$script_id],,}" = admin* ]]; then
