@@ -67,17 +67,39 @@ cd labadmin                                      # Access dir
 cp templates/labadmin.config conf/               # Copy labadmin.config template to config
 cp templates/labtest labs/                       # Copy lab template to labs
 
-#### EDIT CONFIG: /opt/labadmin/labadmin.conf
-iface            # Network interface to connecto with hosts
-scan_timeout     # Arp-scan timeout in milliseconds (defualt 500)
-winrmuser        # Windows labadmin local user to connecto with hosts
-winrmport        # Windows WINRM port to use  
-winrmpass        # Windows labadmin local user password  AES-256 encrypted
-                   # GENERATE: read -p "Windows localuser pass to encrypt: " p; echo "$p" | openssl enc -aes-256-cbc  -a -salt -pbkdf2 | base64
-sshport          # SSH port to connect with hosts
-sshpubkey        # SSH pub key authentication hosts
-sshprivatekey    # SSH private key authentication hosts
-                   # GENERATE: ssh-keygen -t rsa
+#### EDIT LABADMIN CONFIG: /opt/labadmin/labadmin.conf
+vi /opt/labadmin/labadmin.conf
+ iface                # Network interface to connecto with hosts
+ scan_timeout         # Arp-scan timeout in milliseconds (defualt 500)
+ winrmuser            # Windows labadmin local user to connecto with hosts
+ winrmport            # Windows WINRM port to use  
+ winrmpass            # Windows labadmin local user password  AES-256 encrypted
+                      # GENERATE: read -p "Windows localuser pass to encrypt: " p; echo "$p" | openssl enc -aes-256-cbc  -a -salt -pbkdf2 | base64
+ sshport              # SSH port to connect with hosts
+ sshpubkey            # SSH pub key authentication hosts
+ sshprivatekey        # SSH private key authentication hosts
+                      # GENERATE: ssh-keygen -t rsa
+
+#### EDIT LAB CONFIG: /opt/labadmins/labs/*
+mv /opt/labadmin/labs/labtest /opt/labadmin/labs/A11     # Set lab config filename to your lab ID name
+vi /opt/labadmin/labs/A11
+ labadmin="AULA 11"   # Lab name
+ srvmode="ssh"        # Server mode (ssh or winrm)
+
+ # List of <host_id> and <MAC> for each host in MAP:
+ macs[11]="08:00:27:B5:EE:E8"
+ macs[12]="08:00:27:2a:f0:f2"
+ macs[13]="08:00:27:bb:07:9d"
+...
+
+ # Map distritution for each host in lab
+ map='
+ 56 55 54 53 52 51
+ 46 45 34 33 32 31
+ 36 35 34 33 32 31
+ __ __ 24 23 22 21
+ __ __ 14 13 12 11
+ ' 
 
 #### INSTALL ADMIN
 bash install admin
@@ -85,7 +107,7 @@ bash install admin
 ### Create labs config files
   * Each lab must be defined in a config file and placed in `/opt/labadmin/labs/` directory.
   * You can use the provided [labs/test](labs/test) file as template. For more information refer to this config file comments.
-    
+```  
 
 
 
