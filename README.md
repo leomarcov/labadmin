@@ -69,8 +69,20 @@ cp templates/labtest labs/                       # Copy lab template to labs
 
 ```
 ### Edit labadmin config file
-  * Edit `/opt/labadmin/conf/labadmin.conf` file and set config variables
-    
+  * Edit `/opt/labadmin/conf/labadmin.conf` file and set config variables:
+```bash
+iface            Network interface to connecto with hosts
+scan_timeout     Arp-scan timeout in milliseconds (defualt 500)
+
+winrmuser        Windows labadmin local user to connecto with hosts
+winrmport        Windows WINRM port to use  
+winrmpass		
+
+sshport          SSH port to connect with hosts
+sshpubkey        SSH pub key authentication hosts
+sshprivatekey    SSH private key authentication hosts
+```
+ 
 ### Create labs config files
   * Each lab must be defined in a config file and placed in `/opt/labadmin/labs/` directory.
   * You can use the provided [labs/test](labs/test) file as template. For more information refer to this config file comments.
