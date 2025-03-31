@@ -91,13 +91,16 @@ vi /opt/labadmin/labs/A11
  srvmode="ssh"                          # Server mode (ssh or winrm)
 
  # List of MACs for each host in map
-# macs[<host_id>]=<MAC>
+ # macs[<host_id>]=<MAC>
  macs[11]="08:00:27:B5:EE:E8"
  macs[12]="08:00:27:2a:f0:f2"
  macs[13]="08:00:27:bb:07:9d"
 ...
 
  # Map distritution for each host in lab
+ # Break line is used for row separator
+ # Space is used for column separator
+ # Each character not iqual a number is discarted
  map='
  56 55 54 53 52 51
  46 45 34 33 32 31
