@@ -81,7 +81,7 @@ bash install admin
 ```  
 
 #### Create config lab files
-  * For each lab create a file in /opt/labadmin/labs with config lab:
+  * For each computer laboratory create a file in `/opt/labadmin/labs/` with config lab:
 
 ```bash
 cd /opt/labadmin
