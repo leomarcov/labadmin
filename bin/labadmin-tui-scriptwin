@@ -53,6 +53,8 @@ tmux_init-panel
 scripts_path="${scripts_path}/${srvmode}/"
 load_scripts "$scripts_path"							# Load all scripts recursively
 
+# INIT REMOTE AUTENTICACION
+auth_init
 
 
 #===============================================================================
