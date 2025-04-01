@@ -8,7 +8,7 @@ script_id="$(echo ${BASH_SOURCE[0]} | sed 's\^'"$scripts_path"'/*\\g')"     # Sc
 
 #=== LOAD INFO =====================================================================
 if [ "$1" = "--load-scriptinfo" ]; then
-    script_desc="Save screenshots files for selected hosts in local admin"
+    script_desc="Save screenshots files hosts in local admin"
     script_type="local+admin"
     script_bg="force sub"
     script_admindeps=""

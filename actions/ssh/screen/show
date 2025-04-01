@@ -8,7 +8,7 @@ script_id="$(echo ${BASH_SOURCE[0]} | sed 's\^'"$scripts_path"'/*\\g')"     # Sc
 
 #=== LOAD INFO =====================================================================
 if [ "$1" = "--load-scriptinfo" ]; then
-    script_desc="Show screenshots for selected host dinamically"
+    script_desc="Show screenshots hosts dinamically"
     script_type="admin+local+admin"
     script_bg="force sub"
     script_admindeps="feh"
