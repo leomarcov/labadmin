@@ -42,7 +42,7 @@ labadmin_load-config-file
 # LABADMIN TMP DIR INIT
 labadmin_tmp-init
 labadmin_tmp-vars-load ipadmin iface lab_file Lparam Wparam Fparam srvmode tmuxmode lab_id
-readonly sshagent_path="${labadmin_tmp_path}/sshagent"      						# SSH Agent info 
+readonly sshagent_path="${labadmin_tmp_path}/ssh-agent"      						# SSH Agent info 
 
 # LOAD LAB FILE
 labadmin_load-lab
