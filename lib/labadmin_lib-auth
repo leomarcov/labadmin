@@ -39,7 +39,7 @@ function auth_ssh-init() {
 	[[ ! "$sshpubkey" || ! "$sshprivatekey" ]] && labadmin_error "ERROR: can't load SSH authentication data on labadmin config file ${config_path//\/\//\/}" 1
 
 	# Copy $sshprivatekey content to fifo pipe .ssh/rakey (for no save it permanently)
-	local sshkey_file="${labadmin_tmp_path}/ssh-key"
+	local sshkey_file="/tmp/labadmin/${USER}/ssh-key"
 	[ ! -r  "$sshkey_file" ] &&	mkfifo -m=600 "$sshkey_file"
 	# Load ssh-agent
 	if [ ! $SSH_AGENT_PID ]; then
