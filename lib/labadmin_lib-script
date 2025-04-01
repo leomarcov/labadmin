@@ -160,7 +160,7 @@ function select_script() {
 	while [ ! "$script_id" ]; do
 		# READ SCRIPT AS PARAM
 		local help="${S_D}Action options${S_R}
- ${C_Y}action${S_R}                   Exec action
+ ${C_LY}action${S_R}                   Exec action
  ${C_LY}action${S_R} &                 Exec action in background (all in this panel)
  ${C_LY}action${S_R} &&                Exec action in background (in separate panles)
  ${C_LB}dir${S_R}                      Enter to dir menu     
