@@ -279,8 +279,9 @@ function install_admin() {
 	find "$dir_install" -type d -exec chmod 650 {} \;
 	chmod ug+x "${labadmin_file}"
 	chmod ug+x "${labadmin_file}-cli"
-	chmod ug+x "$dir_install/install"
-	chmod ug+x "$dir_install/uninstall"
+	chmod ug+x "${dir_install}/install"
+	chmod ug+x "${dir_install}/uninstall"	
+	chmod ug+x "${dir_install}/bin/"*
 
 	labadmin_info "Creating /usr/bin links"
 	rm -rf /usr/sbin/labadmin /usr/sbin/labadmin-cli &> /dev/null
