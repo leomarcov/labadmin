@@ -123,7 +123,7 @@ while true; do
 	# CONTINUE
 	if [ "$exec_bg" = win ]; then
 		read -s -n 1 -p "$(echo -e "\n${S_B}[ENTER] to continue or [c] to close panels${S_R}")" c; echo -e "\n"
-		[ "$c" = c ] && tmux_close-windows $shosts
+		[ "$c" = c ] && tmux_close-windows-list $shosts
 
 	else 
 		read -s -e -p "$(echo -e "\n${S_B}[ENTER] to continue${S_R}")"; echo -e "\n"	

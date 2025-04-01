@@ -39,24 +39,51 @@ function tmux_kill-session() {
 
 
 #=== FUNCTION ==================================================================
-#        NAME: tmux_close-windows
+#        NAME: tmux_close-windows-active
+# DESCRIPTION: close active window
+#              if active window is LABADMIN close all extra windows
+#
+# PARAMETERS
+#	$*	window list names (RE are allowed)
+#===============================================================================
+function tmux_close-windows-active() {
+	aw=$(tmux list-window -t $tmux_sid -F '#{window_active} #{window_name}' | awk '$1 == "1" {print $2}')
+	if [[ "$aw" != @(LABADMIN|MAP|EXEC|LOG) ]]; then
+		tmux kill-window -t $tmux_sid
+	else
+		tmux_close-windows-RE "*"
+	fi
+}
+
+
+
+#=== FUNCTION ==================================================================
+#        NAME: tmux_close-windows-RE
+# DESCRIPTION: close a list of windows matches RE
+#
+# PARAMETERS
+#	$1	window name RE
+#===============================================================================
+function tmux_close-windows-RE() {
+	local re="$1"
+	wsel=$(tmux list-windows -F "#{window_index} #{window_name}" | grep -Ev " LABADMIN$| MAP$| LOG$" | grep " ${re}$" | cut -f1 -d" ")
+	for n in $wsel; do
+		tmux kill-window -t ${tmux_sid}:${n} 
+	done
+}
+
+
+
+#=== FUNCTION ==================================================================
+#        NAME: tmux_close-windows-list
 # DESCRIPTION: close a list of windows by name
-#              If name is not uniq close the last opened
-#              If no names supplied close active window
+#              If window name is not uniq close the last opened
 # PARAMETERS
 #	$*	window list names
 #===============================================================================
-function tmux_close-windows() {
-	# Close active
-	if [ $# -eq 0 ]; then
-		aw=$(tmux list-window -t $tmux_sid -F '#{window_active} #{window_name}' | awk '$1 == "1" {print $2}')
-		[[ "$aw" != @(LABADMIN|MAP|EXEC|LOG) ]] && tmux kill-window -t $tmux_sid
-		return
-	fi
-
-	# Close list
+function tmux_close-windows-list() {
 	for wn in "$@"; do
-		wnum=$(tmux list-windows -t $tmux_sid -F "#{window_index} #{window_name}" | grep "\b${wn}$" | tail -1 | cut -f1 -d" ")
+		wnum=$(tmux list-windows -t $tmux_sid -F "#{window_index} #{window_name}" | grep -Ev " LABADMIN$| MAP$| LOG$" | grep " ${wn}$" | tail -1 | cut -f1 -d" ")
 		[ "$wnum" ] && tmux kill-window -t ${tmux_sid}:${wnum} 
 	done
 }

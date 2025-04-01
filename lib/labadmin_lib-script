@@ -169,7 +169,7 @@ function select_script() {
 
 ${S_D}Internal commands${S_R}
  ${C_N}${S_U}n${S_R}ew-panel                Open extra script panel
- ${C_N}${S_U}c${S_R}lose-panel              Close current script panel
+ ${C_N}${S_U}c${S_R}lose-panel              Close current/all extra script panel
  ${C_N}${S_U}r${S_R}efresh-map              Refresh map with current selection
  ${C_N}${S_U}s${S_R}elect-hosts [range]     Select new host range or show current host selected
  ${C_N}${S_U}l${S_R}ab [lab]                Change lab or show available labs
@@ -197,7 +197,7 @@ ${S_D}Internal commands${S_R}
 
 		# ACTION c: close extra script panel
 		elif [[ "${p0,,}" = @(c?( )|close-panel?( )) ]]; then
-			tmux_close-windows
+			tmux_close-windows-active
 			return 1			
 
 		# ACTION r: refresh map panel
@@ -493,7 +493,8 @@ function exec_script() {
 	local script_type="${scripts_type[$script_id]}"
 
 	# SHOW HEADER
-	echo -e "\n┌─── ${S_B}[${nhost:-ADMIN}] ${C_LB}${iphost:-LOCALHOST}${C_D} → EXEC $script_id${S_R} $(seq -s"─" $((${COLUMNS}-17-${#nhost}-${#iphost}-${#script_id}$([ ! "$nhost" ] && echo "-5")$([ ! "$iphost" ] && echo "-9")))| tr -d "[0-9]")┐"
+	local e=""; [ "${#nhost}" -eq 1 ] && e=" "
+	echo -e "\n┌─── ${S_B}[${e}${nhost:-ADMIN}] ${C_LB}${iphost:-LOCALHOST}${C_D} → EXEC $script_id${S_R} $(seq -s"─" $((${COLUMNS}-17-${#nhost}${#e}-${#iphost}-${#script_id}$([ ! "$nhost" ] && echo "-5")$([ ! "$iphost" ] && echo "-9")))| tr -d "[0-9]")┐"
 
 	#### EXEC BACKGROUND START (prepare output)
 	[ "$exec_bg" = "sub" ] && stdout_nhost start "$nhost"	
@@ -552,12 +553,12 @@ function exec_script() {
 	if [ "$out" -ne 0 ]; then
 		[ "$exec_bg" = "sub" ] && labadmin_beep "error1"
 		[ "$nhost" ] && hosts_err[$nhost]=$out  
-		echo -e "${S_R}└─── ${S_B}[${nhost:-ADMIN}] ${C_LB}${iphost:-LOCALHOST}${C_D} ← ${C_LR}ERROR ($out)${C_D}${S_R} $(seq -s"─" $((${COLUMNS}-21-${#nhost}-${#iphost}-${#out}$([ ! "$nhost" ] && echo "-5")$([ ! "$iphost" ] && echo "-9")))| tr -d "[0-9]")─┘"
-		[ "$tmuxmode" ] && labadmin_status-send "  [${nhost:-AD}] ${S_B}${C_Y}${script_id} ${C_R}EXEC ERROR${S_R}"
+		echo -e "${S_R}└─── ${S_B}[${e}${nhost:-ADMIN}] ${C_LB}${iphost:-LOCALHOST}${C_D} ← ${C_LR}ERROR ($out)${C_D}${S_R} $(seq -s"─" $((${COLUMNS}-21-${#e}${#nhost}-${#iphost}-${#out}$([ ! "$nhost" ] && echo "-5")$([ ! "$iphost" ] && echo "-9")))| tr -d "[0-9]")─┘"
+		[ "$tmuxmode" ] && labadmin_status-send "  [${e}${nhost:-AD}] ${S_B}${C_Y}${script_id} ${C_R}EXEC ERROR${S_R}"
 	else
 		[ "$nhost" ] && hosts_ok[$nhost]=$out  
-		echo -e "${S_R}└─── ${S_B}[${nhost:-ADMIN}] ${C_LB}${iphost:-LOCALHOST}${C_D} ← ${C_LG}OK${C_D}${S_R} $(seq -s"─" $((${COLUMNS}-15-${#nhost}-${#iphost}$([ ! "$nhost" ] && echo "-5")$([ ! "$iphost" ] && echo "-9")))| tr -d "[0-9]")─┘"
-		[ "$tmuxmode" ] && labadmin_status-send "  [${nhost:-AD}] ${S_B}${C_Y}${script_id} ${C_G}EXEC OK${S_R}"
+		echo -e "${S_R}└─── ${S_B}[${e}${nhost:-ADMIN}] ${C_LB}${iphost:-LOCALHOST}${C_D} ← ${C_LG}OK${C_D}${S_R} $(seq -s"─" $((${COLUMNS}-15-${#e}${#nhost}-${#iphost}$([ ! "$nhost" ] && echo "-5")$([ ! "$iphost" ] && echo "-9")))| tr -d "[0-9]")─┘"
+		[ "$tmuxmode" ] && labadmin_status-send "  [${e}${nhost:-AD}] ${S_B}${C_Y}${script_id} ${C_G}EXEC OK${S_R}"
 	fi
 
 	return $out
