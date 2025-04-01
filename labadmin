@@ -114,7 +114,7 @@ check_params "$@"
 labadmin_show_version
 
 # CHECK ROOT
-[ ! "$Fparam" ] && [ "$EUID" -eq 0 ] && labadmin_error "Labadmin must be exec as regular user (no root)" 1
+[ ! "$Fparam" ] && [ "$EUID" -eq 0 ] && labadmin_error "Labadmin cant be exec as root" 1
 
 # LOAD LABADMIN CONFIG FILE
 labadmin_load-config-file

@@ -173,7 +173,7 @@ check_params "$@"
 [ ! "$Mparam" ] && [[ ! "$rparam" || ! "$aparam" ]] && labadmin_error "Incorrect parameters" 1
 
 # CHECK ROOT
-[ ! "$Fparam" ] && [ "$EUID" -eq 0 ] && labadmin_error "Labadmin must be exec as regular user (no root)" 1
+[ ! "$Fparam" ] && [ "$EUID" -eq 0 ] && labadmin_error "Labadmin cant be exec as root" 1
 
 # LOAD LABADMIN CONFIG FILE
 labadmin_load-config-file
