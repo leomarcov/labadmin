@@ -303,13 +303,13 @@ function install_admin() {
 
 	labadmin_info "\nINSTALL FINISHED!"
 	installed_labs=$(ls "${labs_path}" 2>/dev/null| tr "\n" " ")
-	labadmin_config_path="${labadmin_path}/conf/labadmin.conf"
+	labadmin_config_path="${labadmin_path}conf/labadmin.conf"
 	echo -e " 1) SET PERMISSIONS: add users to ${S_B}${labadmin_group}${S_R} group for allow exec labadmin"
-	[ ! -f "${labadmin_config_path}" ] && echo -e " 2) LABADMIN CONFIG: copy template config ${S_B}${dir_install}/templates/labadmin.conf${S_R} to ${S_B}${dir_install}/conf/labadmin.conf${S_R} and set labadmin config" || echo -e " 2) LABADMIN CONFIG: edit ${S_B}${dir_install}/conf/labadmin.conf${S_R} and set labadmin global config and authentication"
+	[ ! -f "${labadmin_config_path}" ] && echo -e " 2) LABADMIN CONFIG: copy template config ${S_B}${dir_install}templates/labadmin.conf${S_R} to ${S_B}${dir_install}conf/labadmin.conf${S_R} and set labadmin config" || echo -e " 2) LABADMIN CONFIG: edit ${S_B}${dir_install}conf/labadmin.conf${S_R} and set labadmin global config and authentication"
 	echo -e " 3) CONFIG LABS FILES: "
-	[ ! "$installed_labs" ] && echo -e "    - No lab files installed\n    - Copy ${S_B}${dir_install}/templates/labtest${S_B} to ${S_B}${dir_install}/labs${S_R}, rename with lab name and edit it for each lab you need"
+	[ ! "$installed_labs" ] && echo -e "    - No lab files installed\n    - Copy ${S_B}${dir_install}templates/labtest${S_B} to ${S_B}${dir_install}labs${S_R}, rename with lab name and edit it for each lab you need"
 	[ "$installed_labs" ] && echo -e "    - Installed labs($(echo "$installed_labs"|wc -w)): ${S_B}${installed_labs}${S_R}\n    - Edit, create and delete labs files as you need"
-	echo -e "    - Set default lab name on file ${S_B}${dir_install}/conf/lab.default${S_R}"
+	echo -e "    - Set default lab filename on file ${S_B}${dir_install}conf/lab.default${S_R}"
 	echo
 }
 
