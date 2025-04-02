@@ -42,7 +42,7 @@ new_pass="$3"
 ### EXEC EXAM RECOVERY SCRIPT
 bash "$exam_end_script" "${remove_user}" "${new_pass}"; ec=$?
 # Poweroff 
-[ $ec -eq 0 ] && [ "${poweroff_end,,}" = "y" ] && { labadmin_info "\nNO ERRORS REPORTED -> POWEROFF"; poweroff; }
+[ $ec -eq 0 ] && [ "${poweroff_end,,}" = "y" ] && { labadmin_info "\nNO ERRORS REPORTED -> POWEROFF"; poweroff&; }
 exit $ec
 
 
