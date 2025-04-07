@@ -274,7 +274,7 @@ function install_admin() {
 	fi
 
 	labadmin_info "Setting install permissions"	
-	chown -R root."$labadmin_group" "$dir_install"
+	chown -R root:"$labadmin_group" "$dir_install"
 	find "$dir_install" -type f -exec chmod 640 {} \;
 	find "$dir_install" -type d -exec chmod 650 {} \;
 	chmod ug+x "${labadmin_file}"
