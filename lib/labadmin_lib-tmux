@@ -178,7 +178,7 @@ function tmux_create-session-panels() {
 # DESCRIPTION: create and initialize tmux sessions with 3 windows: map, status and script
 #===============================================================================
 function tmux_create-session-windows() {
-	local tmux_sid="labadmin-$USER-$$"
+	local tmux_sid="labadmin-$(id -un)-$$"
 	local tmux_wid_map="MAP"
 	local tmux_wid_script="EXEC"
 	local tmux_wid_status="LOG"
@@ -221,7 +221,7 @@ function tmux_create-session-windows() {
 #===============================================================================
 function tmux_init-panel() {
 	# LOAD TMUX VARIABLES
-	tmux_sid="labadmin-${USER}-${labadmin_PID}"
+	tmux_sid="labadmin-$(id -un)-${labadmin_PID}"
 	tmux list-sessions -F "#{session_name}" | grep -wq "${tmux_sid}" || labadmin_error "ERROR: tmux session $tmux_sid not found" 1
 	tmux_nw=$(tmux list-window -t $tmux_sid | wc -l)
 

@@ -15,7 +15,7 @@
 #===============================================================================
 function labadmin_tmp-init() {
 	[ ! "$labadmin_PID" ] && labadmin_error "ERROR: labadmin_PID not defined" 1
-	readonly labadmin_tmp_path="/tmp/labadmin/${USER}/${labadmin_PID}"
+	readonly labadmin_tmp_path="/tmp/labadmin/$(id -un)/${labadmin_PID}"
 
 	# In labadmin subscript only update labadmin_tmp_path variable
 	if [ -d "$labadmin_tmp_path" ]; then
@@ -25,7 +25,7 @@ function labadmin_tmp-init() {
 
 	# Create tmp directories
 	[ ! -d "/tmp/labadmin/" ] && { mkdir "/tmp/labadmin"; chmod 777 "/tmp/labadmin/"; }
-	[ ! -d "/tmp/labadmin/${USER}/" ] && {  mkdir -p "/tmp/labadmin/${USER}/"; chmod 700 "/tmp/labadmin/${USER}/"; }
+	[ ! -d "/tmp/labadmin/$(id -un)/" ] && {  mkdir -p "/tmp/labadmin/$(id -un)/"; chmod 700 "/tmp/labadmin/$(id -un)/"; }
 	mkdir -p "$labadmin_tmp_path" || labadmin "ERROR: cant create tmp directory: $labadmin_tmp_path" 1
 	chmod 700 "$labadmin_tmp_path"
 	mkdir "${labadmin_tmp_path}/var/"
