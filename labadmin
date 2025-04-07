@@ -168,7 +168,7 @@ fi
 
 
 # CHECK TMUX MODE: full|compact
-su $USER -c 'wmctrl -r :ACTIVE: -b add,maximized_vert,maximized_horz' &> /dev/null && sleep 0.2
+wmctrl -r :ACTIVE: -b add,maximized_vert,maximized_horz &> /dev/null && sleep 0.2
 [ "$COLUMNS" -ge 140 ] && tmuxmode="full" || tmuxmode="compact"		# tmuxmode=full for tmux in 3panles, tmuxmode=compact for tmux in 3 windows
 
 # EXEC LABADMIN-TUI
