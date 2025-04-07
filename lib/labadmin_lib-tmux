@@ -139,7 +139,7 @@ function tmux_ctrlc_action() {
 # DESCRIPTION: create and initialize tmux sessions with 3 panels: map, status and script
 #===============================================================================
 function tmux_create-session-panels() {
-	local tmux_sid="labadmin-$USER-$$"
+	local tmux_sid="labadmin-$(id -un)-$$"
 	local tmux_wid="LABADMIN"
 
 	# Create sessión and panles

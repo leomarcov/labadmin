@@ -27,9 +27,8 @@ header { grid-area: header;
 	   
 .subheader {
             grid-area: subheader;
-			background-color : #f1f1e6;
             color: white;
-            padding: 0.75rem;
+            padding-right: 0.75rem;
             text-align: center;
             font-size: 1.1rem;
             z-index: 1000;
@@ -42,8 +41,8 @@ header { grid-area: header;
         }	   
 	   
 main {
+			margin-top: 10px !important;	
             grid-area: main;
-            background-color: #F3F4F6;
             padding: 1.5rem;
             color: #374151;
 			margin:auto;
@@ -92,13 +91,10 @@ main {
 				
 .grid-item {max-width: 10vw;
             overflow: hidden; /* Evita que la imagen y el texto sobresalgan */
-            border: 2px solid #ddd;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            background: #f9f9f9;
-            border-radius: 10px;
             text-align: center;
         }
 		
@@ -107,7 +103,6 @@ main {
                 object-fit: cover; /* Evita que la imagen se salga */}
 					   
 .grid-item figcaption{background-color:white;
-            margin-top: 5px;
             white-space: nowrap; 
             overflow: hidden;}
 						
@@ -116,6 +111,7 @@ figure { margin-inline-start: 0px;
 		 margin-inline-end: 0px;
 		 margin-block-start: 0em;
 		 margin-block-end: 0em;
+		 height: 100%;
 	   }
 	   
 
