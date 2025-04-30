@@ -166,6 +166,7 @@ function tmux_create-session-panels() {
 	tmux set -t ${tmux_sid} -g pane-active-border-style fg=colour238,bg=default
 
 	tmux set -t ${tmux_sid} -g mouse on
+	tmux set -t ${tmux_sid} -g remain-on-exit on
 	tmux set -t ${tmux_sid} -g display-time 2000
 	tmux select-pane -t ${tmux_pid_script}
 
@@ -208,6 +209,7 @@ function tmux_create-session-windows() {
 	tmux set -t ${tmux_sid} -g pane-active-border-bg default
 
 	tmux set -t ${tmux_sid} -g mouse on
+	tmux set -t ${tmux_sid} -g remain-on-exit on
 	tmux set -t ${tmux_sid} -g display-time 2000
 	tmux select-pane -t ${tmux_pid_map}
 
