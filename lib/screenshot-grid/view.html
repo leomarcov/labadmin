@@ -1,0 +1,80 @@
+<!--
+	LABADMIN SCREENSHOT GRID HTML
+	Autor: Victor Garrido Cases - CIFP Carlos III
+-->
+
+<html>
+  <head>   
+  <meta charset="utf-8">   
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <title>LABADMIN - Screenshot grid</title>	
+  <link rel="stylesheet" href="labadmin.css" />
+  <script src="labadmin.js"></script>	
+  </head>
+  <body>
+  
+	<section class="layout">
+		<header>
+		   <div class="header" >
+			   <div><h1>Labadmin Screenshot Grid</h1></div>
+				<div id="aula"></div>		
+		   </div>
+		</header>
+
+		<main id="grid" class="grid-container"></main>
+	</section>
+	
+	<div id="zoom">
+		<input id="displaySize"
+			   type="range"   
+			   min="0" 
+			   max="100" 
+			   step="5"
+			   value="50"
+			   list="valuesTV">
+		</input>
+		<datalist id="valuesTV">
+		  <option value="0"    label="0"></option>
+		  <option value="5"    label="5"></option>
+		  <option value="10"   label="10"></option>
+		  <option value="15"    label="15"></option>
+		  <option value="20"   label="20"></option>
+		  <option value="25"    label="25"></option>
+		  <option value="30"   label="30"></option>
+		  <option value="35"    label="35"></option>
+		  <option value="40"   label="40"></option>
+		  <option value="45"    label="45"></option>
+		  <option value="50"   label="50"></option>
+		  <option value="55"    label="55"></option>
+		  <option value="60"   label="60"></option>
+		  <option value="65"    label="65"></option>
+		  <option value="70"   label="70"></option>
+		  <option value="75"    label="75"></option>
+		  <option value="80"   label="80"></option>
+		  <option value="85"    label="85"></option>
+		  <option value="90"   label="90"></option>
+		  <option value="95"    label="95"></option>
+		  <option value="100"  label="100"></option>
+		</datalist>
+	</div>  		
+
+	<dialog id="modal">		
+		<figure class ="figuraModal">
+			<img id="imagenAmpliada" class="imagenModal"></img>
+			<div><figcaption id ="nombrePCAmpliado2" 
+						class="nombrePC-text textoRojo textoMedio negrita">
+						<div class="buttons">
+							<button id="PCAmpliadoAnterior">‹</button>
+							<span id ="nombrePCAmpliado"></span>
+							<button id="PCAmpliadoSiguiente">›</button>
+						</div>
+						</figcaption>
+			</div>
+		</figure>		
+		<button id="cerrarModal" class="textoMedio textoRojo negrita">x</button>
+	</dialog>		
+  </body>
+</html>
+
