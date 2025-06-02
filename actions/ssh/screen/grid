@@ -19,7 +19,7 @@ if [ "$1" = "--load-scriptinfo" ]; then
 #=== READ PARAMS ===================================================================
 elif [ "$1" = "--readparams" ]; then
     # PARAM1: delay
-    read_param "$script_id" 1 "Delay seconds (default 5)"  "5" "^[1-9]([0-9])*$"
+    read_param "$script_id" 1 "Delay seconds (default 1)"  "1" "^[1-9]([0-9])*$"
     # PARAM2: image quality
     read_param "$script_id" 2 "Image quality (default 10, range 10-100)"  "10" "^[1-9]([0-9])*$"
 	
@@ -40,16 +40,18 @@ if [ "${labadmin_script_type}" = "local" ]; then
     # Check dir dest
 	[ ! -w "$dir_dest" ] && labadmin_error "Can't write in directory $dir_dest" 1  # Check dir_dest
 	[ "$iq" -lt 10 ] && iq=10; [ "$iq" -gt 100 ] && iq=100     # Min iq 10
-    
-    # Create initial links to ensure javascript is always on the back
-	file_tmp="$dir_dest/${labadmin_nhost}.jpg"
-	touch "$file_tmp" "${file_tmp}_" 
-	ln "$file_tmp" "$dir_dest/${labadmin_nhost}-$((($(date +%s)/$dsec)-1)).jpg"
-    ln "$file_tmp" "$dir_dest/${labadmin_nhost}-$((($(date +%s)/$dsec)+0)).jpg"
-    ln "$file_tmp" "$dir_dest/${labadmin_nhost}-$((($(date +%s)/$dsec)+1)).jpg"
-    ln "$file_tmp" "$dir_dest/${labadmin_nhost}-$((($(date +%s)/$dsec)+2)).jpg"
-    ln "$file_tmp" "$dir_dest/${labadmin_nhost}-$((($(date +%s)/$dsec)+3)).jpg"
+   
+	# Create initial links to ensure javascript is always on the back
+    file_tmp="$dir_dest/${labadmin_nhost}.jpg"
+    cp "${labadmin_path}/lib/screenshot-grid/assets/host_offline.jpg" "$file_tmp"
+    n=$(($(date +%s)/$dsec))
+    ln -f "$file_tmp" "$dir_dest/${labadmin_nhost}-$((n-1)).jpg"
+    ln -f "$file_tmp" "$dir_dest/${labadmin_nhost}-$((n+0)).jpg"
+    ln -f "$file_tmp" "$dir_dest/${labadmin_nhost}-$((n+1)).jpg"
+    ln -f "$file_tmp" "$dir_dest/${labadmin_nhost}-$((n+2)).jpg"
+    ln -f "$file_tmp" "$dir_dest/${labadmin_nhost}-$((n+3)).jpg"
 
+    # Start recording!
 	touch "$dir_dest/recording"
     while [ -f "$dir_dest/recording" ]; do
         echo -e " ${S_B}${file_tmp}${S_R}"
@@ -57,11 +59,16 @@ if [ "${labadmin_script_type}" = "local" ]; then
 u=($(labadmin_users-display | head -1))
 [ ! "${u[0]}" ] && labadmin_error "No users logged" 1
 su -l "${u[0]}" -c "DISPLAY="${u[1]}" xset b off; import -window root -display "${u[1]}" -quality '${iq}' -interlace Plane jpg:-"' > "${file_tmp}_"
-        mv "${file_tmp}_" "${file_tmp}"
+        if [ $? -eq 0 ]; then 
+            mv "${file_tmp}_" "${file_tmp}"
+        else 
+            cp "${labadmin_path}/lib/screenshot-grid/assets/host_offline.jpg" "$file_tmp" 
+        fi
 
-        ln "$file_tmp" "$dir_dest/${labadmin_nhost}-$((($(date +%s)/$dsec)+0)).jpg" &>/dev/null
-        ln "$file_tmp" "$dir_dest/${labadmin_nhost}-$((($(date +%s)/$dsec)+1)).jpg" &>/dev/null
-        ln "$file_tmp" "$dir_dest/${labadmin_nhost}-$((($(date +%s)/$dsec)+2)).jpg" &>/dev/null
+        n=$(($(date +%s)/$dsec))
+        ln -f "$file_tmp" "$dir_dest/${labadmin_nhost}-$((n+0)).jpg" &>/dev/null
+        ln -f "$file_tmp" "$dir_dest/${labadmin_nhost}-$((n+1)).jpg" &>/dev/null
+        ln -f "$file_tmp" "$dir_dest/${labadmin_nhost}-$((n+2)).jpg" &>/dev/null
         sleep $dsec
     done
 
@@ -73,6 +80,7 @@ elif [ "${labadmin_script_type}" = "admin" ]; then
     [ ! -w "$dir_dest" ] && labadmin_error "Can't write in directory $dir_dest" 1  # Check dir_dest
 
 	labadmin_info-list "Saving screenshots in: ${S_B}$dir_dest${S_R}"
+    sleep 1
 
 	screenshot_grid_url="file://${labadmin_path}/lib/screenshot-grid/view.html?lab=$(echo -n "$labname" | base64 -w0)&dir=$(echo -n "$dir_dest" | base64 -w0)&map=$( echo -n "$map" | tr -s " " | sed -E 's/^ +| +$//g' | base64 -w0)&ref=${dsec}"
 	labadmin_info-list "Opening Labadmin Screenshot Grid: ${S_B}$screenshot_grid_url${S_R}"
