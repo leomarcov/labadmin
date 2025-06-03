@@ -54,13 +54,13 @@ if [ "${labadmin_script_type}" = "local" ]; then
     # Start recording!
 	touch "$dir_dest/recording"
     while [ -f "$dir_dest/recording" ]; do
-        echo -e " ${S_B}${file_tmp}${S_R}"
+        #echo -e " ${S_B}${file_tmp}${S_R}"
         labdmin_ssh_host_comm "${labadmin_nhost}" '
 u=($(labadmin_users-display | head -1))
-[ ! "${u[0]}" ] && labadmin_error "No users logged" 1
+[ ! "${u[0]}" ] && exit 1 #labadmin_error "No users logged" 1
 su -l "${u[0]}" -c "DISPLAY="${u[1]}" xset b off; import -window root -display "${u[1]}" -quality '${iq}' -interlace Plane jpg:-"' > "${file_tmp}_"
         if [ $? -eq 0 ]; then 
-            mv "${file_tmp}_" "${file_tmp}"
+            mv "${file_tmp}_" "${file_tmp}" &>/dev/null
         else 
             cp "${labadmin_path}/lib/screenshot-grid/assets/host_offline.jpg" "$file_tmp" 
         fi
@@ -84,12 +84,11 @@ elif [ "${labadmin_script_type}" = "admin" ]; then
 
 	screenshot_grid_url="file://${labadmin_path}/lib/screenshot-grid/view.html?lab=$(echo -n "$labname" | base64 -w0)&dir=$(echo -n "$dir_dest" | base64 -w0)&map=$( echo -n "$map" | tr -s " " | sed -E 's/^ +| +$//g' | base64 -w0)&ref=${dsec}"
 	labadmin_info-list "Opening Labadmin Screenshot Grid: ${S_B}$screenshot_grid_url${S_R}"
-    echo
-	labadmin_info-list "Press  ${S_B}[ENTER]${S_R} to stop recording screenshots\n"
 
 	[ $EUID -eq 0 ] && labadmin_error "WARNING: labadmin is running as root, some web browsers only support run as regular user"
 	x-www-browser "${screenshot_grid_url}" &>/dev/null &
-    read
-    labadmin_info-list "Stopping screenshots\n"
-    rm -rf  "$dir_dest"
+	labadmin_info-list "Press ${S_B}[ENTER]${S_R} to stop recording screenshots"
+	read
+    labadmin_info-list "Stopping screenshots"
+    rm -rf "$dir_dest"
 fi
