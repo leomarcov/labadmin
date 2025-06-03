@@ -4,7 +4,11 @@
 ****************************************************************/
 
 
-*{font-family: "Lucida Console", "Lucida Sans Typewriter", monaco, "Bitstream Vera Sans Mono", monospace; margin:0}
+*{
+	font-family: "Open Sans", "Lucida Console", "Lucida Sans Typewriter", monaco, "Bitstream Vera Sans Mono", monospace;
+	font-weight: lighter;
+	margin:0;
+}
 
 
 
@@ -26,12 +30,19 @@
 
 /* Reglas Estructura GRID *********************************************/  
 
-header { grid-area: header; 
-		 position: sticky;
-         top: 0;
-         z-index: 1000;			
-		 font-size: 20px;
-	   }
+header { 
+		grid-area: header; 
+		position: sticky;
+        top: 0;
+        z-index: 1000;			
+	    color:#4d4d4d;	
+		border-bottom: 1px solid #dfdfdf;
+	    background-color: #f7f7f7;		
+}
+
+header h1 {
+		font-family: "Lucida Console", "Lucida Sans Typewriter", monaco, "Bitstream Vera Sans Mono", monospace;
+}
 	   
 .subheader {
             grid-area: subheader;
@@ -49,8 +60,9 @@ header { grid-area: header;
         }	   
 	   
 main {
+			margin-top: 0px !important;
             grid-area: main;
-            padding: 1.5rem;
+            padding: 0.5rem;
             color: #374151;
 			margin:auto;
 			transform-origin: top;
@@ -62,9 +74,9 @@ main {
 
 .header {
             align-items: center;	
-			height:8vh;	
 			text-align: center;
-			padding-top: 20px;
+			padding-top: 10px;
+			padding-bottom: 10px;
         }	
 		
 .IMGlogo { margin-left:2%;
@@ -72,12 +84,13 @@ main {
 
 /********************************************************/
 #aula{margin-right:1%;
-      padding-right:0.5%;
-	  padding-left:0.5%;
-    font-weight: bold;
-    margin-top: 30px;
     font-size: 30px;
-	}
+	text-align:center;
+	font-weight: lighter;
+	color: #4d4d4d;
+	margin-top: 20px;
+	margin-bottom: 10px;
+}
 	  
  
 
