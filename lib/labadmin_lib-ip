@@ -56,7 +56,7 @@ function search_ips() {
 		fi
 		return 1
 	fi
-	arp_out="${arp_out}"$'\n'"${ipadmin}"$'\t'"${macadmin}"		# Add admin ip mac (allow select admin if is present in lab config file)
+	arp_out="${ipadmin}"$'\t'"${macadmin}"$'\n'"${arp_out}"		# Add admin ip mac (allow select admin if is present in lab config file)
 
 
 	# UPDATE IPs STATUS:
