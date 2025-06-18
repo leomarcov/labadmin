@@ -630,7 +630,7 @@ function exec_script_ssh() {
 		cat "${lib_path}/labadmin_lib" 
 		script_type="ssh" labadmin_export_vars_code
 		cat "$script_file" 
-	) | ssh -T root@$iphost -p $sshport -oStrictHostKeyChecking=no 'cat | bash /dev/stdin' "'""$p1""'" "'""$p2""'" "'""$p3""'" "'""$p4""'" "'""$p5""'" "'""$p6""'" "'""$p7""'" "'""$p8""'" "'""$p9""'"
+	) | ssh -T root@$iphost -p $sshport -oStrictHostKeyChecking=no -oConnectTimeout=${ssh_timeout:-5} 'cat | bash /dev/stdin' "'""$p1""'" "'""$p2""'" "'""$p3""'" "'""$p4""'" "'""$p5""'" "'""$p6""'" "'""$p7""'" "'""$p8""'" "'""$p9""'"
 	
 	return $?
 }
