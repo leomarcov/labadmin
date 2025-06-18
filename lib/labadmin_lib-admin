@@ -120,7 +120,7 @@ function labdmin_ssh_host_comm() {
     [ ! "$commands" ] && labadmin_error "INTERNAL ERROR: labadmin_exec_ssh_host_comm no commands to exec" 1
 
     # EXEC SSH EXEC COMMANDS
-    ssh $ssh_params root@${ip} -p ${sshport} -oStrictHostKeyChecking=no  "
+    ssh root@${ip} -p ${sshport} -oStrictHostKeyChecking=no -oConnectTimeout=${ssh_timeout:-5} "
 $(cat "${lib_path}/labadmin_lib")
 
 $(labadmin_export_vars_code)
@@ -151,7 +151,7 @@ function labdmin_ssh_host_comm_stdin() {
     [ ! "$commands" ] && labadmin_error "INTERNAL ERROR: labadmin_exec_ssh_host_comm_stdin no commands to exec" 1
 
     # EXEC SSH EXEC COMMANDS
-    cat - | ssh $ssh_params root@${ip} -p ${sshport} -oStrictHostKeyChecking=no  "
+    cat - | ssh root@${ip} -p ${sshport} -oStrictHostKeyChecking=no -oConnectTimeout=${ssh_timeout:-5} "
 $(cat "${lib_path}/labadmin_lib")
 
 $(labadmin_export_vars_code)
@@ -176,7 +176,7 @@ function labdmin_ssh_host_login() {
     # CHECKS
     [ ! "$ip" ] && labadmin_error "INTERNAL ERROR: labadmin_exec_ssh_host_login cant find IP address from host $nhost" 1
     
-    ssh $ssh_params root@${ip} -p ${sshport} -oStrictHostKeyChecking=no 
+    ssh root@${ip} -p ${sshport} -oStrictHostKeyChecking=no -oConnectTimeout=${ssh_timeout:-5}
     return
 }
 
