@@ -11,145 +11,158 @@
 }
 
 
+body {
+	overflow-y: scroll; /* fuerza que la barra esté siempre presente */
+}
 
 
 /* Reglas LAYOUT **********************************************/
-
-.layout { width: 100%;
-		  height: 100%;
-		  display: grid;
-		  grid-template-rows: auto auto 1fr; /* Header, SubHeader se ajusta al contenido */
-		  grid-template-areas:
-				"header"
-				"subheader"
-				"main"; 		  
-		  gap: 0px;	
-        }
-		
+.layout { 
+	width: 100%;
+	height: 100%;
+	display: grid;
+	grid-template-rows: auto auto 1fr; /* Header, SubHeader se ajusta al contenido */
+	grid-template-areas:
+		"header"
+		"subheader"
+		"main"; 		  
+	gap: 0px;	
+}		
 /*************************************************************/
 
 /* Reglas Estructura GRID *********************************************/  
-
 header { 
-		grid-area: header; 
-		position: sticky;
-        top: 0;
-        z-index: 1000;			
-	    color:#4d4d4d;	
-		border-bottom: 1px solid #dfdfdf;
-	    background-color: #f7f7f7;		
+	grid-area: header; 
+	position: sticky;
+    top: 0;
+    z-index: 1000;			
+    color:#4d4d4d;	
+	border-bottom: 1px solid #dfdfdf;
+    background-color: #2a2f3d;	
+	color: #e5e5e5;
+	margin-bottom: 20px;
+	padding: 10px;
 }
 
 header h1 {
-		font-family: "Lucida Console", "Lucida Sans Typewriter", monaco, "Bitstream Vera Sans Mono", monospace;
+	font-family: "Lucida Console", "Lucida Sans Typewriter", monaco, "Bitstream Vera Sans Mono", monospace;
 }
 	   
 .subheader {
-            grid-area: subheader;
-			margin:auto;
-            padding: 0.75rem;
-            text-align: center;
-            font-size: 1.1rem;
-            z-index: 1000;
-			display: flex;
-            justify-content: end;
-            align-items: center;
-			height:2vh;
-            top: 6rem; /* Altura del header */
-			position: sticky;			
-        }	   
+    grid-area: subheader;
+	margin:auto;
+    padding: 0.75rem;
+    text-align: center;
+    font-size: 1.1rem;
+    z-index: 1000;
+	display: flex;
+    justify-content: end;
+    align-items: center;
+	height:2vh;
+    top: 6rem; /* Altura del header */
+	position: sticky;			
+}	   
 	   
 main {
-			margin-top: 0px !important;
-            grid-area: main;
-            padding: 0.5rem;
-            color: #374151;
-			margin:auto;
-			transform-origin: top;
-/*			            overflow-y: auto;*/
-
+	margin-top: 0px !important;
+    grid-area: main;
+    padding: 0.5rem;
+    color: #374151;
+	margin:auto;
+	transform-origin: top;
         }
 	   
 /* Reglas dentro de cada elemento del GRID**/	   
 
 .header {
-            align-items: center;	
-			text-align: center;
-			padding-top: 10px;
-			padding-bottom: 10px;
-        }	
+	align-items: center;	
+	text-align: center;
+}	
 		
-.IMGlogo { margin-left:2%;
-	       width: 2.5%;}
+.IMGlogo { 
+	margin-left:2%;
+	width: 2.5%;
+}
 
 /********************************************************/
-#aula{margin-right:1%;
-    font-size: 30px;
+#aula{
+    font-size: 25px;
 	text-align:center;
 	font-weight: lighter;
-	color: #4d4d4d;
-	margin-top: 20px;
-	margin-bottom: 10px;
 }
 	  
- 
+#title {
+	font-family: "Open Sans Light";
+}	
 
 
 /* Reglas aspecto texto *****************************************/		   
 
-.destacado {background-color:#F59432;}
-.textoBlanco {color: black;}
-.textoNormal{font-size:1rem}
-.textoMedio{font-size:1.5rem}
-.textoGrande{font-size:2.5rem}
-.negrita {font-weight  : bold;}
-.textoAzul {color: #364f59;}
-.textoRojo {color: #000000;}
+.destacado 		{ background-color:#F59432; }
+.textoBlanco 	{ color: black; }
+.textoNormal	{ font-size:1rem; }
+.textoMedio		{ font-size:1.5rem; }
+.textoGrande	{ font-size:2.5rem; }
+.negrita 		{ font-weight  : bold; }
+.textoAzul 		{ color: #364f59; }
+.textoRojo 		{ color: #000000; }
 
 
 /********************************************************/
 
-.grid-container { display: grid;
-				  justify-content:center;
-				  gap:5px}
+.grid-container { 
+	display: grid;
+	justify-content:center;
+	gap:5px;
+}
 				
-.grid-item {max-width: 10vw;
-            overflow: hidden; /* Evita que la imagen y el texto sobresalgan */
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-        }
+.grid-item {
+	max-width: 10vw;
+    overflow: hidden; /* Evita que la imagen y el texto sobresalgan */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
 		
-.grid-item img{ width: 100%;
-                height: 10vh;
-                object-fit: cover; /* Evita que la imagen se salga */}
+.grid-item img{ 
+	width: 100%;
+	height: 10vh;
+	object-fit: cover; /* Evita que la imagen se salga */
+}
 					   
-.grid-item figcaption{background-color:white;
-            margin-top: 2px;
-			margin-bottom: 5px;
-            white-space: nowrap; 
-            overflow: hidden;}
+.grid-item figcaption{
+	background-color:white;
+    margin-top: 2px;
+	margin-bottom: 5px;
+    white-space: nowrap; 
+    overflow: hidden;
+}
 						
 
-figure { margin-inline-start: 0px;
-		 margin-inline-end: 0px;
-		 margin-block-start: 0em;
-		 margin-block-end: 0em;
-	   }
-#imagenAmpliada {max-width: 90%; height: 95%;}	   
+figure { 
+	margin-inline-start: 0px;
+	margin-inline-end: 0px;
+	margin-block-start: 0em;
+	margin-block-end: 0em;
+}
 
-#cerrarModal{
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            cursor: pointer;
-            background: none;
-            border: none;
-            font-weight: 100;
-            color: grey;
-        }
+#imagenAmpliada { 
+	max-width: 90%;
+	height: 95%;
+}	   
+
+#cerrarModal {
+	position: absolute;
+	top: 10px;
+	right: 10px;
+	cursor: pointer;
+	background: none;
+	border: none;
+	font-weight: 100;
+	color: grey;
+}
 
 
 #modal {
@@ -162,14 +175,13 @@ figure { margin-inline-start: 0px;
 	border: 0px solid #364f59;
 	text-align: center;
 	box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.3);
-	
 }
 
 .nombrePCModal {
 	text-align: center;
 }
+
 .botonModal {
-	
     cursor: pointer;
 }
 
@@ -178,9 +190,10 @@ figure { margin-inline-start: 0px;
  }
 
 #zoom {
-    position: absolute;
+    position: fixed;
     bottom: 10px;
     right: 15px;
+	z-index: 9999;
 }
 
 #nombrePCAmpliado {
