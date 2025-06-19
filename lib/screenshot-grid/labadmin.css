@@ -89,11 +89,12 @@ main {
 #aula{
     font-size: 25px;
 	text-align:center;
-	font-weight: lighter;
+	font-weight: 300;
 }
 	  
 #title {
-	font-family: "Open Sans Light";
+	font-family: "Open Sans";
+	font-weight: 300;
 }	
 
 
