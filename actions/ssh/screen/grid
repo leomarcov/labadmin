@@ -44,7 +44,7 @@ if [ "${labadmin_script_type}" = "local" ]; then
 
 	# Create initial links to ensure javascript is always on the back
     file_tmp="$dir_dest/${labadmin_nhost}.jpg"
-    cp "${labadmin_path}/lib/screenshot-grid/assets/host_offline.jpg" "$file_tmp"
+    touch "$file_tmp"
     n=$(($(date +%s)/$dsec))
     ln -fs "$file_tmp" "$dir_dest/${labadmin_nhost}-$((n-1)).jpg"
     ln -fs "$file_tmp" "$dir_dest/${labadmin_nhost}-$((n+0)).jpg"
