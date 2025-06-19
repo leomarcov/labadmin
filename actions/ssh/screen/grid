@@ -22,7 +22,7 @@ elif [ "$1" = "--readparams" ]; then
     read_param "$script_id" 1 "Delay seconds (default 1)"  "1" "^[1-9]([0-9])*$"
     # PARAM2: image quality
     read_param "$script_id" 2 "Image quality (default 10, range 10-100)"  "10" "^[1-9]([0-9])*$"
-	
+
     # PARAM3 (hidden): temp dir dest
     p3=$(mktemp -d "${labadmin_tmp_path}/screenshot-grid.XXXXXXXX")
     return
@@ -36,20 +36,22 @@ if [ "${labadmin_script_type}" = "local" ]; then
     dsec="$1"
 	iq="$2"
 	dir_dest="$3"
+	local ssh_timeout="$dsec"			# Set timeout to delay to prevent javascript set as unselected temporally offline host
 
     # Check dir dest
 	[ ! -w "$dir_dest" ] && labadmin_error "Can't write in directory $dir_dest" 1  # Check dir_dest
 	[ "$iq" -lt 10 ] && iq=10; [ "$iq" -gt 100 ] && iq=100     # Min iq 10
-   
+
 	# Create initial links to ensure javascript is always on the back
     file_tmp="$dir_dest/${labadmin_nhost}.jpg"
     cp "${labadmin_path}/lib/screenshot-grid/assets/host_offline.jpg" "$file_tmp"
     n=$(($(date +%s)/$dsec))
-    ln -f "$file_tmp" "$dir_dest/${labadmin_nhost}-$((n-1)).jpg"
-    ln -f "$file_tmp" "$dir_dest/${labadmin_nhost}-$((n+0)).jpg"
-    ln -f "$file_tmp" "$dir_dest/${labadmin_nhost}-$((n+1)).jpg"
-    ln -f "$file_tmp" "$dir_dest/${labadmin_nhost}-$((n+2)).jpg"
-    ln -f "$file_tmp" "$dir_dest/${labadmin_nhost}-$((n+3)).jpg"
+    ln -fs "$file_tmp" "$dir_dest/${labadmin_nhost}-$((n-1)).jpg"
+    ln -fs "$file_tmp" "$dir_dest/${labadmin_nhost}-$((n+0)).jpg"
+    ln -fs "$file_tmp" "$dir_dest/${labadmin_nhost}-$((n+1)).jpg"
+    ln -fs "$file_tmp" "$dir_dest/${labadmin_nhost}-$((n+2)).jpg"
+    ln -fs "$file_tmp" "$dir_dest/${labadmin_nhost}-$((n+3)).jpg"
+	ln -fs "$file_tmp" "$dir_dest/${labadmin_nhost}-$((n+4)).jpg"; ln=$((n+4))
 
     # Start recording!
 	touch "$dir_dest/recording"
@@ -58,18 +60,22 @@ if [ "${labadmin_script_type}" = "local" ]; then
         labdmin_ssh_host_comm "${labadmin_nhost}" '
 u=($(labadmin_users-display | head -1))
 [ ! "${u[0]}" ] && exit 1 #labadmin_error "No users logged" 1
-su -l "${u[0]}" -c "DISPLAY="${u[1]}" xset b off; import -window root -display "${u[1]}" -quality '${iq}' -interlace Plane jpg:-"' > "${file_tmp}_"
-        if [ $? -eq 0 ]; then 
+su -l "${u[0]}" -c "DISPLAY="${u[1]}" xset b off; import -window root -display "${u[1]}" -quality '${iq}' -interlace Plane jpg:-"' > "${file_tmp}_" 2>/dev/null
+
+		if [ $? -eq 0 ]; then
             mv "${file_tmp}_" "${file_tmp}" &>/dev/null
-        else 
-            cp "${labadmin_path}/lib/screenshot-grid/assets/host_offline.jpg" "$file_tmp" 
+
+			n=$(($(date +%s)/$dsec))
+			[ "$n" -gt "$ln" ] && ln -fs "$file_tmp" "$dir_dest/${labadmin_nhost}-${n}.jpg" &>/dev/null; n=$((n+1))
+			[ "$n" -gt "$ln" ] && ln -fs "$file_tmp" "$dir_dest/${labadmin_nhost}-${n}.jpg" &>/dev/null; n=$((n+1))
+			[ "$n" -gt "$ln" ] && ln -fs "$file_tmp" "$dir_dest/${labadmin_nhost}-${n}.jpg" &>/dev/null; n=$((n+1))
+			[ "$n" -gt "$ln" ] && ln -fs "$file_tmp" "$dir_dest/${labadmin_nhost}-${n}.jpg" &>/dev/null; n=$((n+1))
+			[ "$n" -gt "$ln" ] && ln -fs "$file_tmp" "$dir_dest/${labadmin_nhost}-${n}.jpg" &>/dev/null; ln="$n"
+        else
+            rm "$file_tmp" &>/dev/null
         fi
 
-        n=$(($(date +%s)/$dsec))
-        ln -f "$file_tmp" "$dir_dest/${labadmin_nhost}-$((n+0)).jpg" &>/dev/null
-        ln -f "$file_tmp" "$dir_dest/${labadmin_nhost}-$((n+1)).jpg" &>/dev/null
-        ln -f "$file_tmp" "$dir_dest/${labadmin_nhost}-$((n+2)).jpg" &>/dev/null
-        sleep $dsec
+		sleep $dsec
     done
 
 
@@ -82,7 +88,7 @@ elif [ "${labadmin_script_type}" = "admin" ]; then
 	labadmin_info-list "Saving screenshots in: ${S_B}$dir_dest${S_R}"
     sleep 1
 
-	screenshot_grid_url="file://${labadmin_path}/lib/screenshot-grid/view.html?lab=$(echo -n "$labname" | base64 -w0)&dir=$(echo -n "$dir_dest" | base64 -w0)&map=$( echo -n "$map" | tr -s " " | sed -E 's/^ +| +$//g' | base64 -w0)&ref=${dsec}"
+	screenshot_grid_url="file://${labadmin_path}/lib/screenshot-grid/view.html?lab=$(echo -n "$labname" | base64 -w0)&dir=$(echo -n "$dir_dest" | base64 -w0)&map=$( echo -n "$map" | tr -s " " | sed -E 's/^ +| +$//g' | base64 -w0)&sel=$(echo -n "$labadmin_shosts_listen" | base64 -w0)&ref=${dsec}"
 	labadmin_info-list "Opening Labadmin Screenshot Grid: ${S_B}$screenshot_grid_url${S_R}"
 
 	[ $EUID -eq 0 ] && labadmin_error "WARNING: labadmin is running as root, some web browsers only support run as regular user"
