@@ -20,28 +20,25 @@
 	<section class="layout">
 		<header>
 		   <div class="header" >
-			   <div><h1>Labadmin Screenshot Grid</h1></div>
+			   <div id="title">Labadmin Screnshot Grid</div>
+			   <div id="aula"></div>
 		   </div>
 		</header>
 
-		<div id="aula"></div>		
 		<main id="grid" class="grid-container"></main>
 	</section>
 	
 	<div id="zoom">
 		<input id="displaySize"
+			   class="slider"
 			   type="range"   
-			   min="0" 
+			   min="20" 
 			   max="100" 
-			   step="5"
+			   step="2"
 			   value="50"
 			   list="valuesTV">
 		</input>
 		<datalist id="valuesTV">
-		  <option value="0"    label="0"></option>
-		  <option value="5"    label="5"></option>
-		  <option value="10"   label="10"></option>
-		  <option value="15"    label="15"></option>
 		  <option value="20"   label="20"></option>
 		  <option value="25"    label="25"></option>
 		  <option value="30"   label="30"></option>
@@ -76,6 +73,7 @@
 			</div>
 		</figure>		
 		<button id="cerrarModal" class="textoMedio textoRojo negrita">x</button>
-	</dialog>		
+	</dialog>	
+
   </body>
 </html>
