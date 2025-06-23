@@ -131,6 +131,7 @@ main {
 		
 .grid-item img{ 
 	width: 99%;
+	min-width: 120px;
 	height: 10vh;
 	object-fit: cover; /* Evita que la imagen se salga */
 	border: 1px solid #d1d1d1;
