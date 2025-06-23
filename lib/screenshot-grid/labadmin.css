@@ -191,8 +191,8 @@ figure {
 
 
 #nombrePCAmpliado {
-	color: #2a2f3d;
-    font-size: 50px;
+	color: grey;
+    font-size: 80px;
     position: absolute;
     top: 5px;
     left: 20px;
