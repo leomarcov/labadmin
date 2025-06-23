@@ -88,7 +88,7 @@ main {
 
 /********************************************************/
 #aula{
-    font-size: 25px;
+    font-size: 30px;
 	text-align:center;
 	font-weight: 400;
 }
@@ -96,6 +96,7 @@ main {
 #title {
 	font-family: "Open Sans";
 	font-weight: 300;
+	font-size: 20px;
 }	
 
 
