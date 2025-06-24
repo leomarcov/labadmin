@@ -194,7 +194,7 @@ figure {
 	color: grey;
     font-size: 80px;
     position: absolute;
-    top: 5px;
+    top: 0px;
     left: 20px;
     font-weight: 600;
 }
