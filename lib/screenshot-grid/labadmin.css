@@ -195,7 +195,7 @@ figure {
     font-size: clamp(2rem, 5vw, 5rem);
     position: absolute;
     top: 0px;
-    left: 20px;
+    left: 15px;
     font-weight: 600;
 }
 
