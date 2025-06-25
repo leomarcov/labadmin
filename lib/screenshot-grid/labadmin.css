@@ -197,6 +197,7 @@ figure {
     top: 0px;
     left: 15px;
     font-weight: 600;
+	user-select: none; 
 }
 
 
@@ -211,6 +212,7 @@ figure {
 	border: none;
 	font-weight: 100;
 	color: grey;
+	user-select: none; 
 }
 
 .botonSiguiente {
@@ -225,6 +227,7 @@ figure {
     color: grey;
 	outline: none;
 	box-shadow: none;
+	user-select: none; 
 }
 
 .botonAnterior {
@@ -239,6 +242,7 @@ figure {
     color: grey;
 	outline: none;
 	box-shadow: none;
+	user-select: none; 
 }
 
 
