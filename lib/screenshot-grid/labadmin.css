@@ -157,7 +157,8 @@ figure {
 #imagenAmpliada { 
 	max-width: 90%;
 	height: 99%;
-	border: 1px solid #d1d1d1
+	border: 1px solid #d1d1d1;
+	user-select: none; 
 }	   
 
 
