@@ -34,7 +34,7 @@ dest="/dev/${2}"
 [ ! -f "$src" ] || [ ! -r "$src" ] && labadmin_error "Can't read local file $src" 1
 
 # CHECK DEST
-labdmin_ssh_host_comm "${labadmin_nhost}" '
+labadmin_ssh_host_comm "${labadmin_nhost}" '
 dest="$(eval echo "'"$dest"'")"				 # Resolve scape characteres like \ ,*, etc.
 [ ! -r "${dest}" ] && labadmin_error "Cant locate dev file ${dest}" 1
 
@@ -44,4 +44,4 @@ exit 0'
 
 
 # RESTORE
-dd if="$src" bs=1M | labdmin_ssh_host_comm_stdin "${labadmin_nhost}" 'gzip -dc | partclone.restore -o "'"${dest}"'"'
+dd if="$src" bs=1M | labadmin_ssh_host_comm_stdin "${labadmin_nhost}" 'gzip -dc | partclone.restore -o "'"${dest}"'"'
