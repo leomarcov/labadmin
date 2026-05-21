@@ -55,7 +55,7 @@ if [ "${labadmin_script_type}" = "admin" ] && [ "${labadmin_script_type_state}" 
 # LOCAL EXEC: copy torrent file and exec peers in hosts
 elif [ "${labadmin_script_type}" = "local" ]; then
 	# Copy .torrent file
-	dd if="${tmp_torrent_path}/current.torrent" 2>/dev/null | labdmin_ssh_host_comm_stdin "${labadmin_nhost}" '
+	dd if="${tmp_torrent_path}/current.torrent" 2>/dev/null | labadmin_ssh_host_comm_stdin "${labadmin_nhost}" '
 rm -rf /tmp/labadmin_torrent-send/ &>/dev/null
 mkdir /tmp/labadmin_torrent-send &>/dev/null
 chmod o+w /tmp/labadmin_torrent-send
@@ -64,7 +64,7 @@ dd of="/tmp/labadmin_torrent-send/current.torrent" &>/dev/null'
 
 	# Start transmission download
 	labadmin_info "Starting Transmission BitTorrent"
-	labdmin_ssh_host_comm "${labadmin_nhost}" '
+	labadmin_ssh_host_comm "${labadmin_nhost}" '
 pos_list="'$pos_list'"
 # Check torrent file is correct
 ! transmission-show "/tmp/labadmin_torrent-send/current.torrent" &>/dev/null && labadmin_error "Error in torrent file /tmp/labadmin_torrent-send/current.torrent" 1
