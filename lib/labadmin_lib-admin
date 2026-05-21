@@ -103,14 +103,14 @@ function labadmin_unlock_screen() {
 
 
 #=== FUNCTION ==================================================================
-# NAME: labdmin_ssh_host_comm
+# NAME: labadmin_ssh_host_comm
 # DESCRIPTION: exec ssh commands ($2) to host ($1) and append labadmin_lib function
 #              function outputs ssh stdout 
 # PARAMETERS
 #   $1  nhost 
 #   $2  commands to exec (add labadmin_lib at beginin)
 #===============================================================================
-function labdmin_ssh_host_comm() {
+function labadmin_ssh_host_comm() {
     local nhost="$1"
     local commands="$2"
     local ip="${ips[$nhost]}"
@@ -133,7 +133,7 @@ ${commands}"
 
 
 #=== FUNCTION ==================================================================
-# NAME: labdmin_ssh_host_comm_stdin
+# NAME: labadmin_ssh_host_comm_stdin
 # DESCRIPTION: exec ssh commands ($2) to host ($1) and append labadmin_lib function
 #			   function stdin is piped to ssh 
 #              function outputs ssh stdout 
@@ -141,7 +141,7 @@ ${commands}"
 #   $1  nhost 
 #   $2  commands to exec (add labadmin_lib at beginin). If empty only login
 #===============================================================================
-function labdmin_ssh_host_comm_stdin() {
+function labadmin_ssh_host_comm_stdin() {
 	local nhost="$1"
     local commands="$2"
 	local ip="${ips[$nhost]}"
@@ -164,12 +164,12 @@ ${commands}"
 
 
 #=== FUNCTION ==================================================================
-# NAME: labdmin_ssh_host_login
+# NAME: labadmin_ssh_host_login
 # DESCRIPTION: exec ssh to host and open new login
 # PARAMETERS
 #   $1  nhost 
 #===============================================================================
-function labdmin_ssh_host_login() {
+function labadmin_ssh_host_login() {
     local nhost="$1"
     local ip="${ips[$nhost]}"
 
