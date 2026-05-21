@@ -27,7 +27,7 @@ fi
 installer=""
 for i in "${lib_path}/installers/"*; do
 	commands="$(cat "$i"; echo -e "\ninstaller_check")"
-	labdmin_ssh_host_comm "${labadmin_nhost}" "$commands" && installer="$i"
+	labadmin_ssh_host_comm "${labadmin_nhost}" "$commands" && installer="$i"
 done
 [ ! "$installer" ] && labadmin_error "Cant find a installer for host ${labadmin_nhost}"
 
@@ -38,4 +38,4 @@ install_code="
 $(cat "$installer")
 installer_update
 "
-labdmin_ssh_host_comm "${labadmin_nhost}" "$install_code"
+labadmin_ssh_host_comm "${labadmin_nhost}" "$install_code"
