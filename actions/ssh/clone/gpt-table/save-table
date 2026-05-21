@@ -32,7 +32,7 @@ dest="$(eval echo "$2")"            # Resolve scape characteres like \ ,*, etc.
 [ ! -w "$dest" ] || [ ! -d "$dest" ] && labadmin_error "Can't write in local directory $dest" 1
 
 # CHECK SRC
-labdmin_ssh_host_comm "${labadmin_nhost}" '
+labadmin_ssh_host_comm "${labadmin_nhost}" '
 src="$(eval echo "'"$src"'")"                # Resolve scape characteres like \ ,*, etc.
 [ ! -r "$src" ] && labadmin_error "Cant locate dev file ${src}" 1
 exit 0
@@ -40,4 +40,4 @@ exit 0
 [ $? -ne 0 ] && exit 1
 
 # SAVE TABLE
-labdmin_ssh_host_comm "${labadmin_nhost}" "sfdisk -d \"${src}\""  > "${dest}/gpt-table_HOST-${labadmin_nhost}_$(basename "$src").gpt"
+labadmin_ssh_host_comm "${labadmin_nhost}" "sfdisk -d \"${src}\""  > "${dest}/gpt-table_HOST-${labadmin_nhost}_$(basename "$src").gpt"
