@@ -57,7 +57,7 @@ if [ "${labadmin_script_type}" = "local" ]; then
 	touch "$dir_dest/recording"
     while [ -f "$dir_dest/recording" ]; do
         #echo -e " ${S_B}${file_tmp}${S_R}"
-        labdmin_ssh_host_comm "${labadmin_nhost}" '
+        labadmin_ssh_host_comm "${labadmin_nhost}" '
 u=($(labadmin_users-display | head -1))
 [ ! "${u[0]}" ] && exit 1 #labadmin_error "No users logged" 1
 su -l "${u[0]}" -c "DISPLAY="${u[1]}" xset b off; import -window root -display "${u[1]}" -quality '${iq}' -interlace Plane jpg:-"' > "${file_tmp}_" 2>/dev/null
