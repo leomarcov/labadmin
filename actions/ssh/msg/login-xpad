@@ -41,7 +41,7 @@ if [ "${labadmin_script_type}" = "local" ]; then
 
 	# Copy note conf and note msg to host temp file
 	labadmin_info "Sending msg to host temp file"
-	tar -c -C "$(dirname "$note_conf")" "$(basename "$note_conf")" "$(basename "$note_msg")" | labdmin_ssh_host_comm_stdin "${labadmin_nhost}" '
+	tar -c -C "$(dirname "$note_conf")" "$(basename "$note_conf")" "$(basename "$note_msg")" | labadmin_ssh_host_comm_stdin "${labadmin_nhost}" '
 dir="/tmp/labadmin/login-xpad/"
 [ ! -d "$dir" ] && mkdir -p "$dir" &>/dev/null
 tar -xv -C "/tmp/labadmin/login-xpad/"
