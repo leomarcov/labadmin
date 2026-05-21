@@ -36,7 +36,7 @@ dest="$2"						# Resolve scape characteres like \ ,*, etc.
 
 
 # TRANSFER 
-tar -c -C "$(dirname "$src")" "$(basename "$src")" | pv -s $(du -sb "$src"|awk '{print $1}') | labdmin_ssh_host_comm_stdin "${labadmin_nhost}" '
+tar -c -C "$(dirname "$src")" "$(basename "$src")" | pv -s $(du -sb "$src"|awk '{print $1}') | labadmin_ssh_host_comm_stdin "${labadmin_nhost}" '
 dest="$(eval echo "'"$dest"'")"								# Resolve scape characteres like \ ,*, etc.
 [ ! -w "$dest" ] && "Cant access path: ${dest}" 1
 
