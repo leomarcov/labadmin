@@ -2,7 +2,7 @@
 #===================================================================================
 # LABADMIN MAP
 #         FILE: labadmin-map
-#        USAGE: labdmin-map labadminPID
+#        USAGE: labadmin-map labadminPID
 #
 #  DESCRIPTION: Manage labadmin map interface in labadmin TUI mode
 #
