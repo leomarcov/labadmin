@@ -34,7 +34,7 @@ dest="$(eval echo "$2")"            # Resolve scape characteres like \ ,*, etc.
 # CHECK SRC
 labdmin_ssh_host_comm "${labadmin_nhost}" '
 src="$(eval echo "'"$src"'")"                # Resolve scape characteres like \ ,*, etc.
-[ ! -r "$src" ] && labadmin_error "Cant locate dev file "${src}" 1
+[ ! -r "$src" ] && labadmin_error "Cant locate dev file ${src}" 1
 exit 0
 '
 [ $? -ne 0 ] && exit 1
