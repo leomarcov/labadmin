@@ -2,7 +2,7 @@
 #===================================================================================
 # LABADMIN MAP
 #         FILE: labadmin-tui-status
-#        USAGE: labdmin-status labadminPID
+#        USAGE: labadmin-status labadminPID
 #
 #  DESCRIPTION: Manage labadmin status messages in labadmin TUI mode
 #
