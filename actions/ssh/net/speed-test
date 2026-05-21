@@ -28,7 +28,7 @@ fi
 size="$1"	# size to transfer in MB
 
 t0=$(date +%s)
-dd if=/dev/zero bs=1M count="${size}" | pv -s $(($size*1024*1024)) | labdmin_ssh_host_comm_stdin "${labadmin_nhost}" 'dd of=/dev/null bs=1M '
+dd if=/dev/zero bs=1M count="${size}" | pv -s $(($size*1024*1024)) | labadmin_ssh_host_comm_stdin "${labadmin_nhost}" 'dd of=/dev/null bs=1M '
 
 err="$?"
 t1=$(date +%s)
