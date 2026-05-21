@@ -40,7 +40,7 @@ labadmin_info "Destination dir: $dest"
 
 
 # TRANSFER 
-labdmin_ssh_host_comm "$labadmin_nhost" '
+labadmin_ssh_host_comm "$labadmin_nhost" '
 src="$(eval echo "'"$src"'")"				# Resolve scape characteres like \ ,*, etc.
 [ ! -r "$src" ] && labadmin_error "Cant access source: ${src}" 1
 
