@@ -28,4 +28,4 @@ fi
 com="$1"
 
 # EXEC COMMAND
-labdmin_ssh_host_comm "${labadmin_nhost}" "$com"
+labadmin_ssh_host_comm "${labadmin_nhost}" "$com"
