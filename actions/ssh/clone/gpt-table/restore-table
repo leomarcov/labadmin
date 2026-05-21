@@ -33,7 +33,7 @@ dest="/dev/${2}"
 [ ! -r "$src" ] || [ ! -f "$src" ] && labadmin_error "Can't read local file $src" 1
 
 # CHECK DEST
-labdmin_ssh_host_comm "${labadmin_nhost}" '
+labadmin_ssh_host_comm "${labadmin_nhost}" '
 dest="$(eval echo "'"$dest"'")"              # Resolve scape characteres like \ ,*, etc.
 [ ! -w "$dest" ] && labadmin_error "Cant locate dev file ${dest}" 1
 exit 0
@@ -41,4 +41,4 @@ exit 0
 [ $? -ne 0 ] && exit 1
 
 # RESTORE TABLE
-dd if="${src}" | labdmin_ssh_host_comm_stdin "${labadmin_nhost}" 'sfdisk "'"${dest}"'"' 
+dd if="${src}" | labadmin_ssh_host_comm_stdin "${labadmin_nhost}" 'sfdisk "'"${dest}"'"' 
