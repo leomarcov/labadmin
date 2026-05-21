@@ -46,7 +46,7 @@ if [ "${labadmin_script_type}" = "local" ]; then
 
 	# Copy msg to host temp file
 	labadmin_info "Sending msg to host temp file"
-	echo "$msg" | labdmin_ssh_host_comm_stdin "${labadmin_nhost}" '
+	echo "$msg" | labadmin_ssh_host_comm_stdin "${labadmin_nhost}" '
 msg_temp="'"$msg_temp"'"
 touch "$msg_temp"
 chmod o+r "$msg_temp"
