@@ -2,7 +2,7 @@
 #===================================================================================
 # LABADMIN MAP
 #         FILE: labadmin-script
-#        USAGE: labdmin-script labadminPID
+#        USAGE: labadmin-script labadminPID
 #
 #  DESCRIPTION: Manage labadmin script execution in labadmin TUI mode
 #
