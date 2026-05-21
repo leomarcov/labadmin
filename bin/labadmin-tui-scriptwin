@@ -2,7 +2,7 @@
 #===================================================================================
 # LABADMIN MAP
 #         FILE: labadmin-script-win
-#        USAGE: labdmin-script-win labadminPID nhost
+#        USAGE: labadmin-script-win labadminPID nhost
 #
 #  DESCRIPTION: Manage labadmin script execution in labadmin TUI mode for a exec_bg=win
 #
