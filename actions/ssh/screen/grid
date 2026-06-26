@@ -21,7 +21,7 @@ elif [ "$1" = "--readparams" ]; then
     # PARAM1: delay
     read_param "$script_id" 1 "Delay seconds (default 1)"  "1" "^[1-9]([0-9])*$"
     # PARAM2: image quality
-    read_param "$script_id" 2 "Image quality (default 10, range 10-100)"  "10" "^[1-9]([0-9])*$"
+    read_param "$script_id" 2 "Image quality (default 50, range 10-100)"  "50" "^[1-9]([0-9])*$"
 
     # PARAM3 (hidden): temp dir dest
     p3=$(mktemp -d "${labadmin_tmp_path}/screenshot-grid.XXXXXXXX")
