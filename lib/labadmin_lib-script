@@ -431,7 +431,7 @@ function read_param() {
 			if [ "${scripts_type["$script_id"]}" = "menu" ] || [ "$script_id" = "/" ]; then scriptid_color="${C_LB}$script_id${C_D}"
 			# If script_id is a file inside a directory -> dir in blue and file in yellow
 			elif [ "${script_id#*/}" != "$script_id" ]; then scriptid_color="${C_LB}$(dirname "$script_id")/${C_LY}$(basename "$script_id")${C_D}"; fi
-			local ps_read="  > [${scriptid_color}$([ "$exec_bg" ]&&echo "&")] ${S_U}${desc}${S_R}:"
+			local ps_read="  > [\001${scriptid_color}\002$([ "$exec_bg" ]&&echo "&")] \001${S_U}\002${desc}\001${S_R}\002:"
 			ps_read="$(echo -e "$ps_read")"
 
 			# Read param from keyboard
