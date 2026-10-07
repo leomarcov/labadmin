@@ -242,9 +242,12 @@ function tmux_init-panel() {
 	fi
 
 	# SETS
-	trap tmux_ctrlc_action INT 							# Capture CTRL+C to tmux_ctrlc_action function
-	trap '' SIGTSTP										# Disable CTRL+Z
-	stty -echoctl  										# Hide control output like ^C
+    trap tmux_ctrlc_action INT                                      # Capture CTRL+C to tmux_ctrlc_action function
+    trap '' SIGTSTP                                                 # Disable CTRL+Z
+    stty -echoctl                                                   # Hide control output like ^C
+    tmux bind-key -n MouseDown3Pane select-pane -t ${tmux_sid}      # Disable tmux right clic panel
+    tmux bind-key -n MouseDown1Pane select-pane -t ${tmux_sid}      # Disable tmux select lines (yellow)
+    tmux bind-key -n MouseDrag1Pane select-pane -t ${tmux_sid}      # Disable tmux select lines (yellow)  
 }
 
 
