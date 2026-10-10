@@ -161,6 +161,14 @@ function select_script() {
 	unset script_id
 	while [ ! "$script_id" ]; do
 		# READ SCRIPT AS PARAM
+		local help_tmuxcompact="${S_D}Tab options${S_R}
+ <${C_LY}CTRL+b n${S_R}>               Go to next tab
+ <${C_LY}CTRL+b p${S_R}>               Go to previous tab
+ <${C_LY}CTRL+b 0${S_R}>               Go to EXEC tab
+ <${C_LY}CTRL+b 1${S_R}>               Go to MAP tab
+ <${C_LY}CTRL+b 2${S_R}>               Go to LOG tab
+
+"
 		local help="${S_D}Action options${S_R}
  <${C_LY}action${S_R}>                 Exec action
  <${C_LY}action${S_R}> &               Exec action in background (all in this panel)
@@ -186,6 +194,9 @@ ${S_D}Internal commands${S_R}
  ${C_N}${S_U}l${S_R}ab [lab]                Change lab or show available labs
  ${C_N}${S_U}m${S_R}ode lin|win             Set hosts OS: linux or windows
  ${C_N}${S_U}e${S_R}xit                     Exit labadmin session"
+
+ 		[ "$tmuxmode" = compact ] && help="${help_tmuxcompact}${help}"
+
 		regex=".*"
 		cd "${labadmin_tmp_path}/actions/$srvmode/${script_current}"
 		read_param "${script_current:-/}" "0" "$list" "" "$regex" "$help"
