@@ -8,7 +8,7 @@
 #
 #       AUTHOR: Leonardo Marco (labadmin@leonardomarco.com)
 #	   LICENSE: GNU General Public License v3.0
-#      VERSION: 2026.10
+#      VERSION: 2019.03
 #      CREATED: 2025.03.20
 #=================================================================================== 
 
@@ -28,6 +28,8 @@ source "${lib_path}/labadmin_lib-tmp"										# LABADMIN TMP LIB
 #===============================================================================
 # INITIALIZATION
 #===============================================================================
+labadmin_lock_screen	# Block keyaboard and hide cursor
+
 # LABADMIN PID
 readonly labadmin_PID="$1" 
 ps -p "$labadmin_PID" &>/dev/null || { labadmin_error "Cant found labadmin main process $labadmin_PID"; read; tmux kill-session; }
@@ -79,5 +81,6 @@ while true; do
 	expand_range 
 	labadmin_tmp-vars-save ips shosts shosts_listen shosts_inactive
 	[ "$last_ipscan_changes" ] && draw_map
+
 	[ "$autoscan_delay" ] && sleep $autoscan_delay & wait $!
 done
