@@ -293,3 +293,18 @@ function tmux_fix-map-panel() {
 }
 
 
+#=== FUNCTION ==================================================================
+#        NAME: tmux_dim-map-panel
+# DESCRIPTION: set color to dim map panel
+#===============================================================================
+function tmux_dim-map-panel() {
+	tmux select-pane -t "${tmux_pid_map}" -P 'bg=#000000,fg=#BBBBBB'
+}
+
+#=== FUNCTION ==================================================================
+#        NAME: tmux_undim-map-panel
+# DESCRIPTION: restore color to undim map panel
+#===============================================================================
+function tmux_undim-map-panel() {
+	tmux select-pane -t "${tmux_pid_map}" -P 'default'
+}
