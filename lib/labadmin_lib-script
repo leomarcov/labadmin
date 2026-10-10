@@ -6,6 +6,8 @@
 #
 #       AUTHOR: Leonardo Marco (labadmin@leonardomarco.com)
 #	   LICENSE: GNU General Public License v3.0
+#      VERSION: 2026.10
+#      CREATED: 2017.02.16
 #===================================================================================
 
 #### EXTERNAL VARIABLES USED
@@ -160,18 +162,27 @@ function select_script() {
 	while [ ! "$script_id" ]; do
 		# READ SCRIPT AS PARAM
 		local help="${S_D}Action options${S_R}
- ${C_LY}action${S_R}                   Exec action
- ${C_LY}action${S_R} &                 Exec action in background (all in this panel)
- ${C_LY}action${S_R} &&                Exec action in background (in separate panles)
- ${C_LB}dir${S_R}                      Enter to dir menu     
+ <${C_LY}action${S_R}>                 Exec action
+ <${C_LY}action${S_R}> &               Exec action in background (all in this panel)
+ <${C_LY}action${S_R}> &&              Exec action in background (in separate panles)
+ <${C_LB}dir${S_R}>                    Enter to dir menu     
  cd ..                    Up to parent menu
  ${C_N}${S_U}d${S_R}ir                      List scripts of current menu
+
+${S_D}Map commands${S_R}
+ ${C_N}${S_U}r${S_R}efresh-map              Refresh map $([ "$autoscan_delay" ] && echo "(auto refresh is performed every $autoscan_delay seconds)")
+ ${C_N}${S_U}s${S_R}elect-hosts [range]     Select new host range or show current host selected
+                            ${S_B}*${S_R}             Select all
+                            ${S_B}11,23,51${S_R}      Select 11 23 and 51
+                            ${S_B}11-20${S_R}         Select 11 to 20
+                            ${S_B}2,3,11-15${S_R}     Select 2 3 11 12 13 14 15
+                            ${S_B}* !31-34${S_R}      Select all except 31 32 33 34
+                            ${S_B}* /odd${S_R}        Select all odds
+                            ${S_B}11-20 /even${S_R}   Select 12 14 16 18 20
 
 ${S_D}Internal commands${S_R}
  ${C_N}${S_U}n${S_R}ew-panel                Open extra script panel
  ${C_N}${S_U}c${S_R}lose-panel              Close current/all extra script panel
- ${C_N}${S_U}r${S_R}efresh-map              Refresh map with current selection
- ${C_N}${S_U}s${S_R}elect-hosts [range]     Select new host range or show current host selected
  ${C_N}${S_U}l${S_R}ab [lab]                Change lab or show available labs
  ${C_N}${S_U}m${S_R}ode lin|win             Set hosts OS: linux or windows
  ${C_N}${S_U}e${S_R}xit                     Exit labadmin session"
@@ -203,14 +214,14 @@ ${S_D}Internal commands${S_R}
 		# ACTION r: refresh map panel
 		elif [[ "${p0,,}" = @(r?( )|refresh-map?( )) ]]; then
 			[ ! "$map_PID" ] && labadmin_tmp-vars-load map_PID
-			kill -35 "$map_PID"
+			kill -USR1 "$map_PID"
 			unset script_id; list="Action"; continue			
 
 		# ACTION s: select range in map panel
 		elif [[ "${p0,,}" = @(s *|select-hosts *) ]]; then
 			[ ! "$map_PID" ] && labadmin_tmp-vars-load map_PID
 			rhosts=$(echo "$p0" | cut -f2- -d" "); labadmin_tmp-vars-save rhosts
-			kill -36 "$map_PID"
+			kill -USR2 "$map_PID"
 			sleep 0.3
 			labadmin_tmp-vars-load shosts_listen
 			echo -e "    ${S_B}HOSTS${S_R}($(echo "$shosts_listen" | wc -w)): ${C_BG}$(echo "$shosts_listen" | xargs)${S_R}${S_R}\n"
@@ -238,7 +249,7 @@ ${S_D}Internal commands${S_R}
 
 			[ ! "$map_PID" ] && labadmin_tmp-vars-load map_PID
 			lab_file="$lf"; lab_id="$l"; rhosts=""; labadmin_tmp-vars-save lab_file lab_id rhosts
-			kill -37 "$map_PID"
+			kill -TSTP "$map_PID"
 			labadmin_status-send "\n ${C_N}###${S_R} ${S_B}MAP SELECTED: ${C_Y}${l}${S_R}"
 			clear; exec bash "$0" $labadmin_PID		
 
@@ -251,7 +262,7 @@ ${S_D}Internal commands${S_R}
 
 			[ ! "$map_PID" ] && labadmin_tmp-vars-load map_PID
 			srvmode="$m"; rhosts=""; labadmin_tmp-vars-save srvmode rhosts
-			kill -38 "$map_PID" && clear
+			kill -TSTP "$map_PID" && clear
 
 			labadmin_status-send "\n ${C_N}##${S_R} SRV MODE SELECTED: ${C_Y}${m^^}${S_R}"
 			clear; exec bash "$0" $labadmin_PID
@@ -436,7 +447,8 @@ function read_param() {
 
 			# Read param from keyboard
             read -r -e -p "$(echo -en "$ps_read") " p				# read -e allow TAB completion, read -r avoid delete \x in special chars
-            eval "p${np}"=\""$p"\"
+            [ "$p" ] &&  history -s -- "$p"							# save p in history
+            printf -v "p${np}" '%s' "$p"							# p${np}=p, including special chars
         fi
         eval vp="\$p${np}"
 
@@ -453,7 +465,7 @@ function read_param() {
         # Help
         if [[ "$vp" == @(h|help) ]]; then
             if [ "$help" ]; then
-            	labadmin_draw-box 0 4 "$help" "${desc/(*)/}"
+            	labadmin_draw-box 0 2 "$help" "${desc/(*)/}"
             else
             	echo -e "    ${C_N}No help for this parameter${S_R}\n"
             fi
@@ -494,7 +506,7 @@ function exec_script() {
 
 	# SHOW HEADER
 	local e=""; [ "${#nhost}" -eq 1 ] && e=" "
-	echo -e "\n┌─── ${S_B}[${e}${nhost:-ADMIN}] ${C_LB}${iphost:-LOCALHOST}${C_D} → EXEC $script_id${S_R} $(seq -s"─" $((${COLUMNS}-17-${#nhost}${#e}-${#iphost}-${#script_id}$([ ! "$nhost" ] && echo "-5")$([ ! "$iphost" ] && echo "-9")))| tr -d "[0-9]")┐"
+	echo -e "\n┌─── ${S_B}[${e}${nhost:-ADMIN}] ${C_LB}${iphost:-LOCALHOST}${C_D} → EXEC $script_id${S_R} $(seq -s"─" $((${COLUMNS}-17-${#nhost}-${#e}-${#iphost}-${#script_id}$([ ! "$nhost" ] && echo "-5")$([ ! "$iphost" ] && echo "-9")))| tr -d "[0-9]")┐"
 
 	#### EXEC BACKGROUND START (prepare output)
 	[ "$exec_bg" = "sub" ] && stdout_nhost start "$nhost"	
