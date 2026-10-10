@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
 #===================================================================================
 # LABADMIN GLOBAL VARIABLES AND FUNCTIONS
-#         FILE: global_admin
+#         FILE: labadmin_lib-admin
 #  DESCRIPTION: Gobal config varaibles for labadmin admin
 #
 #       AUTHOR: Leonardo Marco (labadmin@leonardomarco.com)
 #	   LICENSE: GNU General Public License v3.0
-#      VERSION: 2018.06
-#      CREATED: 16.02.2017
+#      VERSION: 2026.10
+#      CREATED: 2017.02.16
 #===================================================================================
 
 #===============================================================================
@@ -49,6 +49,8 @@ function labadmin_load-config-file() {
     [ ! "$winrmuser" ] && winrmuser="labadmin"
     [ ! "$winrmport" ] && winrmport=5985
     [ ! "$sshport" ] && sshport=58888
+    [ ! "$autoscan_delay" ] && autoscan_delay=60
+    [ "$autoscan_delay" -eq 0 ] && unset autoscan_delay
 
     [ ! "$winrmpass" ] && [[ ! "$sshpubkey" || ! "$sshprivatekey" ]] && labadmin_error "ERROR: can't load authentication data on labadmin config file ${config_path//\/\//\/}" 1
 }
