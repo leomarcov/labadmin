@@ -6,8 +6,8 @@
 #
 #       AUTHOR: Leonardo Marco (labadmin@leonardomarco.com)
 #	   LICENSE: GNU General Public License v3.0
-#      VERSION: 2019.03
-#      CREATED: 16.02.2017
+#      VERSION: 2026.10
+#      CREATED: 2017.02.16
 #===================================================================================
 
 #### EXTERNAL VARIABLES USED
@@ -45,11 +45,11 @@ function search_ips() {
 	unset map_updates
 
 	# UPDATE ARP INFO
-	[ "$tmuxmode" ] && print_map_prompt " ${C_BY}Scanning ${iface}...${S_R}"	# Show notifiction messaage before map
+	[ "$tmuxmode" ] && print_startscan_notification				# Show start scanning notification
 	local arp_out="$(arp-scan -l -I $iface -q -r 1 -N -t ${scan_timeout} 2>/dev/null)" 
 	if [ $? -ne 0 ]; then
 		if [ "$tmuxmode" ]; then
-			print_map_prompt "${S_B}${C_R}! Failed to scan network hosts${S_R}"
+			print_map_notification "${S_B}${C_R}! Failed to scan network hosts${S_R}"
 			cursor_hide; read; cursor_show
 		else
 			labadmin_error '! Failed to scan network hosts' 1
@@ -63,6 +63,7 @@ function search_ips() {
 	#   inactive: found line "IP MAC inactive"
 	#   listen: found "IP MAC"
 	#   off: no found line with MAC
+	local hosts_status_prev="${!hosts_status[*]}|${hosts_status[*]}"
 	for n in ${!macs[@]}; do
 		local mac=${macs[$n]}
 		[ ! "$mac" ] && continue
@@ -83,7 +84,10 @@ function search_ips() {
 		fi
 	done
 
-	[ "$tmuxmode" ] && print_map_prompt " > ${S_U}Select hosts${S_R}:"
+	# Check if found any host status changes
+	unset last_ipscan_changes
+	[ "$hosts_status_prev" != "${!hosts_status[*]}|${hosts_status[*]}" ] && last_ipscan_changes="true" 
+	[ "$tmuxmode" ] && print_endscan_notification 			# Show end scanning notification
 }
 
 
