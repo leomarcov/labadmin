@@ -19,9 +19,11 @@ if [ "$1" = "--load-scriptinfo" ]; then
 #=== READ PARAMS ===================================================================
 elif [ "$1" = "--readparams" ]; then
     # PARAM1: delay
-    read_param "$script_id" 1 "Delay seconds (default 1)"  "1" "^[1-9]([0-9])*$"
+    #read_param "$script_id" 1 "Delay seconds (default 1)"  "1" "^[1-9]([0-9])*$"
+    p1=1
     # PARAM2: image quality
-    read_param "$script_id" 2 "Image quality (default 50, range 10-100)"  "50" "^[1-9]([0-9])*$"
+    #read_param "$script_id" 2 "Image quality (default 50, range 10-100)"  "50" "^[1-9]([0-9])*$"
+    p2=100
 
     # PARAM3 (hidden): temp dir dest
     p3=$(mktemp -d "${labadmin_tmp_path}/screenshot-grid.XXXXXXXX")
@@ -55,6 +57,7 @@ if [ "${labadmin_script_type}" = "local" ]; then
 
     # Start recording!
 	touch "$dir_dest/recording"
+    c=0
     while [ -f "$dir_dest/recording" ]; do
         #echo -e " ${S_B}${file_tmp}${S_R}"
         labadmin_ssh_host_comm "${labadmin_nhost}" '
@@ -70,11 +73,16 @@ su -l "${u[0]}" -c "DISPLAY="${u[1]}" xset b off; import -window root -display "
 			[ "$n" -gt "$ln" ] && ln -fs "$file_tmp" "$dir_dest/${labadmin_nhost}-${n}.jpg" &>/dev/null; n=$((n+1))
 			[ "$n" -gt "$ln" ] && ln -fs "$file_tmp" "$dir_dest/${labadmin_nhost}-${n}.jpg" &>/dev/null; n=$((n+1))
 			[ "$n" -gt "$ln" ] && ln -fs "$file_tmp" "$dir_dest/${labadmin_nhost}-${n}.jpg" &>/dev/null; n=$((n+1))
-			[ "$n" -gt "$ln" ] && ln -fs "$file_tmp" "$dir_dest/${labadmin_nhost}-${n}.jpg" &>/dev/null; ln="$n"
+            [ "$n" -gt "$ln" ] && ln -fs "$file_tmp" "$dir_dest/${labadmin_nhost}-${n}.jpg" &>/dev/null; n=$((n+1))			
+            [ "$n" -gt "$ln" ] && ln -fs "$file_tmp" "$dir_dest/${labadmin_nhost}-${n}.jpg" &>/dev/null; ln="$n"
+
         else
             rm "$file_tmp" &>/dev/null
         fi
 
+        # Clean old links
+        [ $((++c)) -gt 120 ] && { find "$dir_dest" -type l -mmin +1 -delete &>/dev/null; c=0; }
+        
 		sleep $dsec
     done
 
@@ -86,15 +94,19 @@ elif [ "${labadmin_script_type}" = "admin" ]; then
     [ ! -w "$dir_dest" ] && labadmin_error "Can't write in directory $dir_dest" 1  # Check dir_dest
 
 	labadmin_info-list "Saving screenshots in: ${S_B}$dir_dest${S_R}"
-    sleep 1
+
+    # Delete previous grid tmp folder and stop if executing
+    for fr in /tmp/labadmin/$(id -un)/*/screenshot-grid.*/recording; do
+        [ "$fr" = "${dir_dest}/recording" ] && continue
+        labadmin_info-list "Stopping previous grid: $fr"
+        rm -rf $(dirname "$fr") &>/dev/null
+    done
+
 
 	screenshot_grid_url="file://${labadmin_path}/lib/screenshot-grid/view.html?lab=$(echo -n "$labname" | base64 -w0)&dir=$(echo -n "$dir_dest" | base64 -w0)&map=$( echo -n "$map" | tr -s " " | sed -E 's/^ +| +$//g' | base64 -w0)&sel=$(echo -n "$labadmin_shosts_listen" | base64 -w0)&ref=${dsec}"
-	labadmin_info-list "Opening Labadmin Screenshot Grid: ${S_B}$screenshot_grid_url${S_R}"
+	labadmin_info-list "URL screenshot grid: ${S_B}$screenshot_grid_url${S_R}"
 
 	[ $EUID -eq 0 ] && labadmin_error "WARNING: labadmin is running as root, some web browsers only support run as regular user"
 	x-www-browser "${screenshot_grid_url}" &>/dev/null &
-	labadmin_info-list "Press ${S_B}[ENTER]${S_R} to stop recording screenshots"
-	read
-    labadmin_info-list "Stopping screenshots"
-    rm -rf "$dir_dest"
+    sleep 2
 fi
