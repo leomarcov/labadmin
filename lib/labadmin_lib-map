@@ -6,6 +6,8 @@
 #
 #       AUTHOR: Leonardo Marco (labadmin@leonardomarco.com)
 #	   LICENSE: GNU General Public License v3.0
+#      VERSION: 2026.10
+#      CREATED: 2017.02.16
 #===================================================================================
 
 #### EXTERNAL VARIABLES USED
@@ -29,26 +31,39 @@ unset shosts_inactive		# List (space separated) with all selected host numbers s
 # DESCRIPTION: draw LABADMIN banner
 #===============================================================================
 function draw_banner() {
-	local banner="${S_B}${labname}"
-	local tab=4
+	local banner="    ${S_R}${S_B}${labname}${S_R}"
 	clear
-	labadmin_draw-box 1 "$tab" "$banner"
+	echo -e	"\n${banner}"
 }
 
-
-
 #=== FUNCTION ==================================================================
-# NAME: print_map_prompt
+# NAME: print_startscan_notification
 # DESCRIPTION: print notification line before map
 # PARAMETERS
 #	$1	Message
 #===============================================================================
-function print_map_prompt() {
+function print_startscan_notification() {
 	local msg="$1"
 	labadmin_lock_screen
-	cursor_move-pos $((7+map_nr*3)) 1
+	cursor_move-pos 2 0
 	clear_line
-	echo -en "    $msg"
+	echo -en "    ${S_R}${S_B}${C_N}${labname}${S_R}"
+	labadmin_unlock_screen
+}
+
+
+#=== FUNCTION ==================================================================
+# NAME: print_endscan_notification
+# DESCRIPTION: print notification line before map
+# PARAMETERS
+#	$1	Message
+#===============================================================================
+function print_endscan_notification() {
+	local msg="$1"
+	labadmin_lock_screen
+	cursor_move-pos 2 0
+	clear_line
+	echo -en "    ${S_R}${S_B}${labname}${S_R}"
 	labadmin_unlock_screen
 }
 
@@ -71,13 +86,14 @@ function clear_map_prompt() {
 # DESCRIPTION: draw ascii map with hosts, IPs and active marks found in local network
 #===============================================================================
 function draw_map() {
-	local tab="$(clear_line)    "																# Left tab
+	local tab="$(clear_line)   "																# Left tab
 	local color_listen="$([ "$srvmode" = "winrm" ] && echo "${C_BB}" || echo "${C_BG}")"		# Color for listen ip
 
 	eval local ashosts_listen=($(echo "$shosts_listen" | sed 's/\([0-9]\+\)/[\1]=X/g'));		# Convert list into array ([11]=X [12]=X ...)
 	eval local ashosts_inactive=($(echo "$shosts_inactive" | sed 's/\([0-9]\+\)/[\1]=X/g'));	# Convert list into array ([11]=X [12]=X ...)
 
 	labadmin_lock_screen
+	cursor_move-pos 3 0
 	echo "${tab}┌"$(seq -s"─" $(($map_nc*6)) | tr -d "[0-9]")"┐"
 	local cr=0															# Current row
 	local complete="$(seq -s "__" 1 $map_nc | tr -s "[0-9]" " ")"		# Trick for complete rows with not all hosts defined
@@ -132,17 +148,18 @@ function draw_map() {
 	done
 
 	# Print hosts counters
-	local nh="     ${#macs[*]}"
+	local nh="    ${#macs[*]}"
 	local nl=${#ashosts_listen[*]} ni=${#ashosts_inactive[*]}
 	local e=""; [ "$nl" -eq 0 ] && unset nl || e=" "; [ "$ni" -eq 0 ] && unset ni
-	echo -en "${nh}$(seq -s " " 1 "$((10+${map_nc}*6-5-${#nl}-${#ni}-${#e}-${#nh}))" | tr -d "[0-9]")${B_DG}${ni}${S_R}${e}${B_B}${nl}${S_R}"
+	echo -en "$(clear_line)${nh}$(seq -s " " 1 "$((10+${map_nc}*6-6-${#nl}-${#ni}-${#e}-${#nh}))" | tr -d "[0-9]")${B_DG}${ni}${S_R}${e}${B_B}${nl}${S_R}"
 
 	# Print map updates
 	if [ "$map_updates" ]; then
 		IFS=$'\n'
 		n=1
 		echo -e "$map_updates" | while read line; do
-			cursor_move-pos $((3+n)) $((map_nc*6+7))
+			cursor_move-pos $((2+n)) $((map_nc*6+6))
+			[ "$n" -gt $((map_nr*3)) ] && { echo -n "..."; break; }			# Avoid exced map rows lines
 			echo -n "$line"
 			n=$((n+1))
 		done
@@ -174,50 +191,6 @@ function register_map-update() {
         up)     map_updates="${map_updates}\n${C_BG}▲${S_R} HOST ${nhost}"      ;;
         down)   map_updates="${map_updates}\n${C_BR}▼${S_R} HOST ${nhost}"      ;;
     esac
-}
-
-
-#=== FUNCTION ==================================================================
-# NAME: select_range
-# DESCRIPTION: ask user for a host range and save it in rhosts variable
-#              show help if necessary
-#
-# GLOBAL VARIALBES WRITTEN
-#   rhosts			Selected range (no expanded)
-#
-# EXIT CODE
-# 	1	if empty range selected
-#	0	if any range selected (correct or not)
-#===============================================================================
-function select_range() {
-	local rh
-	local help="
- ${S_B}*${S_R}             Select all
- ${S_B}11,23,51${S_R}      Select 11 23 and 51
- ${S_B}11-20${S_R}         Select 11 to 20
- ${S_B}2,3,11-15${S_R}     Select 2 3 11 12 13 14 15
- ${S_B}* !31-34${S_R}      Select all except 31 32 33 34
- ${S_B}* /odd${S_R}        Select all odds
- ${S_B}11-20 /even${S_R}   Select 12 14 16 18 20
-"
-
-	print_map_prompt " > ${S_U}Select hosts${S_R}:"
-	read -e -p " " rh
-
-	case "${rh,,}" in
-		h|help)
-			labadmin_draw-box 6 2 "$help" "${C_N}Host selection options${S_R}"
-			cursor_hide; read; cursor_show; draw_map
-			return 0
-		;;
-		"")	
-			return 1
-		;;
-		*)	
-			rhosts="$rh"
-			return 0
-		;;
-	esac
 }
 
 
