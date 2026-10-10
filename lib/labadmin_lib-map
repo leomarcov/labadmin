@@ -44,11 +44,9 @@ function draw_banner() {
 #===============================================================================
 function print_startscan_notification() {
 	local msg="$1"
-	labadmin_lock_screen
 	cursor_move-pos 2 0
 	clear_line
 	echo -en "    ${S_R}${S_B}${C_N}${labname}${S_R}"
-	labadmin_unlock_screen
 }
 
 
@@ -60,23 +58,9 @@ function print_startscan_notification() {
 #===============================================================================
 function print_endscan_notification() {
 	local msg="$1"
-	labadmin_lock_screen
 	cursor_move-pos 2 0
 	clear_line
 	echo -en "    ${S_R}${S_B}${labname}${S_R}"
-	labadmin_unlock_screen
-}
-
-
-#=== FUNCTION ==================================================================
-# NAME: clear_map_prompt
-# DESCRIPTION: clear notification line befor map
-#===============================================================================
-function clear_map_prompt() {
-	labadmin_lock_screen
-	cursor_move-pos $((7+map_nr*3)) 1
-	clear_line
-	labadmin_unlock_screen
 }
 
 
@@ -92,7 +76,6 @@ function draw_map() {
 	eval local ashosts_listen=($(echo "$shosts_listen" | sed 's/\([0-9]\+\)/[\1]=X/g'));		# Convert list into array ([11]=X [12]=X ...)
 	eval local ashosts_inactive=($(echo "$shosts_inactive" | sed 's/\([0-9]\+\)/[\1]=X/g'));	# Convert list into array ([11]=X [12]=X ...)
 
-	labadmin_lock_screen
 	cursor_move-pos 3 0
 	echo "${tab}┌"$(seq -s"─" $(($map_nc*6)) | tr -d "[0-9]")"┐"
 	local cr=0															# Current row
@@ -166,8 +149,6 @@ function draw_map() {
 		IFS=$'\n\t '
 		
 	fi
-
-	labadmin_unlock_screen
 }
 
 
