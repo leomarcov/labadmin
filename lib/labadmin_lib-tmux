@@ -168,6 +168,9 @@ function tmux_create-session-panels() {
 	tmux set -t ${tmux_sid} -g mouse on
 	tmux set -t ${tmux_sid} -g remain-on-exit on
 	tmux set -t ${tmux_sid} -g display-time 2000
+
+	# Select script panel
+    tmux set-hook -w window-pane-changed "select-pane -t ${tmux_pid_script}"		# allow only focus on script panel
 	tmux select-pane -t ${tmux_pid_script}
 
 	tmux attach-session -t $tmux_sid
@@ -247,7 +250,10 @@ function tmux_init-panel() {
     stty -echoctl                                                   # Hide control output like ^C
     tmux bind-key -n MouseDown3Pane select-pane -t ${tmux_sid}      # Disable tmux right clic panel
     tmux bind-key -n MouseDown1Pane select-pane -t ${tmux_sid}      # Disable tmux select lines (yellow)
-    tmux bind-key -n MouseDrag1Pane select-pane -t ${tmux_sid}      # Disable tmux select lines (yellow)  
+    tmux bind-key -n MouseDrag1Pane select-pane -t ${tmux_sid}      # Disable tmux select lines (yellow)
+    tmux bind-key -n DoubleClick1Pane select-pane -t ${tmux_sid}    # Disable tmux select lines (yellow)
+    tmux bind-key -n TripleClick1Pane select-pane -t ${tmux_sid}    # Disable tmux select lines (yellow)
+	tmux bind-key -n MouseDrag1Border select-pane -t ${tmux_sid}	# Disable tmux resize panels with mouse drag
 }
 
 
@@ -265,7 +271,8 @@ function tmux_create-window-com() {
 	local com="$2"
 	local focus="$3"; [ "$focus" ] && focus="" || focus="-d"
 
-	tmux new-window $focus -t ${tmux_sid} -n "$wn" "$com"
+	local panel_id=$(tmux new-window $focus -t ${tmux_sid} -n "$wn" -P -F '#{pane_id}' "$com")
+	tmux set-option -p -t "$panel_id" remain-on-exit off
 }
 
 
@@ -278,11 +285,10 @@ function tmux_fix-map-panel() {
 	# FIX MAP PANEL DIMENSIONS ON PANEL MAP
 	if [ "$TMUX_PANE" = "$tmux_pid_map" ]; then
 		local x=$((map_nc*6+17)); [ $x -lt 50 ] && x=50
-		local y=$((map_nr*3+8)); [ $y -lt 10 ] && y=10
-		tmux set-hook -t $tmux_sid -g client-resized 'run-shell "tmux resize-pane -t '$tmux_pid_map' -x '$x' -y '$y'"'
+		local y=$((map_nr*3+5)); [ $y -lt 10 ] && y=10
+		tmux set-hook -t $tmux_sid client-resized 'run-shell "tmux resize-pane -t '$tmux_pid_map' -x '$x' -y '$y'"'
 		tmux resize-pane -t $tmux_pid_map -x $x -y $y &>/dev/null
 	fi
 }
-
 
 
