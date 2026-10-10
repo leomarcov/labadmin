@@ -6,6 +6,8 @@
 #
 #       AUTHOR: Leonardo Marco (labadmin@leonardomarco.com)
 #	   LICENSE: GNU General Public License v3.0
+#      VERSION: 2026.10
+#      CREATED: 2025.03.20
 #===================================================================================
 
 
@@ -188,12 +190,12 @@ function tmux_create-session-windows() {
 	local tmux_wid_status="LOG"
 
 	# Create sessión and panles
-	tmux new-session -d -s ${tmux_sid} -n $tmux_wid_map "${labadmin_path}/bin/labadmin-tui-map ${labadmin_PID}"
-	tmux new-window -d -t ${tmux_sid} -n $tmux_wid_script "${labadmin_path}/bin/labadmin-tui-script ${labadmin_PID}"
+	tmux new-session -d -s ${tmux_sid} -n $tmux_wid_script "${labadmin_path}/bin/labadmin-tui-script ${labadmin_PID}"
+	tmux new-window -d -t ${tmux_sid} -n $tmux_wid_map "${labadmin_path}/bin/labadmin-tui-map ${labadmin_PID}"
 	tmux new-window -d -t ${tmux_sid} -n $tmux_wid_status "${labadmin_path}/bin/labadmin-tui-status ${labadmin_PID}"
 
-	local tmux_pid_map=$(tmux list-panes -t ${tmux_sid}:MAP  -F "#{pane_id}")
 	local tmux_pid_script=$(tmux list-panes -t ${tmux_sid}:EXEC  -F "#{pane_id}")
+	local tmux_pid_map=$(tmux list-panes -t ${tmux_sid}:MAP  -F "#{pane_id}")
 	local tmux_pid_status=$(tmux list-panes -t ${tmux_sid}:LOG  -F "#{pane_id}")
 
 	# tmux status bar
@@ -214,8 +216,7 @@ function tmux_create-session-windows() {
 	tmux set -t ${tmux_sid} -g mouse on
 	tmux set -t ${tmux_sid} -g remain-on-exit on
 	tmux set -t ${tmux_sid} -g display-time 2000
-	tmux select-pane -t ${tmux_pid_map}
-
+	
 	tmux attach-session -t $tmux_sid
 }
 
