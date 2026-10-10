@@ -8,7 +8,7 @@
 #
 #       AUTHOR: Leonardo Marco (labadmin@leonardomarco.com)
 #	   LICENSE: GNU General Public License v3.0
-#      VERSION: 2019.03
+#      VERSION: 2026.10
 #      CREATED: 2025.03.20
 #===================================================================================
 
@@ -36,7 +36,7 @@ readonly labadmin_PID="$1"
 ps -p "$labadmin_PID" &>/dev/null || { labadmin_error "Cant found labadmin main process $labadmin_PID"; read; tmux kill-session; }
 
 # LOAD LABADMIN CONFIG FILE
-labadmin_info "Loading labadmin config"
+labadmin_info " Loading labadmin config"
 labadmin_load-config-file
 
 # LABADMIN TMP DIR INIT
@@ -50,23 +50,23 @@ labadmin_load-lab
 tmux_init-panel
 
 # SERVER MODE
-labadmin_info "Executing labadmin in $srvmode mode"
+labadmin_info " Executing labadmin in $srvmode mode"
 
 # LOAD SCRIPTS
-labadmin_info "Loading scripts"
+labadmin_info " Loading scripts"
 scripts_path="${scripts_path}/${srvmode}/"
 load_scripts "$scripts_path"							# Load all scripts recursively
 
 # INIT REMOTE AUTENTICACION
-labadmin_info "Initializing $srvmode authentication"
+labadmin_info " Initializing $srvmode authentication"
 auth_init
 
 
 #===============================================================================
 # MAIN LOOP
 #===============================================================================
-clear
-labadmin_draw-box 1 1 "   SCRIPT EXECUTION"
+#clear
+echo -e "\n${S_B} SCRIPT EXECUTION${S_R}\n"
 
 while true; do
 	# SHOW SCRIPT LIST
