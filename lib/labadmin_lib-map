@@ -135,8 +135,7 @@ function draw_map() {
 	# Print hosts counters
 	local nh="    ${#macs[*]}"
 	local nl=${#ashosts_listen[*]} ni=${#ashosts_inactive[*]}
-	local e=""; [ "$nl" -eq 0 ] && unset nl || e=" "; [ "$ni" -eq 0 ] && unset ni
-	echo -en "$(clear_line)${nh}$(seq -s " " 1 "$((10+${map_nc}*6-6-${#nl}-${#ni}-${#e}-${#nh}))" | tr -d "[0-9]")${B_DG}${ni}${S_R}${e}${B_B}${nl}${S_R}"
+	echo -en "$(clear_line)${nh}$(seq -s " " 1 "$((9+${map_nc}*6-6-${#nl}-${#ni}-${#e}-${#nh}))" | tr -d "[0-9]")${B_DG}${ni}${S_R} ${B_B}${nl}${S_R}"
 
 	# Print map updates
 	if [ "$map_updates" ]; then
