@@ -10,6 +10,8 @@ LABADMIN CHANGELOG
 * Added: arrow history when prompt actions and params
 * Fixed: action screen/grid autodelete old links automatically to avoid generate millions of links
 * Fixed: action screen/grid autodelete folder for old grids executed and current grid executing
+* Added: tmux compact version show how to move to windows in help
+* Added: map panel is dimmed when map refresh
 
 
   
