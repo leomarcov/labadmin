@@ -1,0 +1,11 @@
+LABADMIN CHANGELOG
+============================================================
+
+[26.1000]
+* Fixed: read param overlaps prompt line
+* Fixed: header line when host start executing action doesn't reach the end of the line
+* Added: configured tmux for avoid select lines and show menu
+* Added: map panel 
+
+
+  
