@@ -55,39 +55,29 @@ map_nc="$(echo "$map" | awk '{print NF}' | sort -nu | tail -n 1)"	# Column numbe
 # TMUX FIX MAP PANEL ACCORDING MAP DIMENSIONS
 tmux_fix-map-panel
 
-# SIGNAL 35: REFRESH MAP 
-trap 'search_ips; stty sane; return' 35
+# SIGNAL USR1: REFRESH MAP
+trap 'true' SIGUSR1
 
-# SIGNAL 36: SELECT NEW RANGE
-trap 'labadmin_tmp-vars-load rhosts; stty sane; return' 36  
+# SIGNAL USR2: SELECT HOSTS
+trap 'labadmin_tmp-vars-load rhosts; skip_scan="true"; last_ipscan_changes="true";' SIGUSR2
 
-# SIGNAL 37: SET LAB
-trap 'exec bash "$0" $labadmin_PID' 37  
+# SIGNAL USR2: RELOAD PROCESS (SET LAB AND SRVMODE)
+trap 'exec bash "$0" $labadmin_PID' SIGTSTP
 
-# SIGNAL 38: SET SRVMODE
-trap 'exec bash "$0" $labadmin_PID' 38
 
 #===============================================================================
 # MAIN LOOP
 #===============================================================================
 # First map showed
-draw_banner; draw_map
-search_ips
+draw_banner
+draw_map
 [ ! "$rhosts" ] && rhosts="all"
-expand_range 
-labadmin_tmp-vars-save ips shosts shosts_listen shosts_inactive
-draw_banner; draw_map
 
 while true; do
-	# Select hosts range
-	select_range || search_ips
-
-	# Expand range
+	[ ! "$skip_scan" ] && search_ips
+	unset skip_scan
 	expand_range 
-
-	# Save vars in tmp
 	labadmin_tmp-vars-save ips shosts shosts_listen shosts_inactive
-
-	# Draw map
-	draw_banner; draw_map
+	[ "$last_ipscan_changes" ] && draw_map
+	[ "$autoscan_delay" ] && sleep $autoscan_delay & wait $!
 done
