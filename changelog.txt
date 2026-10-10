@@ -5,7 +5,9 @@ LABADMIN CHANGELOG
 * Fixed: read param overlaps prompt line
 * Fixed: header line when host start executing action doesn't reach the end of the line
 * Added: configured tmux for avoid select lines and show menu
-* Added: map panel 
+* Added: host selection now only can be performed from script panel (avoid map panel freezed)
+* Added: map panel auto refresh according autoscan_delay global variable seconds
+* Added: arrow history when prompt actions and params
 
 
   
