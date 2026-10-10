@@ -47,6 +47,7 @@ function print_startscan_notification() {
 	cursor_move-pos 2 0
 	clear_line
 	echo -en "    ${S_R}${S_B}${C_N}${labname}${S_R}"
+	tmux_dim-map-panel
 }
 
 
@@ -61,6 +62,7 @@ function print_endscan_notification() {
 	cursor_move-pos 2 0
 	clear_line
 	echo -en "    ${S_R}${S_B}${labname}${S_R}"
+	tmux_undim-map-panel
 }
 
 
