@@ -8,7 +8,7 @@
 #
 #       AUTHOR: Leonardo Marco (labadmin@leonardomarco.com)
 #	   LICENSE: GNU General Public License v3.0
-#      VERSION: 2019.03
+#      VERSION: 2026.10
 #      CREATED: 2025.03.20
 #===================================================================================
 
@@ -26,7 +26,8 @@ source "${lib_path}/labadmin_lib-tmp"										# LABADMIN TMP LIB
 #===============================================================================
 # INITIALIZATION
 #===============================================================================
-stty sane		# Trick to avoid tmux $COLUMNS initialization delay
+stty sane				# Trick to avoid tmux $COLUMNS initialization delay
+labadmin_lock_screen	# Block keyaboard and hide cursor
 
 # LABADMIN PID
 readonly labadmin_PID="$1" 
@@ -49,7 +50,6 @@ labadmin_load-config-file
 clear
 echo -e "${S_B} EXECUTION STATUS LOG${S_R}"
 
-stty -echo										# Disable keyboard write
 while true; do 
 	labadmin_status-show
 done		
