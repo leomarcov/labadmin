@@ -1,7 +1,6 @@
-LABADMIN CHANGELOG
-============================================================
+# LABADMIN CHANGELOG
 
-[26.1010]
+## [26.1010]
 * Fixed: read param overlaps prompt line
 * Fixed: header line when host start executing action doesn't reach the end of the line
 * Added: configured tmux interface for avoid select lines and show menus
@@ -17,7 +16,7 @@ LABADMIN CHANGELOG
 * Added: personal contextual menu when right clic on status bar tab
 * Fixed: labadmin closed when main LABADMIN panel is closed
 
-[25.0400]
+## [25.0400]
 * Added: new interface based on tmux with separated panels for MAP, LOG and EXECUTION
 * Added: new binary labadmin-cli for non interactive use
 
