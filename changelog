@@ -12,7 +12,7 @@ LABADMIN CHANGELOG
 * Fixed: action screen/grid autodelete folder for old grids executed and current grid executing
 * Remov: action screen/grid parameters delay and image quiality from screen/grid 
 * Added: tmux compact version show how to move to windows in help
-* Added: map panel is dimmed when map refresh
+* Added: map panel is dimmed when refresh map
 * Fixed: ctrl+c when script execution not exit, sends ctrl+c to script process
 * Added: personal contextual menu when right clic on status bar tab
 * Fixed: labadmin closed when main LABADMIN panel is closed
