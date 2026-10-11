@@ -14,6 +14,7 @@ LABADMIN CHANGELOG
 * Added: tmux compact version show how to move to windows in help
 * Added: map panel is dimmed when map refresh
 * Fixed: ctrl+c when script execution not exit, sends ctrl+c to script process
+* Added: personal contextual menu when right clic on status bar tab
 
 [25.0400]
 * Added: new interface based on tmux with separated panels for MAP, LOG and EXECUTION
