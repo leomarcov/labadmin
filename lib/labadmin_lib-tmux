@@ -114,21 +114,26 @@ function tmux_ctrlc_action() {
     local aw=$(tmux list-window -t "$tmux_sid" -F '#{window_active} #{window_name}' | awk '$1 == "1" {print $2}')
     [[ "$aw" != @(LABADMIN|MAP|EXEC|LOG) ]] && { tmux kill-window -t "$tmux_sid"; return; }
 
-	local t=$(date +%s)
+
+	# If executing script no exit, send ctrl+c to process
+	if [ "$shosts" ]; then
+		return
+	fi
+
+	# If reading params and ctrl+c restart script panel
+	if [ "$reading_params" ]; then
+		tmux respawn-pane -k -t $tmux_pid_script
+		return
+	fi
+
 	# 2 consecutive CTRL+C -> kill session
+	local t=$(date +%s)
 	if [ $((t-tmux_last_ctrlc)) -le 1 ]; then
 		tmux_kill-session
 
 	# Only 1 CTRL+c -> show tmux message
 	else
 		tmux_last_ctrlc="$t"
-
-		# If reading params and ctrl+c restart script panel
-		if [ "$reading_params" ]; then
-			tmux respawn-pane -k -t $tmux_pid_script
-			return
-		fi
-
 		tmux display-message -t ${tmux_sid} " Exit? Press CTRL+C again"
 		return
 	fi
@@ -153,23 +158,32 @@ function tmux_create-session-panels() {
 	local tmux_pid_status=$(tmux list-panes -t ${tmux_sid}  -F "#{pane_id}" | sed -n '2p')
 	local tmux_pid_script=$(tmux list-panes -t ${tmux_sid}  -F "#{pane_id}" | sed -n '3p')
 
+	# exit labadmin session when LABADMIN window is closed
+	tmux set-hook -t "$tmux_sid" window-unlinked "if-shell -F '#{==:#{hook_window},$(tmux display-message -p -t "$tmux_pid_script" '#{window_id}')}' 'kill-session -t \"$tmux_sid\"'"
+
 	# tmux status bar
-	tmux set -t ${tmux_sid} -g default-terminal "screen-256color"
-	tmux set -t ${tmux_sid} -g status-bg colour233
-	tmux set -t ${tmux_sid} -g status-fg white
-	tmux set -t ${tmux_sid} -g status-left " "
-	tmux set -t ${tmux_sid} -g status-right "[#S]"
-	tmux set -t ${tmux_sid} -g window-status-format "#W"
-	tmux set -t ${tmux_sid} -g window-status-current-format "#[fg=colour111]#W#[fg=DEFAULT]"
-	tmux set -t ${tmux_sid} -g message-style "bg=colour25,fg=white"
+	tmux set -t ${tmux_sid} default-terminal "screen-256color"
+	tmux set -t ${tmux_sid} status-bg colour233
+	tmux set -t ${tmux_sid} status-fg white
+	tmux set -t ${tmux_sid} status-left " "
+	tmux set -t ${tmux_sid} status-right "[#S]"
+	tmux set -t ${tmux_sid} window-status-format "#W"
+	tmux set -t ${tmux_sid} window-status-current-format "#[fg=colour111]#W#[fg=DEFAULT]"
+	tmux set -t ${tmux_sid} message-style "bg=colour25,fg=white"
 
 	# tmux borders
-	tmux set -t ${tmux_sid} -g pane-border-style fg=colour238,bg=default
-	tmux set -t ${tmux_sid} -g pane-active-border-style fg=colour238,bg=default
+	tmux set -t ${tmux_sid} pane-border-style fg=colour238,bg=default
+	tmux set -t ${tmux_sid} pane-active-border-style fg=colour238,bg=default
 
-	tmux set -t ${tmux_sid} -g mouse on
-	tmux set -t ${tmux_sid} -g remain-on-exit on
-	tmux set -t ${tmux_sid} -g display-time 2000
+	tmux set -t ${tmux_sid} mouse on
+	tmux set -t ${tmux_sid} remain-on-exit on
+	tmux set -t ${tmux_sid} display-time 2000
+
+	# tmux status bar contextual menu
+	tmux bind-key -T root MouseDown3Status display-menu \
+    -T "Labadmin" -t ${tmux_sid} -x M -y M \
+    "Close" "" "kill-window -t =" \
+    "Exit LABADMIN" "" "kill-session -t =" \
 
 	# Select script panel
     tmux set-hook -w window-pane-changed "select-pane -t ${tmux_pid_script}"		# allow only focus on script panel
@@ -198,24 +212,27 @@ function tmux_create-session-windows() {
 	local tmux_pid_map=$(tmux list-panes -t ${tmux_sid}:MAP  -F "#{pane_id}")
 	local tmux_pid_status=$(tmux list-panes -t ${tmux_sid}:LOG  -F "#{pane_id}")
 
+	# exit labadmin session when LABADMIN window is closed
+	tmux set-hook -t "$tmux_sid" window-unlinked "if-shell -F '#{==:#{hook_window},$(tmux display-message -p -t "$tmux_pid_script" '#{window_id}')}' 'kill-session -t \"$tmux_sid\"'"
+
 	# tmux status bar
-	tmux set -t ${tmux_sid} -g default-terminal "screen-256color"
-	tmux set -t ${tmux_sid} -g status-bg colour233
-	tmux set -t ${tmux_sid} -g status-fg white
-	tmux set -t ${tmux_sid} -g status-left " "
-	tmux set -t ${tmux_sid} -g status-right "[#S]"
-	tmux set -t ${tmux_sid} -g window-status-format "#W"
-	tmux set -t ${tmux_sid} -g window-status-current-format "#[fg=colour111]#W#[fg=DEFAULT]"
-	tmux set -t ${tmux_sid} -g message-style "bg=colour25,fg=white"
+	tmux set -t ${tmux_sid} default-terminal "screen-256color"
+	tmux set -t ${tmux_sid} status-bg colour233
+	tmux set -t ${tmux_sid} status-fg white
+	tmux set -t ${tmux_sid} status-left " "
+	tmux set -t ${tmux_sid} status-right "[#S]"
+	tmux set -t ${tmux_sid} window-status-format "#W"
+	tmux set -t ${tmux_sid} window-status-current-format "#[fg=colour111]#W#[fg=DEFAULT]"
+	tmux set -t ${tmux_sid} message-style "bg=colour25,fg=white"
 
 	# tmux borders
-	tmux set -t ${tmux_sid} -g pane-border-fg colour238
-	tmux set -t ${tmux_sid} -g pane-active-border-fg colour238
-	tmux set -t ${tmux_sid} -g pane-active-border-bg default
+	tmux set -t ${tmux_sid} pane-border-fg colour238
+	tmux set -t ${tmux_sid} pane-active-border-fg colour238
+	tmux set -t ${tmux_sid} pane-active-border-bg default
 
-	tmux set -t ${tmux_sid} -g mouse on
-	tmux set -t ${tmux_sid} -g remain-on-exit on
-	tmux set -t ${tmux_sid} -g display-time 2000
+	tmux set -t ${tmux_sid} mouse on
+	tmux set -t ${tmux_sid} remain-on-exit on
+	tmux set -t ${tmux_sid} display-time 2000
 	
 	tmux attach-session -t $tmux_sid
 }
