@@ -1,6 +1,7 @@
 # LABADMIN CHANGELOG
 
 ## [26.1010]
+* Fixed: tmux resize error eventually when some previous tmux instance still in memory
 * Fixed: read param overlaps prompt line
 * Fixed: header line when host start executing action doesn't reach the end of the line
 * Added: configured tmux interface for avoid select lines and show menus
