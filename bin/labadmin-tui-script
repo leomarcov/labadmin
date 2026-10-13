@@ -119,6 +119,7 @@ while true; do
 		labadmin_status-send "${S_B}← EXEC ${C_G}${script_id}${S_R} OK"
 	fi
 
+	unset script_id exec_bg shosts
 
 	# CONTINUE
 	if [ "$exec_bg" = win ]; then
@@ -127,7 +128,5 @@ while true; do
 
 	else 
 		read -s -e -p "$(echo -e "\n${S_B}[ENTER] to continue${S_R}")"; echo -e "\n"	
-	fi
-	
-	unset script_id exec_bg shosts
+	fi	
 done
