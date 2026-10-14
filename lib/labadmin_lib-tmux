@@ -6,7 +6,7 @@
 #
 #       AUTHOR: Leonardo Marco (labadmin@leonardomarco.com)
 #	   LICENSE: GNU General Public License v3.0
-#      VERSION: 2026.10
+#      VERSION: 2026.10.10
 #      CREATED: 2025.03.20
 #===================================================================================
 
@@ -167,22 +167,23 @@ function tmux_create-session-panels() {
 	tmux set -t ${tmux_sid} status-fg white
 	tmux set -t ${tmux_sid} status-left " "
 	tmux set -t ${tmux_sid} status-right "[#S]"
-	tmux set -t ${tmux_sid} window-status-format "#W"
-	tmux set -t ${tmux_sid} window-status-current-format "#[fg=colour111]#W#[fg=DEFAULT]"
+	tmux set -t ${tmux_sid} -gw window-status-format "#W"
+	tmux set -t ${tmux_sid} -gw window-status-current-format "#[fg=colour111]#W#[fg=DEFAULT]"
 	tmux set -t ${tmux_sid} message-style "bg=colour25,fg=white"
 
 	# tmux borders
-	tmux set -t ${tmux_sid} pane-border-style fg=colour238,bg=default
-	tmux set -t ${tmux_sid} pane-active-border-style fg=colour238,bg=default
+	tmux set -t ${tmux_sid} -gw pane-border-style fg=colour238,bg=default
+	tmux set -t ${tmux_sid} -gw pane-active-border-style fg=colour238,bg=default
 
 	tmux set -t ${tmux_sid} mouse on
-	tmux set -t ${tmux_sid} remain-on-exit on
+	tmux set -t ${tmux_sid} -gw remain-on-exit on
 	tmux set -t ${tmux_sid} display-time 2000
 
 	# tmux status bar contextual menu
 	tmux bind-key -T root MouseDown3Status display-menu \
     -T "Labadmin" -t ${tmux_sid} -x M -y M \
     "Close" "" "kill-window -t =" \
+    "Close all tabs" "" "kill-window -a -t ':=LABADMIN'" \
     "Exit LABADMIN" "" "kill-session -t =" \
 
 	# Select script panel
@@ -221,17 +222,17 @@ function tmux_create-session-windows() {
 	tmux set -t ${tmux_sid} status-fg white
 	tmux set -t ${tmux_sid} status-left " "
 	tmux set -t ${tmux_sid} status-right "[#S]"
-	tmux set -t ${tmux_sid} window-status-format "#W"
-	tmux set -t ${tmux_sid} window-status-current-format "#[fg=colour111]#W#[fg=DEFAULT]"
+	tmux set -t ${tmux_sid} -gw window-status-format "#W"
+	tmux set -t ${tmux_sid} -gw window-status-current-format "#[fg=colour111]#W#[fg=DEFAULT]"
 	tmux set -t ${tmux_sid} message-style "bg=colour25,fg=white"
 
 	# tmux borders
-	tmux set -t ${tmux_sid} pane-border-fg colour238
-	tmux set -t ${tmux_sid} pane-active-border-fg colour238
-	tmux set -t ${tmux_sid} pane-active-border-bg default
+	tmux set -t ${tmux_sid} -gw pane-border-fg colour238
+	tmux set -t ${tmux_sid} -gw pane-active-border-fg colour238
+	tmux set -t ${tmux_sid} -gw pane-active-border-bg default
 
 	tmux set -t ${tmux_sid} mouse on
-	tmux set -t ${tmux_sid} remain-on-exit on
+	tmux set -t ${tmux_sid} -gw remain-on-exit on
 	tmux set -t ${tmux_sid} display-time 2000
 	
 	tmux attach-session -t $tmux_sid
