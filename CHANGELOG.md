@@ -16,6 +16,7 @@
 * Fixed: ctrl+c when script execution not exit, sends ctrl+c to script process
 * Added: personal contextual menu when right clic on status bar tab
 * Fixed: labadmin closed when main LABADMIN panel is closed
+* Added: sub exec is executed in new window
 
 ## [25.0400]
 * Added: new interface based on tmux with separated panels for MAP, LOG and EXECUTION
