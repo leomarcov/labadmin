@@ -91,7 +91,7 @@ while true; do
 	# LOAD SELECTED HOSTS
 	unset shosts 
 	labadmin_tmp-vars-load ips shosts shosts_listen shosts_inactive
-	[ "${scripts_type[$script_id],,}" = "inactive" ] && shosts="$shosts_inactive" || shosts="$shosts_listen"
+	[ "${scripts_type[$script_id],,}" = "inactive" ] && { shosts="$shosts_inactive"; unset exec_bg; } || shosts="$shosts_listen"
 	[ ! "$shosts" ] && { echo -e '   ! No hosts selected\n'; continue; }
 
 	# SEND STATUS LOG
