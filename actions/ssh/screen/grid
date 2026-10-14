@@ -97,6 +97,7 @@ elif [ "${labadmin_script_type}" = "admin" ]; then
 
     # Delete previous grid tmp folder and stop if executing
     for fr in /tmp/labadmin/$(id -un)/*/screenshot-grid.*/recording; do
+        [ ! -f "$fr" ] && continue
         [ "$fr" = "${dir_dest}/recording" ] && continue
         labadmin_info-list "Stopping previous grid: $fr"
         rm -rf $(dirname "$fr") &>/dev/null
@@ -104,9 +105,24 @@ elif [ "${labadmin_script_type}" = "admin" ]; then
 
 
 	screenshot_grid_url="file://${labadmin_path}/lib/screenshot-grid/view.html?lab=$(echo -n "$labname" | base64 -w0)&dir=$(echo -n "$dir_dest" | base64 -w0)&map=$( echo -n "$map" | tr -s " " | sed -E 's/^ +| +$//g' | base64 -w0)&sel=$(echo -n "$labadmin_shosts_listen" | base64 -w0)&ref=${dsec}"
-	labadmin_info-list "URL screenshot grid: ${S_B}$screenshot_grid_url${S_R}"
+	labadmin_info-list "Openining web browser"
+    labadmin_info-list "URL screenshot grid: ${S_B}$screenshot_grid_url${S_R}"
 
 	[ $EUID -eq 0 ] && labadmin_error "WARNING: labadmin is running as root, some web browsers only support run as regular user"
 	x-www-browser "${screenshot_grid_url}" &>/dev/null &
-    sleep 2
+    labadmin_info-list "Recording screenshots"
+
+    sleep 5
+    echo
+    echo -e " > Press ${S_B}[ENTER]${S_R} to stop recording screenshots"
+    echo -e " > Press ${S_B}[w]${S_R} to open web browser again"    
+    while true; do
+        read -N 1 -s k
+        [ "$k" = $'\n' ] && break
+        if [ "${k,,}" = "w" ]; then
+            x-www-browser "${screenshot_grid_url}" &>/dev/null &
+        fi
+    done
+    
+    rm -rf "$dir_dest" &>/dev/null
 fi
