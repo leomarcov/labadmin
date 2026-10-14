@@ -6,7 +6,7 @@
 #
 #       AUTHOR: Leonardo Marco (labadmin@leonardomarco.com)
 #	   LICENSE: GNU General Public License v3.0
-#      VERSION: 2026.10
+#      VERSION: 2026.10.10
 #      CREATED: 2017.02.16
 #===================================================================================
 
@@ -517,14 +517,14 @@ function exec_script() {
 
 	# SHOW HEADER
 	local e=""; [ "${#nhost}" -eq 1 ] && e=" "
-	echo -e "\n┌─── ${S_B}[${e}${nhost:-ADMIN}] ${C_LB}${iphost:-LOCALHOST}${C_D} → EXEC $script_id${S_R} $(seq -s"─" $((${COLUMNS}-17-${#nhost}-${#e}-${#iphost}-${#script_id}$([ ! "$nhost" ] && echo "-5")$([ ! "$iphost" ] && echo "-9")))| tr -d "[0-9]")┐"
+	[ ! "$exec_bg" ] && echo -e "\n┌─── ${S_B}[${e}${nhost:-ADMIN}] ${C_LB}${iphost:-LOCALHOST}${C_D} → EXEC $script_id${S_R} $(seq -s"─" $((${COLUMNS}-17-${#nhost}-${#e}-${#iphost}-${#script_id}$([ ! "$nhost" ] && echo "-5")$([ ! "$iphost" ] && echo "-9")))| tr -d "[0-9]")┐"
 
 	#### EXEC BACKGROUND START (prepare output)
 	[ "$exec_bg" = "sub" ] && stdout_nhost start "$nhost"	
 
 	#### EXEC WIN
 	if [ "$exec_bg" = "win" ]; then
-		labadmin_tmp-vars-save-1file execbg-win winrmpass script_id p0 p1 p2 p3 p4 p5 p6 p7 p8 p9
+		labadmin_tmp-vars-save-1file execbg-win winrmpass script_id script_file p0 p1 p2 p3 p4 p5 p6 p7 p8 p9
 		exec_script_win "$nhost"
 		return $?
 	#### EXEC LOCAL
@@ -576,11 +576,11 @@ function exec_script() {
 	if [ "$out" -ne 0 ]; then
 		[ "$exec_bg" = "sub" ] && labadmin_beep "error1"
 		[ "$nhost" ] && hosts_err[$nhost]=$out  
-		echo -e "${S_R}└─── ${S_B}[${e}${nhost:-ADMIN}] ${C_LB}${iphost:-LOCALHOST}${C_D} ← ${C_LR}ERROR ($out)${C_D}${S_R} $(seq -s"─" $((${COLUMNS}-21-${#e}${#nhost}-${#iphost}-${#out}$([ ! "$nhost" ] && echo "-5")$([ ! "$iphost" ] && echo "-9")))| tr -d "[0-9]")─┘"
+		[ ! "$exec_bg" ] && echo -e "${S_R}└─── ${S_B}[${e}${nhost:-ADMIN}] ${C_LB}${iphost:-LOCALHOST}${C_D} ← ${C_LR}ERROR ($out)${C_D}${S_R} $(seq -s"─" $((${COLUMNS}-21-${#e}${#nhost}-${#iphost}-${#out}$([ ! "$nhost" ] && echo "-5")$([ ! "$iphost" ] && echo "-9")))| tr -d "[0-9]")─┘"
 		[ "$tmuxmode" ] && labadmin_status-send "  [${e}${nhost:-AD}] ${S_B}${C_Y}${script_id} ${C_R}EXEC ERROR${S_R}"
 	else
 		[ "$nhost" ] && hosts_ok[$nhost]=$out  
-		echo -e "${S_R}└─── ${S_B}[${e}${nhost:-ADMIN}] ${C_LB}${iphost:-LOCALHOST}${C_D} ← ${C_LG}OK${C_D}${S_R} $(seq -s"─" $((${COLUMNS}-15-${#e}${#nhost}-${#iphost}$([ ! "$nhost" ] && echo "-5")$([ ! "$iphost" ] && echo "-9")))| tr -d "[0-9]")─┘"
+		[ ! "$exec_bg" ] && echo -e "${S_R}└─── ${S_B}[${e}${nhost:-ADMIN}] ${C_LB}${iphost:-LOCALHOST}${C_D} ← ${C_LG}OK${C_D}${S_R} $(seq -s"─" $((${COLUMNS}-15-${#e}${#nhost}-${#iphost}$([ ! "$nhost" ] && echo "-5")$([ ! "$iphost" ] && echo "-9")))| tr -d "[0-9]")─┘"
 		[ "$tmuxmode" ] && labadmin_status-send "  [${e}${nhost:-AD}] ${S_B}${C_Y}${script_id} ${C_G}EXEC OK${S_R}"
 	fi
 
@@ -630,7 +630,7 @@ function labadmin_export_vars_code() {
 function exec_script_win() {
 	local nhost="$1"
 	local com="${labadmin_path}/bin/labadmin-tui-scriptwin ${labadmin_PID} ${nhost}"
-	labadmin_info "Opening tmux window $nhost"
+	labadmin_info-list "Opening tab: $nhost"
 	tmux_create-window-com "$nhost" "$com"
 }
 
