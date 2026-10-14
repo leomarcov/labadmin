@@ -183,7 +183,7 @@ function tmux_create-session-panels() {
 	tmux bind-key -T root MouseDown3Status display-menu \
     -T "Labadmin" -t ${tmux_sid} -x M -y M \
     "Close" "" "kill-window -t =" \
-    "Close all tabs" "" "kill-window -a -t ':=LABADMIN'" \
+    "Close all" "" "kill-window -a -t ':=LABADMIN'" \
     "Exit LABADMIN" "" "kill-session -t =" \
 
 	# Select script panel
