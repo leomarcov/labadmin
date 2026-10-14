@@ -1,0 +1,120 @@
+#!/usr/bin/env bash
+#===================================================================================
+# LABADMIN MAP
+#         FILE: labadmin-tui-script-sub
+#        USAGE: labadmin-tui-script-sub labadminPID
+#
+#  DESCRIPTION: Manage labadmin script execution in labadmin TUI mode for a exec_bg=sub (multiple background hosts)
+#
+#       AUTHOR: Leonardo Marco (labadmin@leonardomarco.com)
+#	   LICENSE: GNU General Public License v3.0
+#      VERSION: 2026.10.10
+#      CREATED: 2026.10.14
+#===================================================================================
+
+#===============================================================================
+#  LOAD LIBS
+#===============================================================================
+readonly labadmin_path="$(dirname $(dirname $(readlink -f "${0}")))"		# LABADMIN script root directory path
+readonly lib_path="${labadmin_path}/lib/"									# LABADMIN LIB PATH
+source "${lib_path}/labadmin_lib-admin"										# LABADMIN GLOBAL VARIABLES AND FUNCTIONS FOR ADMIN
+source "${lib_path}/labadmin_lib"											# LABADMIN GLOBAL VARIABLES AND FUNCTIONS
+source "${lib_path}/labadmin_lib-tmux"										# LABADMIN TMUX LIB
+source "${lib_path}/labadmin_lib-tmp"										# LABADMIN TMP LIB
+source "${lib_path}/labadmin_lib-script"									# LABADMIN SCRIPT LIB
+source "${lib_path}/labadmin_lib-install"									# LABADMIN SCRIPT LIB
+source "${lib_path}/labadmin_lib-auth"										# LABADMIN AUTHENTICATION LIB
+
+#===============================================================================
+# INIT
+#===============================================================================
+# SET WINMODE
+winmode=true
+
+# LABADMIN PID
+readonly labadmin_PID="$1" 
+ps -p "$labadmin_PID" &>/dev/null || { labadmin_error "Cant found labadmin main process $labadmin_PID"; read; tmux kill-session; }
+
+
+# LOAD LABADMIN CONFIG FILE
+labadmin_info " Loading labadmin config"
+labadmin_load-config-file
+
+# LABADMIN TMP DIR INIT
+labadmin_tmp-init
+labadmin_tmp-vars-load ipadmin iface lab_file Lparam Wparam Fparam srvmode tmuxmode ips
+labadmin_tmp-vars-load-1file execbg-win
+labadmin_tmp-vars-load ips shosts shosts_listen shosts_inactive
+
+# DRAW BOX
+labadmin_draw-box 1 3 "SCRIPT: ${S_B}$script_id${S_R}\n HOSTS:${S_B}$shosts${S_R}"
+
+# LOAD LAB FILE
+labadmin_info " Loading lab config"
+labadmin_load-lab
+
+# TMUX INIT PANEL
+tmux_init-panel
+
+# LOAD SCRIPTS
+labadmin_info " Loading script"
+scripts_path="${scripts_path}/${srvmode}/"
+load_scripts "$script_file"							# Load only script file to exec
+
+# INIT REMOTE AUTENTICACION
+auth_init
+
+
+
+
+#===============================================================================
+# MAIN
+#===============================================================================
+
+echo -e "${S_B} Press [ENTER] to stop and exit${S_R}\n"
+
+
+[ "${scripts_type[$script_id],,}" = "inactive" ] && shosts="$shosts_inactive" || shosts="$shosts_listen"
+[ ! "$shosts" ] && { echo -e '   ! No hosts selected\n'; read; exit 1; }
+
+# SEND STATUS LOG
+labadmin_status-send "\n ${S_B}→ EXEC ${C_Y}${script_id}${S_R} to $(set -- $shosts; echo $#) hosts $([ "$exec_bg" ] && echo "($exec_bg)" | sed 's/sub/\&/' | sed 's/win/\&\&/')"
+
+# LOG EXEC
+[ -w "$log_path" ] && echo -e "[$(date "+%Y-%d-%m %H:%M:%S")] [$(id -un)] [$ipadmin] [$shosts_listen] [${script_id}${exec_bg:+(${exec_bg})}: $p1 | $p2 | $p3 | $p4 | $p5 | $p6 | $p7 | $p8 | $p9 ]" >> "$log_path"
+
+
+# EXEC ADMIN 
+if [[ "${scripts_type[$script_id],,}" = admin* ]]; then
+	script_type_state="1"
+	exec_bg="" exec_script || continue
+fi
+
+# EXEC FOR EACH HOST		
+unset hosts_err hosts_ok
+for p in $shosts; do
+	# EXEC BACKGROUND
+	if [ "$exec_bg" = "sub" ]; then
+		exec_script "$p" &
+	# EXEC FOREGROUND
+	else
+		exec_script "$p" 
+	fi
+done
+
+# EXEC ADMIN
+if [[ "${scripts_type[$script_id],,}" = *admin ]]; then
+	script_type_state="2"
+	exec_bg=""  exec_script 
+fi
+
+# SHOW ERRORS
+if [ ${#hosts_err[*]} -gt 0 ]; then
+	echo -e "\n [${C_LR}*${S_R}] ${C_BR}ERRORS:${S_R} ${!hosts_err[@]}"
+	labadmin_status-send "${S_B}← EXEC ${C_R}${script_id}${S_R} ERROR (${#hosts_err[@]} errors)"
+elif [ ! "$exec_bg" ]; then
+	labadmin_status-send "${S_B}← EXEC ${C_G}${script_id}${S_R} OK"
+fi
+
+read
+
