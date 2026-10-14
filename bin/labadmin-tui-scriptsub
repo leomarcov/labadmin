@@ -47,7 +47,7 @@ labadmin_tmp-vars-load-1file execbg-win
 labadmin_tmp-vars-load ips shosts shosts_listen shosts_inactive
 
 # DRAW BOX
-labadmin_draw-box 1 3 "SCRIPT: ${S_B}$script_id${S_R}\n HOSTS:${S_B}$shosts_listen ($shosts_inactive)${S_R}"
+labadmin_draw-box 1 3 "SCRIPT: ${S_B}$script_id${S_R}\n HOSTS:${S_B}$shosts_listen${S_R}"
 
 # LOAD LAB FILE
 labadmin_info " Loading lab config"
