@@ -1,14 +1,14 @@
 #!/usr/bin/env bash
 #===================================================================================
 # LABADMIN MAP
-#         FILE: labadmin-script-win
-#        USAGE: labadmin-script-win labadminPID nhost
+#         FILE: labadmin-tui-scriptwin
+#        USAGE: labadmin-tui-scriptwin labadminPID nhost
 #
-#  DESCRIPTION: Manage labadmin script execution in labadmin TUI mode for a exec_bg=win
+#  DESCRIPTION: Manage labadmin script execution in labadmin TUI mode for a exec_bg=win (single host)
 #
 #       AUTHOR: Leonardo Marco (labadmin@leonardomarco.com)
 #	   LICENSE: GNU General Public License v3.0
-#      VERSION: 2019.03
+#      VERSION: 2026.10.10
 #      CREATED: 2025.03.20
 #===================================================================================
 
@@ -40,18 +40,22 @@ nhost="$2"
 [ "$nhost" -eq "$nhost" ] &>/dev/null || labadmin_error "ERROR: invalid nhost $nhost" 1
 
 # LOAD LABADMIN CONFIG FILE
+labadmin_info " Loading labadmin config"
 labadmin_load-config-file
 
 # LABADMIN TMP DIR INIT
 labadmin_tmp-init
-labadmin_tmp-vars-load ipadmin iface lab_file Lparam Wparam Fparam srvmode tmuxmode
+labadmin_tmp-vars-load ipadmin iface lab_file Lparam Wparam Fparam srvmode tmuxmode ips
+labadmin_tmp-vars-load-1file execbg-win
+
+# DRAW BOX
+labadmin_draw-box 1 3 "SCRIPT: ${S_B}$script_id${S_R}"
 
 # TMUX INIT PANEL
 tmux_init-panel
 
 # LOAD SCRIPTS
-scripts_path="${scripts_path}/${srvmode}/"
-load_scripts "$scripts_path"							# Load all scripts recursively
+load_scripts "$script_file"							# Load only script file to exec
 
 # INIT REMOTE AUTENTICACION
 auth_init
@@ -60,10 +64,6 @@ auth_init
 #===============================================================================
 # MAIN LOOP
 #===============================================================================
-# LOAD EXEC VARS
-labadmin_tmp-vars-load-1file execbg-win
-labadmin_tmp-vars-load ips
-
 # EXEC REMOTE
 exec_script "$nhost" 
 
