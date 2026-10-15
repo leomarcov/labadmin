@@ -76,6 +76,12 @@ while true; do
 	# READ SCRIPT PARAMS
 	read_params
 
+	# LOAD SELECTED HOSTS
+	unset shosts 
+	labadmin_tmp-vars-load ips shosts shosts_listen shosts_inactive
+	[ "${scripts_type[$script_id],,}" = "inactive" ] && { shosts="$shosts_inactive"; unset exec_bg; } || shosts="$shosts_listen"
+	[ ! "$shosts" ] && { echo -e '   ! No hosts selected\n'; continue; }
+
 	# EXEC SUB IN NEW WINDOW
 	if [ "$exec_bg" = "sub" ]; then
 		script_file="${scripts_file[$script_id]}"
@@ -86,13 +92,6 @@ while true; do
 		tmux_create-window-com "$tn" "$com"
 		continue
 	fi
-
-
-	# LOAD SELECTED HOSTS
-	unset shosts 
-	labadmin_tmp-vars-load ips shosts shosts_listen shosts_inactive
-	[ "${scripts_type[$script_id],,}" = "inactive" ] && { shosts="$shosts_inactive"; unset exec_bg; } || shosts="$shosts_listen"
-	[ ! "$shosts" ] && { echo -e '   ! No hosts selected\n'; continue; }
 
 	# SEND STATUS LOG
 	labadmin_status-send "\n ${S_B}→ EXEC ${C_Y}${script_id}${S_R} to $(set -- $shosts; echo $#) hosts $([ "$exec_bg" ] && echo "($exec_bg)" | sed 's/sub/\&/' | sed 's/win/\&\&/')"
