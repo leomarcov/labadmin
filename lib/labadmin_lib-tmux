@@ -161,6 +161,10 @@ function tmux_create-session-panels() {
 	# exit labadmin session when LABADMIN window is closed
 	tmux set-hook -t "$tmux_sid" window-unlinked "if-shell -F '#{==:#{hook_window},$(tmux display-message -p -t "$tmux_pid_script" '#{window_id}')}' 'kill-session -t \"$tmux_sid\"'"
 
+	# 
+	bind-key -T copy-mode Enter send-keys -X cancel
+	bind-key -T copy-mode-vi Enter send-keys -X cancel
+
 	# tmux status bar
 	tmux set -t ${tmux_sid} default-terminal "screen-256color"
 	tmux set -t ${tmux_sid} status-bg colour233
