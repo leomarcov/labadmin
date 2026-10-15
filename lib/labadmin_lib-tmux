@@ -174,6 +174,7 @@ function tmux_create-session-panels() {
 	tmux set -t ${tmux_sid} -gw window-status-format "#W"
 	tmux set -t ${tmux_sid} -gw window-status-current-format "#[fg=colour111]#W#[fg=DEFAULT]"
 	tmux set -t ${tmux_sid} message-style "bg=colour25,fg=white"
+	tmux bind-key -T root DoubleClick1Status if-shell -t = -F '#{==:#{window_name},LABADMIN}' 'kill-window -a -t =' 'kill-window -t ='		# Double clic kill window
 
 	# tmux borders
 	tmux set -t ${tmux_sid} -gw pane-border-style fg=colour238,bg=default
@@ -233,6 +234,7 @@ function tmux_create-session-windows() {
 	tmux set -t ${tmux_sid} -gw window-status-format "#W"
 	tmux set -t ${tmux_sid} -gw window-status-current-format "#[fg=colour111]#W#[fg=DEFAULT]"
 	tmux set -t ${tmux_sid} message-style "bg=colour25,fg=white"
+	tmux bind-key -T root DoubleClick1Status if-shell -t = -F '#{==:#{window_name},LABADMIN}' 'kill-window -a -t =' 'kill-window -t ='		# Double clic kill window
 
 	# tmux borders
 	tmux set -t ${tmux_sid} -gw pane-border-fg colour238
