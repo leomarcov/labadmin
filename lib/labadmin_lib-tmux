@@ -164,6 +164,12 @@ function tmux_create-session-panels() {
 	# Any key exit copy mode (scroll)
 	tmux bind-key -T copy-mode Any send-keys -X cancel
 	tmux bind-key -T copy-mode-vi Any send-keys -X cancel
+	# Allow only focus on script panel
+    tmux set-hook -w window-pane-changed "select-pane -t ${tmux_pid_script}"
+    # Refresh MAP panel when double clic
+    tmux bind-key -T root DoubleClick1Pane if-shell -F "#{==:#{mouse_pane},$tmux_pid_map}" "run-shell -t '$panel_id' 'kill -USR1 #{pane_pid}'"
+    # Disable copy mode on MAP panel
+    tmux bind-key -T root WheelUpPane if-shell -F "#{!=:#{mouse_pane},$tmux_pid_map}" 'if-shell -F -t = "#{mouse_any_flag}" "send-keys -M" "copy-mode -e -t ="'
 
 	# tmux status bar
 	tmux set -t ${tmux_sid} default-terminal "screen-256color"
@@ -191,11 +197,9 @@ function tmux_create-session-panels() {
     "Close all" "" "kill-window -a -t ':=LABADMIN'" \
     "Exit LABADMIN" "" "kill-session -t =" \
 
-	# Select script panel
-    tmux set-hook -w window-pane-changed "select-pane -t ${tmux_pid_script}"																		# allow only focus on script panel
-    tmux bind-key -T root DoubleClick1Pane if-shell -F "#{==:#{mouse_pane},$tmux_pid_map}" "run-shell -t '$panel_id' 'kill -USR1 #{pane_pid}'"		# refresh MAP panel when double clic
-	tmux select-pane -t ${tmux_pid_script}
 
+	# Select script panel and attach session
+	tmux select-pane -t ${tmux_pid_script}
 	tmux attach-session -t $tmux_sid
 }
 
