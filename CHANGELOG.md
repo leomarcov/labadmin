@@ -1,5 +1,8 @@
 # LABADMIN CHANGELOG
 
+## [26.1015]
+ * Added: Windows scripts are executed using SSH (WinRM conection is removed from Labadmin)
+
 ## [26.1010]
 * Fixed: tmux resize error eventually when some previous tmux instance still in memory
 * Added: configured tmux interface for avoid select lines and show menus
