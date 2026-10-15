@@ -162,8 +162,8 @@ function tmux_create-session-panels() {
 	tmux set-hook -t "$tmux_sid" window-unlinked "if-shell -F '#{==:#{hook_window},$(tmux display-message -p -t "$tmux_pid_script" '#{window_id}')}' 'kill-session -t \"$tmux_sid\"'"
 
 	# Enter key exits copy mode (scroll)
-	bind-key -T copy-mode Enter send-keys -X cancel
-	bind-key -T copy-mode-vi Enter send-keys -X cancel
+	tmux bind-key -T copy-mode Enter send-keys -X cancel
+	tmux bind-key -T copy-mode-vi Enter send-keys -X cancel
 
 	# tmux status bar
 	tmux set -t ${tmux_sid} default-terminal "screen-256color"
@@ -221,8 +221,8 @@ function tmux_create-session-windows() {
 	tmux set-hook -t "$tmux_sid" window-unlinked "if-shell -F '#{==:#{hook_window},$(tmux display-message -p -t "$tmux_pid_script" '#{window_id}')}' 'kill-session -t \"$tmux_sid\"'"
 
 	# Enter key exits copy mode (scroll)
-	bind-key -T copy-mode Enter send-keys -X cancel
-	bind-key -T copy-mode-vi Enter send-keys -X cancel
+	tmux bind-key -T copy-mode Enter send-keys -X cancel
+	tmux bind-key -T copy-mode-vi Enter send-keys -X cancel
 
 	# tmux status bar
 	tmux set -t ${tmux_sid} default-terminal "screen-256color"
