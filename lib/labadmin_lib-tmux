@@ -158,9 +158,8 @@ function tmux_create-session-panels() {
 	local tmux_pid_status=$(tmux list-panes -t ${tmux_sid}  -F "#{pane_id}" | sed -n '2p')
 	local tmux_pid_script=$(tmux list-panes -t ${tmux_sid}  -F "#{pane_id}" | sed -n '3p')
 
-	# exit labadmin session when LABADMIN window is closed
+	# Exit labadmin session when LABADMIN window is closed
 	tmux set-hook -t "$tmux_sid" window-unlinked "if-shell -F '#{==:#{hook_window},$(tmux display-message -p -t "$tmux_pid_script" '#{window_id}')}' 'kill-session -t \"$tmux_sid\"'"
-
 	# Any key exit copy mode (scroll)
 	tmux bind-key -T copy-mode Any send-keys -X cancel
 	tmux bind-key -T copy-mode-vi Any send-keys -X cancel
@@ -180,7 +179,7 @@ function tmux_create-session-panels() {
 	tmux set -t ${tmux_sid} -gw window-status-format "#W"
 	tmux set -t ${tmux_sid} -gw window-status-current-format "#[fg=colour111]#W#[fg=DEFAULT]"
 	tmux set -t ${tmux_sid} message-style "bg=colour25,fg=white"
-	tmux bind-key -T root DoubleClick1Status if-shell -t = -F '#{==:#{window_name},LABADMIN}' 'kill-window -a -t =' 'kill-window -t ='		# Double clic kill window
+	tmux bind-key -T root DoubleClick1Status if-shell -t = -F '#{==:#{window_name},LABADMIN}' 'kill-window -a -t =' 'kill-window -t ='		# Double clic on tab kill window
 
 	# tmux borders
 	tmux set -t ${tmux_sid} -gw pane-border-style fg=colour238,bg=default
@@ -196,7 +195,6 @@ function tmux_create-session-panels() {
     "Close" "" "kill-window -t =" \
     "Close all" "" "kill-window -a -t ':=LABADMIN'" \
     "Exit LABADMIN" "" "kill-session -t =" \
-
 
 	# Select script panel and attach session
 	tmux select-pane -t ${tmux_pid_script}
@@ -223,13 +221,16 @@ function tmux_create-session-windows() {
 	local tmux_pid_map=$(tmux list-panes -t ${tmux_sid}:MAP  -F "#{pane_id}")
 	local tmux_pid_status=$(tmux list-panes -t ${tmux_sid}:LOG  -F "#{pane_id}")
 
-	# exit labadmin session when LABADMIN window is closed
+	# Exit labadmin session when LABADMIN window is closed
 	tmux set-hook -t "$tmux_sid" window-unlinked "if-shell -F '#{==:#{hook_window},$(tmux display-message -p -t "$tmux_pid_script" '#{window_id}')}' 'kill-session -t \"$tmux_sid\"'"
-
 	# Any key exit copy mode (scroll)
 	tmux bind-key -T copy-mode Any send-keys -X cancel
 	tmux bind-key -T copy-mode-vi Any send-keys -X cancel
-
+    # Refresh MAP panel when double clic
+    tmux bind-key -T root DoubleClick1Pane if-shell -F "#{==:#{mouse_pane},$tmux_pid_map}" "run-shell -t '$panel_id' 'kill -USR1 #{pane_pid}'"
+    # Disable copy mode on MAP panel
+    tmux bind-key -T root WheelUpPane if-shell -F "#{!=:#{mouse_pane},$tmux_pid_map}" 'if-shell -F -t = "#{mouse_any_flag}" "send-keys -M" "copy-mode -e -t ="'
+    
 	# tmux status bar
 	tmux set -t ${tmux_sid} default-terminal "screen-256color"
 	tmux set -t ${tmux_sid} status-bg colour233
@@ -239,7 +240,7 @@ function tmux_create-session-windows() {
 	tmux set -t ${tmux_sid} -gw window-status-format "#W"
 	tmux set -t ${tmux_sid} -gw window-status-current-format "#[fg=colour111]#W#[fg=DEFAULT]"
 	tmux set -t ${tmux_sid} message-style "bg=colour25,fg=white"
-	tmux bind-key -T root DoubleClick1Status if-shell -t = -F '#{==:#{window_name},LABADMIN}' 'kill-window -a -t =' 'kill-window -t ='		# Double clic kill window
+	tmux bind-key -T root DoubleClick1Status if-shell -t = -F '#{==:#{window_name},LABADMIN}' 'kill-window -a -t =' 'kill-window -t ='		# Double clic on tab kill window
 
 	# tmux borders
 	tmux set -t ${tmux_sid} -gw pane-border-fg colour238
@@ -250,6 +251,8 @@ function tmux_create-session-windows() {
 	tmux set -t ${tmux_sid} -gw remain-on-exit on
 	tmux set -t ${tmux_sid} display-time 2000
 	
+	# Select script panel and attach session
+	tmux select-pane -t ${tmux_pid_script}	
 	tmux attach-session -t $tmux_sid
 }
 
@@ -285,7 +288,6 @@ function tmux_init-panel() {
     tmux bind-key -n MouseDown3Pane select-pane -t ${tmux_sid}      # Disable tmux right clic panel
     tmux bind-key -n MouseDown1Pane select-pane -t ${tmux_sid}      # Disable tmux select lines (yellow)
     tmux bind-key -n MouseDrag1Pane select-pane -t ${tmux_sid}      # Disable tmux select lines (yellow)
-    tmux bind-key -n DoubleClick1Pane select-pane -t ${tmux_sid}    # Disable tmux select lines (yellow)
     tmux bind-key -n TripleClick1Pane select-pane -t ${tmux_sid}    # Disable tmux select lines (yellow)
 	tmux bind-key -n MouseDrag1Border select-pane -t ${tmux_sid}	# Disable tmux resize panels with mouse drag
 }
