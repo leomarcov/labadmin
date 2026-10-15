@@ -192,7 +192,8 @@ function tmux_create-session-panels() {
     "Exit LABADMIN" "" "kill-session -t =" \
 
 	# Select script panel
-    tmux set-hook -w window-pane-changed "select-pane -t ${tmux_pid_script}"		# allow only focus on script panel
+    tmux set-hook -w window-pane-changed "select-pane -t ${tmux_pid_script}"																		# allow only focus on script panel
+    tmux bind-key -T root DoubleClick1Pane if-shell -F "#{==:#{mouse_pane},$tmux_pid_map}" "run-shell -t '$panel_id' 'kill -USR1 #{pane_pid}'"		# refresh MAP panel when double clic
 	tmux select-pane -t ${tmux_pid_script}
 
 	tmux attach-session -t $tmux_sid
