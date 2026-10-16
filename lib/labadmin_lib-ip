@@ -67,10 +67,10 @@ function search_ips() {
 	for n in ${!macs[@]}; do
 		local mac=${macs[$n]}
 		[ ! "$mac" ] && continue
-		local ip=$(echo "$arp_out" | grep -i "\b${mac}\b" | head -1)
+		local ip=$(echo "$arp_out" | grep -i "\b${mac}\b" | head -1 | awk '{print $1}')
 
 		if [ "$ip" ]; then
-			ips[$n]=$(echo $ip | awk '{print $1}')
+			ips[$n]="$ip"
 			if nc -z -w 1 "$ip" "$port" &> /dev/null; then
 				[ "$tmuxmode" ] && [[ "${hosts_status[$n]}" = @(off|inactive) ]] && register_map-update "$n" "up"
 				hosts_status[$n]="listen"
