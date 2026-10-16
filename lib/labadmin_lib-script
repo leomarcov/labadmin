@@ -630,7 +630,7 @@ function labadmin_export_vars_code() {
 function exec_script_win() {
 	local nhost="$1"
 	local com="${labadmin_path}/bin/labadmin-tui-scriptwin ${labadmin_PID} ${nhost}"
-	labadmin_info "  Executing on tab: ${S_R}${S_B}$nhost"
+	labadmin_info "  Executing host ${nhost} on tab: ${S_R}${S_B}$nhost"
 	tmux_create-window-com "$nhost" "$com"
 }
 
