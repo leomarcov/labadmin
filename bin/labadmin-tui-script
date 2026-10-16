@@ -70,6 +70,8 @@ auth_init
 echo -e "\n${S_B} SCRIPT EXECUTION${S_R}\n"
 
 while true; do
+	unset script_id exec_bg shosts
+
 	# SHOW SCRIPT LIST
 	select_script || continue
 
@@ -90,7 +92,6 @@ while true; do
 		labadmin_info "  Executing on tab: ${S_R}${S_B}$tn"; echo
 		com="${labadmin_path}/bin/labadmin-tui-scriptsub ${labadmin_PID}"
 		tmux_create-window-com "$tn" "$com"
-		unset script_id exec_bg shosts
 		continue
 	fi
 
@@ -132,6 +133,5 @@ while true; do
 		labadmin_status-send "${S_B}← EXEC ${C_G}${script_id}${S_R} OK"
 	fi
 
-	unset script_id exec_bg shosts
 	echo
 done
