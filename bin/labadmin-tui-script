@@ -87,9 +87,10 @@ while true; do
 		script_file="${scripts_file[$script_id]}"
 		labadmin_tmp-vars-save-1file execbg-win winrmpass exec_bg script_id script_file p0 p1 p2 p3 p4 p5 p6 p7 p8 p9
 		tn=$(basename $script_id); tn="${tn^^}"
-		labadmin_info-list "Open tab: $tn"; echo
+		labadmin_info "  Executing on tab: ${S_R}${S_B}$tn"; echo
 		com="${labadmin_path}/bin/labadmin-tui-scriptsub ${labadmin_PID}"
 		tmux_create-window-com "$tn" "$com"
+		unset script_id exec_bg shosts
 		continue
 	fi
 
