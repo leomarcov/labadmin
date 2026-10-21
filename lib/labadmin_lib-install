@@ -328,6 +328,10 @@ function install_admin() {
 			sed -i "s|ssh_pubkey='[^']*'|ssh_pubkey='$k_pub'|" "$labadmin_config_path"			# Replace value of ssh_pubkey
 			sed -i ':a;N;$!ba; s/ssh_privkey='\''[^'\'']*'\''//g' "$labadmin_config_path"		# Delete ssh_privkey (variable with multiple lines)
 			echo "ssh_privkey='${k_priv}'" >> "$labadmin_config_path"							# Append ssh_privkey (variable with multiple lines)
+			echo "  ${S_B}Public and private keys${S_R} generated has been stored in ${S_B}labadmin_config_path${S_R}"
+			echo "  When install agents use this config file or the public key generated"
+			echo "  ${S_B}Public key${S_R}: ${k_pub}"
+
 		fi
 	else
 		echo -e "  Config file exists. Using this config file"
