@@ -31,11 +31,11 @@ Labadmin aims to be a tool useful for IT teachers and computer lab sysadmins.
     * **Admin must be installed in a Linux OS**.
     * Controlled hosts can be **Linux** or **Windows** OS computers.
   * All machines must be placed in the same broadcast domain. Labadmin uses MAC address to discover computers, so works in DHCP environments. 
-  * Each lab must be defined previously in a config file ([templates/lab.test](templates/lab.test)). Lab config file stores:
+  * Each lab must be defined previously in a config file. Lab config file stores:
     * MAC address for each host and a identification number.
     * Lab distribution: each id host must be placed in a grid according the real position in the lab.
-  * When labadmin starts it discover the computers configured in the lab file, show a map to select them and exec actions in all selected hosts.
-  * Labadmin works in real time, all actions all send synchronously at the moment. For manage scripts execution asynchronously may see [Labadmin Script Server](https://github.com/leomarcov/labadmin-script_server).
+  * When labadmin starts it discover the computers configured in the lab file on the network, show a map to select them and exec actions in selected hosts.
+  * Labadmin works in real time, all actions are sent synchronously at the moment. For manage scripts execution asynchronously may see [Labadmin Script Server](https://github.com/leomarcov/labadmin-script_server).
 
 <p align="center">
   <img src="https://user-images.githubusercontent.com/32820131/66718797-596caa00-ede8-11e9-81fd-ed2d3af4e1b2.png">
@@ -58,13 +58,14 @@ You can see labadmin in action in short animations:
 
 &nbsp;  
 # Install
-## Admin install (only Linux)
+## Admin install
   * Admin must be installed in a Linux OS (Debian, Fedora and Ubuntu has been tested).
 ```bash
 #### CLONE REPOSITORY AND COPY CONFIG TEMPLATE
+cd /opt
 git clone https://github.com/leomarcov/labadmin
 cd labadmin
-cp templates/labadmin.conf conf/
+bash install-linux-admin
 
 #### EDIT LABADMIN CONFIG
 vi conf/labadmin.conf
