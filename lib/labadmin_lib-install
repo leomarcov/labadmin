@@ -334,7 +334,7 @@ function install_admin() {
 	fi
 
 	installed_labs=$(ls "${labs_path}" 2>/dev/null| tr "\n" " ")
-	labadmin_info "Labs files installed: ${S_R}$([ ! "$installed_labs" ] && echo "No lab files found!" || echo "${S_B}${installed_labs}${S_R}")"
+	labadmin_info "Labs files installed: ${S_R}$([ ! "$installed_labs" ] && echo "No lab files found" || echo "${S_B}${installed_labs}${S_R}")"
 
 
 	echo
