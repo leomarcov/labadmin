@@ -306,9 +306,9 @@ function install_admin() {
 	labadmin_config_path="${dir_install}conf/labadmin.conf"
 	labadmin_info "Labadmin config file: ${S_R}${S_B}${labadmin_config_path}${S_R}"
 	if [ ! -f "$labadmin_config_path" ]; then
-		echo -e "  Config file not found!"
+		echo -e "  Labadmin config file not found!"
 		while true; do
-			read -p "  Create config file and generate new SSH public/private keys? (Y/n) " q
+			read -p "  Create labadmin.conf and generate new SSH public/private keys? (Y/n) " q
 			[ ! "$q" ] && q="y"
 			case "${q,,}" in y|n) break ;; esac
 		done
@@ -328,9 +328,9 @@ function install_admin() {
 			sed -i "s|ssh_pubkey='[^']*'|ssh_pubkey='$k_pub'|" "$labadmin_config_path"			# Replace value of ssh_pubkey
 			sed -i ':a;N;$!ba; s/ssh_privkey='\''[^'\'']*'\''//g' "$labadmin_config_path"		# Delete ssh_privkey (variable with multiple lines)
 			echo "ssh_privkey='${k_priv}'" >> "$labadmin_config_path"							# Append ssh_privkey (variable with multiple lines)
-			echo "  ${S_B}Public and private keys${S_R} generated has been stored in ${S_B}labadmin_config_path${S_R}"
-			echo "  When install agents use this config file or the public key generated"
-			echo "  ${S_B}Public key${S_R}: ${k_pub}"
+			echo -e "  ${S_B}Public and private keys${S_R} generated has been stored in ${S_B}labadmin_config_path${S_R}"
+			echo -e "  When install agents use this config file or the public key generated"
+			echo -e "  ${S_B}Public key${S_R}: ${k_pub}"
 
 		fi
 	else
