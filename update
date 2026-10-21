@@ -33,5 +33,6 @@ find "$labadmin_path" -type f -exec chmod 640 {} \;
 find "$labadmin_path" -type d -exec chmod 650 {} \;
 chmod ug+x "${labadmin_file}"
 chmod ug+x "${labadmin_file}-cli"
-chmod ug+x "${labadmin_path}/"*install*
-chmod ug+x "${labadmin_path}/bin/"*
+chmod ug+x "${dir_install}/"*install*
+chmod ug+x "${dir_install}/update"
+chmod ug+x "${dir_install}/bin/"*
