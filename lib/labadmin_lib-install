@@ -334,33 +334,32 @@ function install_admin() {
 	fi
 
 	installed_labs=$(ls "${labs_path}" 2>/dev/null| tr "\n" " ")
-	labadmin_info "Labs files installed: ${S_R}$([ ! "$installed_labs" ] && echo "No lab files found!" || echo "${installed_labs}"
+	labadmin_info "Labs files installed: ${S_R}$([ ! "$installed_labs" ] && echo "No lab files found!" || echo "${installed_labs}")"
 
 
 	echo
 	labadmin_info "LABADMIN INSTALLED!"
-	echo
+	
 	if [ ! -f "$labadmin_config_path" ]; then
-		echo -e " ${S_B}CREATE LABADMIN CONFIG FILE${S_R}"
-		echo -e "    - ${S_B}${C_R}Config file not found!${S_R}"
-		echo -e "    - Copy template config: cp ${S_B}${dir_install}templates/labadmin.conf${S_R} ${S_B}${dir_install}conf/labadmin.conf${S_R}"
-		echo -e "    - Set permissions: chown root:labadmin ${labadmin_config_path}; chmod 640 ${labadmin_config_path}"
-		echo -e "    - Edit labadmin.conf file and set config variables:"
-		echo -e "       * Optional:  ${S_B}default_lab autoscan_delay ssh_port iface ssh_timeout, arpscan_timeout${S_R}"
-		echo -e "       * Mandatory: ${S_B}ssh_pubkey${S_R} and ${S_B}ssh_privkey${S_R}   (generate your own keys: ssh-keygen -t ed25519 -C labadmin)"
+		echo
+		echo -e "${S_B}${C_R}REQUIRED:${C_D} CREATE LABADMIN CONFIG FILE${S_R}"
+		echo -e "  - Copy template config: ${C_N}cp ${dir_install}templates/labadmin.conf ${dir_install}conf/labadmin.conf${S_R}"
+		echo -e "  - Set permissions: ${C_N}chown root:labadmin ${labadmin_config_path}; chmod 640 ${labadmin_config_path}${S_R}"
+		echo -e "  - Edit ${S_B}${labadmin_config_path}${S_R} file and set config variables:"
+		echo -e "     * Optional:  ${S_B}default_lab autoscan_delay ssh_port iface ssh_timeout, arpscan_timeout${S_R}"
+		echo -e "     * Mandatory: ${S_B}ssh_pubkey${S_R} and ${S_B}ssh_privkey${S_R}"
 	fi
 	if [ ! "$installed_labs" ]; then
-		echo -e " ${S_B}CREATE LABS FILES${S_R}"		
-		echo -e "    - ${S_B}${C_R}No lab files found!${S_R}"
-		echo -e "    - Copy ${S_B}${dir_install}templates/lab.test${S_R} to ${S_B}${dir_install}labs${S_R}"
-		echo -e "    - Rename file with lab name and edit it for each lab you need"
-		echo -e "    - Set permissions: chown root:labadmin ${S_B}${dir_install}labs/YOURLAB${S_R}; chmod 640 ${S_B}${dir_install}labs/YOURLAB${S_R}"
+		echo
+		echo -e "${S_B}${C_R}REQUIRED:${C_D} CREATE LABS FILES${S_R}"		
+		echo -e "  - Copy template lab: ${C_N}cp ${dir_install}templates/lab.test ${dir_install}labs/YOUR-LAB${S_R} (modify YOURLAB for your lab name)"
+		echo -e "  - Set permissions: ${C_N}chown root:labadmin ${dir_install}labs/YOUR-LAB; chmod 640 ${dir_install}labs/YOUR-LAB${S_R} (modify YOURLAB for your lab name)"
 	fi
 	echo
-	echo -e " ${S_B}OPTIONAL CONFIGS:${S_R}"
-	echo -e "    - Edit file ${S_B}${labadmin_config_path}${S_R} to set labadmin global config"
-	echo -e "    - Add lab files to ${S_B}${dir_install}labs for add new labs (you can use template in: ${S_B}${dir_install}templates/lab.test${S_R}"
-	echo -e "    - Add users to ${S_B}${labadmin_group}${S_R} group for allow users execute labadmin"
+	echo -e "${S_B}OPTIONAL CONFIGS:${S_R}"
+	echo -e "  - Edit file ${S_B}${labadmin_config_path}${S_R} to set labadmin global config"
+	echo -e "  - Add new lab files to ${S_B}${dir_install}labs${S_R} for add new labs (you can use template in: ${S_B}${dir_install}templates/lab.test${S_R})"
+	echo -e "  - Add users to ${S_B}${labadmin_group}${S_R} group for allow users execute labadmin: ${C_N}adduser YOUR-USER labadmin${S_R}"
 }
 
 
