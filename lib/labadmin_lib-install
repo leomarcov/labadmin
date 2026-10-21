@@ -359,7 +359,7 @@ function install_admin() {
 		echo
 		echo -e "${S_B}${C_R}REQUIRED:${C_D} CREATE LABS FILES${S_R}"		
 		echo -e "  - Copy template lab: ${C_N}cp ${dir_install}templates/lab.test ${dir_install}labs/<YOUR-LAB>${S_R} (modify <YOUR-LAB> for your lab name)"
-		echo -e "  - Set permissions: ${C_N}chown root:labadmin ${dir_install}labs/<YOUR-LAB>; chmod 640 ${dir_install}labs/<YOUR-LAB$>{S_R} (modify <YOUR-LAB> for your lab name)"
+		echo -e "  - Set permissions: ${C_N}chown root:labadmin ${dir_install}labs/<YOUR-LAB>; chmod 640 ${dir_install}labs/<YOUR-LAB>${S_R} (modify <YOUR-LAB> for your lab name)"
 		echo -e "  - Edit lab file and set config variables: ${S_B}lab_name${S_R}, ${S_B}agent_os${S_R}, ${S_B}map${S_R} and ${S_B}macs[]${S_R}"
 	fi
 	echo
