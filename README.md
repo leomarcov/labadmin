@@ -10,18 +10,17 @@ Labadmin aims to be a tool useful for IT teachers and computer lab sysadmins.
   * Show the status of each machine in a grid map according the preconfigured position in the lab. It's easy to identificate students computers by map location.
   * Flexible host selection using ranges. Can select all machines, only a row, odd and even machines, a specific list, etc.
   * Labadmin incorporate a **full set of administrative actions** ready to use (currently **113 for Linux** and **42 for Windows**). Some key actions are:
-    * **Config a restrictive environment in a exam time**: block all users, block usb drivers, set restrictive firewall rules, autobackup exam user data, block Virtualbox bridge mode, autocapture screnshoots and others restrictions.
+    * **Config a restrictive environment in a exam time**: block all users, block usb drivers, set restrictive firewall rules, autobackup exam user data, block Virtualbox bridge mode, autorecord and save screen and others restrictions.
     * **Send heavy files using multiple protocols**: unicast, torrent or multicast.
     * Send and schedule messages to users.
     * Config firewall settings.
     * Virtualbox management (import ovas, play, delete, snapshots, etc.)
     * Transfer and copy disk partition images using ''partclone'' and ''dd''.
-    * Show and save screenshots of selected hosts.
-    * Show thumnails screenshots of map lab.
+    * Show thumnails screenshots of all hosts and save screenshots of selected.
     * Other administrative tasks, like software installation, user accounts, process management, Windows activation, etc. 
 	* Much more!
   * Monitorization of action execution status. If any error has ocurred in some host is noticed.
-  * It's easy to create your own actions using Bash or Powershell languages.
+  * It's easy to create your own actions using Bash or Powershell script language.
 
 <p align="center">
  <img src="https://github.com/user-attachments/assets/84b7a7f2-4c8e-444c-946c-ce9f39b3750d">
