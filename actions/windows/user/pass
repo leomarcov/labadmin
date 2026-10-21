@@ -9,7 +9,7 @@ script_id="$(echo ${BASH_SOURCE[0]} | sed 's\^'"$scripts_path"'/*\\g')"		# Scrip
 #=== LOAD INFO =====================================================================
 if [ "$1" = "--load-scriptinfo" ]; then
 	script_desc="Set user password"
-	script_type="winrm-ps"
+	script_type="ssh"
 	script_bg="sub"
 	script_admindeps=""
 	script_hostdeps=""
@@ -27,7 +27,10 @@ fi
 
 
 #=== EXEC SCRIPT ===================================================================
-user="$1"
-pass="$2"
 
-echo 'Get-LocalUser -Name "'"$user"'" | Set-LocalUser -Password (ConvertTo-SecureString "'"$pass"'" -AsPlainText -Force)'
+cat <<- 'POWERSHELL'
+$user = $p1
+$pass = $p2
+
+Get-LocalUser -Name $user | Set-LocalUser -Password (ConvertTo-SecureString $pass -AsPlainText -Force)
+POWERSHELL

@@ -39,11 +39,14 @@ labadmin_load-config-file
 
 # LABADMIN TMP DIR INIT
 labadmin_tmp-init
-labadmin_tmp-vars-load ipadmin macadmin iface lab_file Lparam Wparam Fparam srvmode tmuxmode rhosts
+labadmin_tmp-vars-load admin_ip admin_mac iface lab_file Lparam Wparam agent_os Fparam tmuxmode rhosts
 map_PID="$$"; labadmin_tmp-vars-save map_PID
 
 # LOAD LAB FILE
 labadmin_load-lab
+
+# INIT AGENT OS
+labadmin_init-agentos
 
 # TMUX INIT PANEL
 tmux_init-panel
@@ -63,7 +66,7 @@ trap 'true' SIGUSR1
 # SIGNAL USR2: SELECT HOSTS
 trap 'labadmin_tmp-vars-load rhosts; skip_scan="true"; last_ipscan_changes="true";' SIGUSR2
 
-# SIGNAL USR2: RELOAD PROCESS (SET LAB AND SRVMODE)
+# SIGNAL USR2: RELOAD PROCESS (SET LAB AND agent_os)
 trap 'exec bash "$0" $labadmin_PID' SIGTSTP
 
 

@@ -32,7 +32,7 @@ Labadmin aims to be a tool useful for IT teachers and computer lab sysadmins.
     * **Admin must be installed in a Linux OS**.
     * Controlled hosts can be **Linux** or **Windows** OS computers.
   * All machines must be placed in the same broadcast domain. Labadmin uses MAC address to discover computers, so works in DHCP environments. 
-  * Each lab must be defined previously in a config file ([templates/labtest](templates/labtest)). Lab config file stores:
+  * Each lab must be defined previously in a config file ([templates/lab.test](templates/lab.test)). Lab config file stores:
     * MAC address for each host and a identification number.
     * Lab distribution: each id host must be placed in a grid according the real position in the lab.
   * When labadmin starts it discover the computers configured in the lab file, show a map to select them and exec actions in all selected hosts.
@@ -69,17 +69,12 @@ cp templates/labadmin.conf conf/
 
 #### EDIT LABADMIN CONFIG
 vi conf/labadmin.conf
- winrmuser="labadmin"                   # Windows labadmin local user to connecto with hosts
- winrmport="5985"                       # Windows WinRM port to use  
- winrmpass="<your_encrypted__pass>"     # Windows labadmin local user AES-256 encrypted password
-                                        # GENERATE: read -p "Windows localuser pass to encrypt: " p; echo "$p" | openssl enc -aes-256-cbc  -a -salt -pbkdf2 | base64
-
- sshport="58888"                        # SSH port to connect with hosts
- sshpubkey='<your_public_key>'          # SSH public key authentication 
- sshprivatekey='<your_private_key>'     # SSH private key authentication
+ ssh_port="58888"                       # SSH port to connect with Linux agents (Windows agents use ssh_port+1)
+ ssh_pubkey='<your_public_key>'         # SSH public key authentication 
+ ssh_privkey='<your_private_key>'       # SSH private key authentication
                                         # GENERATE: ssh-keygen -t rsa
-                                        #           Copy id_rsa and id_rsa.pub content in sshprivatekey and sshpubkey variables
-                                        #           and delete id_rsa and id_rsa.pub files
+                                        #  Copy id_rsa and id_rsa.pub content in ssh_privkey and ssh_pubkey variables
+                                        #  and delete id_rsa and id_rsa.pub files
 #### INSTALL ADMIN
 bash install admin
 ```  
@@ -89,10 +84,10 @@ bash install admin
 
 ```bash
 cd /opt/labadmin
-cp labs/labtest labs/A11                # Set lab config filename to your lab ID name
+cp labs/lab.test labs/A11                # Set lab config filename to your lab ID name
 vi /opt/labadmin/labs/A11
- labadmin="AULA 11"                     # Lab name
- srvmode="ssh"                          # Server mode (ssh or winrm)
+ labadmin="AULA 11"                      # Lab name
+ agent_os="linux"                        # Server mode: linux or windows
 
  # List of MACs for each host in map
  # macs[<host_id>]=<MAC>
@@ -113,10 +108,6 @@ vi /opt/labadmin/labs/A11
  __ __ 14 13 12 11
  ' 
 ```
-  * Edit `/opt/labadmin/conf/lab.default` and copy lab filename of the default lab
-```bash
-echo "A11" > /opt/labadmin/conf/lab.default
-```
 
 ## Hosts install on Linux
   * Not agent labadmin software is installed, installer only need to install all needed dependences and configure the remote SSH access method.
@@ -128,26 +119,9 @@ bash install host                                      # Install and config laba
 ```  
   
 ## Hosts install on Windows
-  * Enable WinRM access executing these commands in a PowerShell as Administrator:
+  * Not agent labadmin software is installed, installer only need to install all needed dependences and configure the remote SSH access method.
  ```powershell
-Enable-PSRemoting -Force
-winrm set winrm/config/service/auth '@{Basic="true"}'
-winrm set winrm/config/service '@{AllowUnencrypted="true"}'
-winrm set winrm/config/winrs '@{MaxMemoryPerShellMB="1024"}'
-sc.exe config winrm start= auto
-Set-Item wsman:\localhost\client\trustedhosts *
-```
-  * Create `labadmin` user to connect with WinRM and hide user from login:
-
- ```powershell
-$labadmin_user="labadmin"
-while(!$labadmin_user_cred -OR $labadmin_user_cred.Username -ne "labadmin") { $labadmin_user_cred = Get-Credential -Credential $labadmin_user }
-New-LocalUser -Name $labadmin_user -FullName "Labadmin user" -Password $labadmin_user_cred.Password
-Set-LocalUser -Name $labadmin_user -PasswordNeverExpires:$true
-Add-LocalGroupMember -Member $labadmin_user -SID "S-1-5-32-544"
-
-# Hide user from login screen
-New-Item 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon\SpecialAccounts\UserList' -Force | New-ItemProperty -Name $labadmin_user -Value 0 -PropertyType DWord -Force
+install-windows-agent.ps1
 ```
 
 &nbsp;  
@@ -157,8 +131,8 @@ You can select other lab config and mode with parameters: ``-l <lab_file>`` and 
 ```bash
 labadmin                # Start labadmin using defualt config lab
 labadmin -l A15         # Start labadin using a15 lab file and default mode defined in a15
-labadmin -l A15 -W      # Start labadin using a15 lab file and Windows mode (WinRM)
-labadmin -l A15 -L      # Start labadin using a15 lab file and Linux mode (SSH)
+labadmin -l A15 -W      # Start labadin using a15 lab file and Windows mode
+labadmin -l A15 -L      # Start labadin using a15 lab file and Linux mode
 ```
 
 <details><summary>Parameter options</summary><p>
@@ -178,10 +152,10 @@ $ labadmin -h
 	Network interface to use. Overrides iface variable in labadmin config file.
 
    -W 
-	Force Windows WINRM server mode. Overrides srvmode variable in lab config file.
+	Force Windows server mode. Overrides agent_os variable in lab config file.
 
    -L 
-	Force Linux SSH server mode. Overrides srvmode variable in lab config file.
+	Force Linux server mode. Overrides agent_os variable in lab config file.
 
    -F 
 	Force continue even check dependencies fail
@@ -333,7 +307,7 @@ Labadmin has a lot of actions ready to use! Actions are categorized for better o
   [torrent-local]    Send local files to hosts using torrent
 
 [labadmin/]          Manage Labadmin config in hosts
-  [conf]             Update labadmin host config (sshport and sshpubkey) from lab file config
+  [conf]             Update labadmin host config (ssh_port and ssh_pubkey) from lab file config
   [dependencies]     Check and install host dependencies for Labadmin
 
 [misc/]              Miscellaneous actions
@@ -493,13 +467,12 @@ The easy way to exec your own scripts is use the actions ``exec/com`` (execute c
 
 For add a new action to labadmin only need:
   * Create a action file following the labadmin interface. You can use template action located in [doc/action_template](doc/action_template).
-  * Save the action file in ``actions/ssh`` or ``actions/winrm`` directory, and labadmin will recognize the file automatically when starts.
+  * Save the action file in ``actions/linux`` or ``actions/windows`` directory, and labadmin will recognize the file automatically when starts.
 
 For more info refer to:
   * Action template: [doc/action_template](doc/action_template)
   * SSH sample: [actions/ssh/user/add](actions/ssh/user/add)
   * SSH admin+local+admin sample: [actions/ssh/file/torrent-local](actions/ssh/file/torrent-local)
-  * WinRM sampple: [actions/winrm/user/add](actions/winrm/user/add)
 
 &nbsp;  
 # Lincense

@@ -26,8 +26,6 @@ script_id="$(echo ${BASH_SOURCE[0]} | sed 's\^'"$scripts_path"'/*\\g')"			# Scri
 #	ssh+local 			Run for each LISTEN host and exec first in remote using SSH and then in local
 #	local+ssh 			Run for each LISTEN host and exec first in local and then in remote using SSH
 #	ssh&local 			Run for each LISTEN host and exec simultaneously in remote using SSH and in local
-#	winrm-ps			Run in each remote host using PowerShell
-#	winrm-cmd			Run in each remote host using Windows CMD
 #	menu 				Folder for contain other scripts
 # script_bg: background behavior of action
 #	deny			Deny script can be runned in background mode
@@ -39,7 +37,7 @@ script_id="$(echo ${BASH_SOURCE[0]} | sed 's\^'"$scripts_path"'/*\\g')"			# Scri
 # script_hostdeps   Dependences needed for admin: list of package1|package2 or file1|file2(package1|package2) 
 if [ "$1" = "--scriptinfo" ]; then
 	script_desc="DDDDDDDDDDDDD DDDDDDDDDD DDDDDDDDDD"
-	script_type="ssh|local|inactive|admin+local+admin|admin+local|local+admin|admin+ssh+admin|admin+ssh|ssh+admin|ssh+local|local+ssh|ssh&local|winrm-ps|winrm-cmd|menu"
+	script_type="ssh|local|inactive|admin+local+admin|admin+local|local+admin|admin+ssh+admin|admin+ssh|ssh+admin|ssh+local|local+ssh|ssh&local|menu"
 	script_bg="dey|win|sub|force win|force sub"
 	script_admindeps=""
 	script_hostdeps=""	
@@ -58,13 +56,11 @@ fi
 #	labadmin_iface
 #   labadmin_map
 #   labadmin_labname
-#	labadmin_sshport
-#	labadmin_ipadmin
+#	labadmin_ssh_port
+#	labadmin_admin_ip
 #	labadmin_iphost
 #	labadmin_nhost
 #	labadmin_script_type
-#	labadmin_winrmuser
-#	labadmin_winrmport
 #	labadmin_shosts_listen
 #	labadmin_machost
 #	labadmin_script_type_state

@@ -26,7 +26,7 @@ fi
 
 #=== EXEC SCRIPT ===================================================================
 o="$1"
-iface_host="$(labadmin_iface "${labadmin_ipadmin}")"
+iface_host="$(labadmin_iface "${labadmin_admin_ip}")"
 
 speed="$(ethtool "$iface_host" | grep -i speed | awk '{print $2}')"		# Speed config
 echo "$iface_host: $speed"

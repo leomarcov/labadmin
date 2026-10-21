@@ -116,7 +116,7 @@ function tmux_ctrlc_action() {
 
 
 	# If executing script no exit, send ctrl+c to process
-	if [ "$shosts" ]; then
+	if [[ "$shosts" ]]; then
 		return
 	fi
 

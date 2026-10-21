@@ -252,8 +252,8 @@ if [[ "${fw_type,,}" == @(whitelist|blacklist) ]]; then
 	    iptables -I OUTPUT -j REJECT
 	    iptables -I INPUT -i lo -j ACCEPT
 	    iptables -I OUTPUT -o lo -j ACCEPT
-	    iptables -I INPUT -p tcp  --dport "${labadmin_sshport}" -j ACCEPT
-	    iptables -I OUTPUT -p tcp  --sport "${labadmin_sshport}" -j ACCEPT
+	    iptables -I INPUT -p tcp  --dport "${labadmin_ssh_port}" -j ACCEPT
+	    iptables -I OUTPUT -p tcp  --sport "${labadmin_ssh_port}" -j ACCEPT
 	    iptables -I INPUT -p udp --sport 53 -m state --state ESTABLISHED -j ACCEPT
 	    iptables -I OUTPUT -p udp --dport 53 -j ACCEPT
 	    iptables -I INPUT -p tcp -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
@@ -267,8 +267,8 @@ if [[ "${fw_type,,}" == @(whitelist|blacklist) ]]; then
 	# BLACKLIST
 	elif [ "${fw_type,,}" = "blacklist" ]; then
 	    iptables -F
-	    iptables -I INPUT -p tcp  --dport "${labadmin_sshport}" -j ACCEPT
-	    iptables -I OUTPUT -p tcp  --sport "${labadmin_sshport}" -j ACCEPT 
+	    iptables -I INPUT -p tcp  --dport "${labadmin_ssh_port}" -j ACCEPT
+	    iptables -I OUTPUT -p tcp  --sport "${labadmin_ssh_port}" -j ACCEPT 
 	    
 	    for i in $fw_list; do
 	    	i=$(echo "$i" | sed "s/^.*:\/\///" | cut -f 1 -d "/")		# Cut only domain from URL

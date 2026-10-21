@@ -41,27 +41,32 @@ labadmin_load-config-file
 
 # LABADMIN TMP DIR INIT
 labadmin_tmp-init
-labadmin_tmp-vars-load ipadmin iface lab_file Lparam Wparam Fparam srvmode tmuxmode lab_id
+labadmin_tmp-vars-load admin_ip iface lab_file Lparam Wparam Fparam agent_os tmuxmode lab_id
 
 # LOAD LAB FILE
 labadmin_info " Loading lab config"
 labadmin_load-lab
 
+# INIT AGENT OS
+labadmin_init-agentos
+
 # TMUX INIT PANEL
 tmux_init-panel
 
 # SERVER MODE
-labadmin_info " Executing labadmin in $srvmode mode"
+labadmin_info " Executing labadmin in $agent_os mode"
 
 # LOAD SCRIPTS
 labadmin_info " Loading scripts"
-scripts_path="${scripts_path}/${srvmode}/"
+scripts_path="${scripts_path}/${agent_os}/"
 load_scripts "$scripts_path"							# Load all scripts recursively
 
 # INIT REMOTE AUTENTICACION
-labadmin_info " Initializing $srvmode authentication"
+labadmin_info " Initializing $agent_os authentication"
 auth_init
 
+# SHOW AGENT AND PORT
+labadmin_info " Connecting agents OS: ${S_R}${S_B}${agent_os^^}${S_R} (${ssh_port})"
 
 #===============================================================================
 # MAIN LOOP
@@ -87,7 +92,7 @@ while true; do
 	# EXEC SUB IN NEW WINDOW
 	if [ "$exec_bg" = "sub" ]; then
 		script_file="${scripts_file[$script_id]}"
-		labadmin_tmp-vars-save-1file execbg-win winrmpass exec_bg script_id script_file p0 p1 p2 p3 p4 p5 p6 p7 p8 p9
+		labadmin_tmp-vars-save-1file execbg-win exec_bg script_id script_file p0 p1 p2 p3 p4 p5 p6 p7 p8 p9
 		tn=$(basename $script_id); tn="${tn^^}"
 		labadmin_info "  Executing all hosts on tab: ${S_R}${S_B}$tn"; echo
 		com="${labadmin_path}/bin/labadmin-tui-scriptsub ${labadmin_PID}"
@@ -99,7 +104,7 @@ while true; do
 	labadmin_status-send "\n ${S_B}→ EXEC ${C_Y}${script_id}${S_R} to $(set -- $shosts; echo $#) hosts $([ "$exec_bg" ] && echo "($exec_bg)" | sed 's/sub/\&/' | sed 's/win/\&\&/')"
 
 	# LOG EXEC
-	[ -w "$log_path" ] && echo -e "[$(date "+%Y-%d-%m %H:%M:%S")] [$(id -un)] [$ipadmin] [$shosts_listen] [${script_id}${exec_bg:+(${exec_bg})}: $p1 | $p2 | $p3 | $p4 | $p5 | $p6 | $p7 | $p8 | $p9 ]" >> "$log_path"
+	[ -w "$log_path" ] && echo -e "[$(date "+%Y-%d-%m %H:%M:%S")] [$(id -un)] [$admin_ip] [$shosts_listen] [${script_id}${exec_bg:+(${exec_bg})}: $p1 | $p2 | $p3 | $p4 | $p5 | $p6 | $p7 | $p8 | $p9 ]" >> "$log_path"
 
 	# EXEC ADMIN 
 	if [[ "${scripts_type[$script_id],,}" = admin* ]]; then

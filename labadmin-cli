@@ -57,10 +57,10 @@ function help() {
 \tAction parameter value to exec.
 
    ${S_B}-W ${S_R}
-\tForce Windows WINRM server mode. Overrides srvmode variable in lab config file.
+\tForce Windows agent OS mode. Overrides agent_os variable in lab config file.
 
    ${S_B}-L ${S_R}
-\tForce Linux SSH server mode. Overrides srvmode variable in lab config file.
+\tForce Linux agent OS mode. Overrides agent_os variable in lab config file.
 
    ${S_B}-F ${S_R}
 \tForce continue even check dependencies fail
@@ -105,10 +105,10 @@ function check_params() {
 				p0param=1
 				p0="$OPTARG"
 				;;
-			W) # -W:WINRM mode
+			W) # -W:windows mode
 				Wparam=1;
 				;;
-			L) # -L:SSH mode
+			L) # -L:linux mode
 				Lparam=1;
 				;;
 			F) # -F: force exec missing dependencies
@@ -179,16 +179,7 @@ check_params "$@"
 labadmin_load-config-file
 
 # LOAD LAB FILE
-default_lab_path="${labadmin_path}/conf/lab.default"
-[ ! "$lab_id" ] && [ -r "$default_lab_path" ] && lab_id=$(cat "$default_lab_path" | xargs)		# Get defaul lab
-if [ ! "$lab_id" ]; then
-		labadmin_error "Lab not defined"
-		echo -e "AVAILABLE LABS: $(ls "${labs_path}" | tr "\n" " ")"
-		echo -e "  * Config default lab in ${S_B}$default_lab_path${S_R}"
-		echo -e "  * Or use ${S_B}-l${S_R} param"
-		exit 1
-fi
-lab_file="${labs_path}/${lab_id}"
+labadmin_get-labid
 labadmin_load-lab
 
 [ ! -r "$lab_file" ] && labadmin_error "ERROR: can't access lab config file: $lab_file" 1
@@ -210,24 +201,17 @@ fi
 
 # IP-MAC ADMIN
 [ "$iparam" ] && iface="$piface"
-ipadmin="$(labadmin_ip "$iface")"
-! [ "$ipadmin" ] && labadmin_error "ERROR: cant get IP from iface $iface\nCheck iface config in $config_path or use -i param" 1
-macadmin="$(labadmin_mac "$iface")"
+admin_ip="$(labadmin_ip "$iface")"
+! [ "$admin_ip" ] && labadmin_error "ERROR: cant get IP from iface $iface\nCheck iface config in $config_path or use -i param" 1
+admin_mac="$(labadmin_mac "$iface")"
 
 # TMP INITIALIZATION
-readonly labadmin_PID="$$"												# set labadmin_PID
-labadmin_tmp-init														# initialize tmp directories
-labadmin_generate-autocomplete											# initialize autocomplete directory
+readonly labadmin_PID="$$"									# set labadmin_PID
+labadmin_tmp-init												# initialize tmp directories
+labadmin_generate-autocomplete							# initialize autocomplete directory
 
-# SERVER MODE
-if [ "$Lparam" ]; then
-	srvmode="ssh";
-elif  [ "$Wparam" ]; then
-	srvmode="winrm";
-elif [ ! "$srvmode" ]; then
-	srvmode="ssh"										# Default server mode ssh
-fi
-
+# INIT AGENT OS
+labadmin_init-agentos
 
 # INITIALIZE MAP
 if [ "$Mparam" ]; then
@@ -239,7 +223,7 @@ if [ "$Mparam" ]; then
 fi
 
 # LOAD SCRIPTS
-scripts_path="${scripts_path}/${srvmode}/"
+scripts_path="${scripts_path}/${agent_os}/"
 load_scripts "$(echo "${scripts_path}/${p0}" | sed 's/[& ]*$//g')"		# Load only script to exec (without last &)
 
 # INIT REMOTE AUTENTICACION
@@ -265,7 +249,7 @@ echo -e "${S_B}${C_Y}Selected script:${S_R} $script_id"
 [ "$exec_bg" ] && echo -e "${S_B}${C_Y}Background mode:${S_R} $exec_bg"
 
 # LOG EXEC
-[ -w "$log_path" ] && echo -e "[$(date "+%Y-%d-%m %H:%M:%S")] [$(id -un)] [$ipadmin] [$shosts_listen] [${script_id}${exec_bg:+(${exec_bg})}: $p1 | $p2 | $p3 | $p4 | $p5 | $p6 | $p7 | $p8 | $p9 ]" >> "$log_path"
+[ -w "$log_path" ] && echo -e "[$(date "+%Y-%d-%m %H:%M:%S")] [$(id -un)] [$admin_ip] [$shosts_listen] [${script_id}${exec_bg:+(${exec_bg})}: $p1 | $p2 | $p3 | $p4 | $p5 | $p6 | $p7 | $p8 | $p9 ]" >> "$log_path"
 
 # EXEC ADMIN 
 if [[ "${scripts_type[$script_id],,}" = admin* ]]; then

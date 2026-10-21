@@ -9,7 +9,7 @@ script_id="$(echo ${BASH_SOURCE[0]} | sed 's\^'"$scripts_path"'/*\\g')"		# Scrip
 #=== LOAD INFO =====================================================================
 if [ "$1" = "--load-scriptinfo" ]; then
 	script_desc="Show user list and show specific user info"
-	script_type="winrm-ps"
+	script_type="ssh"
 	script_bg="sub"
 	script_admindeps=""
 	script_hostdeps=""
@@ -25,14 +25,18 @@ fi
 
 
 #=== EXEC SCRIPT ===================================================================
-user="$1"
-
-# SHOW USERS
-echo 'Get-LocalUser'
+cat <<- 'POWERSHELL'
+$u = $p1
 
 # SHOW USER INFO AND GROUPS
-[ "$user" ] && echo 'echo ""; echo ""; echo "USER INFO '"$user"'"; echo "---------------------"; ' && echo 'Get-LocalUser -Name "'"$user"'" | select *' && echo '$adsi = [ADSI]"WinNT://$env:COMPUTERNAME"
-$adsi.Children | where {$_.SchemaClassName -eq "user" -and $_.name -eq "'"$user"'"} | Foreach-Object {
-	$groups = $_.Groups() | Foreach-Object {$_.GetType().InvokeMember("Name", "GetProperty", $null, $_, $null)}
-	$_ | Select-Object @{n="UserName";e={$_.Name}},@{n="Groups";e={$groups -join ";"}}
-}'
+if ($u) {
+	Get-LocalUser -Name $u | Format-List *
+	Write-Host "Groups: $(Get-LocalGroup | Where-Object {
+	    (Get-LocalGroupMember -Group $_.Name -ErrorAction SilentlyContinue).Name -contains "$env:COMPUTERNAME\$u"
+	} | Select-Object -ExpandProperty Name)"
+
+# SHOW USERS
+} else {
+	Get-LocalUser
+}
+POWERSHELL

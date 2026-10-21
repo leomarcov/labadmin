@@ -9,7 +9,7 @@ script_id="$(echo ${BASH_SOURCE[0]} | sed 's\^'"$scripts_path"'/*\\g')"		# Scrip
 #=== LOAD INFO =====================================================================
 if [ "$1" = "--load-scriptinfo" ]; then
 	script_desc="Download URL resource in host Downloads folder"
-	script_type="winrm-ps"
+	script_type="ssh"
 	script_bg="sub"
 	script_admindeps=""
 	script_hostdeps=""
@@ -27,7 +27,12 @@ fi
 
 
 #=== EXEC SCRIPT ===================================================================
-url="$1"
-dest="$2"
 
-echo 'Invoke-WebRequest -Uri "'"$url"'" -OutFile "'"$dest"'"'
+cat <<- 'POWERSHELL'
+$url = $p1
+$dest = $p2
+
+$ProgressPreference = 'SilentlyContinue'
+Invoke-WebRequest -Uri $url -OutFile $dest
+POWERSHELL
+

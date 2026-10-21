@@ -9,7 +9,7 @@ script_id="$(echo ${BASH_SOURCE[0]} | sed 's\^'"$scripts_path"'/*\\g')"		# Scrip
 #=== LOAD INFO =====================================================================
 if [ "$1" = "--load-scriptinfo" ]; then
 	script_desc="Extract file"
-	script_type="winrm-ps"
+	script_type="ssh"
 	script_bg="sub"
 	script_admindeps=""
 	script_hostdeps=""
@@ -27,7 +27,11 @@ fi
 
 
 #=== EXEC SCRIPT ===================================================================
-file="$1"
-dest="$2"
 
-echo 'Expand-Archive "'"$file"'" -DestinationPath "'"$dest"'"'
+cat <<- 'POWERSHELL'
+$file = $p1
+$dest = $p2
+
+Expand-Archive $file -DestinationPath $dest
+POWERSHELL
+

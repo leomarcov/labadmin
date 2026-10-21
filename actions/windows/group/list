@@ -9,7 +9,7 @@ script_id="$(echo ${BASH_SOURCE[0]} | sed 's\^'"$scripts_path"'/*\\g')"		# Scrip
 #=== LOAD INFO =====================================================================
 if [ "$1" = "--load-scriptinfo" ]; then
 	script_desc="Show groups list and show specific group info"
-	script_type="winrm-ps"
+	script_type="ssh"
 	script_bg="sub"
 	script_admindeps=""
 	script_hostdeps=""
@@ -25,10 +25,17 @@ fi
 
 
 #=== EXEC SCRIPT ===================================================================
-group="$1"
 
-# SHOW GROUPS
-echo 'Get-LocalGroup'
+cat <<- 'POWERSHELL'
+$group = $p1
 
-# SHOW GROUP INFO AND MEMBERS
-[ "$group" ] && echo 'Get-LocalGroup -Name "'"$group"'"' && echo 'Get-LocalGroupMember -Group "'"$group"'" | Format-Table -AutoSize'
+Get-LocalGroup
+if($group) { 
+	Get-LocalGroup -Name $group 
+	Get-LocalGroupMember -Group $group | Format-Table -AutoSize
+}
+
+POWERSHELL
+
+
+

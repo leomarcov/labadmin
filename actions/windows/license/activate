@@ -9,7 +9,7 @@ script_id="$(echo ${BASH_SOURCE[0]} | sed 's\^'"$scripts_path"'/*\\g')"		# Scrip
 #=== LOAD INFO =====================================================================
 if [ "$1" = "--load-scriptinfo" ]; then
 	script_desc="Activate Windows license"
-	script_type="winrm-ps"
+	script_type="ssh"
 	script_bg="sub"
 	script_admindeps=""
 	script_hostdeps=""
@@ -25,10 +25,13 @@ fi
 
 
 #=== EXEC SCRIPT ===================================================================
-license="$1"
 
-echo '$computer = gc env:computername
-$key = "'"$license"'"
+cat <<- 'POWERSHELL'
+$key = $p1
+
+$computer = gc env:computername
 $service = get-wmiObject -query "select * from SoftwareLicensingService" -computername $computer
 if ($key) { $service.InstallProductKey($key) }
-$service.RefreshLicenseStatus()'
+$service.RefreshLicenseStatus()
+POWERSHELL
+

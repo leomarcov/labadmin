@@ -9,7 +9,7 @@ script_id="$(echo ${BASH_SOURCE[0]} | sed 's\^'"$scripts_path"'/*\\g')"		# Scrip
 #=== LOAD INFO =====================================================================
 if [ "$1" = "--load-scriptinfo" ]; then
 	script_desc="Add user account to existing group"
-	script_type="winrm-ps"
+	script_type="ssh"
 	script_bg="sub"
 	script_admindeps=""
 	script_hostdeps=""
@@ -27,7 +27,15 @@ fi
 
 
 #=== EXEC SCRIPT ===================================================================
-user="$1"
-group="$2"
 
-echo 'Add-LocalGroupMember -Group "'"$group"'" -Member "'"$user"'"'
+cat <<- 'POWERSHELL'
+$user = $p1
+$group = $p2
+
+Add-LocalGroupMember -Group $group -Member $user
+POWERSHELL
+
+
+
+
+

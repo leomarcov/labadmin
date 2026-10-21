@@ -47,10 +47,10 @@ function help() {
 \tNetwork interface to use. Overrides iface variable in labadmin config file.
 
    ${S_B}-W ${S_R}
-\tForce Windows WINRM server mode. Overrides srvmode variable in lab config file.
+\tForce Windows agent OS mode. Overrides agent_os variable in lab config file.
 
    ${S_B}-L ${S_R}
-\tForce Linux SSH server mode. Overrides srvmode variable in lab config file.
+\tForce Linux agent OS mode. Overrides agent_os variable in lab config file.
 
    ${S_B}-F ${S_R}
 \tForce continue even check dependencies fail
@@ -81,10 +81,10 @@ function check_params() {
 				iparam=1
 				piface="$OPTARG"
 				;;
-			W) # -W:WINRM mode
+			W) # -W:windows mode
 				Wparam=1;
 				;;
-			L) # -L:SSH mode
+			L) # -L:linux mode
 				Lparam=1;
 				;;
 			F) # -F: force exec missing dependencies
@@ -119,18 +119,8 @@ labadmin_show_version
 # LOAD LABADMIN CONFIG FILE
 labadmin_load-config-file
 
-# LOAD LAB FILE
-default_lab_path="${labadmin_path}/conf/lab.default"
-[ ! "$lab_id" ] && [ -r "$default_lab_path" ] && lab_id=$(cat "$default_lab_path" | xargs)		# Get defaul lab
-if [ ! "$lab_id" ]; then
-		labadmin_error "Lab not defined"
-		echo -e "AVAILABLE LABS: $(ls "${labs_path}" | tr "\n" " ")"
-		echo -e "  * Config default lab in ${S_B}$default_lab_path${S_R}"
-		echo -e "  * Or use ${S_B}-l${S_R} param"
-		exit 1
-fi
-lab_file="${labs_path}/${lab_id}"
-[ ! -r "$lab_file" ] && labadmin_error "Can't access lab config file: $lab_file" 1
+# GET lab_id
+labadmin_init-labid
 
 # CHECK ADMIN DEPENDENCIES
 check_dependencies "noinstall" "scripts_admindeps" >/dev/null
@@ -148,31 +138,24 @@ fi
 
 # IP-MAC ADMIN
 [ "$iparam" ] && iface="$piface"
-ipadmin="$(labadmin_ip "$iface")"
-! [ "$ipadmin" ] && labadmin_error "ERROR: cant get IP from iface $iface\nCheck iface config in $config_path or use -i param" 1
-macadmin="$(labadmin_mac "$iface")"
+admin_ip="$(labadmin_ip "$iface")"
+! [ "$admin_ip" ] && labadmin_error "ERROR: cant get IP from iface $iface\nCheck iface config in $config_path or use -i param" 1
+admin_mac="$(labadmin_mac "$iface")"
 
 # TMP INITIALIZATION
 readonly labadmin_PID="$$"												# set labadmin_PID
 labadmin_tmp-init															# initialize tmp directories
 labadmin_generate-autocomplete										# initialize autocomplete directory
 
-# SERVER MODE
-if [ "$Lparam" ]; then
-	srvmode="ssh";
-elif  [ "$Wparam" ]; then
-	srvmode="winrm";
-elif [ ! "$srvmode" ]; then
-	srvmode="ssh"															# Default server mode ssh
-fi
-
+# INIT AGENT OS
+labadmin_init-agentos
 
 # CHECK TMUX MODE: full|compact
 wmctrl -r :ACTIVE: -b add,maximized_vert,maximized_horz &> /dev/null && sleep 0.2
 [ "$COLUMNS" -ge 140 ] && tmuxmode="full" || tmuxmode="compact"		# tmuxmode=full for tmux in 3panles, tmuxmode=compact for tmux in 3 windows
 
 # EXEC LABADMIN-TUI
-labadmin_tmp-vars-save ipadmin macadmin lab_file iface Lparam Wparam Fparam srvmode tmuxmode lab_id
+labadmin_tmp-vars-save admin_ip admin_mac lab_file iface Lparam Wparam Fparam agent_os tmuxmode lab_id
 [ "$tmuxmode" =  full ] && tmux_create-session-panels || tmux_create-session-windows
 
 

@@ -1,0 +1,80 @@
+#!/usr/bin/env bash
+#===================================================================================
+# LABADMIN LINUX ADMIN INSTALLATION
+#         FILE: install-linux-admin
+#
+#  DESCRIPTION: Install and check labadmin dependencies for linux admin
+#
+#       AUTHOR: Leonardo Marco (labadmin@leonardomarco.com)
+#      LICENSE: GNU General Public License v3.0
+#      VERSION: 2026.10.15
+#      CREATED: 2026.10.17
+#===================================================================================
+
+#===============================================================================
+#  LOAD LIBS
+#===============================================================================
+readonly labadmin_path="$(dirname $(readlink -f "${0}"))"                       # LABADMIN script root directory path
+readonly lib_path="${labadmin_path}/lib/"                                       # LABADMIN LIB PATH
+source "${lib_path}/labadmin_lib-admin"                                         # LABADMIN ADMIN VARIABLES AND FUNCTIONS
+source "${lib_path}/labadmin_lib"												# LABADMIN GLOBAL VARIABLES AND FUNCTIONS
+source "${lib_path}/labadmin_lib-script"										# LABADMIN SCRIPT MODULE
+source "${lib_path}/labadmin_lib-install"										# LABADMIN INSTALL MODULE
+	
+
+
+#=== FUNCTION ==================================================================
+#        NAME: help
+# DESCRIPTION: Show help and exit
+# PARAMETERS: 
+#	$1	exit code
+#===============================================================================
+function help() {
+    echo -e "Install and check labadmin dependencies for linux admin
+  INSTALL 
+   ${S_B}$(basename $0)${S_R}
+
+  CHECK DEPENDENCIES
+   ${S_B}$(basename $0)${S_R} -d ask|autoinstall|noinstall     Only check host dependencies (no install agent)
+"
+	exit $1
+}
+
+
+#### CHECK PARAMETERS
+while getopts ":d:h" o
+do
+    case $o in
+        d) # -d:dependencies
+            dparam=1
+            daction="$OPTARG"
+            [[ "$daction" != @(ask|autoinstall|noinstall) ]] && labadmin_error "Incorrect check dependence action ${daction}\nSupported actions: ask, autoinstall and noinstall" 1            
+            ;;
+        h)
+            help
+            ;;
+        *)
+            labadmin_error "Error parameter" 1
+            ;;
+    esac
+done
+
+
+
+#### INSTALL 
+if [ ! "$dparam" ]; then
+    load_scripts "$scripts_path"
+    install_admin "$lab_id"
+    echo
+
+#### CHECK DEPENDENCIES
+else
+    load_scripts "$scripts_path"
+    check_dependencies "$daction" "scripts_admindeps"
+    echo
+fi
+
+
+
+
+

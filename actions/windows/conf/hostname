@@ -9,7 +9,7 @@ script_id="$(echo ${BASH_SOURCE[0]} | sed 's\^'"$scripts_path"'/*\\g')"		# Scrip
 #=== LOAD INFO =====================================================================
 if [ "$1" = "--load-scriptinfo" ]; then
 	script_desc="Set hostname"
-	script_type="winrm-ps"
+	script_type="ssh"
 	script_bg="sub"
 	script_admindeps=""
 	script_hostdeps=""
@@ -25,9 +25,17 @@ fi
 
 
 #=== EXEC SCRIPT ===================================================================
-n="${labadmin_nhost}"	# nhost
-hn="$1"					# new hostname
-hn="$(eval echo $hn)"	# eval replace ${n} for $n
 
-echo '$cn = get-wmiobject win32_computersystem
-$cn.rename("'"$hn"'")'
+cat <<- 'POWERSHELL'
+$n = $labadmin_nhost
+$hn = $p1
+
+$hn = $hn -replace '\$\{n\}', $n
+
+echo $hn
+
+if ($env:COMPUTERNAME -ne $hn) {
+    Rename-Computer -NewName $hn -Force
+}
+POWERSHELL
+

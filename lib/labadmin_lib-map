@@ -73,7 +73,7 @@ function print_endscan_notification() {
 #===============================================================================
 function draw_map() {
 	local tab="$(clear_line)   "																# Left tab
-	local color_listen="$([ "$srvmode" = "winrm" ] && echo "${C_BB}" || echo "${C_BG}")"		# Color for listen ip
+	local color_listen="$([ "$agent_os" = "windows" ] && echo "${C_LB}" || echo "${C_BG}")"		# Color for listen ip
 
 	eval local ashosts_listen=($(echo "$shosts_listen" | sed 's/\([0-9]\+\)/[\1]=X/g'));		# Convert list into array ([11]=X [12]=X ...)
 	eval local ashosts_inactive=($(echo "$shosts_inactive" | sed 's/\([0-9]\+\)/[\1]=X/g'));	# Convert list into array ([11]=X [12]=X ...)

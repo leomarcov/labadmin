@@ -45,16 +45,49 @@ function labadmin_load-config-file() {
 
     # Set deault values
     [ ! "$iface" ] && iface=$(labadmin_iface 8.8.8.8)
-    [ ! "$scan_timeout" ] && scan_timeout=500
-    [ ! "$winrmuser" ] && winrmuser="labadmin"
-    [ ! "$winrmport" ] && winrmport=5985
-    [ ! "$sshport" ] && sshport=58888
-    [ ! "$autoscan_delay" ] && autoscan_delay=60
-    [ "$autoscan_delay" -eq 0 ] && unset autoscan_delay
+    [ ! "$arpscan_timeout" ] && arpscan_timeout=500
+    [ ! "$ssh_timeout" ] && ssh_timeout=500
+    [ ! "$autoscan_delay" ] && autoscan_delay=60; [ "$autoscan_delay" -eq 0 ] && unset autoscan_delay
+    [ ! "$ssh_port" ] && ssh_port=58888
 
-    [ ! "$winrmpass" ] && [[ ! "$sshpubkey" || ! "$sshprivatekey" ]] && labadmin_error "ERROR: can't load authentication data on labadmin config file ${config_path//\/\//\/}" 1
+    [[ ! "$ssh_pubkey" || ! "$ssh_privkey" ]] && labadmin_error "ERROR: can't load authentication data on labadmin config file ${config_path//\/\//\/}" 1
 }
 
+
+#=== FUNCTION ==================================================================
+# NAME: labadmin_init-agentos
+# DESCRIPTION: initialize agent_os value and correct ssh_port
+#===============================================================================
+function labadmin_init-agentos() {
+    if [ "$Lparam" ]; then
+        agent_os="linux"
+    elif [ "$Wparam" ]; then
+        agent_os="windows"
+    elif [[ "$agent_os" != @(windows|linux) ]]; then
+        agent_os="linux"                                            # Default agent os
+    fi
+
+    [ "$agent_os" = "windows" ] && ssh_port=$((ssh_port+1))         # Windows agent: ssh_port+1
+}
+
+
+#=== FUNCTION ==================================================================
+# NAME: labadmin_init-labid
+# DESCRIPTION: initialize lab_id value: from -l param or from labadmin.conf or from labs/* if only one lab file exists
+#===============================================================================
+function labadmin_init-labid() {
+    [ ! "$lab_id" ] && [ "$default_lab" ] && lab_id="$default_lab"                                          # No lab param -> default_lab
+    [ ! "$lab_id" ] && [ $(ls "${labs_path}" | wc -l) -eq 1 ] && lab_id=$(ls "${labs_path}")                # No lab param & no default_lab a& only 1 lab file-> the only lab defined
+    if [ ! "$lab_id" ]; then
+            labadmin_error "Lab not defined"
+            echo -e "AVAILABLE LABS: $(ls "${labs_path}" | tr "\n" " ")"
+            echo -e "  * Use ${S_B}-l${S_R} param"
+            echo -e "  * Or set ${S_B}default_lab${S_R} in ${S_B}${config_path}${S_R}"
+            exit 1
+    fi
+    lab_file="${labs_path}/${lab_id}"
+    [ ! -r "$lab_file" ] && labadmin_error "Can't access lab config file: ${lab_file//\/\//\/}" 1
+}
 
 
 #=== FUNCTION ==================================================================
@@ -62,13 +95,13 @@ function labadmin_load-config-file() {
 # DESCRIPTION: load lab config file and initialize values
 #===============================================================================
 function labadmin_load-lab() {
-    local sm="$srvmode"
+    local ao="$agent_os"
     source "$lab_file" || labadmin_error "ERROR: error loading lab file: $lab_file" 1
 
     # Set deault values
     [ ! "$labname" ] && labname=$(basename "$lab_file")
-    [ "$sm" ] && srvmode="$sm"
-    [ ! "$srvmode" ] && srvmode="ssh"
+    [ "$ao" ] && agent_os="$ao"
+    [ ! "$agent_os" ] && agent_os="linux"
 
     [ ! "$map" ] && labadmin_error "ERROR: no map defined in lab config file $lab_file" 1
     [ "${#macs[*]}" -eq 0 ] && labadmin_error "ERROR: no MACs defined in lab config file $lab_file" 1
@@ -122,7 +155,7 @@ function labadmin_ssh_host_comm() {
     [ ! "$commands" ] && labadmin_error "INTERNAL ERROR: labadmin_exec_ssh_host_comm no commands to exec" 1
 
     # EXEC SSH EXEC COMMANDS
-    ssh root@${ip} -p ${sshport} -oStrictHostKeyChecking=no -oConnectTimeout=${ssh_timeout:-5} "
+    ssh root@${ip} -p ${ssh_port} -oStrictHostKeyChecking=no -oConnectTimeout=${ssh_timeout:-5} "
 $(cat "${lib_path}/labadmin_lib")
 
 $(labadmin_export_vars_code)
@@ -153,7 +186,7 @@ function labadmin_ssh_host_comm_stdin() {
     [ ! "$commands" ] && labadmin_error "INTERNAL ERROR: labadmin_exec_ssh_host_comm_stdin no commands to exec" 1
 
     # EXEC SSH EXEC COMMANDS
-    cat - | ssh root@${ip} -p ${sshport} -oStrictHostKeyChecking=no -oConnectTimeout=${ssh_timeout:-5} "
+    cat - | ssh root@${ip} -p ${ssh_port} -oStrictHostKeyChecking=no -oConnectTimeout=${ssh_timeout:-5} "
 $(cat "${lib_path}/labadmin_lib")
 
 $(labadmin_export_vars_code)
@@ -178,7 +211,7 @@ function labadmin_ssh_host_login() {
     # CHECKS
     [ ! "$ip" ] && labadmin_error "INTERNAL ERROR: labadmin_exec_ssh_host_login cant find IP address from host $nhost" 1
     
-    ssh root@${ip} -p ${sshport} -oStrictHostKeyChecking=no -oConnectTimeout=${ssh_timeout:-5}
+    ssh root@${ip} -p ${ssh_port} -oStrictHostKeyChecking=no -oConnectTimeout=${ssh_timeout:-5}
     return
 }
 

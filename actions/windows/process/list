@@ -9,7 +9,7 @@ script_id="$(echo ${BASH_SOURCE[0]} | sed 's\^'"$scripts_path"'/*\\g')"		# Scrip
 #=== LOAD INFO =====================================================================
 if [ "$1" = "--load-scriptinfo" ]; then
 	script_desc="Show process list"
-	script_type="winrm-ps"
+	script_type="ssh"
 	script_bg="sub"
 	script_admindeps=""
 	script_hostdeps=""
@@ -18,12 +18,19 @@ if [ "$1" = "--load-scriptinfo" ]; then
 
 #=== READ PARAMS ===================================================================
 elif [ "$1" = "--readparams" ]; then
-	# PARAM1: username
-    read_param "$script_id" 1 "Order by (mem/cpu)" "cpu" "^(mem|cpu)$"
+    # PARAM2: filter
+	read_param "$script_id" 1 "Filter (filter by name)" "*" ""
+	# PARAM1: orderby
+    read_param "$script_id" 2 "Order by (MEM/cpu)" "mem" "^(mem|cpu)$"
+
 	return
 fi
 
 
 #=== EXEC SCRIPT ===================================================================
-order="$1"
-echo 'Get-Process | Select-Object ProcessName,@{Name="MEM";Expression={($_.WorkingSet/1MB)}},cpu | Sort-Object -Descending '"$order"
+cat <<- 'POWERSHELL'
+$filter = $p1
+$order = $p2
+Get-Process -Name $(if ($filter) { "*${filter}*" } else { "*" }) | Select-Object ProcessName,@{Name="MEM";Expression={($_.WorkingSet/1MB)}},cpu | Sort-Object -Descending $order
+
+POWERSHELL

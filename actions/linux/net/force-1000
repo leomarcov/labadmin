@@ -23,5 +23,5 @@ fi
 
 
 #=== EXEC SCRIPT ===================================================================
-iface_host="$(labadmin_iface "${labadmin_ipadmin}")"
+iface_host="$(labadmin_iface "${labadmin_admin_ip}")"
 ethtool -s "$iface_host" speed 1000 duplex full

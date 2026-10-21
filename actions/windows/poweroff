@@ -9,7 +9,7 @@ script_id="$(echo ${BASH_SOURCE[0]} | sed 's\^'"$scripts_path"'/*\\g')"		# Scrip
 #=== LOAD INFO =====================================================================
 if [ "$1" = "--load-scriptinfo" ]; then
 	script_desc="Power OFF host"
-	script_type="winrm-cmd"
+	script_type="ssh"
 	script_bg="sub"
 	script_admindeps=""
 	script_hostdeps=""
@@ -23,4 +23,7 @@ fi
 
 
 #=== EXEC SCRIPT ===================================================================
-echo 'shutdown /s /t 0'
+ç
+cat <<- 'POWERSHELL'
+shutdown.exe /s /f /t 0
+POWERSHELL

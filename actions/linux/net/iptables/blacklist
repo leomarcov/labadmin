@@ -30,8 +30,8 @@ per="$1"
 iptables -F
 
 # ACCEPT all connections for LABADMIN port
-iptables -I INPUT -p tcp  --dport "${labadmin_sshport}" -j ACCEPT
-iptables -I OUTPUT -p tcp  --sport "${labadmin_sshport}" -j ACCEPT	
+iptables -I INPUT -p tcp  --dport "${labadmin_ssh_port}" -j ACCEPT
+iptables -I OUTPUT -p tcp  --sport "${labadmin_ssh_port}" -j ACCEPT	
 
 iptables -L --line-numbers
 

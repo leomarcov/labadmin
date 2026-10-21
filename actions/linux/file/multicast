@@ -33,7 +33,7 @@ fi
 src="$(eval echo "$1")"			# Resolve scape characteres like \ ,*, etc.
 dest="$(eval echo "$2")"		# Resolve scape characteres like \ ,*, etc.
 skip="${3}"
-iface_host="$(labadmin_iface "${labadmin_ipadmin}")"
+iface_host="$(labadmin_iface "${labadmin_admin_ip}")"
 
 
 # REMOTE EXEC

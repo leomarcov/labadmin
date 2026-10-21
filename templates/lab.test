@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #===================================================================================
-#        FILE: labs/lab-test
+#        FILE: labs/lab.test
 # DESCRIPTION: Sample file for a lab config
 #      AUTHOR: Leonardo Marco (labadmin@leonardomarco.com)
 #     LICENSE: GNU General Public License v3.0
@@ -12,10 +12,10 @@
 # Lab name to show in interface
 labname="TEST LAB"
 
-# Server default mode
-# Possible values: ssh|winrm
-# Use parameters -L (ssh) or -W (winrm) for override default mode
-srvmode="ssh"
+# Default agents operating system
+# Possible values: linux|windows
+# Use parameters -L (linux) or -W (windows) for override default value (linux)
+agent_os="linux"
 
 
 #===============================================================================

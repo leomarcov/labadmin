@@ -42,23 +42,26 @@ labadmin_load-config-file
 
 # LABADMIN TMP DIR INIT
 labadmin_tmp-init
-labadmin_tmp-vars-load ipadmin iface lab_file Lparam Wparam Fparam srvmode tmuxmode ips
+labadmin_tmp-vars-load admin_ip iface lab_file Lparam Wparam agent_os Fparam tmuxmode ips
 labadmin_tmp-vars-load-1file execbg-win
 labadmin_tmp-vars-load ips shosts shosts_listen shosts_inactive
-
-# DRAW BOX
-labadmin_draw-box 1 3 "SCRIPT: ${S_B}$script_id${S_R}\n HOSTS:${S_B}$shosts_listen${S_R}"
 
 # LOAD LAB FILE
 labadmin_info " Loading lab config"
 labadmin_load-lab
+
+# INIT AGENT OS
+labadmin_init-agentos
+
+# DRAW BOX
+labadmin_draw-box 1 3 "SCRIPT: ${S_B}$script_id${S_R}\n HOSTS:${S_B}$shosts_listen${S_R}"
 
 # TMUX INIT PANEL
 tmux_init-panel
 
 # LOAD SCRIPTS
 labadmin_info " Loading script"
-scripts_path="${scripts_path}/${srvmode}/"
+scripts_path="${scripts_path}/${agent_os}/"
 load_scripts "$script_file"							# Load only script file to exec
 
 # INIT REMOTE AUTENTICACION
@@ -81,7 +84,7 @@ echo -e "${S_B} Press [ENTER] to stop and exit${S_R}\n"
 labadmin_status-send "\n ${S_B}→ EXEC ${C_Y}${script_id}${S_R} to $(set -- $shosts; echo $#) hosts $([ "$exec_bg" ] && echo "($exec_bg)" | sed 's/sub/\&/' | sed 's/win/\&\&/')"
 
 # LOG EXEC
-[ -w "$log_path" ] && echo -e "[$(date "+%Y-%d-%m %H:%M:%S")] [$(id -un)] [$ipadmin] [$shosts_listen] [${script_id}${exec_bg:+(${exec_bg})}: $p1 | $p2 | $p3 | $p4 | $p5 | $p6 | $p7 | $p8 | $p9 ]" >> "$log_path"
+[ -w "$log_path" ] && echo -e "[$(date "+%Y-%d-%m %H:%M:%S")] [$(id -un)] [$admin_ip] [$shosts_listen] [${script_id}${exec_bg:+(${exec_bg})}: $p1 | $p2 | $p3 | $p4 | $p5 | $p6 | $p7 | $p8 | $p9 ]" >> "$log_path"
 
 
 # EXEC ADMIN 

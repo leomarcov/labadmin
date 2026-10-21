@@ -10,11 +10,29 @@
 #      CREATED: 2026.10.18
 #===================================================================================
 
-labadmin_info "Updating files from Labadmin GitHub repository"
-labadmin_dir=$(readlink -f "$0")
 
-echo AAA$labdmin_dir
-exit
+#===============================================================================
+#  LOAD LIBS
+#===============================================================================
+readonly labadmin_path="$(dirname $(readlink -f "${0}"))"                       # LABADMIN script root directory path
+readonly lib_path="${labadmin_path}/lib/"                                       # LABADMIN LIB PATH
+readonly labadmin_file="$labadmin_path/labadmin"         						# ${labadmin_path}/labadmin
+source "${lib_path}/labadmin_lib"												# LABADMIN GLOBAL VARIABLES AND FUNCTIONS
+source "${lib_path}/labadmin_lib-install"										# LABADMIN INSTALL MODULE
+
+
+#### FORCE UPDATE LOCAL REPOSITORY FROM GITHUB
+labadmin_info "Updating Labadmin files from GitHub repository"
 git fetch || exit 1
 git reset --hard HEAD || exit 1
 git merge '@{u}' || exit 1
+
+#### SETTING PERMISSIONS
+labadmin_info "Setting install permissions"	
+chown -R root:"$labadmin_group" "$labadmin_path"
+find "$labadmin_path" -type f -exec chmod 640 {} \;
+find "$labadmin_path" -type d -exec chmod 650 {} \;
+chmod ug+x "${labadmin_file}"
+chmod ug+x "${labadmin_file}-cli"
+chmod ug+x "${labadmin_path}/"*install*
+chmod ug+x "${labadmin_path}/bin/"*

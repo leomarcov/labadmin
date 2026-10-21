@@ -14,13 +14,13 @@
 
 #=== FUNCTION ==================================================================
 #        NAME: auth_init
-# DESCRIPTION: Initialize ssh or winrm authentication according srvmode value
+# DESCRIPTION: Initialize ssh authentication according agent_os value
 #===============================================================================
 function auth_init() {
-	if [ "$srvmode" = "ssh" ]; then
+	if [ "$agent_os" = "linux" ]; then
 		auth_ssh-init
-	elif [ "$srvmode" = "winrm" ]; then
-		auth_winrm-init
+	elif [ "$agent_os" = "windows" ]; then
+		auth_ssh-init
 	fi
 }
 
@@ -33,12 +33,12 @@ function auth_init() {
 #	  repository to prevent save it permanently in system
 #	- Remove .knownhost if is 24h older (in dhcp avoids ip server has changed warning)
 # GLOBAL VARIABLES READED
-#	$sshprivatekey
+#	$ssh_privkey
 #===============================================================================
 function auth_ssh-init() {
-	[[ ! "$sshpubkey" || ! "$sshprivatekey" ]] && labadmin_error "ERROR: can't load SSH authentication data on labadmin config file ${config_path//\/\//\/}" 1
+	[[ ! "$ssh_pubkey" || ! "$ssh_privkey" ]] && labadmin_error "ERROR: can't load SSH authentication data on labadmin config file ${config_path//\/\//\/}" 1
 
-	# Copy $sshprivatekey content to fifo pipe .ssh/rakey (for no save it permanently)
+	# Copy $ssh_privkey content to fifo pipe .ssh/rakey (for no save it permanently)
 	local sshkey_file="/tmp/labadmin/${USER}/ssh-key"
 	[ ! -r  "$sshkey_file" ] &&	mkfifo -m=600 "$sshkey_file"
 	# Load ssh-agent
@@ -48,8 +48,8 @@ function auth_ssh-init() {
 		source "${sshagent_path}" &>/dev/null
 	fi
 	# Check if current pubkey is on ssh-agent
-	if ! ssh-add -L | grep "$sshpubkey" &> /dev/null; then
-		(unset DISPLAY; echo "$sshprivatekey" > "$sshkey_file" | ssh-add "$sshkey_file")
+	if ! ssh-add -L | grep "$ssh_pubkey" &> /dev/null; then
+		(unset DISPLAY; echo "$ssh_privkey" > "$sshkey_file" | ssh-add "$sshkey_file")
 		[ $? -ne 0 ] && labadmin_error "ERROR: error adding labadmin private key to ssh agent" 1
 	fi
 	# Reset .ssh/knownhosts if is 24h or older (in dhcp avoids ip server has changed warning)
@@ -60,22 +60,4 @@ function auth_ssh-init() {
 }
 
 
-#=== FUNCTION ==================================================================
-#        NAME: auth_winrm-init
-# DESCRIPTION: Initialize winrm clint config: read and decrypt winrmpass
-#
-# GLOBAL VARIABLES READED
-#   $winrmpass
-#
-# GLOBAL VARIABLES WRITEN
-#   $winrmpass
-#===============================================================================
-function auth_winrm-init() {
-	local pd
-	[ ! "$winrmpass" ] && labadmin_error "ERROR: can't load WinRM authentication data on labadmin config file ${config_path//\/\//\/}" 1
-	while true; do
-		pd=$(echo -n "$winrmpass" | base64 -d | openssl enc -aes-256-cbc -a -d -salt -pbkdf2 2>/dev/null)
-		[ $? -eq 0 ] && { winrmpass="$pd"; break; }
-		labadmin_error "ERROR: incorrect decryption pass for WinRM password"
-	done
-}
+

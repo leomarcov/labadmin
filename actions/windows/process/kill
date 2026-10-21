@@ -9,7 +9,7 @@ script_id="$(echo ${BASH_SOURCE[0]} | sed 's\^'"$scripts_path"'/*\\g')"		# Scrip
 #=== LOAD INFO =====================================================================
 if [ "$1" = "--load-scriptinfo" ]; then
 	script_desc="Kill process"
-	script_type="winrm-ps"
+	script_type="ssh"
 	script_bg="sub"
 	script_admindeps=""
 	script_hostdeps=""
@@ -25,5 +25,9 @@ fi
 
 
 #=== EXEC SCRIPT ===================================================================
-filter="$1"
-echo 'Stop-Process -Name *'"$filter"'*'
+
+cat <<- 'POWERSHELL'
+$filter = $p1
+Get-Process -Name "*${filter}*"
+Get-Process -Name "*${filter}*" | Stop-Process -Force
+POWERSHELL

@@ -45,7 +45,7 @@ labadmin_load-config-file
 
 # LABADMIN TMP DIR INIT
 labadmin_tmp-init
-labadmin_tmp-vars-load ipadmin iface lab_file Lparam Wparam Fparam srvmode tmuxmode ips
+labadmin_tmp-vars-load admin_ip ssh_port iface lab_file Lparam Wparam Fparam agent_os tmuxmode ips
 labadmin_tmp-vars-load-1file execbg-win
 
 # DRAW BOX
@@ -55,7 +55,7 @@ labadmin_draw-box 1 3 "SCRIPT: ${S_B}$script_id${S_R}"
 tmux_init-panel
 
 # LOAD SCRIPTS
-scripts_path="${scripts_path}/${srvmode}/"
+scripts_path="${scripts_path}/${agent_os}/"
 load_scripts "$script_file"							# Load only script file to exec
 
 # INIT REMOTE AUTENTICACION

@@ -38,8 +38,8 @@ iptables -I INPUT -i lo -j ACCEPT
 iptables -I OUTPUT -o lo -j ACCEPT
 
 # ACCEPT all connections for LABADMIN port
-iptables -I INPUT -p tcp  --dport "${labadmin_sshport}" -j ACCEPT
-iptables -I OUTPUT -p tcp  --sport "${labadmin_sshport}" -j ACCEPT
+iptables -I INPUT -p tcp  --dport "${labadmin_ssh_port}" -j ACCEPT
+iptables -I OUTPUT -p tcp  --sport "${labadmin_ssh_port}" -j ACCEPT
 
 # ACCEPT DNS connections
 iptables -I INPUT -p udp --sport 53 -m state --state ESTABLISHED -j ACCEPT

@@ -14,9 +14,7 @@
 # ips[]
 # macs[]
 # iface
-# srvmode
-# sshport
-# winrmport
+# ssh_port
 
 #### GLOBAL VARIABLES
 unset ips				                      			# Array with all IPs found indexed by nhost
@@ -41,12 +39,11 @@ unset map_updates										# Last map updates list to show at right of the map
 #	hosts_status[]		Status of each host: listen, inactive, off
 #===============================================================================
 function search_ips() {
-	local port="$(eval echo "\${${srvmode}port}")"		# ssh/winrm port
 	unset map_updates
 
 	# UPDATE ARP INFO
 	[ "$tmuxmode" ] && print_startscan_notification				# Show start scanning notification
-	local arp_out="$(arp-scan -x -l -I $iface -q -r 1 -N -t ${scan_timeout} 2>/dev/null)" 
+	local arp_out="$(arp-scan -x -l -I $iface -q -r 1 -N -t ${arpscan_timeout} 2>/dev/null)" 
 	if [ $? -ne 0 ]; then
 		if [ "$tmuxmode" ]; then
 			print_map_notification "${S_B}${C_R}! Failed to scan network hosts${S_R}"
@@ -56,7 +53,7 @@ function search_ips() {
 		fi
 		return 1
 	fi
-	arp_out="${ipadmin}"$'\t'"${macadmin}"$'\n'"${arp_out}"		# Add admin ip mac (allow select admin if is present in lab config file)
+	arp_out="${admin_ip}"$'\t'"${admin_mac}"$'\n'"${arp_out}"		# Add admin ip mac (allow select admin if is present in lab config file)
 
 
 	# UPDATE IPs STATUS:
@@ -71,7 +68,7 @@ function search_ips() {
 
 		if [ "$ip" ]; then
 			ips[$n]="$ip"
-			if nc -z -w 1 "$ip" "$port" &> /dev/null; then
+			if nc -z -w 1 "$ip" "$ssh_port" &> /dev/null; then
 				[ "$tmuxmode" ] && [[ "${hosts_status[$n]}" = @(off|inactive) ]] && register_map-update "$n" "up"
 				hosts_status[$n]="listen"
 			else
