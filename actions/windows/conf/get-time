@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #===================================================================================
-#     FILE: software/list
+#     FILE: time
 #   AUTHOR: Leonardo Marco (labadmin@leonardomarco.com)
 #  LICENSE: GNU General Public License v3.0
 #===================================================================================
@@ -8,8 +8,8 @@ script_id="$(echo ${BASH_SOURCE[0]} | sed 's\^'"$scripts_path"'/*\\g')"		# Scrip
 
 #=== LOAD INFO =====================================================================
 if [ "$1" = "--load-scriptinfo" ]; then
-	script_desc="List all installed software and show specific programs info"
-	script_type="winrm-ps"
+	script_desc="Set system date/hour and show current time"
+	script_type="ssh"
 	script_bg="sub"
 	script_admindeps=""
 	script_hostdeps=""
@@ -18,14 +18,31 @@ if [ "$1" = "--load-scriptinfo" ]; then
 
 #=== READ PARAMS ===================================================================
 elif [ "$1" = "--readparams" ]; then
-	# PARAM1: username
-    read_param "$script_id" 1 "Filter specific program (empty only list all)" "" ""
+	# PARAM1: action
+    read_param "$script_id" 1 "SHOW Show system time
+set Set system timedate" "show" "^(show|set)$"
+	# PARAM2: date
+    [ "${p1,,}" = "set" ] && read_param "$script_id" 2 "Date (format YYYY-MM-DD, default local)" "$(date +%Y-%m-%d)" "^[0-9][0-9][0-9][0-9]-[0-1][0-9]-[0-3][0-9]$"
+    # PARAM3: time
+    [ "${p1,,}" = "set" ] && read_param "$script_id" 3 "Hour (format HH:MM:SS, default local)" "$(date +%H:%M:%S)"  "^[0-2][0-9]:[0-5][0-9]:[0-5][0-9]$"
 	return
 fi
 
 
 #=== EXEC SCRIPT ===================================================================
-filter="$1"
-echo 'Get-ItemProperty HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\* | Select-Object DisplayName, InstallDate | Format-Table -AutoSize'
+cat <<- 'POWERSHELL'
 
-[ "$filter" ] && echo 'Get-ItemProperty HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\* | where {$_.DisplayName -match "'"$filter"'"} | select-object -Property "*" -ExcludeProperty "M*"'
+POWERSHELL
+
+o="$1"
+d="$2"
+h="$3"
+
+case "${o,,}" in
+set) # SET DATE
+	echo 'Set-Date -date "'"${d} ${h}"'"'
+;;
+*)
+	echo '(Get-Date).ToString("yyyy-MM-dd HH:mm:ss")'
+;;
+esac

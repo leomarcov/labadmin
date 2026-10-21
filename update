@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+#===================================================================================
+# LABADMIN GIT UPDATE
+#         FILE: labadmin-update
+#  DESCRIPTION: labadmin update from git repository
+#
+#       AUTHOR: Leonardo Marco (labadmin@leonardomarco.com)
+#	   LICENSE: GNU General Public License v3.0
+#      VERSION: 2026.10.15
+#      CREATED: 2026.10.18
+#===================================================================================
+
+labadmin_info "Updating files from Labadmin GitHub repository"
+labadmin_dir=$(readlink -f "$0")
+
+echo AAA$labdmin_dir
+exit
+git fetch || exit 1
+git reset --hard HEAD || exit 1
+git merge '@{u}' || exit 1

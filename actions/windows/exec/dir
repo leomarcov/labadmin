@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #===================================================================================
-#     FILE: dfc/dir
+#     FILE: exec/dir
 #   AUTHOR: Leonardo Marco (labadmin@leonardomarco.com)
 #  LICENSE: GNU General Public License v3.0
 #===================================================================================
@@ -8,7 +8,7 @@ script_id="$(dirname $(echo ${BASH_SOURCE[0]} | sed 's\^'"$scripts_path"'/*\\g')
 
 #=== LOAD INFO =====================================================================
 if [ "$1" = "--load-scriptinfo" ]; then
-	script_desc="Deep Freeze command line control"
+	script_desc="Exec commands and scripts"
 	script_type="menu"
 	load_scriptinfo "$script_id" "$script_desc" "$script_type"
 	return

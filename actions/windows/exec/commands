@@ -1,7 +1,6 @@
- 
 #!/usr/bin/env bash
 #===================================================================================
-#     FILE: software/msi
+#     FILE: exec/commands
 #   AUTHOR: Leonardo Marco (labadmin@leonardomarco.com)
 #  LICENSE: GNU General Public License v3.0
 #===================================================================================
@@ -9,8 +8,8 @@ script_id="$(echo ${BASH_SOURCE[0]} | sed 's\^'"$scripts_path"'/*\\g')"		# Scrip
 
 #=== LOAD INFO =====================================================================
 if [ "$1" = "--load-scriptinfo" ]; then
-	script_desc="Install msi package silently"
-	script_type="winrm-ps"
+	script_desc="Exec commands in Windows PowerShell host"
+	script_type="ssh"
 	script_bg="sub"
 	script_admindeps=""
 	script_hostdeps=""
@@ -19,12 +18,14 @@ if [ "$1" = "--load-scriptinfo" ]; then
 
 #=== READ PARAMS ===================================================================
 elif [ "$1" = "--readparams" ]; then
-    # PARAM1: pass
-    read_param "$script_id" 1 "MSI path" "" "."
+    # PARAM1: commands
+	read_param "$script_id" 1 "Commands (separated by ;)" "" "." ""
 	return
 fi
 
 
 #=== EXEC SCRIPT ===================================================================
-file="$1"
-echo 'Start-Process msiexec.exe -Wait -ArgumentList '\''/I '"$file"' /QN'\'''
+
+cat <<- 'POWERSHELL'
+& ([scriptblock]::Create($p1))
+POWERSHELL
