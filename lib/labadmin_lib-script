@@ -101,7 +101,7 @@ ${S_D}Internal commands${S_R}
    select-host ${S_B}11-20 /even${S_R}      Select 12 14 16 18 20"
 
    		help_actions["refresh-map"]="Refresh map accroding current hosts IPs state
-${S_B}Autorefresh${S_R} is performed every ${C_N}\$autosca_delay${S_R} seconds value configured in ${C_N}labadmin.conf${S_R}
+${S_B}Autorefresh${S_R} is performed every ${C_N}\$autoscan_delay${S_R} seconds value configured in ${C_N}labadmin.conf${S_R}
  - Current ${C_N}\$autosca_delay${S_R}: ${C_LY}${autoscan_delay:-none}${S_R}"
 
  		help_actions["&"]="Exec action in ${S_B}background${S_R} on single tab:
