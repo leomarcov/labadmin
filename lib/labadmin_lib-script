@@ -78,7 +78,7 @@ ${S_D}Internal commands${S_R}
  ${C_N}${S_U}m${S_R}ode lin|win             Set agents OS: linux or windows
  ${C_N}${S_U}e${S_R}xit                     Exit labadmin session
 
- Exec ${S_B}help${S_R} <${C_LY}action${S_R}>${S_R} for details of specific actions
+ Use ${S_B}help${S_R} <${C_LY}action${S_R}>${S_R} for details of specific actions
  "
 	else 
 		#ACTION HELP
