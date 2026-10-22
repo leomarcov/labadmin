@@ -344,7 +344,7 @@ function install_admin() {
 	labadmin_info "Lab files: ${S_R}${dir_install}conf/*${S_R}"
 	if [ ! "$installed_labs" ]; then
 		echo -e "  ${C_BR}No lab files found!${S_R}"
-		echo -e "  Creating sample lab to ${S_B}${dir_install}labs/lab.test${S_R}"
+		echo -e "  Creating sample lab: ${S_B}${dir_install}labs/lab.test${S_R}"
 		cp "${dir_install}templates/lab.test" "${dir_install}/labs"
 		chown root:labadmin ${dir_install}labs/*
 		chmod 640 ${dir_install}labs/*
