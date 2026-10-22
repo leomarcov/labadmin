@@ -372,11 +372,12 @@ function install_admin() {
 	final_msg="${final_msg}\n  - Labs directory: ${S_B}${labs_path}*${S_R}"
 	if [ "$installed_labs" ]; then
 		final_msg="${final_msg}\n  - Installed labs ($(echo "${installed_labs}" | wc -l)): ${S_B}${installed_labs}${S_R}"
-		final_msg="${final_msg}\n  - To add labs copy template file: ${C_N}cp ${dir_install}templates/action ${labs_path}${S_R}"
+		final_msg="${final_msg}\n  - To add labs copy template file: ${C_N}cp ${dir_install}templates/action ${labs_path}${S_R} and set permissions"
 	else
 		final_msg="${final_msg}\n  - ${C_BR}No labs files found! ${S_R}Sample ${C_BY}lab.test${S_R} file created"
 		final_msg="${final_msg}\n  - Edit lab file ${S_B}${dir_install}labs/lab.test${S_R} and set config variables: ${S_B}lab_name${S_R}, ${S_B}agent_os${S_R}, ${S_B}map${S_R} and ${S_B}macs[]${S_R}"
 		final_msg="${final_msg}\n  - Rename file ${S_B}lab.test${S_R}: ${C_N}mv /opt/labadmin/labs/lab.test /opt/labadmin/labs/<YOUR-LABNAME>${S_R}"
+		final_msg="${final_msg}\n  - To add labs copy template file: ${C_N}cp ${dir_install}templates/action ${labs_path}${S_R} and set permissions"
 	fi
 	final_msg="${final_msg}${S_B}\n\n${S_B}USER PERMISSIONS${S_R}"
 	final_msg="${final_msg}\n  - Add users to ${S_B}${labadmin_group}${S_R} group for allow users execute labadmin: ${C_N}adduser <YOUR-USER> labadmin${S_R}"
