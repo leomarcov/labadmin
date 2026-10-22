@@ -329,7 +329,8 @@ function install_admin() {
 			sed -i ':a;N;$!ba; s/ssh_privkey='\''[^'\'']*'\''//g' "$labadmin_config_path"		# Delete ssh_privkey (variable with multiple lines)
 			echo "ssh_privkey='${k_priv}'" >> "$labadmin_config_path"							# Append ssh_privkey (variable with multiple lines)
 
-			echo -e "  ${S_B}Public and private keys${S_R} generated has been stored in ${S_B}${labadmin_config_path}${S_R}"
+			echo -e "  Creating default config: ${S_B}${labadmin_config_path}${S_R}"
+			echo -e "  Public and private keys generated has been stored in: ${S_B}${labadmin_config_path}${S_R}"
 		fi
 	else
 		echo -e "  Config file exists. Using this config file"
