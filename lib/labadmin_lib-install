@@ -349,7 +349,7 @@ function install_admin() {
 		chown root:labadmin ${dir_install}labs/*
 		chmod 640 ${dir_install}labs/*
 	else 
-		echo -e " Installed labs ($(echo "${installed_labs}" | wc -l)): ${S_B}${installed_labs}${S_R}"
+		echo -e "  Installed labs ($(echo "${installed_labs}" | wc -l)): ${S_B}${installed_labs}${S_R}"
 	fi
 
 
