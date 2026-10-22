@@ -307,7 +307,7 @@ function install_admin() {
 	echo
 	labadmin_info "Labadmin config file: ${S_R}${S_B}${labadmin_config_path}${S_R}"
 	if [ ! -f "$labadmin_config_path" ]; then
-		echo -e "  ${C_LR}Labadmin config file not found!${S_R}"
+		echo -e "  ${C_BR}Labadmin config file not found!${S_R}"
 		while true; do
 			read -p "  Create labadmin.conf and generate new SSH public/private keys? (Y/n) " q
 			[ ! "$q" ] && q="y"
@@ -343,8 +343,8 @@ function install_admin() {
 	installed_labs=$(ls "${labs_path}" 2>/dev/null| tr "\n" " ")
 	labadmin_info "Lab files: ${S_R}${dir_install}conf/*${S_R}"
 	if [ ! "$installed_labs" ]; then
-		echo -e " No lab files found"
-		echo -e " Copying sample lab ${S_B}lab.test${S_R} to ${dir_install}/labs"
+		echo -e "  ${C_BR}No lab files found!${S_R}"
+		echo -e "  Copying sample lab to to ${S_B}${dir_install}labs/lab.test${S_R}"
 		cp "${dir_install}templates/lab.test" "${dir_install}/labs"
 		chown root:labadmin ${dir_install}labs/*
 		chmod 640 ${dir_install}labs/*
@@ -353,7 +353,7 @@ function install_admin() {
 	fi
 
 
-	echo
+	echo -e "\n"
 	labadmin_info "LABADMIN INSTALLED!"
 	
 	if [ ! -f "$labadmin_config_path" ]; then
