@@ -265,7 +265,7 @@ function install_admin() {
 	labadmin_info "Creating $labadmin_group group"
 	cat /etc/group | grep -q "^labadmin:" || groupadd "$labadmin_group"
 
-	labadmin_info "Copying directory: ${S_R}${S_B}${dir_install}${S_R}"
+	labadmin_info "Creating directory: ${S_R}${S_B}${dir_install}${S_R}"
 	if [ $(readlink -f "$labadmin_path") != $(readlink -f "$dir_install") ]; then
 		rm -rf "$dir_install"
 		cp -r "$labadmin_path" "$dir_install"
@@ -296,7 +296,7 @@ function install_admin() {
 	chmod 660 "$log_path"
 	chown root:"$labadmin_group" "$log_path"
 
-	labadmin_info "Copying desktop files"
+	labadmin_info "Creating desktop files"
 	cp "$labadmin_path/desktop/labadmin.desktop" /usr/share/applications/
 	chmod a+r /usr/share/applications/labadmin.desktop
 	cp "$labadmin_path/desktop/labadmin.png" /usr/share/pixmaps/
@@ -344,7 +344,7 @@ function install_admin() {
 	labadmin_info "Lab files: ${S_R}${dir_install}conf/*${S_R}"
 	if [ ! "$installed_labs" ]; then
 		echo -e "  ${C_BR}No lab files found!${S_R}"
-		echo -e "  Copying sample lab to to ${S_B}${dir_install}labs/lab.test${S_R}"
+		echo -e "  Creating sample lab to ${S_B}${dir_install}labs/lab.test${S_R}"
 		cp "${dir_install}templates/lab.test" "${dir_install}/labs"
 		chown root:labadmin ${dir_install}labs/*
 		chmod 640 ${dir_install}labs/*
