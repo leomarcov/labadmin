@@ -117,7 +117,7 @@ bash install-linux-host -k <your_public_key>
 ## Host install on Windows
   * Host installer install all needed dependences and configure the remote SSH access method.
  ```powershell
-install-windows-agent.ps1 -pubkey <your_public_key>
+install-windows-agent.ps1 -sshPubKey <your_public_key>
 ```
 
 &nbsp;  
