@@ -76,7 +76,7 @@ do
             ;;
     esac
 done
-exit
+
 
 #### INSTALL 
 if [ ! "$dparam" ]; then
