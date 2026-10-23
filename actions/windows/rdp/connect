@@ -23,4 +23,4 @@ fi
 
 
 #=== EXEC SCRIPT ===================================================================
-remmina --new --server="${labadmin_iphost}" --protocol="RDP"
+remmina --new --server="${labadmin_host_ip}" --protocol="RDP"
