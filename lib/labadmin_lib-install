@@ -319,6 +319,7 @@ function install_admin() {
 
 			# Generate SSH keys
 			local k_dir=$(mktemp -d)
+			echo -e "  ${S_B}Insert password to protect private key (${C_BR}this password will be needed each time labadmin starts!${S_R}):${S_R}"
 			ssh-keygen -t ed25519 -C 'labadmin' -f "$k_dir/key" 
 			local k_priv=$(<"$k_dir/key")
 			local k_pub=$(<"$k_dir/key.pub")
