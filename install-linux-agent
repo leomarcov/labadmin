@@ -43,13 +43,22 @@ function help() {
 
 
 #### CHECK PARAMETERS
-while getopts ":d:h" o
+while getopts ":d:hk:p:" o
 do
     case $o in
         d) # -d:dependencies
             dparam=1
             daction="$OPTARG"
             [[ "$daction" != @(ask|autoinstall|noinstall) ]] && labadmin_error "Incorrect check dependence action ${daction}\nSupported actions: ask, autoinstall and noinstall" 1            
+            ;;
+        p) # -p:port
+            pparam=1
+            psshport="$OPTARG"
+            if ! [ "$psshport" -le 65535 ] &>/dev/null || ! [ "$psshport" -gt 0 ]; then labadmin_error "Incorrect port: $psshport"; fi
+            ;;
+        k) # -k:publickey
+            kparam=1
+            ppubkey="$OPTARG"
             ;;
         h)
             help
@@ -59,12 +68,12 @@ do
             ;;
     esac
 done
-
+exit
 
 #### INSTALL 
 if [ ! "$dparam" ]; then
     load_scripts "$scripts_path"
-    install_host "$nhost" "$lab_id" 
+    install_host "$psshport" "$ppubkey"
 
 #### CHECK DEPENDENCIES
 else
