@@ -58,11 +58,11 @@ fi
 #   labadmin_lab_name
 #	labadmin_ssh_port
 #	labadmin_admin_ip
-#	labadmin_ip_host
+#	labadmin_host_ip
 #	labadmin_nhost
 #	labadmin_script_type
 #	labadmin_shosts_listen
-#	labadmin_mac_host
+#	labadmin_host_mac
 #	labadmin_script_type_state
 
 
