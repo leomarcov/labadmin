@@ -119,7 +119,7 @@ elif [ "${labadmin_script_type}" = "local" ]; then
 	while true; do
 		sleep 1
 		t=$(date +%s)
-		nc "${labadmin_iphost}" "$port" && break
+		nc "${labadmin_host_ip}" "$port" && break
 		[ $(($(date +%s)-$t)) -gt 2 ] && break
 		t=$(date +%s)
 	done
