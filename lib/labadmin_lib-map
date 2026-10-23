@@ -31,7 +31,7 @@ unset shosts_inactive		# List (space separated) with all selected host numbers s
 # DESCRIPTION: draw LABADMIN banner
 #===============================================================================
 function draw_banner() {
-	local banner="    ${S_R}${S_B}${labname}${S_R}"
+	local banner="    ${S_R}${S_B}${lab_name}${S_R}"
 	clear
 	echo -e	"\n${banner}"
 }
@@ -46,7 +46,7 @@ function print_startscan_notification() {
 	local msg="$1"
 	cursor_move-pos 2 0
 	clear_line
-	echo -en "    ${S_R}${S_B}${C_N}${labname}${S_R}"
+	echo -en "    ${S_R}${S_B}${C_N}${lab_name}${S_R}"
 	tmux_dim-map-panel
 }
 
@@ -61,7 +61,7 @@ function print_endscan_notification() {
 	local msg="$1"
 	cursor_move-pos 2 0
 	clear_line
-	echo -en "    ${S_R}${S_B}${labname}${S_R}"
+	echo -en "    ${S_R}${S_B}${lab_name}${S_R}"
 	tmux_undim-map-panel
 }
 
