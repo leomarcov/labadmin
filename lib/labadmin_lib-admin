@@ -99,7 +99,7 @@ function labadmin_load-lab() {
     source "$lab_file" || labadmin_error "ERROR: error loading lab file: $lab_file" 1
 
     # Set deault values
-    [ ! "$labname" ] && labname=$(basename "$lab_file")
+    [ ! "$lab_name" ] && lab_name=$(basename "$lab_file")
     [ "$ao" ] && agent_os="$ao"
     [ ! "$agent_os" ] && agent_os="linux"
 
