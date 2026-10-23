@@ -471,7 +471,7 @@ For add a new action to labadmin only need:
 For more info refer to:
   * Action template: [templates/action.template](templates/action.template)
   * SSH sample: [actions/linux/user/add](actions/linux/user/add)
-  * SSH admin+local+admin sample: [actions/linux/file/torrent-local](actions/linux/file/torrent-local)
+  * SSH admin+local+admin sample: [actions/linux/file/torrent-local](actions/linux/file/torrent)
 
 &nbsp;  
 # Lincense
