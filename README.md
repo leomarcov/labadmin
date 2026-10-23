@@ -43,17 +43,7 @@ Labadmin aims to be a tool useful for IT teachers and computer lab sysadmins.
 
 ## Demos
 You can see labadmin in action in short animations:
-  * [Poweron computers](https://user-images.githubusercontent.com/32820131/66718825-a5b7ea00-ede8-11e9-9047-5afdac835816.gif)
-  * [Check network speed](https://user-images.githubusercontent.com/32820131/66718827-a94b7100-ede8-11e9-9eed-0f13c8b56ce3.gif)
-  * [Add user](https://user-images.githubusercontent.com/32820131/66718830-a94b7100-ede8-11e9-8fbd-a738410d0ebb.gif)
-  * [Exec command](https://user-images.githubusercontent.com/32820131/66718829-a94b7100-ede8-11e9-900d-9ae35d8c66b2.gif)
-  * [Copy 2 GB file using unicast](https://user-images.githubusercontent.com/32820131/66718833-a9e40780-ede8-11e9-94a8-5667ed24a866.gif)
-  * [Copy 2 GB file using multicast](https://user-images.githubusercontent.com/32820131/66718831-a94b7100-ede8-11e9-81d7-c3d8d6515ed5.gif)
-  * [Copy 2 GB file using torrent](https://user-images.githubusercontent.com/32820131/66719197-fb8e9100-edec-11e9-8c98-4f143dbbce18.gif)
-  * [Import Virtualbox ova](https://user-images.githubusercontent.com/32820131/66718837-aa7c9e00-ede8-11e9-9745-73aa8ce52a0e.gif)
-  * [Start exam mode](https://user-images.githubusercontent.com/32820131/66718835-a9e40780-ede8-11e9-97e9-4fcd3c0f2f3c.gif)
-  * [Check exam mode](https://user-images.githubusercontent.com/32820131/66718836-aa7c9e00-ede8-11e9-83dc-44fd4427b2e2.gif)
-  * [End exam mode](https://user-images.githubusercontent.com/32820131/66718834-a9e40780-ede8-11e9-84af-24bfeff20a76.gif)
+
 
 
 &nbsp;  
@@ -62,10 +52,8 @@ You can see labadmin in action in short animations:
   * Admin must be installed in a Linux OS (Debian, Fedora and Ubuntu has been tested).
 ```bash
 #### CLONE REPOSITORY AND COPY CONFIG TEMPLATE
-cd /opt
-git clone https://github.com/leomarcov/labadmin
-cd labadmin
-bash install-linux-admin
+git clone https://github.com/leomarcov/labadmin /opt/labadmin
+bash /opt/labadmin/install-linux-admin
 
 #### EDIT LABADMIN CONFIG
 vi conf/labadmin.conf
