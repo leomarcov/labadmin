@@ -31,6 +31,7 @@ source "${lib_path}/labadmin_lib-install"										# LABADMIN INSTALL MODULE
 #===============================================================================
 function help() {
     echo -e "Install and check labadmin dependencies for linux admin
+    
   INSTALL 
    ${S_B}$(basename $0)${S_R}
 
