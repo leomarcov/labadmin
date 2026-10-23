@@ -40,9 +40,8 @@ function help() {
 
   OPTIONS
    ${S_B}-l ${S_U}lab_config${S_R}
-\tLab config filename to use
+\tLab config filename to use. Overrides ${S_B}default_lab${S_R} variable in labadmin config file.
 \tLab config files must be placed in ${S_B}labs/${S_R} directory
-\tWhen not specified ${S_B}default${S_R} file is used.
 
    ${S_B}-i ${S_U}iface${S_R}
 \tNetwork interface to use. Overrides iface variable in labadmin config file.
