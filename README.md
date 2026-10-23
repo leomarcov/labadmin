@@ -80,7 +80,7 @@ vi /opt/labadmin/conf/labadmin.conf
   * Each laboratory is configured in a individual file in `labs` directory, filename must be the lab name.
   * When install admin default `lab.test` lab is created (if no labs files exists).
   * If you need create a new lab file copy template with sample lab config [templates/lab.test](templates/lab.test) to `/opt/labadmin/labs/` and set permissions (`640` and `root:labadmin`).
-
+  * **IMPORTANT**: Ensure variables `map` and `macs[]` are configured with your host map distribution in the lab and with macs for each host
 ```bash
 cp /opt/labadmin/template/lab.test /opt/labadmin/labs/A15    # Set lab config filename to your lab ID name
 chmod 640 /opt/labadmin/labs/A15                             # Set file permissions
