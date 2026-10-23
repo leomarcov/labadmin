@@ -66,7 +66,7 @@ bash /opt/labadmin/install-linux-admin
   * **IMPORTANT**: Ensure variables `ssh_pubkey` and `ssh_privkey` stores public and private keys for SSH autentication and same `ssh_pubkey` is used to config each host.
 ```bash
 vi /opt/labadmin/conf/labadmin.conf
-  default_lab="<YOUR_LAB>"                    # Default lab file to use if not lab specified with -l param
+  default_lab="<YOUR_LAB>"             # Default lab file to use if not lab specified with -l param
   arpscan_timeout=500                  # Arp-scan timeout in miliseconds for get host status in map
   ssh_timeout=5                        # SSH host connection timeout in seconds
   autoscan_delay=60                    # Auto scan map delay in seconds
