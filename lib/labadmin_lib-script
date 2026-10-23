@@ -766,7 +766,7 @@ function exec_script_ssh-windows() {
 
     	# Script content
     	bash "$script_file"
-	) | ssh -T "labadmin@$iphost" -p "$ssh_port" -o StrictHostKeyChecking=no -o ConnectTimeout="${ssh_timeout:-5}" "powershell.exe -NoProfile -NonInteractive -Command '\""'$code = [Console]::In.ReadToEnd(); & ([scriptblock]::Create($code))'\""'"
+	) | ssh -T "labadmin@$iphost" -p "$ssh_port" -o StrictHostKeyChecking=no -o ConnectTimeout="${ssh_timeout:-5}" 'powershell.exe -NoProfile -NonInteractive -Command $code=[Console]::In.ReadToEnd();^&([scriptblock]::Create($code))'
 	return $?
 }
 
