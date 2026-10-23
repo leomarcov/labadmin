@@ -51,8 +51,11 @@ You can see labadmin in action in short animations:
 ## Install admin (controller)
   * Admin must be installed in a Linux OS (Debian, Fedora and Ubuntu has been tested).
 ```bash
-git clone https://github.com/leomarcov/labadmin /opt/labadmin   # Clonre repository
-bash /opt/labadmin/install-linux-admin                          # Install script
+# Clone repository to /opt
+git clone https://github.com/leomarcov/labadmin /opt/labadmin
+
+# Install labadmin admin
+bash /opt/labadmin/install-linux-admin
 ```  
 
 #### Config admin
@@ -116,7 +119,7 @@ vi /opt/labadmin/labs/A11
 ## Hosts install on Linux
   * Not agent labadmin software is installed, installer only need to install all needed dependences and configure the remote SSH access method.
 ```bash
-git clone https://github.com/leomarcov/labadmin        # Clone repository
+git clone https://github.com/leomarcov/labadmin        
 cd labadmin                                            # Access dir
 cp xxxxx/labadmin.conf conf/                           # Copy your previus labadmin.conf with authentication data used for admin installation to conf/
 bash install host                                      # Install and config labadmin in host machine
