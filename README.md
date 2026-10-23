@@ -1,4 +1,4 @@
-# labadmin
+f# labadmin
 <img align="left" src="https://cdn4.iconfinder.com/data/icons/online-marketing-hand-drawn-vol-3/52/monitor__television__computer__desktop__seo__service__marketing-128.png" width="80" >
 
 Labadmin is a Linux tool, writed on Bash shellscript, capable to **remotely admin** a set of hosts running Linux or Windows. Is focused to work in educational environment controlling hosts in a computer laboratory. 
@@ -61,7 +61,7 @@ bash /opt/labadmin/install-linux-admin
 #### Config admin
   * Global config settings are stored in file: `/opt/labadmin/conf/labadmin.conf`
     * When install admin default `labadmin.conf` is created (if file doesn't exist) and new **public/private SSH keys** are generated.
-    * If do you need create a new `labadmin.conf` copy template with default config [templates/labadmin.conf](templates/ladadmin.conf) and set permissions.
+    * If do you need create a new `labadmin.conf` copy template with default config [templates/labadmin.conf](templates/labadmin.conf) and set permissions.
     * **IMPORTANT**: Ensure variables `ssh_pubkey` and `ssh_privkey` stores public and private keys for SSH autentication and same `ssh_pubkey` is used to config each host.
 ```bash
 default_lab              # Default lab file to use if not lab specified with -l param
