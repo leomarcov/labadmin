@@ -85,7 +85,6 @@ vi /opt/labadmin/labs/A15
  labadmin="AULA 11"                         # Lab name
  agent_os="linux"                           # Default agent operating system
 
-
  # Map distritution for each host in lab
  # Break line is used for row separator
  # Space is used for column separator
