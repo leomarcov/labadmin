@@ -66,7 +66,6 @@ bash /opt/labadmin/install-linux-admin
 ```bash
 vi /opt/labadmin/conf/labadmin.conf
   default_lab="A15"                    # Default lab file to use if not lab specified with -l param
-  iface                                # Admin network interface name (by default Internet iface is used)
   arpscan_timeout=500                  # Arp-scan timeout in miliseconds for get host status in map
   ssh_timeout=5                        # SSH host connection timeout in seconds
   autoscan_delay=60                    # Auto scan map delay in seconds
