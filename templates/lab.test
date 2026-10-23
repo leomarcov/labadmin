@@ -11,7 +11,7 @@
 # GLOBAL CONFIG
 #===============================================================================
 # Lab name to show in interface
-labname="TEST LAB"
+lab_name="TEST LAB"
 
 # Default agents operating system
 # Possible values: linux|windows
