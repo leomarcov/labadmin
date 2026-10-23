@@ -61,14 +61,14 @@ You can see labadmin in action in short animations:
 #### CLONE REPOSITORY
 git clone https://github.com/leomarcov/labadmin /opt/labadmin
 bash /opt/labadmin/install-linux-admin
-  # File /opt/labadmin/conf/labadmin.conf does not exist -> new default config file will be created and private/public key generated.
-  # Files /opt/labadmin/labs/* does not exists -> new default config file lab.test will be created.
+  # If file /opt/labadmin/conf/labadmin.conf does not exist new default config file will be created.
+  # If no files /opt/labadmin/labs/* exists -> new default config file lab.test will be created.
 ```  
 
 #### Config labadmin
   * File `/opt/labadmin/conf/labadmin.conf` is used to define labadmin global config.
   * Edit this file to customize your labadmin sets.
-  * Variables `ssh_pubkey` and `ssh_privkey` 
+  * **IMPORTANT**: Ensure variables `ssh_pubkey` and `ssh_privkey` stores publica and private keys for autentication and same `ssh_pubkey` is used to config each host.
 ```bash
 # Default lab file to use if not lab specified with -l param
 #  Optional
