@@ -85,7 +85,7 @@ chmod 640 /opt/labadmin/labs/A15                             # Set file permissi
 chown root:labadmin /opt/labadmin/labs/A15                   # Set file owner and groups
 
 vi /opt/labadmin/labs/A15
- labadmin="AULA 11"                                          # Lab name
+ labadmin="AULA 15"                                          # Lab name
  agent_os="linux"                                            # Default agent operating system
 
  # Map distritution for each host in lab
