@@ -47,13 +47,29 @@ You can see labadmin in action in short animations:
 
 
 &nbsp;  
-# Install
+# Install and config
 ## Admin install
   * Admin must be installed in a Linux OS (Debian, Fedora and Ubuntu has been tested).
 ```bash
-#### CLONE REPOSITORY AND COPY CONFIG TEMPLATE
+
+#### CLONE REPOSITORY
 git clone https://github.com/leomarcov/labadmin /opt/labadmin
+
+### INSTALL LABADMIN
+# Before install:
+#  * You can copy your own labadmin config file to `/opt/labadmin/conf/labadmin.conf`.
+#      - If file doesn't exists default config will be created and private/public key generated.
+#      - Edit `labadmin.conf` to customice your labadmin after install.
+#  * You can copy your own lab config files to `/opt/labadmin/labs/`.
+#      - If no file is found default config lab  will be created in `/opt/labadmin/labs/lab.test`.
+#      - After install edit you lab file to customize according your lab hosts and distribution.
 bash /opt/labadmin/install-linux-admin
+   
+
+
+```  
+
+#### Config labadmin
 
 #### EDIT LABADMIN CONFIG
 vi conf/labadmin.conf
@@ -65,9 +81,7 @@ vi conf/labadmin.conf
                                         #  and delete id_rsa and id_rsa.pub files
 #### INSTALL ADMIN
 bash install admin
-```  
 
-#### Create config lab files
   * For each computer laboratory create a file in `/opt/labadmin/labs/` with config lab:
 
 ```bash
