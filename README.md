@@ -66,14 +66,14 @@ bash /opt/labadmin/install-linux-admin
   * **IMPORTANT**: Ensure variables `ssh_pubkey` and `ssh_privkey` stores public and private keys for SSH autentication and same `ssh_pubkey` is used to config each host.
 ```bash
 vi /opt/labadmin/conf/labadmin.conf
-  default_lab="A15"                    # Default lab file to use if not lab specified with -l param
+  default_lab="<YOUR_LAB>"                    # Default lab file to use if not lab specified with -l param
   arpscan_timeout=500                  # Arp-scan timeout in miliseconds for get host status in map
   ssh_timeout=5                        # SSH host connection timeout in seconds
   autoscan_delay=60                    # Auto scan map delay in seconds
 
   ssh_port='58888'                     # SSH port to connect with Linux agents (Windows agents use ssh_port+1)
-  ssh_pubkey='<your_public_key>'       # SSH public key for host authentication
-  ssh_privkey='<your_private_key>'     # SSH purivate key for host authentication
+  ssh_pubkey='<YOUR_PUBLIC_KEY>'       # SSH public key for host authentication
+  ssh_privkey='<YOUR_PRIVATE_KEY>'     # SSH purivate key for host authentication
 ```
 ### Labs config
   * **Labs config** settins are stored in directory: `/opt/labadmin/labs/`
@@ -82,14 +82,14 @@ vi /opt/labadmin/conf/labadmin.conf
   * If you need create a new lab file copy template with sample lab config [templates/lab.test](templates/lab.test) to `/opt/labadmin/labs/` and set permissions (`640` and `root:labadmin`).
   * **IMPORTANT**: Ensure variables `map` and `macs[]` are configured with your host map distribution in the lab and with macs for each host
 ```bash
-# Create new lab file A15:
-cp /opt/labadmin/template/lab.test /opt/labadmin/labs/A15    # Set lab config filename to your lab ID name
-chmod 640 /opt/labadmin/labs/A15                             # Set file permissions
-chown root:labadmin /opt/labadmin/labs/A15                   # Set file owner and groups
+# Create new lab file <YOUR_LAB>:
+cp /opt/labadmin/template/lab.test /opt/labadmin/labs/<YOUR_LAB>    # Set lab config filename to your lab ID name
+chmod 640 /opt/labadmin/labs/<YOUR_LAB>                             # Set file permissions
+chown root:labadmin /opt/labadmin/labs/<YOUR_LAB>                   # Set file owner and groups
 
-# Edit lab config A15:
-vi /opt/labadmin/labs/A15
- labadmin="AULA 15"                                          # Lab name showd show in interface
+# Edit lab config <YOUR_LAB>:
+vi /opt/labadmin/labs/<YOUR_LAB>
+ labadmin="<YOUR_LAB_NAME>"                                  # Lab name showd show in interface
  agent_os="linux"                                            # Default agent operating system
 
  # Map distritution for each host in lab
