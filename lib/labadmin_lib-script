@@ -654,7 +654,7 @@ function exec_script() {
 #              Variables exported are:
 #                labadmin_iface
 #				 labadmin_map
-#                labadmin_labname   
+#                labadmin_lab_name   
 #                labadmin_ssh_port
 #                labadmin_admin_ip
 #                labadmin_iphost
@@ -668,7 +668,7 @@ function exec_script() {
 function labadmin_export_vars_code() {
 	local st="$1"
 
-	vars_export="iface map labname ssh_port admin_ip iphost nhost script_type shosts_listen script_type_state"
+	vars_export="iface map lab_name ssh_port admin_ip iphost nhost script_type shosts_listen script_type_state"
 
 	local prefix_var="labadmin_"; [ "$st" = "powershell" ] && prefix_var="\$${prefix_var}"
     for vn in $vars_export; do
