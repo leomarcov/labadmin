@@ -111,13 +111,13 @@ vi /opt/labadmin/labs/A15
 ## Host install on Linux
   * Host installer install all needed dependences and configure the remote SSH access method.
 ```bash
-bash install-linux-host -k <your_public_key>
+bash install-linux-host -k '<your_public_key>'
 ```  
   
 ## Host install on Windows
   * Host installer install all needed dependences and configure the remote SSH access method.
  ```powershell
-install-windows-agent.ps1 -sshPubKey <your_public_key>
+install-windows-agent.ps1 -sshPubKey '<your_public_key>'
 ```
 
 &nbsp;  
