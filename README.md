@@ -64,10 +64,6 @@ bash /opt/labadmin/install-linux-admin
     * If do you need create a new `labadmin.conf` copy template with default config [templates/labadmin.conf](templates/labadmin.conf) to `/opt/labadmin/conf/` and set permissions (`640` and `root:labadmin`).
     * **IMPORTANT**: Ensure variables `ssh_pubkey` and `ssh_privkey` stores public and private keys for SSH autentication and same `ssh_pubkey` is used to config each host.
 ```bash
-cp /opt/labadmin/template/labadmin.conf /opt/labadmin/conf     # Set lab config filename to your lab ID name
-chmod 640 /opt/labadmin/conf/labadmin.conf                     # Set file permissions
-chown root:labadmin /opt/labadmin/conf/labadmin.conf           # Set file owner and groups
-
 vi /opt/labadmin/conf/labadmin.conf
   default_lab="A15"                    # Default lab file to use if not lab specified with -l param
   iface                                # Admin network interface name (by default Internet iface is used)
