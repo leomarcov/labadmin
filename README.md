@@ -236,176 +236,178 @@ Labadmin has a lot of actions ready to use! Actions are categorized for better o
 
 ## Linux actions
 ```
-[clone/]             Manage partition image backups
-  [mbr-table/]       Manage MBR partition table
-    [add-part]       Create new partition
-    [del-part]       Delete partition
-    [resize-part]    Resize partition to grow until end of disk or next partition
-    [restore-table]  Restore remote partition table
-    [save-table]     Backup remote partition table and bootloader (first MB) and save in local path
-    [show-table]     Show MBR partition table
-	
-  [multicast/]       Manage partition image backups using multicast
-    [restore-dd]     Restore remote partition or disk using dd
-    [restore-part]   Restore remote partition from local partclone image using multicast
+[clone/]               Manage partition image backups
+  [gpt-table/]         Manage GPT partition table
+    [restore-table]    Restore remote partition table
+    [save-table]       Backup remote partition table and save in local path
 
-  [unicast/]         Manage partition image backups using unicast
-    [restore-dd]     Restore remote partition or disk using dd
-    [restore-part]   Restore remote partition from local partclone image using unicast
-    [save-part]      Clone remote partition and save to partclone image in local path using unicast
+  [mbr-table/]         Manage MBR partition table
+    [add-part]         Create new partition
+    [del-part]         Delete partition
+    [resize-part]      Resize partition to grow until end of disk or next partition
+    [restore-table]    Restore remote partition table
+    [save-table]       Backup remote partition table and bootloader (first MB) and save in local path
+    [show-table]       Show MBR partition table
 
-[conf/]              System config tasks
-  [cron/]            Config root crontab file
-    [add]            Add line to root crontab
-    [remove]         Remove line from root crontab
-    [show]           Show root crontab config
+  [multicast/]         Manage partition image backups using multicast
+    [restore-dd]       Restore remote partition or disk using dd
+    [restore-part]     Restore remote partition from local partclone image using multicast
 
-  [homeperm/]        Config home directories permissions to 0750
-    [set]            Set HOME directories permissions to rwxr-x--- and config adduser DIR_MODE=750
-    [show]           Show HOME directories with permissive access
+  [unicast/]           Manage partition image backups using unicast
+    [restore-dd]       Restore remote partition or disk using dd
+    [restore-part]     Restore remote partition from local partclone image using unicast
+    [save-part]        Clone remote partition and save to partclone image in local path using unicast
 
-  [networkmanager/]  Prevent specific group can manage network-manager
-    [disable]        Restrict network-manager to prevent specific group can manage it
-    [restore]        Restore network-manager permissions to allow all users manage it
+[conf/]                System config tasks
+  [cron/]              Config root crontab file
+    [add]              Add line to root crontab
+    [remove]           Remove line from root crontab
+    [show]             Show root crontab config
 
-  [sudoers/]         Config sudoers file
-    [add]            Add new line in sudoers file
-    [remove]         Remove line from sudoers file
-    [show]           Show sudoers file
+  [homeperm/]          Config home directories permissions to 0750
+    [set]              Set HOME directories permissions to rwxr-x--- and config adduser DIR_MODE=750
+    [show]             Show HOME directories with permissive access
 
-  [time/]            Set system date/hour and show current time
-    [ntp]            Update system timedate using NTP
-    [set]            Set system timedate
-    [show]           Show system time
-  [guardian]         Install labadmin guardian for check and mail "stranger things" in hosts
-  [hostname]         Set hostname
-  [mail]             Install and config Postfix SMTP client for send mails (only root account)
+  [networkmanager/]    Prevent specific group can manage network-manager
+    [disable]          Restrict network-manager to prevent specific group can manage it
+    [restore]          Restore network-manager permissions to allow all users manage it
 
-[exam/]              Create restrictive environment for take exams
-  [backup/]          Manage exam backups autosaved when exam ends
-    [del]            Delete exam(s) backup
-    [download]       Download exam backup to local machine
-    [list]           List all exam saved and hidden in root account
-    [show]           Show content of exam backup
-  [check]            Check if host is blocked for exam
-  [end]              Come back host to normal config when exam ends
-  [start]            Config host for restrictive exam environment
+  [sudoers/]           Config sudoers file
+    [add]              Add new line in sudoers file
+    [remove]           Remove line from sudoers file
+    [show]             Show sudoers file
 
-[exec/]              Exec commands in hosts
-  [com]              Exec commands in host
-  [script]           Exec local script in host
-  [win]              Open window in host X session
-  [win-admin]        Open window in host X session with admin privileges
+  [time/]              Set system date/hour and show current time
+    [set]              Set system timedate
+    [show]             Show system time
 
-[file/]              Transfer files to/from host
-  [copyfrom]         Copy files or directory from host to admin
-  [copyto]           Copy files or directory from admin to host
-  [download]         Download URL resource in host
-  [multicast]        Copy files or directory from admin to host using MULTICAST
-  [torrent]          Download torrent resource in host
-  [torrent-local]    Send local files to hosts using torrent
+  [hostname]           Set hostname
+  [mail]               Install and config Postfix SMTP client for send mails (only root account)
 
-[labadmin/]          Manage Labadmin config in hosts
-  [conf]             Update labadmin host config (ssh_port and ssh_pubkey) from lab file config
-  [dependencies]     Check and install host dependencies for Labadmin
+[exam/]                Create restrictive environment for take exams
+  [backup/]            Manage exam backups autosaved when exam ends
+    [del]              Delete exam backup
+    [get]              Download exam backup to admin local machine
+    [list]             List all exam saved and hidden in root account
+    [wipe]             Wipe all exam backups!
 
-[misc/]              Miscellaneous actions
-  [screenshot/]      Take host screenshot and save or display it
-    [save]           Save multiple screenshot from host display
-    [show]           Show host display animation 
-  [music]            The best moeldies in your pcspeaker! :D
+  [check]              Check if host is blocked for exam
+  [end]                Come back host to normal config when exam ends
+  [start]              Config host for restrictive exam environment
 
-[msg/]               Send msg to host users
-  [chat]             Starts text chat with logged user
-  [login]            Show text message next time user login
-  [msg-urls]         Config system for send notification when detect user is browsing some urls
-  [notify]           Send notify message to logged user
-  [win]              Show text message in a terminal window
+[exec/]                Exec commands in hosts
+  [com]                Exec commands in host
+  [script]             Exec local script in host
+  [win]                Open window in host X session
+  [win-admin]          Open window in host X session with admin privileges
 
-[net/]               Network configs and tools
-  [iptables/]        Restrict network access using IPTABLES
-    [allow]          Allow access to specific IP or domain in a whitelist
-    [blacklist]      Start blacklist (delete all rules and allow all ips but exceptions)
-    [delete]         Delete specific rule number
-    [deny]           Deny access to specific IP or domain in a blacklist
-    [flush]          Flush (clean) all rules
-    [list]           List all IPTABLES rules
-    [show]           Show all IPTABLES rules
-    [whitelist]      Start whitelist (delete all rules and deny all ips but exceptions)  
-  [check-con]        Check network connectivity to gateway, Internet and DNS
-  [force-1000]       Force negotiated speed to gigabit
-  [speed-conf]       Show NIC card speed negotiated and poweroff slow hosts
-  [speed-test]       Perform network speed test from admin to host
+[file/]               Transfer files to/from host
+  [copyfrom]          Copy files or directory from host to admin
+  [copyto]            Copy files or directory from admin to host
+  [download]          Download URL resource in host
+  [multicast]         Copy files or directory from admin to host using MULTICAST
+  [torrent]           Send local files to hosts using torrent
 
-[process/]           Manage logged user process
-  [cont]             Continue all process of logged user
-  [kill]             Kill all process of logged users
-  [list]             List all process of logged users
-  [stop]             Stop all process of logged users
-  [term]             Term all process of logged users
+[labadmin/]           Manage Labadmin labs config in hosts
+  [dependencies]      Check and install host dependencies for Labadmin
 
-[service/]           Manage system services
-  [disable]          Disable system service (no starts on startup)
-  [enable]           Enable system service (starts on startup)
-  [is-active]        Show if system service is active
-  [journal]          Show system service journal
-  [list]             List all system services
-  [reload]           Reload system service
-  [restart]          Restart system service
-  [start]            Start system service
-  [status]           Show system service status
-  [stop]             Stop system service
+[misc/]               Miscellaneous actions
+  [music]             The best moeldies in your pcspeaker! :D
+  [wallpaper]         Config user wallpaper
+  [xmas]              Christmas congratulations for all users!
 
-[software/]          Automate software installation
-  [packages/]        Manage package repositories
-    [install]        Install a list of packages from repositories
-    [uninstall]      Uninstall a list of package(s)
-    [update]         Update package info from repositories
-    [upgrade]        Update all packages to latest version from repositories  
-  [vbox_extpack]     Update VirtualBox Extension Pack
+[msg/]                Send msg to host users
+  [chat]              Starts text chat with logged user
+  [clipboard]         Copy mesasage to user clipboard
+  [login-term]        Show text message next time user login in a terminal window
+  [login-xpad]        Show text message next time user login in a xpad note
+  [msg-term]          Open a text message in a terminal window
+  [notify]            Send notify message to logged user
 
-[user/]              Admin host users
-  [add]              Add a user
-  [del]              Delete user and his home directory
-  [group]            Add/remove users from group
-  [idle]             Show how much time user is idle (not using keyboard or mouse)
-  [lock]             Lock users
-  [pass]             Set user password
-  [show]             Show users with PID >=1000, groups and sudoers config
-  [size]             Show users sorted by HOME directory size
-  [unlock]           Unlock users
+[net/]                Network configs and tools
+  [iptables/]         Restrict network access using IPTABLES
+    [allow]           Allow access to specific IP or domain in a whitelist
+    [blacklist]       Start blacklist (delete all rules and allow all ips but exceptions)
+    [delete]          Delete specific rule number
+    [deny]            Deny access to specific IP or domain in a blacklist
+    [flush]           Flush (clean) all rules
+    [show]            Show all IPTABLES rules
+    [whitelist]       Start whitelist (delete all rules and deny all ips but exceptions)
 
-[virtualbox/]        Manage VirtualBox using vboxmanage
-  [bridge/]          Allow or deny use bridged network
-    [disable]        Disable bridged network for all users
-    [enable]         Enable bridged network for all users
-    [status]         Show status of bridged network for all users  
-  [import]           Import .ova file
-  [list]             List all machines
-  [play]             Play machine
-  [remove]           Remove virtual machine
-  [rename]           Rename machine
-  [snap]             Create snapshot
-  [stop]             Stop machine 
+  [check-con]         Check network connectivity to gateway, Internet and DNS
+  [force-1000]        Force negotiated speed to gigabit
+  [speed-conf]        Show NIC card speed negotiated and poweroff slow hosts
+  [speed-test]        Perform network speed test from admin to host
 
-[poweroff]           Power OFF host
-[poweron]            Power ON host using network
-[reboot]             Reboot host
-[reboot-grub]        Reboot host
-[ssh]                Open SSH connection to host
-[sysreq]             Send system request signal
+[process/]            Manage logged user process
+  [cont]              Continue all process of logged user
+  [kill]              Kill all process of logged users
+  [list]              List all process of logged users
+  [stop]              Stop all process of logged users
+  [term]              Term all process of logged users
 
+[screen/]             Take hosts screenshots and save or display it
+  [grid]              Show screenshots hosts in a web grid view
+  [save]              Save screenshots files hosts in local admin
+  [show]              Show screenshots hosts dinamically
+
+[service/]            Manage system services
+  [disable]           Disable system service (no starts on startup)
+  [enable]            Enable system service (starts on startup)
+  [is-active]         Show if system service is active
+  [journal]           Show system service journal
+  [list]              List all system services
+  [reload]            Reload system service
+  [restart]           Restart system service
+  [start]             Start system service
+  [status]            Show system service status
+  [stop]              Stop system service
+
+[software/]           Automate software installation
+  [packages/]         Manage package repositories
+    [install]         Install a list of packages from repositories
+    [uninstall]       Uninstall a list of package(s)
+    [update]          Update package info from repositories
+    [upgrade]         Update all packages to latest version from repositories
+
+  [vbox_extpack]      Update VirtualBox Extension Pack
+
+[user/]               Admin host users
+  [add]               Add a user
+  [del]               Delete user and his home directory
+  [group]             Add/remove users from group
+  [idle]              Show how much time user is idle (not using keyboard or mouse)
+  [lock]              Lock users
+  [pass]              Set user password
+  [show]              Show users with PID >=1000, groups and sudoers config
+  [size]              Show users sorted by HOME directory size
+  [unlock]            Unlock users
+
+[virtualbox/]         Manage VirtualBox using vboxmanage
+  [bridge/]           Allow or deny use bridged network
+    [disable]         Disable bridged network for all users
+    [enable]          Enable bridged network for all users
+    [status]          Show status of bridged network for all users
+
+  [import]            Import .ova file
+  [list]              List all machines
+  [play]              Play machine
+  [remove]            Remove virtual machine
+  [rename]            Rename machine
+  [snap]              Create snapshot
+  [stop]              Stop machine
+
+[anydesk]         Start anydesk connection to remote host
+[poweroff]        Power OFF host
+[poweron]         Power ON host using network
+[reboot]          Reboot host
+[reboot-grub]     Reboot hosts and select GRUB entry on boot
+[ssh]             Open SSH connection to host
+[sysreq]          Send system request signal
 ```
 
 ## Windows actions
 ```
-[dfc/]               Deep Freeze command line control
-  [conf]             Replace DP configuration using .rdx file (works frozen and unfrozen)
-  [freeze]           Reboot system in frozen state (permanent)
-  [serial]           Change license number
-  [state]            Show DF state
-  [unfreeze]         Reboot system in unfrozen state (permanent)
-
 [exec/]              Exec commands and open interpreter in hosts
   [cmd]              Open CMD command line interface
   [com-cmd]          Exec commands in Windows CMD host using WINRM
