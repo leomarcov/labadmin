@@ -41,7 +41,7 @@ if [ "${labadmin_script_type}" = "ssh" ]; then
 	# SKIP LOW HOSTS
 	if [ "${skip,,}" = "y" ]; then
 		speed="$(ethtool "$iface_host" | grep -i speed | awk '{print $2}')"		# Speed config
-		[ "${speed//[!0-9]/}" -lt 1000 ] && labadmin_error "#######################################################################\nSKIPPING HOST [${labadmin_nhost}] (${labadmin_ip_host}) WITH SLOW CONNECTION ($speed)\n#######################################################################" 1
+		[ "${speed//[!0-9]/}" -lt 1000 ] && labadmin_error "#######################################################################\nSKIPPING HOST [${labadmin_nhost}] (${labadmin_host_ip}) WITH SLOW CONNECTION ($speed)\n#######################################################################" 1
 	fi
 
 	# CHECK DEST
