@@ -55,7 +55,7 @@ fi
 # Available global variables:
 #	labadmin_iface
 #   labadmin_map
-#   labadmin_labname
+#   labadmin_lab_name
 #	labadmin_ssh_port
 #	labadmin_admin_ip
 #	labadmin_iphost
