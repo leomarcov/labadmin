@@ -50,22 +50,26 @@ You can see labadmin in action in short animations:
 # Install and config
 ## Install admin (controller)
   * Admin must be installed in a Linux OS (Debian, Fedora and Ubuntu has been tested).
-  * You can configure labadmin before install (`labadmin.conf` and `labs/*` files), if no config files are found default config will be generated.
 ```bash
 git clone https://github.com/leomarcov/labadmin /opt/labadmin   # Clonre repository
 bash /opt/labadmin/install-linux-admin                          # Install script
 ```  
 
 #### Config admin
-  * Admin config is saved in:
-    * Global config file: `/opt/labadmin/conf/labadmin.conf`
-    * A Lab config file for each lab: `/opt/labadmin/labs/*`
-
-  * File `/opt/labadmin/conf/labadmin.conf` is used to define labadmin global config.
-  * Edit this file to customize your labadmin sets.
-  * **IMPORTANT**: Ensure variables `ssh_pubkey` and `ssh_privkey` stores publica and private keys for autentication and same `ssh_pubkey` is used to config each host.
+  * Global config settings are configured in file: `/opt/labadmin/conf/labadmin.conf`
+    * When install admin default `labadmin.conf` is created (if file doesn't exist) and new *public/private SSH keys* are generated.
+    * If do you need create a new `labadmin.conf` copy template with default config [template/labadmin.conf](template/ladadmin.conf) and set permissions.
+    * **IMPORTANT**: Ensure variables `ssh_pubkey` and `ssh_privkey` stores public and private keys for SSH autentication and same `ssh_pubkey` is used to config each host.
 ```bash
-lll
+default_lab              # Default lab file to use if not lab specified with -l param
+iface                    # Admin network interface name
+arpscan_timeout=500      #  Arp-scan timeout in miliseconds for get host status in map
+ssh_timeout=5            # SSH host connection timeout in seconds
+autoscan_delay=60        # Auto scan map delay in seconds
+
+ssh_port='58888'         # SSH port for host connection
+ssh_pubkey='...'         # SSH public key for host authentication
+ssh_privkey='...'        # SSH purivate key for host authentication
 ```
 
 
