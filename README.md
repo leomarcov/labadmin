@@ -81,9 +81,12 @@ ssh_privkey='<your_private_key>'     # SSH purivate key for host authentication
 
 ```bash
 cp /opt/labadmin/template/lab.test /opt/labadmin/labs/A15    # Set lab config filename to your lab ID name
+chmod 640 /opt/labadmin/labs/A15							 # Set file permissions
+chown root:labadmin /opt/labadmin/labs/A15                   # Set file owner and groups
+
 vi /opt/labadmin/labs/A15
- labadmin="AULA 11"                         # Lab name
- agent_os="linux"                           # Default agent operating system
+ labadmin="AULA 11"                                          # Lab name
+ agent_os="linux"                                            # Default agent operating system
 
  # Map distritution for each host in lab
  # Break line is used for row separator
