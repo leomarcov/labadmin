@@ -308,7 +308,7 @@ function install_admin() {
 	if [ ! -f "$labadmin_config_path" ]; then
 		echo -e "  Labadmin config file not found!"
 		while true; do
-			read -p "  Create labadmin.conf and generate new SSH public/private keys? (Y/n) " q
+			read -p "  Create default labadmin.conf and generate new SSH public/private keys? (Y/n) " q
 			[ ! "$q" ] && q="y"
 			case "${q,,}" in y|n) break ;; esac
 		done
