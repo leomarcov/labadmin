@@ -64,15 +64,15 @@ bash /opt/labadmin/install-linux-admin
     * If do you need create a new `labadmin.conf` copy template with default config [templates/labadmin.conf](templates/labadmin.conf) and set permissions.
     * **IMPORTANT**: Ensure variables `ssh_pubkey` and `ssh_privkey` stores public and private keys for SSH autentication and same `ssh_pubkey` is used to config each host.
 ```bash
-default_lab              # Default lab file to use if not lab specified with -l param
-iface                    # Admin network interface name
-arpscan_timeout=500      #  Arp-scan timeout in miliseconds for get host status in map
-ssh_timeout=5            # SSH host connection timeout in seconds
-autoscan_delay=60        # Auto scan map delay in seconds
+default_lab="A15"            # Default lab file to use if not lab specified with -l param
+iface                        # Admin network interface name
+arpscan_timeout=500          #  Arp-scan timeout in miliseconds for get host status in map
+ssh_timeout=5                # SSH host connection timeout in seconds
+autoscan_delay=60            # Auto scan map delay in seconds
 
-ssh_port='58888'         # SSH port for host connection
-ssh_pubkey='...'         # SSH public key for host authentication
-ssh_privkey='...'        # SSH purivate key for host authentication
+ssh_port='58888'             # SSH port for host connection
+ssh_pubkey='...'             # SSH public key for host authentication
+ssh_privkey='...'            # SSH purivate key for host authentication
 ```
 
 
