@@ -60,14 +60,68 @@ You can see labadmin in action in short animations:
 
 #### CLONE REPOSITORY
 git clone https://github.com/leomarcov/labadmin /opt/labadmin
-
-# If no labadmin.conf is found new default config file will be created and private/public key generated.
-# If no labs files are found new default config lab file will be created.
 bash /opt/labadmin/install-linux-admin
-
+  # File /opt/labadmin/conf/labadmin.conf does not exist -> new default config file will be created and private/public key generated.
+  # Files /opt/labadmin/labs/* does not exists -> new default config file lab.test will be created.
 ```  
 
 #### Config labadmin
+  * File `/opt/labadmin/conf/labadmin.conf` is used to define labadmin global config.
+  * Edit this file to customize your labadmin sets.
+  * Variables `ssh_pubkey` and `ssh_privkey` 
+```bash
+# Default lab file to use if not lab specified with -l param
+#  Optional
+#  Default: none
+# default_lab=
+
+# Admin network interface name (eth0, enp0s3, enp3s0, etc.)
+#  Optional
+#  Default: use interface for Internet access
+# iface=
+
+# Arp-scan timeout in miliseconds
+#  Optional
+#  Default: 500
+# arpscan_timeout=500
+
+# SSH connection timeout in seconds
+#  Optional
+#  Default: 5
+# ssh_timeout=5
+
+# Auto scan map delay in seconds (0 disable autoscan)
+#  Optional
+#  Default: 60
+# autoscan_delay=60
+
+
+#===================================================================================
+# SSH CONFIG
+#===================================================================================
+# SSH port for Linux agent OS (Windows agent use ssh_port+1)
+#  Optional
+#  Default: 58888
+ssh_port='58888'
+
+# SSH public key
+#  GENERATION: ssh-keygen -t ed25519 -C labadmin
+ssh_pubkey='ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJYNUOilenEOWkDmyZfMRiW2ppK2fmHQr3j4Dg21v5Ra labadmin'
+
+# SSH private key
+#  GENERATION: ssh-keygen -t ed25519 -C labadmin
+#  Sample passphrase: hello
+
+
+ssh_privkey='-----BEGIN OPENSSH PRIVATE KEY-----
+b3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAEbm9uZQAAAAAAAAABAAAAMwAAAAtzc2gtZW
+QyNTUxOQAAACCWDVDopXpxDlpA5smXzEYltqaStn5h0K94+A4Ntb+UWgAAAJCPZ0vBj2dL
+wQAAAAtzc2gtZWQyNTUxOQAAACCWDVDopXpxDlpA5smXzEYltqaStn5h0K94+A4Ntb+UWg
+AAAEDeIMDBxwJUEmBUMhJZ+YAAg0RqZWDE6G5lVxz++/YkqZYNUOilenEOWkDmyZfMRiW2
+ppK2fmHQr3j4Dg21v5RaAAAACGxhYmFkbWluAQIDBAU=
+-----END OPENSSH PRIVATE KEY-----'
+```
+
 
 #### EDIT LABADMIN CONFIG
 vi conf/labadmin.conf
