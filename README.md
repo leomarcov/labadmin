@@ -58,7 +58,7 @@ git clone https://github.com/leomarcov/labadmin /opt/labadmin
 bash /opt/labadmin/install-linux-admin
 ```  
 
-#### Config admin
+### Config admin
   * Global config settings are stored in file: `/opt/labadmin/conf/labadmin.conf`
     * When install admin default `labadmin.conf` is created (if file doesn't exist) and new **public/private SSH keys** are generated.
     * If do you need create a new `labadmin.conf` copy template with default config [templates/labadmin.conf](templates/labadmin.conf) and set permissions.
