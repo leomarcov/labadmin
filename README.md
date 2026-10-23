@@ -140,9 +140,8 @@ $ labadmin -h
 
   OPTIONS
    -l lab_config
-	Lab config filename to use
-	Lab config files must be placed in labs/ directory
-	When not specified default file is used.
+    Lab config filename to use. Overrides default_lab variable in labadmin config file.
+    Lab config files must be placed in labs/ directory.
 
    -i iface
 	Network interface to use. Overrides iface variable in labadmin config file.
