@@ -48,7 +48,7 @@ You can see labadmin in action in short animations:
 
 &nbsp;  
 # Install and config
-## Install admin (controller)
+## Admin install
   * Admin must be installed in a Linux OS (Debian, Fedora and Ubuntu has been tested).
 ```bash
 # Clone repository to /opt
@@ -58,7 +58,7 @@ git clone https://github.com/leomarcov/labadmin /opt/labadmin
 bash /opt/labadmin/install-linux-admin
 ```  
 
-### Config admin
+### Admin config
   * **Global config** settings are stored in file: `/opt/labadmin/conf/labadmin.conf`
     * When install admin default `labadmin.conf` is created (if file doesn't exist) and new **public/private SSH keys** are generated.
     * If do you need create a new `labadmin.conf` copy template with default config [templates/labadmin.conf](templates/labadmin.conf) to `/opt/labadmin/conf/` and set permissions (`640` and `root:labadmin`).
@@ -109,19 +109,16 @@ vi /opt/labadmin/labs/A15
 ...
 ```
 
-## Hosts install on Linux
-  * Not agent labadmin software is installed, installer only need to install all needed dependences and configure the remote SSH access method.
+## Host install on Linux
+  * Host installer install all needed dependences and configure the remote SSH access method.
 ```bash
-git clone https://github.com/leomarcov/labadmin        
-cd labadmin                                            # Access dir
-cp xxxxx/labadmin.conf conf/                           # Copy your previus labadmin.conf with authentication data used for admin installation to conf/
-bash install host                                      # Install and config labadmin in host machine
+bash install-linux-host -k <your_public_key>
 ```  
   
-## Hosts install on Windows
-  * Not agent labadmin software is installed, installer only need to install all needed dependences and configure the remote SSH access method.
+## Host install on Windows
+  * Host installer install all needed dependences and configure the remote SSH access method.
  ```powershell
-install-windows-agent.ps1
+install-windows-agent.ps1 -pubkey <your_public_key>
 ```
 
 &nbsp;  
