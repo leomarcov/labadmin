@@ -48,78 +48,24 @@ You can see labadmin in action in short animations:
 
 &nbsp;  
 # Install and config
-## Admin install
+## Install admin (controller)
   * Admin must be installed in a Linux OS (Debian, Fedora and Ubuntu has been tested).
-  * You can copy your own labadmin config file to `/opt/labadmin/conf/labadmin.conf`.
-      - If file doesn't exists default config will be created and **private/public** key generated.
-      - Edit `labadmin.conf` to customice your labadmin after install.
-  * You can copy your own lab config files to `/opt/labadmin/labs/`.
-      - If no file is found default config lab  will be created in `/opt/labadmin/labs/lab.test`.
-      - After install edit you lab file to customize according your lab hosts and distribution.
+  * You can configure labadmin before install (`labadmin.conf` and `labs/*p` files), if no config files are found default config will be generated.
 ```bash
-
-#### CLONE REPOSITORY
-git clone https://github.com/leomarcov/labadmin /opt/labadmin
-bash /opt/labadmin/install-linux-admin
-  # If file /opt/labadmin/conf/labadmin.conf does not exist new default config file will be created.
-  # If no files /opt/labadmin/labs/* exists -> new default config file lab.test will be created.
+git clone https://github.com/leomarcov/labadmin /opt/labadmin   # Clonre repository
+bash /opt/labadmin/install-linux-admin                          # Install script
 ```  
 
-#### Config labadmin
+#### Config admin
+  * Admin config is saved in:
+    * Global config file: `/opt/labadmin/conf/labadmin.conf`
+    * A Lab config file for each lab: `/opt/labadmin/labs/*`
+
   * File `/opt/labadmin/conf/labadmin.conf` is used to define labadmin global config.
   * Edit this file to customize your labadmin sets.
   * **IMPORTANT**: Ensure variables `ssh_pubkey` and `ssh_privkey` stores publica and private keys for autentication and same `ssh_pubkey` is used to config each host.
 ```bash
-# Default lab file to use if not lab specified with -l param
-#  Optional
-#  Default: none
-# default_lab=
-
-# Admin network interface name (eth0, enp0s3, enp3s0, etc.)
-#  Optional
-#  Default: use interface for Internet access
-# iface=
-
-# Arp-scan timeout in miliseconds
-#  Optional
-#  Default: 500
-# arpscan_timeout=500
-
-# SSH connection timeout in seconds
-#  Optional
-#  Default: 5
-# ssh_timeout=5
-
-# Auto scan map delay in seconds (0 disable autoscan)
-#  Optional
-#  Default: 60
-# autoscan_delay=60
-
-
-#===================================================================================
-# SSH CONFIG
-#===================================================================================
-# SSH port for Linux agent OS (Windows agent use ssh_port+1)
-#  Optional
-#  Default: 58888
-ssh_port='58888'
-
-# SSH public key
-#  GENERATION: ssh-keygen -t ed25519 -C labadmin
-ssh_pubkey='ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJYNUOilenEOWkDmyZfMRiW2ppK2fmHQr3j4Dg21v5Ra labadmin'
-
-# SSH private key
-#  GENERATION: ssh-keygen -t ed25519 -C labadmin
-#  Sample passphrase: hello
-
-
-ssh_privkey='-----BEGIN OPENSSH PRIVATE KEY-----
-b3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAEbm9uZQAAAAAAAAABAAAAMwAAAAtzc2gtZW
-QyNTUxOQAAACCWDVDopXpxDlpA5smXzEYltqaStn5h0K94+A4Ntb+UWgAAAJCPZ0vBj2dL
-wQAAAAtzc2gtZWQyNTUxOQAAACCWDVDopXpxDlpA5smXzEYltqaStn5h0K94+A4Ntb+UWg
-AAAEDeIMDBxwJUEmBUMhJZ+YAAg0RqZWDE6G5lVxz++/YkqZYNUOilenEOWkDmyZfMRiW2
-ppK2fmHQr3j4Dg21v5RaAAAACGxhYmFkbWluAQIDBAU=
------END OPENSSH PRIVATE KEY-----'
+lll
 ```
 
 
