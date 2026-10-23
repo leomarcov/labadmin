@@ -10,7 +10,7 @@
 #===============================================================================
 # GLOBAL CONFIG
 #===============================================================================
-# Lab name to show in interface
+# Lab name showd show in interface
 lab_name="TEST LAB"
 
 # Default agents operating system
