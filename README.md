@@ -64,15 +64,20 @@ bash /opt/labadmin/install-linux-admin
     * If do you need create a new `labadmin.conf` copy template with default config [templates/labadmin.conf](templates/labadmin.conf) to `/opt/labadmin/conf/` and set permissions (`640` and `root:labadmin`).
     * **IMPORTANT**: Ensure variables `ssh_pubkey` and `ssh_privkey` stores public and private keys for SSH autentication and same `ssh_pubkey` is used to config each host.
 ```bash
-default_lab="A15"                    # Default lab file to use if not lab specified with -l param
-iface                                # Admin network interface name (by default Internet iface is used)
-arpscan_timeout=500                  # Arp-scan timeout in miliseconds for get host status in map
-ssh_timeout=5                        # SSH host connection timeout in seconds
-autoscan_delay=60                    # Auto scan map delay in seconds
+cp /opt/labadmin/template/labadmin.conf /opt/labadmin/conf     # Set lab config filename to your lab ID name
+chmod 640 /opt/labadmin/conf/labadmin.conf                     # Set file permissions
+chown root:labadmin /opt/labadmin/conf/labadmin.conf           # Set file owner and groups
 
-ssh_port='58888'                     # SSH port to connect with Linux agents (Windows agents use ssh_port+1)
-ssh_pubkey='<your_public_key>'       # SSH public key for host authentication
-ssh_privkey='<your_private_key>'     # SSH purivate key for host authentication
+vi /opt/labadmin/conf/labadmin.conf
+  default_lab="A15"                    # Default lab file to use if not lab specified with -l param
+  iface                                # Admin network interface name (by default Internet iface is used)
+  arpscan_timeout=500                  # Arp-scan timeout in miliseconds for get host status in map
+  ssh_timeout=5                        # SSH host connection timeout in seconds
+  autoscan_delay=60                    # Auto scan map delay in seconds
+
+  ssh_port='58888'                     # SSH port to connect with Linux agents (Windows agents use ssh_port+1)
+  ssh_pubkey='<your_public_key>'       # SSH public key for host authentication
+  ssh_privkey='<your_private_key>'     # SSH purivate key for host authentication
 ```
   * **Labs config** settins are stored in directory: `/opt/labadmin/labs/`.
     * Each laboratory is configured in a individual file in `labs` directory, filename must be the lab name.
@@ -81,7 +86,7 @@ ssh_privkey='<your_private_key>'     # SSH purivate key for host authentication
 
 ```bash
 cp /opt/labadmin/template/lab.test /opt/labadmin/labs/A15    # Set lab config filename to your lab ID name
-chmod 640 /opt/labadmin/labs/A15							 # Set file permissions
+chmod 640 /opt/labadmin/labs/A15                             # Set file permissions
 chown root:labadmin /opt/labadmin/labs/A15                   # Set file owner and groups
 
 vi /opt/labadmin/labs/A15
