@@ -74,7 +74,7 @@ vi /opt/labadmin/conf/labadmin.conf
   ssh_pubkey='<your_public_key>'       # SSH public key for host authentication
   ssh_privkey='<your_private_key>'     # SSH purivate key for host authentication
 ```
-  * **Labs config** settins are stored in directory: `/opt/labadmin/labs/`.
+  * **Labs config** settins are stored in directory: `/opt/labadmin/labs/`
     * Each laboratory is configured in a individual file in `labs` directory, filename must be the lab name.
     * When install admin default `lab.test` lab is created (if no labs files exists).
     * If you need create a new lab file copy template with sample lab config [templates/lab.test](templates/lab.test) to `/opt/labadmin/labs/` and set permissions (`640` and `root:labadmin`).
