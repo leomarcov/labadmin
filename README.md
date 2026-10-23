@@ -59,49 +59,32 @@ bash /opt/labadmin/install-linux-admin
 ```  
 
 ### Config admin
-  * Global config settings are stored in file: `/opt/labadmin/conf/labadmin.conf`
+  * **Global config** settings are stored in file: `/opt/labadmin/conf/labadmin.conf`
     * When install admin default `labadmin.conf` is created (if file doesn't exist) and new **public/private SSH keys** are generated.
-    * If do you need create a new `labadmin.conf` copy template with default config [templates/labadmin.conf](templates/labadmin.conf) and set permissions.
+    * If do you need create a new `labadmin.conf` copy template with default config [templates/labadmin.conf](templates/labadmin.conf) to `/opt/labadmin/conf/` and set permissions (`640` and `root:labadmin`).
     * **IMPORTANT**: Ensure variables `ssh_pubkey` and `ssh_privkey` stores public and private keys for SSH autentication and same `ssh_pubkey` is used to config each host.
 ```bash
-default_lab="A15"            # Default lab file to use if not lab specified with -l param
-iface                        # Admin network interface name
-arpscan_timeout=500          #  Arp-scan timeout in miliseconds for get host status in map
-ssh_timeout=5                # SSH host connection timeout in seconds
-autoscan_delay=60            # Auto scan map delay in seconds
+default_lab="A15"                    # Default lab file to use if not lab specified with -l param
+iface                                # Admin network interface name (by default Internet iface is used)
+arpscan_timeout=500                  # Arp-scan timeout in miliseconds for get host status in map
+ssh_timeout=5                        # SSH host connection timeout in seconds
+autoscan_delay=60                    # Auto scan map delay in seconds
 
-ssh_port='58888'             # SSH port for host connection
-ssh_pubkey='...'             # SSH public key for host authentication
-ssh_privkey='...'            # SSH purivate key for host authentication
+ssh_port='58888'                     # SSH port to connect with Linux agents (Windows agents use ssh_port+1)
+ssh_pubkey='<your_public_key>'       # SSH public key for host authentication
+ssh_privkey='<your_private_key>'     # SSH purivate key for host authentication
 ```
-
-
-#### EDIT LABADMIN CONFIG
-vi conf/labadmin.conf
- ssh_port="58888"                       # SSH port to connect with Linux agents (Windows agents use ssh_port+1)
- ssh_pubkey='<your_public_key>'         # SSH public key authentication 
- ssh_privkey='<your_private_key>'       # SSH private key authentication
-                                        # GENERATE: ssh-keygen -t rsa
-                                        #  Copy id_rsa and id_rsa.pub content in ssh_privkey and ssh_pubkey variables
-                                        #  and delete id_rsa and id_rsa.pub files
-#### INSTALL ADMIN
-bash install admin
-
-  * For each computer laboratory create a file in `/opt/labadmin/labs/` with config lab:
+  * **Labs config** settins are stored in directory: `/opt/labadmin/labs/`.
+  * Each laboratory is configured in a individual file in `labs` directory, filename must be the lab name.
+  * When install admin default `lab.test` lab is created (if no labs files exists).
+  * If you need create a new lab file copy template with sample lab config [templates/lab.test](templates/lab.test) to `/opt/labadmin/labs/` and set permissions (`640` and `root:labadmin`).
 
 ```bash
-cd /opt/labadmin
-cp labs/lab.test labs/A11                # Set lab config filename to your lab ID name
-vi /opt/labadmin/labs/A11
- labadmin="AULA 11"                      # Lab name
- agent_os="linux"                        # Server mode: linux or windows
+cp /opt/labadmin/template/lab.test /opt/labadmin/labs/A15    # Set lab config filename to your lab ID name
+vi /opt/labadmin/labs/A15
+ labadmin="AULA 11"                         # Lab name
+ agent_os="linux"                           # Default agent operating system
 
- # List of MACs for each host in map
- # macs[<host_id>]=<MAC>
- macs[11]="08:00:27:B5:EE:E8"
- macs[12]="08:00:27:2a:f0:f2"
- macs[13]="08:00:27:bb:07:9d"
-...
 
  # Map distritution for each host in lab
  # Break line is used for row separator
@@ -114,6 +97,13 @@ vi /opt/labadmin/labs/A11
  __ __ 24 23 22 21
  __ __ 14 13 12 11
  ' 
+
+ # List of MACs for each host in map
+ # macs[<host_id>]=<MAC>
+ macs[11]="08:00:27:B5:EE:E8"
+ macs[12]="08:00:27:2a:f0:f2"
+ macs[13]="08:00:27:bb:07:9d"
+...
 ```
 
 ## Hosts install on Linux
