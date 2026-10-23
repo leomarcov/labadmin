@@ -1,8 +1,12 @@
-f# labadmin
+# labadmin
 <img align="left" src="https://cdn4.iconfinder.com/data/icons/online-marketing-hand-drawn-vol-3/52/monitor__television__computer__desktop__seo__service__marketing-128.png" width="80" >
 
 Labadmin is a Linux tool, writed on Bash shellscript, capable to **remotely admin** a set of hosts running Linux or Windows. Is focused to work in educational environment controlling hosts in a computer laboratory. 
 Labadmin aims to be a tool useful for IT teachers and computer lab sysadmins. 
+
+<p align="center">
+ <img src="https://github.com/user-attachments/assets/84b7a7f2-4c8e-444c-946c-ce9f39b3750d">
+</p>
 
 &nbsp; 
 ## Main features
@@ -22,9 +26,7 @@ Labadmin aims to be a tool useful for IT teachers and computer lab sysadmins.
   * Monitorization of action execution status. If any error has ocurred in some host is noticed.
   * It's easy to create your own actions using Bash or Powershell script language.
 
-<p align="center">
- <img src="https://github.com/user-attachments/assets/84b7a7f2-4c8e-444c-946c-ce9f39b3750d">
-</p>
+
 
 ## Working schema
   * Labadmin use a dedicated machine to admin the students hosts (usually teacher computer or server).
