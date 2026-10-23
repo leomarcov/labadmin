@@ -408,10 +408,14 @@ function install_host() {
 	
 	# CHECK PARAMS
 	[ "$psshport" ] && 	ssh_port="$psshport"
-	[ ! "$ssh_port" ] && { ssh_port=58888; echo "  Param ssh_port not defined -> using default port 58888"; }
-	[ "$psshpubkey" ] && psshpubkey="$psshpubkey"
-	[ ! "$psshpubkey" ] && labadmin_error "ERROR: ssh_pubkey not defined. Use -k param or define ssh_pubkey in labadmin.conf file" 1
+	[ ! "$ssh_port" ] && ssh_port=58888
+	[ "$psshpubkey" ] && ssh_pubkey="$psshpubkey"
+	[ ! "$ssh_pubkey" ] && labadmin_error "ERROR: ssh_pubkey not defined. Use -k param or define ssh_pubkey in labadmin.conf file" 1
 
+	labadmin_info "Installing linux agent"
+	echo -e "  ${S_B}ssh_port${S_R}: $ssh_port"
+	echo -e "  ${S_B}ssh_pubkey${S_R}: $ssh_pubkey"
+	echo
 
 	# DEPENDENCIES
 	check_dependencies "ask" "scripts_hostdeps"
@@ -450,9 +454,11 @@ function install_host() {
 	systemctl enable "$ssh_service_name" || labadmin_error "ERROR: SSH server enable failed"
 	systemctl restart "$ssh_service_name" || labadmin_error "ERROR: SSH server start failded"
 
+	echo
 	labadmin_info "Installing public key in /root/.ssh/authorized_keys"
 	[ ! -d "/root/.ssh" ] && { mkdir /root/.ssh; chmod 700 /root/.ssh; }
-	echo "$ssh_pubkey" |  tee /root/.ssh/authorized_keys
+	sed -i '/labadmin/d' /root/.ssh/authorized_keys &>/dev/null
+	echo "$ssh_pubkey" |  tee -a /root/.ssh/authorized_keys
 	chmod 600 /root/.ssh/authorized_keys
 
 	echo
