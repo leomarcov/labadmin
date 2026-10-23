@@ -140,20 +140,20 @@ $ labadmin -h
 
   OPTIONS
    -l lab_config
-    Lab config filename to use. Overrides default_lab variable in labadmin config file.
-    Lab config files must be placed in labs/ directory.
+       Lab config filename to use. Overrides default_lab variable in labadmin config file.
+       Lab config files must be placed in labs/ directory.
 
    -i iface
-	Network interface to use. Overrides iface variable in labadmin config file.
+       Network interface to use. Overrides iface variable in labadmin config file.
 
    -W 
-	Force Windows server mode. Overrides agent_os variable in lab config file.
+       Force Windows server mode. Overrides agent_os variable in lab config file.
 
    -L 
-	Force Linux server mode. Overrides agent_os variable in lab config file.
+       Force Linux server mode. Overrides agent_os variable in lab config file.
 
    -F 
-	Force continue even check dependencies fail
+      Force continue even check dependencies fail
 ```
 </p></details>
 
