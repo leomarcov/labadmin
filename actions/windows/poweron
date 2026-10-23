@@ -27,4 +27,4 @@ fi
 # DEPENDENCIES
 wol_command="$(labadmin_search_alternative wakeonlan wol)"
 
-"$wol_command" "${labadmin_machost}"
+"$wol_command" "${labadmin_host_mac}"
