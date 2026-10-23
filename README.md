@@ -465,13 +465,13 @@ Labadmin has a lot of actions ready to use! Actions are categorized for better o
 The easy way to exec your own scripts is use the actions ``exec/com`` (execute comands) and ``exec/script`` (execute external script). However creating your own labadmin actions you can add permanent actions and use the labadmin interface options to obtain more powerful scripts.
 
 For add a new action to labadmin only need:
-  * Create a action file following the labadmin interface. You can use template action located in [doc/action_template](doc/action_template).
+  * Create a action file following the labadmin interface. You can use template action located in [templates/action.template](templates/action.template).
   * Save the action file in ``actions/linux`` or ``actions/windows`` directory, and labadmin will recognize the file automatically when starts.
 
 For more info refer to:
-  * Action template: [doc/action_template](doc/action_template)
-  * SSH sample: [actions/ssh/user/add](actions/ssh/user/add)
-  * SSH admin+local+admin sample: [actions/ssh/file/torrent-local](actions/ssh/file/torrent-local)
+  * Action template: [templates/action.template](templates/action.template)
+  * SSH sample: [actions/linux/user/add](actions/linux/user/add)
+  * SSH admin+local+admin sample: [actions/linux/file/torrent-local](actions/linux/file/torrent-local)
 
 &nbsp;  
 # Lincense
