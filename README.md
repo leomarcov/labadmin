@@ -50,7 +50,7 @@ You can see labadmin in action in short animations:
 # Install and config
 ## Install admin (controller)
   * Admin must be installed in a Linux OS (Debian, Fedora and Ubuntu has been tested).
-  * You can configure labadmin before install (`labadmin.conf` and `labs/*p` files), if no config files are found default config will be generated.
+  * You can configure labadmin before install (`labadmin.conf` and `labs/*` files), if no config files are found default config will be generated.
 ```bash
 git clone https://github.com/leomarcov/labadmin /opt/labadmin   # Clonre repository
 bash /opt/labadmin/install-linux-admin                          # Install script
