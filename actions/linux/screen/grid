@@ -104,7 +104,7 @@ elif [ "${labadmin_script_type}" = "admin" ]; then
     done
 
 
-	screenshot_grid_url="file://${labadmin_path}/lib/screenshot-grid/view.html?lab=$(echo -n "$labname" | base64 -w0)&dir=$(echo -n "$dir_dest" | base64 -w0)&map=$( echo -n "$map" | tr -s " " | sed -E 's/^ +| +$//g' | base64 -w0)&sel=$(echo -n "$labadmin_shosts_listen" | base64 -w0)&ref=${dsec}"
+	screenshot_grid_url="file://${labadmin_path}/lib/screenshot-grid/view.html?lab=$(echo -n "$labadmin_lab_name" | base64 -w0)&dir=$(echo -n "$dir_dest" | base64 -w0)&map=$( echo -n "$map" | tr -s " " | sed -E 's/^ +| +$//g' | base64 -w0)&sel=$(echo -n "$labadmin_shosts_listen" | base64 -w0)&ref=${dsec}"
 	labadmin_info-list "Openining web browser"
 
 	[ $EUID -eq 0 ] && labadmin_error "WARNING: labadmin is running as root, some web browsers only support run as regular user"
