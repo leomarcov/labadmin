@@ -404,7 +404,7 @@ function install_host() {
 	[ $EUID -ne 0 ] && labadmin_error "Install must be runed as root" 1
 
 	# LOAD LABADMIN CONFIG FILE
-	labadmin_load-config-file &>/dev/null
+	source "$config_path" &>/dev/null
 	
 	# CHECK PARAMS
 	[ "$psshport" ] && 	ssh_port="$psshport"
