@@ -661,7 +661,7 @@ function exec_script() {
 #                labadmin_nhost
 #                labadmin_script_type
 #				 labadmin_shosts_listen
-#                labadmin_mac_host
+#                labadmin_host_mac
 #				 labadmin_script_type_state
 #
 #===============================================================================
@@ -675,7 +675,7 @@ function labadmin_export_vars_code() {
         echo "${prefix_var}${vn}=\"${!vn}\""
     done
 
-    echo "${prefix_var}mac_host=\"${macs[$nhost]}\""
+    echo "${prefix_var}host_mac=\"${macs[$nhost]}\""
 }
 
 
