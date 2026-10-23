@@ -31,8 +31,16 @@ source "${lib_path}/labadmin_lib-install"										# LABADMIN INSTALL MODULE
 #===============================================================================
 function help() {
 	echo -e "Install and check labadmin dependencies for linux agent
+    
   INSTALL 
-   ${S_B}$(basename $0)${S_R}
+   ${S_B}$(basename $0)${S_R} [-p ssh_port] [-k ssh_pubkey]
+
+   OPTIONS
+     ${S_B}ssh_port${S_R}     SSH port configured for allow access to admin
+                  If missing use ${S_B}ssh_port${S_R} in ${S_B}labadmin.conf${S_R} -> If missing use default port: ${S_B}58888${S_R}
+
+     ${S_B}ssh_pubkey${S_R}   SSH public key configured to authenticate admin
+                  If missing use ${S_B}ssh_pubkey${S_R} in ${S_B}labadmin.conf${S_R}
 
   CHECK DEPENDENCIES
    ${S_B}$(basename $0)${S_R} -d ask|autoinstall|noinstall     Only check host dependencies (no install agent)
