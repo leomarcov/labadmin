@@ -750,30 +750,50 @@ function exec_script_ssh-linux() {
 #	$1	nhost where exec the script
 #===============================================================================
 function exec_script_ssh-windows() {
-	local nhost="$1"
-	local host_ip=${ips[$nhost]}
-	local script_file="${scripts_file[$script_id]}"
+    local nhost="$1"
+    local host_ip=${ips[$nhost]}
+    local script_file="${scripts_file[$script_id]}"
+    local script_ps script_b64
 
-	# Generate script with global vars
-	local script_ps=$(
-		# Global labadmin vars
-		script_type="ssh" labadmin_export_vars_code powershell
+    # Generate script with global vars
+    script_ps=$(
+        script_type="ssh" labadmin_export_vars_code powershell
 
-		# Parameters asignment in initial vars ($p1="parameter1", $p2="parameter2", ...)
-	    for vn in p1 p2 p3 p4 p5 p6 p7 p8 p9; do
-        	[ -v "$vn" ] && echo -e "\$${vn}=@'\n${!vn}\n'@"
-    	done
+        # Script params definition: $p1, $p2, ...
+        for vn in p1 p2 p3 p4 p5 p6 p7 p8 p9; do
+            [ -v "$vn" ] && printf "\$%s=@'\n%s\n'@\n" "$vn" "${!vn}"
+        done
 
-    	# Script content
-    	bash "$script_file"
-	)
+        # Script content
+        bash "$script_file"
+    )
 
-	# Encode script using BASE64
-	script_b64=$(printf '%s' '$ProgressPreference = "SilentlyContinue"; $code = [Console]::In.ReadToEnd(); & ([scriptblock]::Create($code))' | iconv -f UTF-8 -t UTF-16LE | base64 -w 0)
+    # Encode PowerShell script using BASE64
+    script_b64=$(
+        {
+cat <<'PS'
+$ProgressPreference = "SilentlyContinue"
+$ErrorActionPreference = "Stop"
+try {
+PS
+printf '%s\n' "$script_ps"
+cat <<'PS'
+} catch {
+    [Console]::Error.WriteLine($_.ToString())
+    exit 1
+}
+PS
+        } | iconv -f UTF-8 -t UTF-16LE | base64 -w 0
+    ) || return 1
 
-	# Call SSH 
-	printf '%s' "$script_ps" | ssh -T "labadmin@${host_ip}" -p "$ssh_port" -o StrictHostKeyChecking=no -o ConnectTimeout="${ssh_timeout:-5}" "powershell.exe -NoProfile -NonInteractive -EncodedCommand ${script_b64}"
-	return $?
+    # Call SSH
+    ssh -T "labadmin@${host_ip}" \
+        -p "$ssh_port" \
+        -o StrictHostKeyChecking=no \
+        -o ConnectTimeout="${ssh_timeout:-5}" \
+        "powershell.exe -NoProfile -NonInteractive -EncodedCommand ${script_b64}"
+
+    return $?
 }
 
 
