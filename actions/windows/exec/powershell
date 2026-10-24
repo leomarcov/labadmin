@@ -13,7 +13,8 @@ if [ "$1" = "--load-scriptinfo" ]; then
 	script_bg="sub"
 	script_admindeps=""
 	script_hostdeps=""
-	load_scriptinfo "$script_id" "$script_desc" "$script_type" "$script_bg" "$script_admindeps" "$script_hostdeps"
+	script_interactive="true"
+	load_scriptinfo "$script_id" "$script_desc" "$script_type" "$script_bg" "$script_admindeps" "$script_hostdeps" "$script_interactive"
 	return
 
 #=== READ PARAMS ===================================================================
