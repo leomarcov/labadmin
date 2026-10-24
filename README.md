@@ -415,6 +415,7 @@ Labadmin has a lot of actions ready to use! Actions are categorized for better o
 
 [exec/]               Exec commands and scripts
   [commands]          Exec commands in Windows PowerShell host
+  [cmd]               Exec CMD interpreter
   [powershell]        Exec Powershell interpreter
 
 [file/]               Manage files and transfers
