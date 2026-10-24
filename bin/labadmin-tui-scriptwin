@@ -45,8 +45,11 @@ labadmin_load-config-file
 
 # LABADMIN TMP DIR INIT
 labadmin_tmp-init
-labadmin_tmp-vars-load admin_ip ssh_port iface lab_file Lparam Wparam Fparam agent_os tmuxmode ips
+labadmin_tmp-vars-load admin_ip iface lab_file Lparam Wparam Fparam agent_os tmuxmode ips
 labadmin_tmp-vars-load-1file execbg-win
+
+# INIT AGENT OS
+labadmin_init-agentos
 
 # DRAW BOX
 labadmin_draw-box 1 3 "SCRIPT: ${S_B}$script_id${S_R}"
