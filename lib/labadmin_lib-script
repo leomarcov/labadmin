@@ -30,6 +30,7 @@ declare -A scripts_bg 					# Associative array indexed by script_id with scripts
 declare -A scripts_parent				# Associative array indexed by script_id with scripts parent menu (if nested script)
 declare -A scripts_admindeps			# Associative array indexed by script_id with admin dependencies
 declare -A scripts_hostdeps				# Associative array indexed by script_id with host dependencies
+declare -A scripts_interactive			# Associative array indexed by script_id with scripts interactive mode
 unset script_id							# Current script id (name of file without extension) selected to exec
 unset exec_bg							# Current background exec of selected script: sub|win|<empty>
 unset hosts_err							# Array with host numbers with exit error exist status in current script
@@ -172,6 +173,7 @@ function load_scripts() {
 #	$4	script_bg
 #	$5	admin-dependencies
 #	$6	host-depedences
+#   $7  script_interactive
 #
 # GLOBAL VARIABLES WRITTEN
 #	scripts_desc[]					Description of the script file
@@ -181,6 +183,7 @@ function load_scripts() {
 #	scripts_parent[]				Scriptid of parent script menu (if a child script)
 #	scripts_admindeps[]				List of admin dependencies
 #	scripts_hostdeps[]				Lists of host dependencies
+#	scripts_interactive[]			Exec script using interactive mode
 #===============================================================================
 function load_scriptinfo() {
 	local script_id="$1"
@@ -189,6 +192,7 @@ function load_scriptinfo() {
 	local script_bg="$4"
 	local script_admindeps="$5"
 	local script_hostdeps="$6"
+	local script_interactive="$7"
 	local script_file="${scripts_path}/${script_id}"
 	local script_parent="${script_id%/*}"
 	[ "${script_parent}" = "${script_id}" ] && script_parent=""
@@ -206,6 +210,7 @@ function load_scriptinfo() {
 	scripts_parent["$script_id"]="$script_parent"
 	[ "$script_admindeps" ] && scripts_admindeps["$script_id"]="$script_admindeps"
 	[ "$script_hostdeps" ] && scripts_hostdeps["$script_id"]="$script_hostdeps"
+	[ "$script_interactive" ] && scripts_interactive["$script_id"]="$script_interactive"
 }
 
 
@@ -757,6 +762,7 @@ function exec_script_ssh-windows() {
     local nhost="$1"
     local host_ip=${ips[$nhost]}
     local script_file="${scripts_file[$script_id]}"
+    local script_interactive="${scripts_interactive[$script_id]}"
 
     # Generate script with global vars
     local script_ps=$(
@@ -790,11 +796,11 @@ PS
     ) || return 1
 
     # Call SSH
-    ssh -T "labadmin@${host_ip}" \
+    ssh $([ "$script_interactive" ] && echo "-tt" || echo "-T") "labadmin@${host_ip}" \
         -p "$ssh_port" \
         -o StrictHostKeyChecking=no \
         -o ConnectTimeout="${ssh_timeout:-5}" \
-        "powershell.exe -NoProfile -NonInteractive -EncodedCommand ${script_b64}"
+        "powershell.exe -NoProfile $([ ! "$script_interactive" ] && echo "-NonInteractive") -EncodedCommand ${script_b64}"
 
     return $?
 }
