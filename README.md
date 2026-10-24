@@ -418,7 +418,7 @@ Labadmin has a lot of actions ready to use! Actions are categorized for better o
   [powershell]        Exec Powershell interpreter
 
 [file/]               Manage files and transfers
-  [download]          Download URL resource in host Downloads folder
+  [download]          Download URL resource in host folder
   [extract]           Extract file
   [remove]            Remove files and folders
 
