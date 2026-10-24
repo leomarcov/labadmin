@@ -8,7 +8,7 @@ script_id="$(echo ${BASH_SOURCE[0]} | sed 's\^'"$scripts_path"'/*\\g')"		# Scrip
 
 #=== LOAD INFO =====================================================================
 if [ "$1" = "--load-scriptinfo" ]; then
-	script_desc="Download URL resource in host folder"
+	script_desc="Download URL resource in host Downloads folder"
 	script_type="ssh"
 	script_bg="sub"
 	script_admindeps=""
@@ -51,6 +51,8 @@ if (-not (Test-Path -LiteralPath $dir -PathType Container)) {
 }
 
 $filepath = Join-Path $dir $filename
+
+Write-Output "Downloading to: $filepath"
 $ProgressPreference = 'SilentlyContinue'
 Invoke-WebRequest -Uri $url -OutFile $filepath
 POWERSHELL
