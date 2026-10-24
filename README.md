@@ -397,69 +397,66 @@ Labadmin has a lot of actions ready to use! Actions are categorized for better o
   [snap]              Create snapshot
   [stop]              Stop machine
 
-[anydesk]         Start anydesk connection to remote host
-[poweroff]        Power OFF host
-[poweron]         Power ON host using network
-[reboot]          Reboot host
-[reboot-grub]     Reboot hosts and select GRUB entry on boot
-[ssh]             Open SSH connection to host
-[sysreq]          Send system request signal
+[anydesk]             Start anydesk connection to remote host
+[poweroff]            Power OFF host
+[poweron]             Power ON host using network
+[reboot]              Reboot host
+[reboot-grub]         Reboot hosts and select GRUB entry on boot
+[ssh]                 Open SSH connection to host
+[sysreq]              Send system request signal
 ```
 
 ## Windows actions
 ```
-[exec/]              Exec commands and open interpreter in hosts
-  [cmd]              Open CMD command line interface
-  [com-cmd]          Exec commands in Windows CMD host using WINRM
-  [com-ps]           Exec commands in Windows PowerShell host using WINRM
-  [powershell]       Open PowerShell command line interface
+[conf/]               Windows configuration actions
+  [get-time]          Set system date/hour and show current time
+  [hostname]          Set hostname
+  [set-time]          Set system date/hour and show current time
 
-[file/]              Manage files and transfers
-  [download]         Download URL resource in host Downloads folder
-  [remove]           Remove files and folders
+[exec/]               Exec commands and scripts
+  [commands]          Exec commands in Windows PowerShell host
+  [powershell]        Exec Powershell interpreter
 
-[group/]             Manage local groups
-  [add]              Add new group
-  [auser]            Add user account to existing group
-  [del]              Remove group
-  [list]             Show groups list and show specific group info
-  [ruser]            Remove user account from existing group
+[file/]               Manage files and transfers
+  [download]          Download URL resource in host Downloads folder
+  [extract]           Extract file
+  [remove]            Remove files and folders
 
-[license/]           Manage Windows license product key
-  [activate]         Activate Windows license
-  [status]           Show Windows activation status
+[group/]              Manage local groups
+  [add]               Add new group
+  [auser]             Add user account to existing group
+  [del]               Remove group
+  [list]              Show groups list and show specific group info
+  [ruser]             Remove user account from existing group
 
-[process/]           Manage system process
-  [kill]             Kill process
-  [list]             Show process list
+[license/]            Manage Windows license product key
+  [activate]          Activate Windows license
+  [status]            Show Windows activation status
 
-[rdp/]               Manage Remote Desktop
-  [connect]          Connect to remote desktop using Remmina
-  [disable]          Disable remote desktop
-  [enable]           Enable remote desktop for admin users
+[process/]            Manage system process
+  [kill]              Kill process
+  [list]              Show process list
 
-[software/]          Manage software
-  [install]          Install package software silently
-  [list]             List all installed software and show specific programs info
+[rdp/]                Manage Remote Desktop
+  [connect]           Connect to remote desktop using Remmina
+  [disable]           Disable remote desktop
+  [enable]            Enable remote desktop for admin users
 
-[user/]              Manage local users accounts
-  [add]              Add new user account
-  [agroup]           Add user account to existing group
-  [del]              Remove user account
-  [disable]          Disable user account
-  [enable]           Enable user account
-  [list]             Show user list and show specific user info
-  [pass]             Set user password
-  [rename]           Rename user account
-  [rgroup]           Remove user account from existing group
+[user/]               Manage local users accounts
+  [add]               Add new user account
+  [agroup]            Add user account to existing group
+  [del]               Remove user account
+  [disable]           Disable user account
+  [enable]            Enable user account
+  [list]              Show user list and show specific user info
+  [pass]              Set user password
+  [rename]            Rename user account
+  [rgroup]            Remove user account from existing group
 
-[hostname]           Set hostname
-[msg]                Open message in notification pop-up
-[poweroff]           Power OFF host
-[poweron]            Power ON host using network
-[reboot]             Reboot host
-[time]               Set system date/hour and show current time
-
+[msg]                 Open message in notification pop-up
+[poweroff]            Power OFF host
+[poweron]             Power ON host using network
+[reboot]              Reboot host
 ```
 
 &nbsp;  
