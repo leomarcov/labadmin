@@ -15,6 +15,7 @@ script_id="$(echo ${BASH_SOURCE[0]} | sed 's\^'"$scripts_path"'/*\\g')"			# Scri
 # script_desc: description to show in menu
 # script_type: behavior of action according the way to exec (remote, local, all hosts, admin host, etc.)
 #	ssh					Run for each LISTEN host and exec script in remote using SSH
+#	scp 				Run for each LISTEN host and exec script using SCP for copy files
 #	local				Run for each LISTEN host and exec script in local
 #	inactive			Run for each INACTIVE host and exec script in local
 #	admin+local+admin	Run 1 time in local. Run for each LISTEN host and exec script in local. Run 1 time in local
@@ -39,8 +40,9 @@ if [ "$1" = "--scriptinfo" ]; then
 	script_desc="DDDDDDDDDDDDD DDDDDDDDDD DDDDDDDDDD"
 	script_type="ssh|local|inactive|admin+local+admin|admin+local|local+admin|admin+ssh+admin|admin+ssh|ssh+admin|ssh+local|local+ssh|ssh&local|menu"
 	script_bg="dey|win|sub|force win|force sub"
+	script_interactive=""
 	script_admindeps=""
-	script_hostdeps=""	
+	script_hostdeps=""
 	load_scriptinfo "$script_id" "$script_desc" "$script_type" "$script_bg" "$script_admindeps" "$script_hostdeps"
 	return
 
