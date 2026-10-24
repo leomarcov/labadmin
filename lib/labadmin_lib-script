@@ -196,7 +196,7 @@ function load_scriptinfo() {
 	# CHECK SCRIPT FILE
 	[ ! -r "$script_file" ] && labadmin_error "Can't read script file $script_file" 1
 	# CHECK SCRIPT TYPE
-	[[ "${script_type}" != @(ssh|local|inactive|admin+local+admin|admin+local|local+admin|admin+ssh+admin|admin+ssh|ssh+admin|ssh+local|local+ssh|ssh&local|menu) ]] && labadmin_error "${script_id}: unknown script type ${script_type}${S_R}" 1
+	[[ "${script_type}" != @(ssh|scp|local|inactive|admin+local+admin|admin+local|local+admin|admin+ssh+admin|admin+ssh|ssh+admin|ssh+local|local+ssh|ssh&local|menu) ]] && labadmin_error "ERROR: unknown script type ${script_type} in script ${script_id}${S_R}" 1
 
 
 	scripts_desc["$script_id"]="$script_desc"
@@ -618,6 +618,10 @@ function exec_script() {
 	elif [ "$nhost" ] && [[ "${script_type,,}" = @(ssh|admin+ssh+admin|admin+ssh|ssh+admin) ]] ; then
 		exec_script_ssh "$nhost"
 		out=$?		
+	#### EXEC SCP
+	elif [ "$nhost" ] && [[ "${script_type,,}" = "scp" ]] ; then
+		exec_script_scp "$nhost"
+		out=$?	
 	else
 		labadmin_error "Incorrect script type $script_type for $script_file" 
 		out=1
@@ -793,6 +797,37 @@ PS
         "powershell.exe -NoProfile -NonInteractive -EncodedCommand ${script_b64}"
 
     return $?
+}
+
+
+#=== FUNCTION ==================================================================
+# NAME: exec_script_scp
+# DESCRIPTION: exec current scp $script_id
+#
+# PARAMETERS
+#	$1	Source path
+#   $2  Destination path
+#   $3  Remote path: src|dest
+#===============================================================================
+function exec_script_scp() {
+    local nhost="$1"
+    local host_ip=${ips[$nhost]}
+    local script_file="${scripts_file[$script_id]}"
+
+    local src_path="$p1"
+    local dest_path="$p2"
+    local remote_path="$p3"
+
+    [ "$agent_os" = "windows" ] && local ssh_user="labadmin" || local ssh_user="linux"
+	if [ "$remote_path" = "src" ]; then
+		src_path="${src_path//\\//}"
+		src_path="${ssh_user}@${host_ip}:${src_path}"
+	else 
+		dest_path="${dest_path//\\//}"
+		dest_path="${ssh_user}@${host_ip}:${dest_path}"
+	fi
+
+    scp -P "$ssh_port" -r -o StrictHostKeyChecking=no -o ConnectTimeout="${ssh_timeout:-5}" "${src_path}" "${dest_path}"
 }
 
 
