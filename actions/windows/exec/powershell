@@ -26,5 +26,5 @@ fi
 #=== EXEC SCRIPT ===================================================================
 
 cat <<- 'POWERSHELL'
-pwsh.exe
+powershell.exe
 POWERSHELL
