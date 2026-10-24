@@ -753,10 +753,9 @@ function exec_script_ssh-windows() {
     local nhost="$1"
     local host_ip=${ips[$nhost]}
     local script_file="${scripts_file[$script_id]}"
-    local script_ps script_b64
 
     # Generate script with global vars
-    script_ps=$(
+    local script_ps=$(
         script_type="ssh" labadmin_export_vars_code powershell
 
         # Script params definition: $p1, $p2, ...
@@ -769,7 +768,7 @@ function exec_script_ssh-windows() {
     )
 
     # Encode PowerShell script using BASE64
-    script_b64=$(
+    local script_b64=$(
         {
 cat <<'PS'
 $ProgressPreference = "SilentlyContinue"
