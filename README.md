@@ -414,12 +414,14 @@ Labadmin has a lot of actions ready to use! Actions are categorized for better o
   [set-time]          Set system date/hour and show current time
 
 [exec/]               Exec commands and scripts
-  [commands]          Exec commands in Windows PowerShell host
   [cmd]               Exec CMD interpreter
+  [commands]          Exec commands in Windows PowerShell host
   [powershell]        Exec Powershell interpreter
 
 [file/]               Manage files and transfers
-  [download]          Download URL resource in host folder
+  [copyfrom]          Copy files or directory from host to admin
+  [copyto]            Copy files or directory from admin to host
+  [download]          Download URL resource in host Downloads folder
   [extract]           Extract file
   [remove]            Remove files and folders
 
