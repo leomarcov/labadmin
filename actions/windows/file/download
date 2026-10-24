@@ -20,8 +20,10 @@ if [ "$1" = "--load-scriptinfo" ]; then
 elif [ "$1" = "--readparams" ]; then
     # PARAM1: URL
 	read_param "$script_id" 1 "URL" "" "."
-	# PARAM2: remote path
-	read_param "$script_id" 2 "Filename destination (default yyyy-mm-dd_hh-mm-ss_file.download)" "$(date +%Y-%m-%d_%H-%M-%S_file.download)" "."
+	# PARAM2: remote dir
+	read_param "$script_id" 2 "Folder dest (default current user Downloads folder)" "" ""
+	# PARAM2: remote filename
+	read_param "$script_id" 3 "Filename dest (default yyyy-mm-dd_hh-mm-ss_file.download)" "$(date +%Y-%m-%d_%H-%M-%S_file.download)" "."
 	return
 fi
 
@@ -30,9 +32,26 @@ fi
 
 cat <<- 'POWERSHELL'
 $url = $p1
-$dest = $p2
+$dir = $p2
+$filename = $p3
 
+if(-not $dir) {
+	try {
+		$user = (Get-CimInstance Win32_ComputerSystem).UserName; $sid = ([System.Security.Principal.NTAccount]$user).Translate([System.Security.Principal.SecurityIdentifier]).Value
+		$dir = Join-Path (Get-ItemPropertyValue "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\ProfileList\$sid" -Name ProfileImagePath) 'Downloads'
+	} catch { 
+    	Write-Error "ERROR: cant access current user $user Downloads folder"
+    	exit 1
+	 }
+}
+
+if (-not (Test-Path -LiteralPath $dir -PathType Container)) {
+    Write-Error "ERROR: Folder $dir does not exist"
+    exit 1
+}
+
+$filepath = Join-Path $dir $filename
 $ProgressPreference = 'SilentlyContinue'
-Invoke-WebRequest -Uri $url -OutFile $dest
+Invoke-WebRequest -Uri $url -OutFile $filepath
 POWERSHELL
 
