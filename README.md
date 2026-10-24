@@ -9,7 +9,7 @@ Labadmin aims to be a tool useful for IT teachers and computer lab sysadmins.
   * Discover hosts network status in a laboratory classroom by MAC address (works on **DHCP** networks!).
   * Show the status of each machine in a grid map according the preconfigured position in the lab. It's easy to identificate students computers by map location.
   * Flexible host selection using ranges. Can select all machines, only a row, odd and even machines, a specific list, etc.
-  * Labadmin incorporate a **full set of administrative actions** ready to use (currently **113 for Linux** and **42 for Windows**). Some key actions are:
+  * Labadmin incorporate a **full set of administrative actions** ready to use (currently **113 for Linux** and **33 for Windows**). Some key actions are:
     * **Config a restrictive environment in a exam time**: block all users, block usb drivers, set restrictive firewall rules, autobackup exam user data, block Virtualbox bridge mode, autorecord and save screen and others restrictions.
     * **Send heavy files using multiple protocols**: unicast, torrent or multicast.
     * Send and schedule messages to users.
