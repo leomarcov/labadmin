@@ -30,8 +30,6 @@ script_id="$(echo ${BASH_SOURCE[0]} | sed 's\^'"$scripts_path"'/*\\g')"			# Scri
 #	menu 				Folder for contain other scripts
 # script_bg: background behavior of action
 #	deny			Deny script can be runned in background mode
-#	win				Run in new widow terminal
-#	sub				Run as a subprocess (default)
 #	force win		Force to run in background mode in new window
 #	force sub		Force to run in background mode in subprocess
 # script_admindeps  Dependences needed for admin: list of package1|package2 or file1|file2(package1|package2) 
