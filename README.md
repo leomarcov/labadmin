@@ -85,11 +85,11 @@ install-windows-agent.ps1 -sshPubKey '<YOUR_PUBLIC_KEY>'
 
 ## Configuration
 ### Global settings
-  * **Global config** settings are stored in file: `/opt/labadmin/conf/labadmin.conf`
-  * When install admin default `labadmin.conf` is created (if file doesn't exist) and new **public/private SSH keys** are generated.
-  * **IMPORTANT**
-    * Ensure variables `ssh_pubkey` and `ssh_privkey` stores your own public and private keys for SSH autentication.
-    * Use the **same** `ssh_pubkey` to config each host agent.
+**Global config** settings are stored in file: `/opt/labadmin/conf/labadmin.conf`
+When install admin default `labadmin.conf` is created (if file doesn't exist) and new **public/private SSH keys** are generated.
+ **IMPORTANT**
+  * Ensure variables `ssh_pubkey` and `ssh_privkey` stores your own public and private keys for SSH autentication.
+  * Use the **same** `ssh_pubkey` to config each host agent.
 ```bash
 vi /opt/labadmin/conf/labadmin.conf
   default_lab="<YOUR_LAB>"             # Default lab file to use if not lab specified with -l param
