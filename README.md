@@ -38,7 +38,7 @@
     * **Other administrative tasks**: software installation, user accounts, process management, Windows activation and more!
 
 <p align="center">
- <img src="https://github.com/user-attachments/assets/84b7a7f2-4c8e-444c-946c-ce9f39b3750d">
+	<img width="1289" height="838" alt="image" src="https://github.com/user-attachments/assets/38100d1e-882b-41a6-89fc-34c397bd3188" />
 </p>
 
 ## Architecture and requirements
