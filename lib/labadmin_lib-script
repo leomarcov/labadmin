@@ -584,7 +584,7 @@ function exec_script() {
 
 	# SHOW HEADER
 	local e=""; [ "${#nhost}" -eq 1 ] && e=" "
-	[ "$exec_bg" != "win" ] && echo -e "\n┌─── ${S_B}[${e}${nhost:-ADMIN}] ${C_LB}${host_ip:-LOCALHOST}${C_D} → EXEC $script_id${S_R} $(seq -s"─" $((${COLUMNS}-17-${#nhost}-${#e}-${#host_ip}-${#script_id}$([ ! "$nhost" ] && echo "-5")$([ ! "$host_ip" ] && echo "-9")))| tr -d "[0-9]")┐"
+	echo -e "\n┌─── ${S_B}[${e}${nhost:-ADMIN}] ${C_LB}${host_ip:-LOCALHOST}${C_D} → EXEC $script_id${S_R} $(seq -s"─" $((${COLUMNS}-17-${#nhost}-${#e}-${#host_ip}-${#script_id}$([ ! "$nhost" ] && echo "-5")$([ ! "$host_ip" ] && echo "-9")))| tr -d "[0-9]")┐"
 
 	#### EXEC BACKGROUND START (prepare output)
 	[ "$exec_bg" = "sub" ] && stdout_nhost start "$nhost"	
@@ -639,11 +639,11 @@ function exec_script() {
 	if [ "$out" -ne 0 ]; then
 		[ "$exec_bg" = "sub" ] && labadmin_beep "error1"
 		[ "$nhost" ] && hosts_err[$nhost]=$out  
-		[ "$exec_bg" != "win" ] && echo -e "${S_R}└─── ${S_B}[${e}${nhost:-ADMIN}] ${C_LB}${host_ip:-LOCALHOST}${C_D} ← ${C_LR}ERROR ($out)${C_D}${S_R} $(seq -s"─" $((${COLUMNS}-21-${#e}${#nhost}-${#host_ip}-${#out}$([ ! "$nhost" ] && echo "-5")$([ ! "$host_ip" ] && echo "-9")))| tr -d "[0-9]")─┘"
+		echo -e "${S_R}└─── ${S_B}[${e}${nhost:-ADMIN}] ${C_LB}${host_ip:-LOCALHOST}${C_D} ← ${C_LR}ERROR ($out)${C_D}${S_R} $(seq -s"─" $((${COLUMNS}-21-${#e}${#nhost}-${#host_ip}-${#out}$([ ! "$nhost" ] && echo "-5")$([ ! "$host_ip" ] && echo "-9")))| tr -d "[0-9]")─┘"
 		[ "$tmuxmode" ] && labadmin_status-send "  [${e}${nhost:-AD}] ${S_B}${C_Y}${script_id} ${C_R}EXEC ERROR${S_R}"
 	else
 		[ "$nhost" ] && hosts_ok[$nhost]=$out  
-		[ "$exec_bg" != "win" ] && echo -e "${S_R}└─── ${S_B}[${e}${nhost:-ADMIN}] ${C_LB}${host_ip:-LOCALHOST}${C_D} ← ${C_LG}OK${C_D}${S_R} $(seq -s"─" $((${COLUMNS}-15-${#e}${#nhost}-${#host_ip}$([ ! "$nhost" ] && echo "-5")$([ ! "$host_ip" ] && echo "-9")))| tr -d "[0-9]")─┘"
+		echo -e "${S_R}└─── ${S_B}[${e}${nhost:-ADMIN}] ${C_LB}${host_ip:-LOCALHOST}${C_D} ← ${C_LG}OK${C_D}${S_R} $(seq -s"─" $((${COLUMNS}-15-${#e}${#nhost}-${#host_ip}$([ ! "$nhost" ] && echo "-5")$([ ! "$host_ip" ] && echo "-9")))| tr -d "[0-9]")─┘"
 		[ "$tmuxmode" ] && labadmin_status-send "  [${e}${nhost:-AD}] ${S_B}${C_Y}${script_id} ${C_G}EXEC OK${S_R}"
 	fi
 
