@@ -147,8 +147,8 @@ chown root:labadmin /opt/labadmin/labs/<YOUR_LAB>                    # Set file 
 
 &nbsp;  
 ## Usage
-### Start Labadmin
-  * Use `labadmin` command to start Labadmin using TUI interface.
+### Start Labadmin TUI
+  * Use `labadmin` command to start Labadmin using TUI with interactive mode and screen slipted in panles for map, log and action execution.
   * **Default lab** (defined in var `default_lab` in `labadmin.conf` file) is loaded with **default agent OS** (defined `agent_os` var in lab config) mode.
   * You can use parameters to change lab and OS mode when start:
 ```bash
@@ -185,6 +185,46 @@ $ labadmin -h
 ```
 </p></details>
 
+### Start Labadmin CLI
+  * Use `labadmin-cli` command to start Labadmin using CLI.
+  * CLI exec only individual action that can be parametrized: lab, host range, action to exec, action parameters, etc.
+```
+  Labadmin CLI
+   labadmin-cli [-l lab_config] [-i face] [-r range] [-a action] [-1|-2|-3|-4|-5|-6|-7|-8|-9 param] [-W|-L] [-F] [-M]
+
+  OPTIONS
+   -l lab_config
+	Lab config filename to use. Overrides default_lab variable in labadmin config file.
+	Lab config files must be placed in labs/ directory.
+
+   -i iface
+	Network interface to use. Overrides iface variable in labadmin config file.
+
+   -r range
+	Hosts range to apply actions. For example: 11,34,23,21-28
+
+   -a action
+	Action to exec. For example: user/add
+
+   -1|-2|-3|-4|-5|-6|-7|-8|-9 param
+	Action parameter value to exec.
+
+   -W 
+	Force Windows agent OS mode. Overrides agent_os variable in lab config file.
+
+   -L 
+	Force Linux agent OS mode. Overrides agent_os variable in lab config file.
+
+   -F 
+	Force continue even check dependencies fail
+
+   -M 
+	Show MAP with selected hosts
+
+  CLI SAMPLES
+    labadmin-cli -r 5,12,15-20 -a exec/com -1 "du -sh /home/*"
+    labadmin-cli -r all -a "software/packages/upgrade &" -1 y -2 y
+```
   
 ### Discover hosts
 Discover stage search current IP for each host MAC in lab config file and checks the net state:
