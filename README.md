@@ -159,8 +159,10 @@ $ labadmin -h
 
   OPTIONS
    -l lab_config
-       Lab config filename to use. Overrides default_lab variable in labadmin config file.
-       Lab config files must be placed in labs/ directory.
+   -l lab_id
+	   Lab to use (config filename in labs/ directory). 
+	   Overrides default_lab variable in labadmin config file.
+	   Lab config files must be placed in labs/ directory.
 
    -i iface
        Network interface to use. Overrides iface variable in labadmin config file.
@@ -313,8 +315,8 @@ Labadmin has a lot of actions ready to use! Actions are categorized for better o
 [exec/]                Exec commands in hosts
   [com]                Exec commands in host
   [script]             Exec local script in host
-  [win]                Open window in host X session
-  [win-admin]          Open window in host X session with admin privileges
+  [win]                Open graphical command in host X session as current user privileges
+  [win-admin]          Open graphical command in host X session with admin privileges
 
 [file/]               Transfer files to/from host
   [copyfrom]          Copy files or directory from host to admin
