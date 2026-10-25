@@ -19,13 +19,13 @@
 
 &nbsp; 
 ## Features
-- **MAC-based discovery:** Find configured computers on the local network even when **DHCP** changes their IP addresses.
-- **Classroom map:** Display hosts in a grid matching their physical positions.
-- **Flexible host selection:** Target all hosts, specific IDs, ranges, or odd/even machines.
-- **Linux and Windows administration:** Execute remote script actions over SSH on Linux (Bash) and Windows (PowerShell).
-- **Sequential or concurrent execution:** Run an action across selected hosts and inspect its results.
+- **MAC-based discovery:** find configured computers on the local network even when **DHCP** changes their IP addresses.
+- **Classroom map:** display hosts in a grid matching their physical positions.
+- **Flexible host selection:** target all hosts, specific IDs, ranges, or odd/even machines.
+- **Linux and Windows administration:** execute remote script actions over SSH on Linux (Bash) and Windows (PowerShell).
+- **Sequential or concurrent execution:** run an action across selected hosts and inspect its results.
 - **Action monitoring:** monitor action execution status for each host.
-- **Extensibility:** Add your own Bash or PowerShell actions.
+- **Extensibility:** add your own Bash or PowerShell actions.
 - **Full set of administrative actions ready to use** (currently 113 for Linux and 33 for Windows). Some key actions are:
     * **Examination management**: configure restricted environment rules such as block all users, block usb devices, firewall rules, autobackup user data, block Virtualbox bridge mode, autorecord and save screen and others restrictions.
     * **File transfers**: send heavy files using protocols unicast, torrent or multicast.
