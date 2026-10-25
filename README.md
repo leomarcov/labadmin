@@ -19,7 +19,7 @@
 
 &nbsp; 
 ## Features
-- **MAC-based discovery:** find lab computers on the local network even when **DHCP** changes their IP addresses.
+- **MAC-based discovery:** find lab computers on the local network even when **DHCP** changes IP addresses.
 - **Classroom map:** display hosts in a grid matching their physical positions.
 - **Flexible host selection:** select all hosts, specific IDs, ranges, or odd/even machines.
 - **Linux and Windows administration:** execute remote script actions over SSH on Linux (Bash) and Windows (PowerShell).
