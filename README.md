@@ -497,17 +497,6 @@ For more info refer to:
   * SSH admin+local+admin sample: [actions/linux/file/torrent](actions/linux/file/torrent)
 
 &nbsp;  
-## Security considerations
-Labadmin performs administrative operations on remote computers. Deploy it only on networks and machines you are authorized to manage.
-
-- Restrict access to the administration workstation and its configuration files.
-- Protect SSH private keys; deploy only public keys to managed computers.
-- Restrict SSH access using firewall rules and appropriate user permissions.
-- Review commands that change firewalls, disks, accounts, or examination settings before executing them across a classroom.
-- Prefer testing new actions on a single noncritical machine before running them concurrently.
-- Treat downloaded scripts and custom actions as executable code with the privileges of the configured remote account.
-
-&nbsp;  
 # Lincense
 Labadmin is distributed under the [GNU General Public License v3](LICENSE).
 
