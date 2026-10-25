@@ -127,7 +127,7 @@ chown root:labadmin /opt/labadmin/labs/<YOUR_LAB>                   # Set file o
     * Using optional `-k` parameter.
     * From `conf/labadmin.conf` file in installer directory.
 ```bash
-bash install-linux-host -k '<your_public_key>'
+bash install-linux-host -k '<YOUR_PUBLIC_KEY>'
 ```  
   
 ## Host install on Windows
@@ -136,7 +136,7 @@ bash install-linux-host -k '<your_public_key>'
     * Using optional `-sshPubKey` parameter.
     * From `conf/labadmin.conf` file in installer directory.
  ```powershell
-install-windows-agent.ps1 -sshPubKey '<your_public_key>'
+install-windows-agent.ps1 -sshPubKey '<YOUR_PUBLIC_KEY>'
 ```
 
 &nbsp;  
