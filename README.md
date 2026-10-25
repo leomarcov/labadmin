@@ -79,7 +79,7 @@ vi /opt/labadmin/conf/labadmin.conf
 
 ### Labs config
   * **Labs config** settins are stored in directory: `/opt/labadmin/labs/`
-  * Each laboratory is configured in a individual file in `labs` directory, filename must be the lab name.
+  * Each laboratory must be configured in a individual file in `labs` directory, **filename** must be the lab name.
   * When install admin default `lab.test` lab is created (if no labs files exists).
   * If you need create a new lab file copy template with sample lab config [templates/lab.test](templates/lab.test) to `/opt/labadmin/labs/` and set permissions (`640` and `root:labadmin`).
   * **IMPORTANT**: Ensure variables `map` and `macs[]` are configured with your host map distribution in the lab and with macs for each host
