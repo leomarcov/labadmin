@@ -81,7 +81,7 @@ install-windows-agent.ps1 -sshPubKey '<YOUR_PUBLIC_KEY>'
 * `YOUR_PUBLIC_KEY`: Use the same public SSH key as the one configured in the administration workstation.
   * If no parameter public key is provided when install then public key configured in `<install_dir>/conf/labadmin.conf` will be used. 
   * Do not use the sample keys in default `labadmin.conf`: generate your own keys or use keys generated when install admin.
-  * Do not distribute the private key to hosts!.
+  * Do not distribute the private key to hosts!
 
 ## Configuration
 ### Global settings
