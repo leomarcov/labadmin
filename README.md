@@ -19,9 +19,9 @@
 
 &nbsp; 
 ## Features
-- **MAC-based discovery:** find configured computers on the local network even when **DHCP** changes their IP addresses.
+- **MAC-based discovery:** find lab computers on the local network even when **DHCP** changes their IP addresses.
 - **Classroom map:** display hosts in a grid matching their physical positions.
-- **Flexible host selection:** target all hosts, specific IDs, ranges, or odd/even machines.
+- **Flexible host selection:** select all hosts, specific IDs, ranges, or odd/even machines.
 - **Linux and Windows administration:** execute remote script actions over SSH on Linux (Bash) and Windows (PowerShell).
 - **Sequential or concurrent execution:** run an action across selected hosts and inspect its results.
 - **Action monitoring:** monitor action execution status for each host.
@@ -29,11 +29,11 @@
 - **Full set of administrative actions ready to use** (currently 113 for Linux and 33 for Windows). Some key actions are:
     * **Examination management**: configure restricted environment rules such as block all users, block usb devices, firewall rules, autobackup user data, block Virtualbox bridge mode, autorecord and save screen and others restrictions.
     * **File transfers**: send heavy files using protocols unicast, torrent or multicast.
-    * **Send and schedule messages to users**
-    * **Configure firewall settings**
+    * **Send messages**: send and schedule messages to users.
+    * **Firewall settings**: configure firewall rules, whitelists and blacklists.
     * **Virtualbox management**: import OVA files, start VM, delete VM, create snapshots, etc.
-    * **Dump disk images and partition table**: use ''partclone'' and ''dd''.
-    * **Display managed hosts screen**: display screenshots in a thumbnail grid, save screen, etc.
+    * **Disk images**: dump disk and partition images and partition table  (using `partclone`  and `dd`).
+    * **Display screens**: display hosts screenshots in a thumbnail grid, save screenshots, etc.
     * **Other administrative tasks**: software installation, user accounts, process management, Windows activation and more!
 
 <p align="center">
