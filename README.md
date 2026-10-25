@@ -141,8 +141,13 @@ install-windows-agent.ps1 -sshPubKey '<your_public_key>'
 
 &nbsp;  
 # Usage
-When **labadmin** starts loads default lab config file in configured as agent OS mode (Linux or Windows) in lab config file (`agent_os`.
-You can select other lab config and mode with parameters: ``-l <lab_file>`` and ``-L`` or ``-W``. 
+  * Use `labadmin` command to start Labadmin.
+  * When start **default lab** is loaded (defined in `labadmin.conf` file in `default_lab` var). To select other lab:
+    * Use `-l <lab_id>` parameter to start using other lab.
+    * Inside Labadmin change lab using `lab lab_id`.
+  * Default agent OS is defined en lab config file (var `agent_os`). To select other agent OS:
+    * Use `-L` or `-W` parameters to start using Linux or Windows agent OS mode.
+    * Inside Labadmin change mode using `mode linux` or `mode windows`
 ```bash
 labadmin                # Start labadmin using defualt config lab
 labadmin -l A15         # Start labadin using a15 lab file and default mode defined in a15
