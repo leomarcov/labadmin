@@ -8,6 +8,7 @@
 ## Contents
 - [Features](#features)
 - [Architecture and requirements](#architecture-and-requirements)
+- [Demos](#Demos)
 - [Installation](#installation)
 - [Configuration](#configuration)
 - [Usage](#usage)
