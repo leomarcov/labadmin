@@ -23,20 +23,20 @@
 - **MAC-based discovery:** Find configured computers on the local network even when **DHCP** changes their IP addresses.
 - **Classroom map:** Display hosts in a grid matching their physical positions.
 - **Flexible host selection:** Target all hosts, specific IDs, ranges, or odd/even machines.
-- **Linux and Windows administration:** Execute remote script actions using SSH in Linux (Bash) and Windows (Powershell) machines.
+- **Linux and Windows administration:** Execute remote script actions using SSH in Linux (Bash) and Windows (PowerShell) machines.
 - **Sequential or concurrent execution:** Run an action across selected hosts and inspect its results.
 - **Action monitoring:** Check action status execution in each host.
 - **Extensibility:** Add your own Bash or PowerShell actions.
 - **Examination management:** Apply restrictions, manage network access, and handle examination backups.
 - **File transfers:** Copy files and directories; selected actions also support multicast or torrent-based distribution.
 - **Full set of administrative actions ready to use** (currently 113 for Linux and 33 for Windows). Some key actions are:
-    * Config a restrictive environment in a exam time: block all users, block usb drivers, set restrictive firewall rules, autobackup exam user data, block Virtualbox bridge mode, autorecord and save screen and others restrictions.
+    * Configure a restricted environment during examinations: block all users, block usb drivers, set restrictive firewall rules, autobackup exam user data, block Virtualbox bridge mode, autorecord and save screen and others restrictions.
     * Send heavy files using multiple protocols: unicast, torrent or multicast.
     * Send and schedule messages to users.
     * Config firewall settings.
     * Virtualbox management (import ovas, play, delete, snapshots, etc.)
     * Transfer and copy disk partition images using ''partclone'' and ''dd''.
-    * Show thumnails screenshots of all hosts and save screenshots of selected.
+    * Show thumbnail screenshots of all hosts and save screenshots of selected.
     * Other administrative tasks, like software installation, user accounts, process management, Windows activation, etc. 
 	* Much more!
 
@@ -47,9 +47,9 @@
 ## Architecture and requirements
 Labadmin runs on a **Linux administration workstation**, such as a teacher's computer or a dedicated management server. Managed computers can run **Linux or Windows**.
 
-Each laboratory is described by a configuration file (located in `labs/*`) containing host identifiers, MAC addresses, and a grid representing the classroom layout. Labadmin discovers the configured hosts in the network, displays their status, and execute actions remotely in selected hosts.
+Each laboratory is described by a configuration file (located in `labs/*`) containing host identifiers, MAC addresses, and a grid representing the classroom layout. Labadmin discovers the configured hosts in the network, displays their status, and executes actions remotely in selected hosts.
 
-All actions are sent synchronously at the moment. For manage scripts execution asynchronously may see [Labadmin Script Server](https://github.com/leomarcov/labadmin-script_server).
+All actions are executed synchronously. For manage scripts execution asynchronously may see [Labadmin Script Server](https://github.com/leomarcov/labadmin-script_server).
 
 **Network requirements:** MAC-based discovery depends on local Layer 2 visibility. Machines on other VLANs or routed networks might be reachable over SSH without being discoverable by ARP. SSH access, host firewalls, credentials, and any action-specific dependencies must also be configured.
 
@@ -69,7 +69,7 @@ You can see labadmin in action in short animations:
 git clone https://github.com/leomarcov/labadmin /opt/labadmin
 bash /opt/labadmin/install-linux-admin
 ```  
-### 2. Install Labadmin on each host to control
+### 2. Install Labadmin on each managed host
 ```bash
 # LINUX HOST
 bash install-linux-host -k '<YOUR_PUBLIC_KEY>'
@@ -104,7 +104,7 @@ vi /opt/labadmin/conf/labadmin.conf
   * If do you need create a new `labadmin.conf` copy template with default config [templates/labadmin.conf](templates/labadmin.conf) to `/opt/labadmin/conf/` and set permissions (`640` and `root:labadmin`).
 
 
-### Labs config
+### Lab configuration settings
   * **Labs config** settins are stored in directory: `/opt/labadmin/labs/`
   * The **filename** identifies the laboratory.
   * When install admin default `lab.test` lab is created (if no labs files exists).
@@ -150,7 +150,7 @@ chown root:labadmin /opt/labadmin/labs/<YOUR_LAB>                    # Set file 
 ## Usage
 ### Start Labadmin
   * Use `labadmin` command to start Labadmin.
-  * **Default lab** (defined in var `default_lab` in `labadmin.conf` file) is lodad with **default agent OS** (defined `agent_os` var in lab config) mode.
+  * **Default lab** (defined in var `default_lab` in `labadmin.conf` file) is loaded with **default agent OS** (defined `agent_os` var in lab config) mode.
   * You can use parameters to change lab and OS mode when start:
 ```bash
 labadmin                # Start labadmin using defualt config lab
@@ -219,9 +219,9 @@ labadmin -r 11-23       # Exec labadmin and autoselect hosts from 11 to 23
 
 
 ## Select and exec action
-Action selection allow navigate accros all available actions to select action to exec. Actions are organized in categories directories. 
+Action selection allow navigate through all available actions to select action to exec. Actions are organized in categories directories. 
 
-It's possible to exec action in a iterative or concurrent way. By defualt iterative mode is used. To exec action in a concurrent mode use ``&`` symbol at end of action name. 
+It's possible to exec action in a sequantial or concurrent way. By defualt iterative mode is used. To exec action in a concurrent mode use ``&`` symbol at end of action name. 
 ```bash
   > [/] Action: virtualbox/import         # Exec action in iterative mode
   > [/] Action: virtualbox/import&        # Exec action in concurrent mode
@@ -333,7 +333,7 @@ Labadmin has a lot of actions ready to use! Actions are categorized for better o
   [dependencies]      Check and install host dependencies for Labadmin
 
 [misc/]               Miscellaneous actions
-  [music]             The best moeldies in your pcspeaker! :D
+  [music]             The best melodies in your pcspeaker! :D
   [wallpaper]         Config user wallpaper
   [xmas]              Christmas congratulations for all users!
 
@@ -437,7 +437,7 @@ Labadmin has a lot of actions ready to use! Actions are categorized for better o
 [exec/]               Exec commands and scripts
   [cmd]               Exec CMD interpreter
   [commands]          Exec commands in Windows PowerShell host
-  [powershell]        Exec Powershell interpreter
+  [powershell]        Exec PowerShell interpreter
 
 [file/]               Manage files and transfers
   [copyfrom]          Copy files or directory from host to admin
@@ -497,7 +497,7 @@ For more info refer to:
   * SSH admin+local+admin sample: [actions/linux/file/torrent](actions/linux/file/torrent)
 
 &nbsp;  
-# Lincense
+# License
 Labadmin is distributed under the [GNU General Public License v3](LICENSE).
 
 # Contact
