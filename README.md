@@ -159,7 +159,6 @@ $ labadmin -h
    labadmin [-l lab_config] [-i face] [-W|-L] [-F]
 
   OPTIONS
-   -l lab_config
    -l lab_id
 	   Lab to use (config filename in labs/ directory). 
 	   Overrides default_lab variable in labadmin config file.
