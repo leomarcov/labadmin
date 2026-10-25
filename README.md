@@ -63,8 +63,8 @@ bash /opt/labadmin/install-linux-admin
   * **Global config** settings are stored in file: `/opt/labadmin/conf/labadmin.conf`
   * When install admin default `labadmin.conf` is created (if file doesn't exist) and new **public/private SSH keys** are generated.
   * **IMPORTANT**
-    * Ensure variables `ssh_pubkey` and `ssh_privkey` stores public and private keys for SSH autentication.
-    * Use the **same** `ssh_pubkey` to config each host.
+    * Ensure variables `ssh_pubkey` and `ssh_privkey` stores your own public and private keys for SSH autentication.
+    * Use the **same** `ssh_pubkey` to config each host agent.
 ```bash
 vi /opt/labadmin/conf/labadmin.conf
   default_lab="<YOUR_LAB>"             # Default lab file to use if not lab specified with -l param
@@ -83,7 +83,9 @@ vi /opt/labadmin/conf/labadmin.conf
   * **Labs config** settins are stored in directory: `/opt/labadmin/labs/`
   * Each laboratory must be configured in a individual file in `labs` directory, **filename** must be the lab name.
   * When install admin default `lab.test` lab is created (if no labs files exists).
-  * **IMPORTANT**: Ensure variables `map` and `macs[]` are configured with your host map distribution in the lab and with macs for each host
+  * **IMPORTANT**
+    * Variable `map` must contain the layout of the hosts in your lab in a grid.
+    * Variable `macs[]` must contain the MAC address for each host in your lab.
 ```bash
 # Rename lab.test to your <LAB_NAME>
 mv /opt/labadmin/labs/lab.test /opt/labadmin/labs/<YOUR-LAB_NAME>  # Set lab config filename to your lab ID name
