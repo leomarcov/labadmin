@@ -79,6 +79,7 @@ bash install-linux-host -k '<YOUR_PUBLIC_KEY>'
 install-windows-agent.ps1 -sshPubKey '<YOUR_PUBLIC_KEY>'
 ```
 * `YOUR_PUBLIC_KEY`: Use the same public SSH key on managed hosts as the one generated in the administration workstation when install.
+  * If no parameter public key is provided when install public key in install dir `conf/labadmin.conf` will be used. 
   * Do not use the sample keys in default `labadmin.conf`: generate your own keys or use keys generated when install admin.
   * Do not distribute the private key to hosts!.
 
@@ -143,24 +144,6 @@ vi /opt/labadmin/labs/<YOUR_LAB>
 cp /opt/labadmin/templates/lab.test /opt/labadmin/labs/<YOUR_LAB>    # Set lab config filename to your lab ID name
 chmod 640 /opt/labadmin/labs/<YOUR_LAB>                             # Set file permissions
 chown root:labadmin /opt/labadmin/labs/<YOUR_LAB>                   # Set file owner and groups
-```
-
-## Host install on Linux
-  * Host installer install all needed dependences and configure the remote SSH access method.
-  * Installer needs the same **public key** configured in labadmin admin:
-    * Using optional `-k` parameter.
-    * From `conf/labadmin.conf` file in installer directory.
-```bash
-bash install-linux-host -k '<YOUR_PUBLIC_KEY>'
-```  
-  
-## Host install on Windows
-  * Host installer installs all needed dependences and configure the remote SSH access method.
-  * Installer needs the same **public key** configured in labadmin admin:
-    * Using optional `-sshPubKey` parameter.
-    * From `conf/labadmin.conf` file in installer directory.
- ```powershell
-install-windows-agent.ps1 -sshPubKey '<YOUR_PUBLIC_KEY>'
 ```
 
 &nbsp;  
