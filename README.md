@@ -12,9 +12,7 @@
 - [Configuration](#configuration)
 - [Usage](#usage)
 - [Available actions](#available-actions)
-- [Creating custom actions](#creating-custom-actions)
-- [Security considerations](#security-considerations)
-- [Troubleshooting](#troubleshooting)
+- [Create custom actions](#creating-custom-actions)
 - [License](#license)
 - [Contact](#contact)
 
