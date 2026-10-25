@@ -62,7 +62,6 @@ bash /opt/labadmin/install-linux-admin
 ### Global config
   * **Global config** settings are stored in file: `/opt/labadmin/conf/labadmin.conf`
   * When install admin default `labadmin.conf` is created (if file doesn't exist) and new **public/private SSH keys** are generated.
-  * If do you need create a new `labadmin.conf` copy template with default config [templates/labadmin.conf](templates/labadmin.conf) to `/opt/labadmin/conf/` and set permissions (`640` and `root:labadmin`).
   * **IMPORTANT**: Ensure variables `ssh_pubkey` and `ssh_privkey` stores public and private keys for SSH autentication and same `ssh_pubkey` is used to config each host.
 ```bash
 vi /opt/labadmin/conf/labadmin.conf
@@ -75,6 +74,9 @@ vi /opt/labadmin/conf/labadmin.conf
   ssh_pubkey='<YOUR_PUBLIC_KEY>'       # SSH public key for host authentication
   ssh_privkey='<YOUR_PRIVATE_KEY>'     # SSH purivate key for host authentication
 ```
+  * If do you need create a new `labadmin.conf` copy template with default config [templates/labadmin.conf](templates/labadmin.conf) to `/opt/labadmin/conf/` and set permissions (`640` and `root:labadmin`).
+
+
 ### Labs config
   * **Labs config** settins are stored in directory: `/opt/labadmin/labs/`
   * Each laboratory is configured in a individual file in `labs` directory, filename must be the lab name.
