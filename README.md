@@ -26,11 +26,9 @@
 - **Sequential or concurrent execution:** Run an action across selected hosts and inspect its results.
 - **Action monitoring:** monitor action execution status for each host.
 - **Extensibility:** Add your own Bash or PowerShell actions.
-- **Examination management:** Apply restrictions, manage network access, and handle examination backups.
-- **File transfers:** Copy files and directories; selected actions also support multicast or torrent-based distribution.
 - **Full set of administrative actions ready to use** (currently 113 for Linux and 33 for Windows). Some key actions are:
-    * **Examination restrictions**: configure restricted environment rules such as block all users, block usb devices, firewall rules, autobackup exam user data, block Virtualbox bridge mode, autorecord and save screen and others restrictions.
-    * **Send heavy files**: use multiple protocols such as unicast, torrent or multicast.
+    * **Examination management**: configure restricted environment rules such as block all users, block usb devices, firewall rules, autobackup user data, block Virtualbox bridge mode, autorecord and save screen and others restrictions.
+    * **File transfers**: send heavy files using protocols unicast, torrent or multicast.
     * **Send and schedule messages to users**
     * **Configure firewall settings**
     * **Virtualbox management**: import OVA files, start VM, delete VM, create snapshots, etc.
