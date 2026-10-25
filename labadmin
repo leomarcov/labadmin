@@ -8,8 +8,8 @@
 #
 #       AUTHOR: Leonardo Marco (labadmin@leonardomarco.com)
 #	    LICENSE: GNU General Public License v3.0
-#      VERSION: 2019.04
-#      CREATED: 16.02.2017
+#      VERSION: 2026.10.15
+#      CREATED: 2017.02.16
 #=================================================================================== 
 
 #===============================================================================
@@ -35,11 +35,12 @@ source "${lib_path}/labadmin_lib-install"									# LABADMIN INSTALL LIB
 #===============================================================================
 function help() {
 	echo -e "  Labadmin TUI
-   ${S_B}$(basename $0)${S_R} [-l ${S_U}lab_config${S_R}] [-i ${S_U}face${S_R}] [-W|-L] [-F]
+   ${S_B}$(basename $0)${S_R} [-l ${S_U}lab_id${S_R}] [-i ${S_U}face${S_R}] [-W|-L] [-F]
 
   OPTIONS
-   ${S_B}-l ${S_U}lab_config${S_R}
-\tLab config filename to use. Overrides ${S_B}default_lab${S_R} variable in labadmin config file.
+   ${S_B}-l ${S_U}lab_id${S_R}
+\tLab to use (config filename in labs/ directory). 
+\tOverrides ${S_B}default_lab${S_R} variable in labadmin config file.
 \tLab config files must be placed in ${S_B}labs/${S_R} directory.
 
    ${S_B}-i ${S_U}iface${S_R}
