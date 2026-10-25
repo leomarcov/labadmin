@@ -65,6 +65,7 @@ You can see labadmin in action in short animations:
 ## Installation
 ### 1. Install Labadmin on the Linux administration workstation
 ```bash
+# LINUX ADMIN
 git clone https://github.com/leomarcov/labadmin /opt/labadmin
 bash /opt/labadmin/install-linux-admin
 ```  
