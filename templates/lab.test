@@ -10,7 +10,7 @@
 #===============================================================================
 # GLOBAL CONFIG
 #===============================================================================
-# Lab name showd show in interface
+# Lab name displayed in interface
 lab_name="TEST LAB"
 
 # Default agents operating system when Labadmin starts
