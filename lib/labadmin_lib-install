@@ -355,7 +355,7 @@ function install_admin() {
 	if [ -f "$labadmin_config_path" ]; then
 		final_msg="${final_msg}\n  - Global config file: ${S_B}${labadmin_config_path}${S_R}"
 		final_msg="${final_msg}\n  - Edit file ${S_B}labadmin.conf${S_R} to set labadmin global config"
-		final_msg="${final_msg}\n  - When ${S_B}install labadmin agents${S_R} use this config file or the public key configured in ${S_B}ssh_pubkey${S_R} variable"
+		final_msg="${final_msg}\n  - When ${S_B}install labadmin agents${S_R} use this config file or parameter with the public key configured in ${S_B}ssh_pubkey${S_R} variable"
 		k_pub=$(sed -nE "/^ssh_pubkey=/{s/^ssh_pubkey=//;s/^['\"]//;s/['\"]$//;p;}" "${labadmin_config_path}")
 		[ "$k_pub" ] && final_msg="${final_msg}\n  - ${S_B}Public key${S_R}: ${C_BY}${k_pub}${S_R}"
 	else
