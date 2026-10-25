@@ -69,7 +69,7 @@ bash /opt/labadmin/install-linux-admin
 ### 2. Install Labadmin on each managed host
 ```bash
 # LINUX HOST
-bash install-linux-host -k '<YOUR_PUBLIC_KEY>'
+bash install-linux-agent -k '<YOUR_PUBLIC_KEY>'
 ```
  ```powershell
 # WINDOWS HOST
