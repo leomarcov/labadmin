@@ -148,7 +148,7 @@ chown root:labadmin /opt/labadmin/labs/<YOUR_LAB>                    # Set file 
 &nbsp;  
 ## Usage
 ### Start Labadmin
-  * Use `labadmin` command to start Labadmin.
+  * Use `labadmin` command to start Labadmin using TUI interface.
   * **Default lab** (defined in var `default_lab` in `labadmin.conf` file) is loaded with **default agent OS** (defined `agent_os` var in lab config) mode.
   * You can use parameters to change lab and OS mode when start:
 ```bash
