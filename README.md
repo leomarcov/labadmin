@@ -142,7 +142,7 @@ install-windows-agent.ps1 -sshPubKey '<your_public_key>'
 &nbsp;  
 # Usage
   * Use `labadmin` command to start Labadmin.
-  * **Default lab** (defined in `labadmin.conf` file in `default_lab` var) and **default agent OS** (defined in lab config file in `agent_os`var) are loaded.
+  * **Default lab** (defined in var `default_lab` in `labadmin.conf` file) and **default agent OS** (defined `agent_os` var in lab config) are loaded.
   * You can use parameters to change lab and OS mode when start:
 ```bash
 labadmin                # Start labadmin using defualt config lab
