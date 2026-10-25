@@ -81,13 +81,10 @@ vi /opt/labadmin/conf/labadmin.conf
   * **Labs config** settins are stored in directory: `/opt/labadmin/labs/`
   * Each laboratory must be configured in a individual file in `labs` directory, **filename** must be the lab name.
   * When install admin default `lab.test` lab is created (if no labs files exists).
-  * If you need create a new lab file copy template with sample lab config [templates/lab.test](templates/lab.test) to `/opt/labadmin/labs/` and set permissions (`640` and `root:labadmin`).
   * **IMPORTANT**: Ensure variables `map` and `macs[]` are configured with your host map distribution in the lab and with macs for each host
 ```bash
-# Create new lab file <YOUR_LAB>:
-cp /opt/labadmin/template/lab.test /opt/labadmin/labs/<YOUR_LAB>    # Set lab config filename to your lab ID name
-chmod 640 /opt/labadmin/labs/<YOUR_LAB>                             # Set file permissions
-chown root:labadmin /opt/labadmin/labs/<YOUR_LAB>                   # Set file owner and groups
+# Rename lab.test to your <LAB_NAME>
+mv /opt/labadmin/labs/lab.test /opt/labadmin/labs/<YOUR-LAB_NAME>  # Set lab config filename to your lab ID name
 
 # Edit lab config <YOUR_LAB>:
 vi /opt/labadmin/labs/<YOUR_LAB>
@@ -112,6 +109,12 @@ vi /opt/labadmin/labs/<YOUR_LAB>
  macs[12]="08:00:27:2a:f0:f2"
  macs[13]="08:00:27:bb:07:9d"
 ...
+```
+  * If you want create a new lab file copy template with sample lab config [templates/lab.test](templates/lab.test) to `/opt/labadmin/labs/` and set permissions (`640` and `root:labadmin`).
+```
+cp /opt/labadmin/template/lab.test /opt/labadmin/labs/<YOUR_LAB>    # Set lab config filename to your lab ID name
+chmod 640 /opt/labadmin/labs/<YOUR_LAB>                             # Set file permissions
+chown root:labadmin /opt/labadmin/labs/<YOUR_LAB>                   # Set file owner and groups
 ```
 
 ## Host install on Linux
