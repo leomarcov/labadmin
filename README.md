@@ -71,8 +71,8 @@ vi /opt/labadmin/conf/labadmin.conf
   autoscan_delay=60                    # Auto scan map delay in seconds
 
   ssh_port='58888'                     # SSH port to connect with Linux agents (Windows agents use ssh_port+1)
-  ssh_pubkey='<YOUR_PUBLIC_KEY>'       # SSH public key for host authentication
-  ssh_privkey='<YOUR_PRIVATE_KEY>'     # SSH purivate key for host authentication
+  ssh_pubkey='<YOUR_PUBLIC_KEY>'       # SSH public key for host authentication (GENERATION: ssh-keygen -t ed25519 -C labadmin)
+  ssh_privkey='<YOUR_PRIVATE_KEY>'     # SSH purivate key for host authentication (GENERATION: ssh-keygen -t ed25519 -C labadmin)
 ```
   * If do you need create a new `labadmin.conf` copy template with default config [templates/labadmin.conf](templates/labadmin.conf) to `/opt/labadmin/conf/` and set permissions (`640` and `root:labadmin`).
 
