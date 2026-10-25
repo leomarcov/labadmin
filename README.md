@@ -116,7 +116,7 @@ vi /opt/labadmin/labs/<YOUR_LAB>
 ```
   * If you want create a new lab file copy template with sample lab config [templates/lab.test](templates/lab.test) to `/opt/labadmin/labs/` and set permissions (`640` and `root:labadmin`).
 ```
-cp /opt/labadmin/template/lab.test /opt/labadmin/labs/<YOUR_LAB>    # Set lab config filename to your lab ID name
+cp /opt/labadmin/templates/lab.test /opt/labadmin/labs/<YOUR_LAB>    # Set lab config filename to your lab ID name
 chmod 640 /opt/labadmin/labs/<YOUR_LAB>                             # Set file permissions
 chown root:labadmin /opt/labadmin/labs/<YOUR_LAB>                   # Set file owner and groups
 ```
