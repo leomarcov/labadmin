@@ -79,7 +79,7 @@ bash install-linux-host -k '<YOUR_PUBLIC_KEY>'
 install-windows-agent.ps1 -sshPubKey '<YOUR_PUBLIC_KEY>'
 ```
 * `YOUR_PUBLIC_KEY`: Use the same public SSH key as the one configured in the administration workstation.
-  * If no parameter public key is provided when install public key in install dir `conf/labadmin.conf` will be used. 
+  * If no parameter public key is provided when install then public key configured in `<install_dir>/conf/labadmin.conf` will be used. 
   * Do not use the sample keys in default `labadmin.conf`: generate your own keys or use keys generated when install admin.
   * Do not distribute the private key to hosts!.
 
@@ -106,7 +106,7 @@ vi /opt/labadmin/conf/labadmin.conf
 
 ### Labs config
   * **Labs config** settins are stored in directory: `/opt/labadmin/labs/`
-  * Each laboratory must be configured in a individual file in `labs` directory, **filename** must be the lab name.
+  * The **filename** identifies the laboratory.
   * When install admin default `lab.test` lab is created (if no labs files exists).
   * **IMPORTANT**
     * Variable `map` must contain the layout of the hosts in your lab in a grid.
@@ -117,7 +117,7 @@ mv /opt/labadmin/labs/lab.test /opt/labadmin/labs/<YOUR-LAB_NAME>  # Set lab con
 
 # Edit lab config <YOUR_LAB>:
 vi /opt/labadmin/labs/<YOUR_LAB>
- labadmin="<YOUR_LAB_NAME>"                                        # Lab name showed in interface
+ lab_name="<YOUR_LAB_NAME>"                                        # Lab name showed in interface
  agent_os="linux"                                                  # Default agent operating system (linux or windows)
 
  # Map distritution for each host in lab
@@ -139,11 +139,11 @@ vi /opt/labadmin/labs/<YOUR_LAB>
  macs[13]="08:00:27:bb:07:9d"
 ...
 ```
-  * If you want create a new lab file copy template with sample lab config [templates/lab.test](templates/lab.test) to `/opt/labadmin/labs/` and set permissions (`640` and `root:labadmin`).
+  * To create a new lab file copy template with sample lab config [templates/lab.test](templates/lab.test):
 ```
 cp /opt/labadmin/templates/lab.test /opt/labadmin/labs/<YOUR_LAB>    # Set lab config filename to your lab ID name
-chmod 640 /opt/labadmin/labs/<YOUR_LAB>                             # Set file permissions
-chown root:labadmin /opt/labadmin/labs/<YOUR_LAB>                   # Set file owner and groups
+chmod 640 /opt/labadmin/labs/<YOUR_LAB>                              # Set file permissions
+chown root:labadmin /opt/labadmin/labs/<YOUR_LAB>                    # Set file owner and groups
 ```
 
 &nbsp;  
