@@ -88,8 +88,8 @@ mv /opt/labadmin/labs/lab.test /opt/labadmin/labs/<YOUR-LAB_NAME>  # Set lab con
 
 # Edit lab config <YOUR_LAB>:
 vi /opt/labadmin/labs/<YOUR_LAB>
- labadmin="<YOUR_LAB_NAME>"                                  # Lab name showd show in interface
- agent_os="linux"                                            # Default agent operating system
+ labadmin="<YOUR_LAB_NAME>"                                        # Lab name showed in interface
+ agent_os="linux"                                                  # Default agent operating system (linux or windows)
 
  # Map distritution for each host in lab
  # Break line is used for row separator
