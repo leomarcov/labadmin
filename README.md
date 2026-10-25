@@ -123,12 +123,15 @@ chown root:labadmin /opt/labadmin/labs/<YOUR_LAB>                   # Set file o
 
 ## Host install on Linux
   * Host installer install all needed dependences and configure the remote SSH access method.
+  * Public key can be provided using optional `-k` parameter, if param is not provided installer obtains public key from `conf/labadmin.conf` file .
 ```bash
 bash install-linux-host -k '<your_public_key>'
 ```  
   
 ## Host install on Windows
-  * Host installer install all needed dependences and configure the remote SSH access method.
+  * Host installer installs all needed dependences and configure the remote SSH access method.
+  * Installer needs the same **public key** configured in labadmin admin.
+  * Public key can be provided using optional `-sshPubKey` parameter, if param is not provided installer obtains public key from `conf/labadmin.conf` file .
  ```powershell
 install-windows-agent.ps1 -sshPubKey '<your_public_key>'
 ```
