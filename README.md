@@ -147,9 +147,10 @@ chown root:labadmin /opt/labadmin/labs/<YOUR_LAB>                    # Set file 
 ```
 
 &nbsp;  
-# Usage
+## Usage
+### Start Labadmin
   * Use `labadmin` command to start Labadmin.
-  * **Default lab** (defined in var `default_lab` in `labadmin.conf` file) and **default agent OS** (defined `agent_os` var in lab config) are loaded.
+  * **Default lab** (defined in var `default_lab` in `labadmin.conf` file) is lodad with **default agent OS** (defined `agent_os` var in lab config) mode.
   * You can use parameters to change lab and OS mode when start:
 ```bash
 labadmin                # Start labadmin using defualt config lab
@@ -186,7 +187,7 @@ $ labadmin -h
 </p></details>
 
   
-## Discover
+### Discover hosts
 Discover stage search current IP for each host MAC in lab config file and checks the net state:
   * OFF machines: red dot
   * ON machines listening port: green 
@@ -195,7 +196,7 @@ Discover stage search current IP for each host MAC in lab config file and checks
 Once all network info has been recollected labadmin shows a grid map according the configured position.
 <p align="center"><img width="606" src="https://user-images.githubusercontent.com/32820131/66719829-faf9f880-edf4-11e9-9183-f43c3aff4d3b.png"></p>
   
-## Host selection
+### Select hosts
 On this stage admin user select controlled hosts range where exec the action. 
 
 Some range samples are:
@@ -217,7 +218,7 @@ labadmin -r 11-23       # Exec labadmin and autoselect hosts from 11 to 23
 ```
 
 
-## Action selection
+## Select and exec action
 Action selection allow navigate accros all available actions to select action to exec. Actions are organized in categories directories. 
 
 It's possible to exec action in a iterative or concurrent way. By defualt iterative mode is used. To exec action in a concurrent mode use ``&`` symbol at end of action name. 
@@ -234,7 +235,6 @@ labadmin -a virtualbox/import       # Exec labadmin and autoselect action virtua
 labadmin -a "virtualbox/import&"    # Exec labadmin and autoselect action virtualbox/import in concurrent mode
 ```
 
-## Action parametrization
 Each action ask for needed parameters to exec according to action needs.
 
 <p align="center"><img width="606" src="https://user-images.githubusercontent.com/32820131/66720709-b7a58700-ee00-11e9-9d14-ccff30a3c2c2.png"></p>
@@ -245,17 +245,17 @@ This stage can be skipped using ``-1 <value1> -2 <value2> ...`` parameters.
 labadmin -a virtualbox/import -1 alumno -2 /home/e.ova  
 ```
 
-## Action monitorization
+### Monitor execution
 On this stage labadmin exec action in each host and show output messages of each host execution.
 If any error occurs labadmin shows at ending the machine list with errors.
 
 <p align="center"><img width="606" src="https://user-images.githubusercontent.com/32820131/66720795-a8730900-ee01-11e9-8146-0c625924fdc4.png"></p>
 
 &nbsp;  
-# Available actions
+## Available actions
 Labadmin has a lot of actions ready to use! Actions are categorized for better organization.
 
-## Linux actions
+### Linux actions
 ```
 [clone/]               Manage partition image backups
   [gpt-table/]         Manage GPT partition table
@@ -427,7 +427,7 @@ Labadmin has a lot of actions ready to use! Actions are categorized for better o
 [sysreq]              Send system request signal
 ```
 
-## Windows actions
+### Windows actions
 ```
 [conf/]               Windows configuration actions
   [get-time]          Set system date/hour and show current time
@@ -484,8 +484,8 @@ Labadmin has a lot of actions ready to use! Actions are categorized for better o
 ```
 
 &nbsp;  
-# Add your own actions!
-The easy way to exec your own scripts is use the actions ``exec/com`` (execute comands) and ``exec/script`` (execute external script). However creating your own labadmin actions you can add permanent actions and use the labadmin interface options to obtain more powerful scripts.
+## Create custom actions
+The easy way to exec your own scripts is use the actions ``exec/com`` (execute comands) and ``exec/script`` (execute external script). However creating your own Labadmin actions you can add permanent actions and use the labadmin interface options to obtain more powerful scripts.
 
 For add a new action to labadmin only need:
   * Create a action file following the labadmin interface. You can use template action located in [templates/action.template](templates/action.template).
@@ -497,10 +497,21 @@ For more info refer to:
   * SSH admin+local+admin sample: [actions/linux/file/torrent](actions/linux/file/torrent)
 
 &nbsp;  
+## Security considerations
+Labadmin performs administrative operations on remote computers. Deploy it only on networks and machines you are authorized to manage.
+
+- Restrict access to the administration workstation and its configuration files.
+- Protect SSH private keys; deploy only public keys to managed computers.
+- Restrict SSH access using firewall rules and appropriate user permissions.
+- Review commands that change firewalls, disks, accounts, or examination settings before executing them across a classroom.
+- Prefer testing new actions on a single noncritical machine before running them concurrently.
+- Treat downloaded scripts and custom actions as executable code with the privileges of the configured remote account.
+
+&nbsp;  
 # Lincense
-Labadmin license is [GPLv3](LICENSE)
+Labadmin is distributed under the [GNU General Public License v3](LICENSE).
 
 # Contact
-My name is Leonardo Marco. I'm sysadmin teacher in [CIFP Carlos III](https://cifpcarlos3.es/), Cartagena, Murcia (Spain).
+Labadmin is developed by Leonardo Marco, a sysadmin teacher at [CIFP Carlos III](https://cifpcarlos3.es/) in Cartagena, Murcia, Spain.
 
-You can email me for suggestions, contributions, labadmin help or share your feelings: labadmin@leonardomarco.com
+For questions, suggestions, and contributions: **labadmin@leonardomarco.com**.
