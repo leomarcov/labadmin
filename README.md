@@ -69,11 +69,19 @@ bash /opt/labadmin/install-linux-admin
 ### 2. Install Labadmin on each managed host
 ```bash
 # LINUX HOST
-bash install-linux-agent -k '<YOUR_PUBLIC_KEY>'
+install_dir=$(mktemp  -d -t labadmin_install.XXXXXX)
+git clone https://github.com/leomarcov/labadmin $install_dir
+bash ${install_dir}/install-linux-agent -k '<YOUR_PUBLIC_KEY>'
+rm -rf $install_dir
 ```
  ```powershell
 # WINDOWS HOST
-install-windows-agent.ps1 -sshPubKey '<YOUR_PUBLIC_KEY>'
+$installDir = Join-Path $env:TEMP ([guid]::NewGuid().ToString())
+try {
+    git clone https://github.com/leomarcov/labadmin.git $installDir
+    if ($LASTEXITCODE -ne 0) { throw "Git clone failed" }
+    & "$installDir\install-windows-agent.ps1" -sshPubKey '<YOUR_PUBLIC_KEY>
+} finally { Remove-Item -LiteralPath $installDir -Recurse -Force -ErrorAction SilentlyContinue }
 ```
 * `YOUR_PUBLIC_KEY`: Use the same public SSH key as the one configured in the administration workstation.
   * If no public key parameter is provided install will use public key from `<install_dir>/conf/labadmin.conf`. 
