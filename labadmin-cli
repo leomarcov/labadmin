@@ -169,7 +169,7 @@ function check_params() {
 #===============================================================================
 # CHECK PARAMETERS
 check_params "$@"
-[ ! "$Mparam" ] && [[ ! "$rparam" || ! "$aparam" ]] && labadmin_error "Incorrect parameters" 1
+[ ! "$Mparam" ] && [[ ! "$rparam" || ! "$aparam" ]] && { labadmin_error "Incorrect parameters"; echo; help 1; }
 
 # CHECK ROOT
 [ ! "$Fparam" ] && [ "$EUID" -eq 0 ] && labadmin_error "Labadmin cant be exec as root" 1
@@ -178,7 +178,7 @@ check_params "$@"
 labadmin_load-config-file
 
 # LOAD LAB FILE
-labadmin_get-labid
+labadmin_init-labid
 labadmin_load-lab
 
 [ ! -r "$lab_file" ] && labadmin_error "ERROR: can't access lab config file: $lab_file" 1
@@ -233,19 +233,24 @@ load_scripts "$(echo "${scripts_path}/${p0}" | sed 's/[& ]*$//g')"		# Load only 
 #===============================================================================
 # SCRIPT EXECUTION
 #===============================================================================
+echo -e "${S_B}Scanning network${S_R}"
 search_ips
 expand_range
 [ $? -ne 0 ] && [ ! "$Mparam" ] && labadmin_error "ERROR: no hosts selected for range $rhosts" 1
-[ "$Mparam" ] && { draw_map; echo; }
+[ "$Mparam" ] && { 
+	clear
+	draw_map
+	echo
+}
 [ ! "$aparam" ] && exit
 select_script
 read_params
 
 # SHOW EXEC INFO
 [ "${scripts_type[$script_id],,}" = "inactive" ] && shosts="$shosts_inactive" || shosts="$shosts_listen"
-[ "$shosts" ]  && echo -e "${S_B}${C_Y}Selected hosts:${S_R}$shosts" || labadmin_error "ERROR: no hosts selected" 1
-echo -e "${S_B}${C_Y}Selected script:${S_R} $script_id"
-[ "$exec_bg" ] && echo -e "${S_B}${C_Y}Background mode:${S_R} $exec_bg"
+[ "$shosts" ]  && labadmin_info "Selected hosts:${S_R}$shosts" || labadmin_error "ERROR: no hosts selected" 1
+labadmin_info "Selected script:${S_R} $script_id"
+[ "$exec_bg" ] && labadmin_info "Background mode:${S_R} $exec_bg"
 
 # LOG EXEC
 [ -w "$log_path" ] && echo -e "[$(date "+%Y-%d-%m %H:%M:%S")] [$(id -un)] [$admin_ip] [$shosts_listen] [${script_id}${exec_bg:+(${exec_bg})}: $p1 | $p2 | $p3 | $p4 | $p5 | $p6 | $p7 | $p8 | $p9 ]" >> "$log_path"
