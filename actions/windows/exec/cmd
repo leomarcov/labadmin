@@ -11,10 +11,11 @@ if [ "$1" = "--load-scriptinfo" ]; then
 	script_desc="Exec CMD interpreter"
 	script_type="ssh"
 	script_bg="force win"
+	script_interactive=""
 	script_admindeps=""
 	script_hostdeps=""
 	script_interactive="true"
-	load_scriptinfo "$script_id" "$script_desc" "$script_type" "$script_bg" "$script_admindeps" "$script_hostdeps" "$script_interactive"
+	load_scriptinfo "$script_id" "$script_desc" "$script_type" "$script_bg" "$script_interactive" "$script_admindeps" "$script_hostdeps" "$script_interactive"
 	return
 
 #=== READ PARAMS ===================================================================

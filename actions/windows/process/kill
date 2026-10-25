@@ -11,9 +11,10 @@ if [ "$1" = "--load-scriptinfo" ]; then
 	script_desc="Kill process"
 	script_type="ssh"
 	script_bg="sub"
+	script_interactive=""
 	script_admindeps=""
 	script_hostdeps=""
-	load_scriptinfo "$script_id" "$script_desc" "$script_type" "$script_bg" "$script_admindeps" "$script_hostdeps"
+	load_scriptinfo "$script_id" "$script_desc" "$script_type" "$script_bg" "$script_interactive" "$script_admindeps" "$script_hostdeps"
 	return
 
 #=== READ PARAMS ===================================================================

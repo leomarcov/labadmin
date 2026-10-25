@@ -11,29 +11,30 @@
 script_id="$(echo ${BASH_SOURCE[0]} | sed 's\^'"$scripts_path"'/*\\g')"			# Script filename with relative script path
 
 #=== LOAD INFO =====================================================================
-# load_scriptinfo: function to autoregister script in labadmin base
-# script_desc: description to show in menu
-# script_type: behavior of action according the way to exec (remote, local, all hosts, admin host, etc.)
-#	ssh					Run for each LISTEN host and exec script in remote using SSH
-#	scp 				Run for each LISTEN host and exec script using SCP for copy files
-#	local				Run for each LISTEN host and exec script in local
-#	inactive			Run for each INACTIVE host and exec script in local
-#	admin+local+admin	Run 1 time in local. Run for each LISTEN host and exec script in local. Run 1 time in local
-#	admin+local			Run 1 time in local. Run for each LISTEN host and exec script in local
-#	local+admin			Run for each LISTEN host and exec script in local. Run 1 time in local
-#	admin+ssh+admin		Run 1 time in local. Run for each LISTEN host and exec script in remote using SSH. Run 1 time in local.
-#	admin+ssh 			Run 1 time in local. Run for each LISTEN host and exec script in remote using SSH.
-#	ssh+admin 			Run for each LISTEN host and exec script in remote using SSH. Run 1 time in local.
-#	ssh+local 			Run for each LISTEN host and exec first in remote using SSH and then in local
-#	local+ssh 			Run for each LISTEN host and exec first in local and then in remote using SSH
-#	ssh&local 			Run for each LISTEN host and exec simultaneously in remote using SSH and in local
-#	menu 				Folder for contain other scripts
-# script_bg: background behavior of action
-#	deny			Deny script can be runned in background mode
-#	force win		Force to run in background mode in new window
-#	force sub		Force to run in background mode in subprocess
-# script_admindeps  Dependences needed for admin: list of package1|package2 or file1|file2(package1|package2) 
-# script_hostdeps   Dependences needed for admin: list of package1|package2 or file1|file2(package1|package2) 
+# load_scriptinfo 		Function to autoregister script in labadmin base
+# script_desc 			Description to show in menu
+# script_type 			Behavior of action according the way to exec (remote, local, all hosts, admin host, etc.)
+#	ssh					 Run for each LISTEN host and exec script in remote using SSH
+#	scp 				 Run for each LISTEN host and exec script using SCP for copy files
+#	local				 Run for each LISTEN host and exec script in local
+#	inactive			 Run for each INACTIVE host and exec script in local
+#	admin+local+admin	 Run 1 time in local. Run for each LISTEN host and exec script in local. Run 1 time in local
+#	admin+local			 Run 1 time in local. Run for each LISTEN host and exec script in local
+#	local+admin			 Run for each LISTEN host and exec script in local. Run 1 time in local
+#	admin+ssh+admin		 Run 1 time in local. Run for each LISTEN host and exec script in remote using SSH. Run 1 time in local.
+#	admin+ssh 			 Run 1 time in local. Run for each LISTEN host and exec script in remote using SSH.
+#	ssh+admin 			 Run for each LISTEN host and exec script in remote using SSH. Run 1 time in local.
+#	ssh+local 			 Run for each LISTEN host and exec first in remote using SSH and then in local
+#	local+ssh 			 Run for each LISTEN host and exec first in local and then in remote using SSH
+#	ssh&local 			 Run for each LISTEN host and exec simultaneously in remote using SSH and in local
+#	menu 				 Folder for contain other scripts
+# script_bg 			Background behavior of action
+#	deny				 Deny script can be runned in background mode
+#	force win			 Force to run in background mode in new window
+#	force sub			 Force to run in background mode in subprocess
+# script_interactive	Use ssh terminal interactive mode (only in Windows agent)
+# script_admindeps  	Dependences needed for admin: list of package1|package2 or file1|file2(package1|package2) 
+# script_hostdeps   	Dependences needed for admin: list of package1|package2 or file1|file2(package1|package2) 
 if [ "$1" = "--scriptinfo" ]; then
 	script_desc="DDDDDDDDDDDDD DDDDDDDDDD DDDDDDDDDD"
 	script_type="ssh|local|inactive|admin+local+admin|admin+local|local+admin|admin+ssh+admin|admin+ssh|ssh+admin|ssh+local|local+ssh|ssh&local|menu"

@@ -11,9 +11,10 @@ if [ "$1" = "--load-scriptinfo" ]; then
     script_desc="Save screenshots files hosts in local admin"
     script_type="local+admin"
     script_bg="force sub"
+    script_interactive=""
     script_admindeps=""
     script_hostdeps="import(imagemagick)"
-    load_scriptinfo "$script_id" "$script_desc" "$script_type" "$script_bg" "$script_admindeps" "$script_hostdeps"
+    load_scriptinfo "$script_id" "$script_desc" "$script_type" "$script_bg" "$script_interactive" "$script_admindeps" "$script_hostdeps"
     return
 
 #=== READ PARAMS ===================================================================

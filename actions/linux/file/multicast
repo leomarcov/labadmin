@@ -11,9 +11,10 @@ if [ "$1" = "--load-scriptinfo" ]; then
 	script_desc="Copy files or directory from admin to host using MULTICAST"
 	script_type="ssh+admin"
 	script_bg="force sub"
+	script_interactive=""
 	script_admindeps="udp-sender(udpcast) pv"
 	script_hostdeps="udp-receiver(udpcast) ethtool"
-	load_scriptinfo "$script_id" "$script_desc" "$script_type" "$script_bg" "$script_admindeps" "$script_hostdeps"
+	load_scriptinfo "$script_id" "$script_desc" "$script_type" "$script_bg" "$script_interactive" "$script_admindeps" "$script_hostdeps"
 	return
 fi
 

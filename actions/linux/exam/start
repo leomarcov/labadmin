@@ -10,10 +10,11 @@ script_id="$(echo ${BASH_SOURCE[0]} | sed 's\^'"$scripts_path"'/*\\g')"		# Scrip
 if [ "$1" = "--load-scriptinfo" ]; then
 	script_desc="Config host for restrictive exam environment"
 	script_type="ssh"
-	script_bg="sub"
+	script_bg=""
+	script_interactive=""
 	script_admindeps=""
 	script_hostdeps="systemctl(systemd) crontab(cron) setfacl(acl) beep netfilter-persistent|/usr/libexec/iptables/iptables.init(iptables-persistent|iptables-services) chromium|chromium-browser"
-	load_scriptinfo "$script_id" "$script_desc" "$script_type" "$script_bg" "$script_admindeps" "$script_hostdeps"
+	load_scriptinfo "$script_id" "$script_desc" "$script_type" "$script_bg" "$script_interactive" "$script_admindeps" "$script_hostdeps"
 	return
 
 #=== READ PARAMS ===================================================================

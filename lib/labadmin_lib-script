@@ -6,7 +6,7 @@
 #
 #       AUTHOR: Leonardo Marco (labadmin@leonardomarco.com)
 #	   LICENSE: GNU General Public License v3.0
-#      VERSION: 2026.10.10
+#      VERSION: 2026.10.15
 #      CREATED: 2017.02.16
 #===================================================================================
 
@@ -27,10 +27,10 @@ declare -A scripts_desc					# Associative array indexed by script_id with script
 declare -A scripts_type 				# Associative array indexed by script_id with scripts types
 declare -A scripts_file 				# Associative array indexed by script_id with scripts file paths
 declare -A scripts_bg 					# Associative array indexed by script_id with scripts background configs
+declare -A scripts_interactive			# Associative array indexed by script_id with scripts interactive mode
 declare -A scripts_parent				# Associative array indexed by script_id with scripts parent menu (if nested script)
 declare -A scripts_admindeps			# Associative array indexed by script_id with admin dependencies
 declare -A scripts_hostdeps				# Associative array indexed by script_id with host dependencies
-declare -A scripts_interactive			# Associative array indexed by script_id with scripts interactive mode
 unset script_id							# Current script id (name of file without extension) selected to exec
 unset exec_bg							# Current background exec of selected script: sub|win|<empty>
 unset hosts_err							# Array with host numbers with exit error exist status in current script
@@ -171,28 +171,28 @@ function load_scripts() {
 #	$2	script_desc
 #	$3	script_type
 #	$4	script_bg
-#	$5	admin-dependencies
-#	$6	host-depedences
-#   $7  script_interactive
+#   $5  script_interactive
+#	$6	admin-dependencies
+#	$7	host-depedences
 #
 # GLOBAL VARIABLES WRITTEN
 #	scripts_desc[]					Description of the script file
 #	scripts_type[]					Type of the script file
 #	scripts_bg[] 					Background config: deny, force sub, force win, sub, win or empty)
+#	scripts_interactive[]			Exec script using interactive mode
 #	scripts_file[]					Path of the script file
 #	scripts_parent[]				Scriptid of parent script menu (if a child script)
 #	scripts_admindeps[]				List of admin dependencies
 #	scripts_hostdeps[]				Lists of host dependencies
-#	scripts_interactive[]			Exec script using interactive mode
 #===============================================================================
 function load_scriptinfo() {
 	local script_id="$1"
 	local script_desc="$2"
 	local script_type="$3"
 	local script_bg="$4"
-	local script_admindeps="$5"
-	local script_hostdeps="$6"
-	local script_interactive="$7"
+	local script_interactive="$5"
+	local script_admindeps="$6"
+	local script_hostdeps="$7"
 	local script_file="${scripts_path}/${script_id}"
 	local script_parent="${script_id%/*}"
 	[ "${script_parent}" = "${script_id}" ] && script_parent=""
@@ -207,10 +207,10 @@ function load_scriptinfo() {
 	scripts_type["$script_id"]="$script_type"
 	scripts_file["$script_id"]="$script_file"
 	scripts_bg["$script_id"]="$script_bg"
+	[ "$script_interactive" ] && scripts_interactive["$script_id"]="$script_interactive"
 	scripts_parent["$script_id"]="$script_parent"
 	[ "$script_admindeps" ] && scripts_admindeps["$script_id"]="$script_admindeps"
 	[ "$script_hostdeps" ] && scripts_hostdeps["$script_id"]="$script_hostdeps"
-	[ "$script_interactive" ] && scripts_interactive["$script_id"]="$script_interactive"
 }
 
 
@@ -584,7 +584,7 @@ function exec_script() {
 
 	# SHOW HEADER
 	local e=""; [ "${#nhost}" -eq 1 ] && e=" "
-	[ ! "$exec_bg" ] && echo -e "\n┌─── ${S_B}[${e}${nhost:-ADMIN}] ${C_LB}${host_ip:-LOCALHOST}${C_D} → EXEC $script_id${S_R} $(seq -s"─" $((${COLUMNS}-17-${#nhost}-${#e}-${#host_ip}-${#script_id}$([ ! "$nhost" ] && echo "-5")$([ ! "$host_ip" ] && echo "-9")))| tr -d "[0-9]")┐"
+	[ "$exec_bg" != "win" ] && echo -e "\n┌─── ${S_B}[${e}${nhost:-ADMIN}] ${C_LB}${host_ip:-LOCALHOST}${C_D} → EXEC $script_id${S_R} $(seq -s"─" $((${COLUMNS}-17-${#nhost}-${#e}-${#host_ip}-${#script_id}$([ ! "$nhost" ] && echo "-5")$([ ! "$host_ip" ] && echo "-9")))| tr -d "[0-9]")┐"
 
 	#### EXEC BACKGROUND START (prepare output)
 	[ "$exec_bg" = "sub" ] && stdout_nhost start "$nhost"	
@@ -639,11 +639,11 @@ function exec_script() {
 	if [ "$out" -ne 0 ]; then
 		[ "$exec_bg" = "sub" ] && labadmin_beep "error1"
 		[ "$nhost" ] && hosts_err[$nhost]=$out  
-		[ ! "$exec_bg" ] && echo -e "${S_R}└─── ${S_B}[${e}${nhost:-ADMIN}] ${C_LB}${host_ip:-LOCALHOST}${C_D} ← ${C_LR}ERROR ($out)${C_D}${S_R} $(seq -s"─" $((${COLUMNS}-21-${#e}${#nhost}-${#host_ip}-${#out}$([ ! "$nhost" ] && echo "-5")$([ ! "$host_ip" ] && echo "-9")))| tr -d "[0-9]")─┘"
+		[ "$exec_bg" != "win" ] && echo -e "${S_R}└─── ${S_B}[${e}${nhost:-ADMIN}] ${C_LB}${host_ip:-LOCALHOST}${C_D} ← ${C_LR}ERROR ($out)${C_D}${S_R} $(seq -s"─" $((${COLUMNS}-21-${#e}${#nhost}-${#host_ip}-${#out}$([ ! "$nhost" ] && echo "-5")$([ ! "$host_ip" ] && echo "-9")))| tr -d "[0-9]")─┘"
 		[ "$tmuxmode" ] && labadmin_status-send "  [${e}${nhost:-AD}] ${S_B}${C_Y}${script_id} ${C_R}EXEC ERROR${S_R}"
 	else
 		[ "$nhost" ] && hosts_ok[$nhost]=$out  
-		[ ! "$exec_bg" ] && echo -e "${S_R}└─── ${S_B}[${e}${nhost:-ADMIN}] ${C_LB}${host_ip:-LOCALHOST}${C_D} ← ${C_LG}OK${C_D}${S_R} $(seq -s"─" $((${COLUMNS}-15-${#e}${#nhost}-${#host_ip}$([ ! "$nhost" ] && echo "-5")$([ ! "$host_ip" ] && echo "-9")))| tr -d "[0-9]")─┘"
+		[ "$exec_bg" != "win" ] && echo -e "${S_R}└─── ${S_B}[${e}${nhost:-ADMIN}] ${C_LB}${host_ip:-LOCALHOST}${C_D} ← ${C_LG}OK${C_D}${S_R} $(seq -s"─" $((${COLUMNS}-15-${#e}${#nhost}-${#host_ip}$([ ! "$nhost" ] && echo "-5")$([ ! "$host_ip" ] && echo "-9")))| tr -d "[0-9]")─┘"
 		[ "$tmuxmode" ] && labadmin_status-send "  [${e}${nhost:-AD}] ${S_B}${C_Y}${script_id} ${C_G}EXEC OK${S_R}"
 	fi
 
@@ -738,13 +738,12 @@ function exec_script_ssh-linux() {
 	local nhost="$1"
 	local host_ip=${ips[$nhost]}
 	local script_file="${scripts_file[$script_id]}"
-    local script_interactive="${scripts_interactive[$script_id]}"
 
 	( 
 		cat "${lib_path}/labadmin_lib" 
 		script_type="ssh" labadmin_export_vars_code
 		cat "$script_file" 
-	) | ssh $([ "$script_interactive" ] && echo "-tt" || echo "-T") "root@${host_ip}" -p $ssh_port -oStrictHostKeyChecking=no -oConnectTimeout=${ssh_timeout:-5} 'cat | bash /dev/stdin' "'""$p1""'" "'""$p2""'" "'""$p3""'" "'""$p4""'" "'""$p5""'" "'""$p6""'" "'""$p7""'" "'""$p8""'" "'""$p9""'"
+	) | ssh -T "root@${host_ip}" -p $ssh_port -oStrictHostKeyChecking=no -oConnectTimeout=${ssh_timeout:-5} 'cat | bash /dev/stdin' "'""$p1""'" "'""$p2""'" "'""$p3""'" "'""$p4""'" "'""$p5""'" "'""$p6""'" "'""$p7""'" "'""$p8""'" "'""$p9""'"
 	
 	return $?
 }

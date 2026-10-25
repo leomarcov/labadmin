@@ -11,9 +11,10 @@ if [ "$1" = "--load-scriptinfo" ]; then
 	script_desc="Restore remote partition from local partclone image using multicast"
 	script_type="ssh+admin"
 	script_bg="force win"
+	script_interactive=""
 	script_admindeps="udp-sender(udpcast)"
 	script_hostdeps="udp-receiver(udpcast) partclone.restore(partclone)"
-	load_scriptinfo "$script_id" "$script_desc" "$script_type" "$script_bg" "$script_admindeps" "$script_hostdeps"
+	load_scriptinfo "$script_id" "$script_desc" "$script_type" "$script_bg" "$script_interactive" "$script_admindeps" "$script_hostdeps"
 	return
 
 #=== READ PARAMS ===================================================================

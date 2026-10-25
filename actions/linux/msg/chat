@@ -10,10 +10,11 @@ script_id="$(echo ${BASH_SOURCE[0]} | sed 's\^'"$scripts_path"'/*\\g')"		# Scrip
 if [ "$1" = "--load-scriptinfo" ]; then
 	script_desc="Starts text chat with logged user"
 	script_type="ssh&local"
-    script_bg="$([ "$DISPLAY" ] && echo "force win" || echo "deny" )"
+    script_bg=""
+    script_interactive=""
 	script_admindeps="nc|netcat|ncat"
 	script_hostdeps=" terminator"
-	load_scriptinfo "$script_id" "$script_desc" "$script_type" "$script_bg" "$script_admindeps" "$script_hostdeps"
+	load_scriptinfo "$script_id" "$script_desc" "$script_type" "$script_bg" "$script_interactive" "$script_admindeps" "$script_hostdeps"
 	return
 
 #=== READ PARAMS ===================================================================

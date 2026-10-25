@@ -11,9 +11,10 @@ if [ "$1" = "--load-scriptinfo" ]; then
 	script_desc="Perform network speed test from admin to host"
 	script_type="local"
 	script_bg="deny"
+	script_interactive=""
 	script_admindeps="pv"
 	script_hostdeps=""
-	load_scriptinfo "$script_id" "$script_desc" "$script_type" "$script_bg" "$script_admindeps" "$script_hostdeps"
+	load_scriptinfo "$script_id" "$script_desc" "$script_type" "$script_bg" "$script_interactive" "$script_admindeps" "$script_hostdeps"
 	return
 
 #=== READ PARAMS ===================================================================

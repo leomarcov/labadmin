@@ -10,10 +10,11 @@ script_id="$(echo ${BASH_SOURCE[0]} | sed 's\^'"$scripts_path"'/*\\g')"		# Scrip
 if [ "$1" = "--load-scriptinfo" ]; then
 	script_desc="Resize partition to grow until end of disk or next partition"
     script_type="ssh"
-	script_bg="$([ ! "$DISPLAY" ] && echo "sub" || echo "win")"
+	script_bg=""
+	script_interactive=""
 	script_admindeps=""
 	script_hostdeps="fdisk e2fsck ntfsresize"
-	load_scriptinfo "$script_id" "$script_desc" "$script_type" "$script_bg" "$script_admindeps" "$script_hostdeps"
+	load_scriptinfo "$script_id" "$script_desc" "$script_type" "$script_bg" "$script_interactive" "$script_admindeps" "$script_hostdeps"
 	return
 #=== READ PARAMS ===================================================================
 elif [ "$1" = "--readparams" ]; then
