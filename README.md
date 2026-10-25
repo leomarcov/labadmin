@@ -78,7 +78,9 @@ bash install-linux-host -k '<YOUR_PUBLIC_KEY>'
 # WINDOWS HOST
 install-windows-agent.ps1 -sshPubKey '<YOUR_PUBLIC_KEY>'
 ```
-Use the same public SSH key on managed hosts as the one associated with the administration workstation. Do not distribute the private key to hosts!.
+* `YOUR_PUBLIC_KEY`: Use the same public SSH key on managed hosts as the one generated in the administration workstation when install.
+  * Do not use the sample keys in default `labadmin.conf`: generate your own keys or use keys generated when install admin.
+  * Do not distribute the private key to hosts!.
 
 ## Configuration
 ### Global settings
