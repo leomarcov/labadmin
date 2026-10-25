@@ -21,20 +21,20 @@
 - **MAC-based discovery:** Find configured computers on the local network even when **DHCP** changes their IP addresses.
 - **Classroom map:** Display hosts in a grid matching their physical positions.
 - **Flexible host selection:** Target all hosts, specific IDs, ranges, or odd/even machines.
-- **Linux and Windows administration:** Execute remote script actions using SSH in Linux (Bash) and Windows (PowerShell) machines.
+- **Linux and Windows administration:** Execute remote script actions over SSH on Linux (Bash) and Windows (PowerShell).
 - **Sequential or concurrent execution:** Run an action across selected hosts and inspect its results.
-- **Action monitoring:** show action status execution for each host.
+- **Action monitoring:** monitor action execution status for each host.
 - **Extensibility:** Add your own Bash or PowerShell actions.
 - **Examination management:** Apply restrictions, manage network access, and handle examination backups.
 - **File transfers:** Copy files and directories; selected actions also support multicast or torrent-based distribution.
 - **Full set of administrative actions ready to use** (currently 113 for Linux and 33 for Windows). Some key actions are:
-    * **Examination restrictions**: configure restricted environment rules such as block all users, block usb drivers, firewall rules, autobackup exam user data, block Virtualbox bridge mode, autorecord and save screen and others restrictions.
+    * **Examination restrictions**: configure restricted environment rules such as block all users, block usb devices, firewall rules, autobackup exam user data, block Virtualbox bridge mode, autorecord and save screen and others restrictions.
     * **Send heavy files**: use multiple protocols such as unicast, torrent or multicast.
     * **Send and schedule messages to users**
-    * **Config firewall settings**
-    * **Virtualbox management**: import ovas, play, delete, snapshots, etc.
+    * **Configure firewall settings**
+    * **Virtualbox management**: import OVA files, start VM, delete VM, create snapshots, etc.
     * **Dump disk images and partition table**: use ''partclone'' and ''dd''.
-    * **Display managed hosts screen**: display screenshots thumbnails grid, save screen, etc.
+    * **Display managed hosts screen**: display screenshots in a thumbnail grid, save screen, etc.
     * **Other administrative tasks**: software installation, user accounts, process management, Windows activation and more!
 
 <p align="center">
@@ -44,9 +44,9 @@
 ## Architecture and requirements
 Labadmin runs on a **Linux administration workstation**, such as a teacher's computer or a dedicated management server. Managed computers can run **Linux or Windows**.
 
-Each laboratory is described by a configuration file (located in `labs/*`) containing host identifiers, MAC addresses, and a grid representing the classroom layout. Labadmin discovers the configured hosts in the network, displays their status, and executes actions remotely in selected hosts.
+Each laboratory is described by a configuration file (located in `labs/*`) containing host identifiers, MAC addresses, and a grid representing the classroom layout. Labadmin discovers the configured hosts in the network, displays their status, and executes actions remotely on selected hosts.
 
-All actions are executed synchronously. For manage scripts execution asynchronously may see [Labadmin Script Server](https://github.com/leomarcov/labadmin-script_server).
+All actions are executed synchronously. For asynchronously script execution, see [Labadmin Script Server](https://github.com/leomarcov/labadmin-script_server).
 
 **Network requirements:** MAC-based discovery depends on local Layer 2 visibility. Machines on other VLANs or routed networks might be reachable over SSH without being discoverable by ARP. SSH access, host firewalls, credentials, and any action-specific dependencies must also be configured.
 
@@ -76,7 +76,7 @@ bash install-linux-agent -k '<YOUR_PUBLIC_KEY>'
 install-windows-agent.ps1 -sshPubKey '<YOUR_PUBLIC_KEY>'
 ```
 * `YOUR_PUBLIC_KEY`: Use the same public SSH key as the one configured in the administration workstation.
-  * If no parameter public key is provided when install then public key configured in `<install_dir>/conf/labadmin.conf` will be used. 
+  * If public key is provided during installation then public key configured in `<install_dir>/conf/labadmin.conf` will be used. 
   * Do not use the sample keys in default `labadmin.conf`: generate your own keys or use keys generated when install admin.
   * Do not distribute the private key to hosts!
 
@@ -85,7 +85,7 @@ install-windows-agent.ps1 -sshPubKey '<YOUR_PUBLIC_KEY>'
   * **Global config** settings are stored in file: `/opt/labadmin/conf/labadmin.conf`
   * When install admin default `labadmin.conf` is created (if file doesn't exist) and new **public/private SSH keys** are generated.
   * **IMPORTANT**
-    * Ensure variables `ssh_pubkey` and `ssh_privkey` stores your own public and private keys for SSH autentication.
+    * Ensure variables `ssh_pubkey` and `ssh_privkey` stores your own public and private keys for SSH authentication.
     * Use the **same** `ssh_pubkey` to config each host agent.
 ```bash
 vi /opt/labadmin/conf/labadmin.conf
@@ -102,7 +102,7 @@ vi /opt/labadmin/conf/labadmin.conf
 
 
 ### Lab configuration settings
-  * **Labs config** settins are stored in directory: `/opt/labadmin/labs/`
+  * **Labs configuration** settings are stored in directory: `/opt/labadmin/labs/`
   * The **filename** identifies the laboratory.
   * When install admin default `lab.test` lab is created (if no labs files exists).
   * **IMPORTANT**
@@ -114,7 +114,7 @@ mv /opt/labadmin/labs/lab.test /opt/labadmin/labs/<YOUR-LAB_NAME>  # Set lab con
 
 # Edit lab config <YOUR_LAB>:
 vi /opt/labadmin/labs/<YOUR_LAB>
- lab_name="<YOUR_LAB_NAME>"                                        # Lab name showed in interface
+ lab_name="<YOUR_LAB_NAME>"                                        # Lab name displayed in interface
  agent_os="linux"                                                  # Default agent operating system (linux or windows)
 
  # MAP LAYOUT FOR EACH HOST IN LAB
@@ -146,14 +146,14 @@ chown root:labadmin /opt/labadmin/labs/<YOUR_LAB>                    # Set file 
 &nbsp;  
 ## Usage
 ### Start Labadmin TUI
-  * Use `labadmin` command to start Labadmin using TUI with interactive mode and screen slipted in panles for map, log and action execution.
+  * Use `labadmin` command to start Labadmin using TUI with interactive mode and screen split into panels for map, log and action execution.
   * **Default lab** (defined in var `default_lab` in `labadmin.conf` file) is loaded with **default agent OS** (defined `agent_os` var in lab config) mode.
   * You can use parameters to change lab and OS mode when start:
 ```bash
 labadmin                # Start labadmin using default config lab
-labadmin -l A15         # Start labadin using a15 lab file and default mode defined in a15
-labadmin -l A15 -W      # Start labadin using a15 lab file and Windows mode
-labadmin -l A15 -L      # Start labadin using a15 lab file and Linux mode
+labadmin -l A15         # Start labadmin using a15 lab file and default mode defined in a15
+labadmin -l A15 -W      # Start labadmin using a15 lab file and Windows mode
+labadmin -l A15 -L      # Start labadmin using a15 lab file and Linux mode
 ```
 
 <details><summary>Parameter options</summary><p>
@@ -185,7 +185,7 @@ $ labadmin -h
 
 ### Start Labadmin CLI
   * Use `labadmin-cli` command to start Labadmin using CLI.
-  * CLI exec only individual action that can be parametrized: lab, host range, action to exec, action parameters, etc.
+  * CLI execute only individual actions that can be parametrized: lab, host range, action to exec, action parameters, etc.
 ```
   Labadmin CLI
    labadmin-cli [-l lab_config] [-i face] [-r range] [-a action] [-1|-2|-3|-4|-5|-6|-7|-8|-9 param] [-W|-L] [-F] [-M]
@@ -312,7 +312,7 @@ Labadmin has a lot of actions ready to use! Actions are categorized for better o
 
 [msg/]                Send msg to host users
   [chat]              Starts text chat with logged user
-  [clipboard]         Copy mesasage to user clipboard
+  [clipboard]         Copy message to user clipboard
   [login-term]        Show text message next time user login in a terminal window
   [login-xpad]        Show text message next time user login in a xpad note
   [msg-term]          Open a text message in a terminal window
@@ -343,7 +343,7 @@ Labadmin has a lot of actions ready to use! Actions are categorized for better o
 [screen/]             Take hosts screenshots and save or display it
   [grid]              Show screenshots hosts in a web grid view
   [save]              Save screenshots files hosts in local admin
-  [show]              Show screenshots hosts dinamically
+  [show]              Show screenshots hosts dynamically
 
 [service/]            Manage system services
   [disable]           Disable system service (no starts on startup)
@@ -458,9 +458,9 @@ Labadmin has a lot of actions ready to use! Actions are categorized for better o
 
 &nbsp;  
 ## Create custom actions
-The easy way to exec your own scripts is use the actions ``exec/com`` (execute comands) and ``exec/script`` (execute external script). However creating your own Labadmin actions you can add permanent actions and use the labadmin interface options to obtain more powerful scripts.
+The easiest way to execute your own scripts is use the actions ``exec/com`` (execute comands) and ``exec/script`` (execute external script). However creating your own Labadmin actions you can add permanent actions and use the labadmin interface options to obtain more powerful scripts.
 
-For add a new action to labadmin only need:
+To add a new Labadmin action only need:
   * Create a action file following the labadmin interface. You can use template action located in [templates/action.template](templates/action.template).
   * Save the action file in ``actions/linux`` or ``actions/windows`` directory, and labadmin will recognize the file automatically when starts.
 
