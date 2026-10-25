@@ -178,9 +178,6 @@ $ labadmin -h
 ```
 </p></details>
 
-
-
-Each action execution has 5 stages: discover, host selection, action selection, action parametrization and action monitorization.
   
 ## Discover
 Discover stage search current IP for each host MAC in lab config file and checks the net state:
