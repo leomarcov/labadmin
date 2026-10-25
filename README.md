@@ -1,15 +1,34 @@
-# labadmin
-<img align="left" src="https://cdn4.iconfinder.com/data/icons/online-marketing-hand-drawn-vol-3/52/monitor__television__computer__desktop__seo__service__marketing-128.png" width="80" >
+# Labadmin
+**Remote administration and classroom management for Linux and Windows computer labs.**
 
-Labadmin is a Linux tool, writed on Bash shellscript, capable to **remotely admin** a set of hosts running Linux or Windows. Is focused to work in educational environment controlling hosts in a computer laboratory. 
-Labadmin aims to be a tool useful for IT teachers and computer lab sysadmins. 
+<img align="left" src="https://cdn4.iconfinder.com/data/icons/online-marketing-hand-drawn-vol-3/52/monitor__television__computer__desktop__seo__service__marketing-128.png" width="80" >
+Labadmin is an open-source, Bash-based tool for managing multiple Linux and Windows computers from a Linux administration workstation. Designed primarily for educational environments, it helps teachers and system administrators discover classroom computers, select hosts visually, execute administrative actions, transfer files, and prepare machines for examinations.
+
+## Contents
+- [Features](#features)
+- [Architecture and requirements](#architecture-and-requirements)
+- [Installation](#installation)
+- [Configuration](#configuration)
+- [Usage](#usage)
+- [Available actions](#available-actions)
+- [Creating custom actions](#creating-custom-actions)
+- [Security considerations](#security-considerations)
+- [Troubleshooting](#troubleshooting)
+- [License](#license)
+- [Contact](#contact)
 
 &nbsp; 
-## Main features
-  * Discover hosts network status in a laboratory classroom by MAC address (works on **DHCP** networks!).
-  * Show the status of each machine in a grid map according the preconfigured position in the lab. It's easy to identificate students computers by map location.
-  * Flexible host selection using ranges. Can select all machines, only a row, odd and even machines, a specific list, etc.
-  * Labadmin incorporate a **full set of administrative actions** ready to use (currently **113 for Linux** and **33 for Windows**). Some key actions are:
+## Features
+- **MAC-based discovery:** Find configured computers on the local network even when **DHCP** changes their IP addresses.
+- **Classroom map:** Display hosts in a grid matching their physical positions.
+- **Flexible host selection:** Target all hosts, specific IDs, ranges, or odd/even machines.
+- **Linux and Windows administration:** Execute remote script actions using SSH in Linux (Bash) and Windows (Powershell) machines.
+- **Sequential or concurrent execution:** Run an action across selected hosts and inspect its results.
+- **Action monitoring:** Check action status execution in each host.
+- **Extensibility:** Add your own Bash or PowerShell actions.
+- **Examination management:** Apply restrictions, manage network access, and handle examination backups.
+- **File transfers:** Copy files and directories; selected actions also support multicast or torrent-based distribution.
+- **Full set of administrative actions ready to use** (currently 113 for Linux and 33 for Windows). Some key actions are:
     * **Config a restrictive environment in a exam time**: block all users, block usb drivers, set restrictive firewall rules, autobackup exam user data, block Virtualbox bridge mode, autorecord and save screen and others restrictions.
     * **Send heavy files using multiple protocols**: unicast, torrent or multicast.
     * Send and schedule messages to users.
@@ -19,23 +38,19 @@ Labadmin aims to be a tool useful for IT teachers and computer lab sysadmins.
     * Show thumnails screenshots of all hosts and save screenshots of selected.
     * Other administrative tasks, like software installation, user accounts, process management, Windows activation, etc. 
 	* Much more!
-  * Monitorization of action execution status. If any error has ocurred in some host is noticed.
-  * It's easy to create your own actions using Bash or Powershell script language.
 
 <p align="center">
  <img src="https://github.com/user-attachments/assets/84b7a7f2-4c8e-444c-946c-ce9f39b3750d">
 </p>
 
-## Working schema
-  * Labadmin use a dedicated machine to admin the students hosts (usually teacher computer or server).
-    * **Admin must be installed in a Linux OS**.
-    * Controlled hosts can be **Linux** or **Windows** OS computers.
-  * All machines must be placed in the same broadcast domain. Labadmin uses MAC address to discover computers, so works in DHCP environments. 
-  * Each lab must be defined previously in a config file. Lab config file stores:
-    * MAC address for each host and a identification number.
-    * Lab distribution: each id host must be placed in a grid according the real position in the lab.
-  * When labadmin starts it discover the computers configured in the lab file on the network, show a map to select them and exec actions in selected hosts.
-  * Labadmin works in real time, all actions are sent synchronously at the moment. For manage scripts execution asynchronously may see [Labadmin Script Server](https://github.com/leomarcov/labadmin-script_server).
+## Architecture and requirements
+Labadmin runs on a **Linux administration workstation**, such as a teacher's computer or a dedicated management server. Managed computers can run **Linux or Windows**.
+
+Each laboratory is described by a configuration file (located in `labs/*`) containing host identifiers, MAC addresses, and a grid representing the classroom layout. Labadmin discovers the configured hosts in the network, displays their status, and execute actions remotely in selected hosts.
+
+All actions are sent synchronously at the moment. For manage scripts execution asynchronously may see [Labadmin Script Server](https://github.com/leomarcov/labadmin-script_server).
+
+**Network requirements:** MAC-based discovery depends on local Layer 2 visibility. Machines on other VLANs or routed networks might be reachable over SSH without being discoverable by ARP. SSH access, host firewalls, credentials, and any action-specific dependencies must also be configured.
 
 <p align="center">
   <img src="https://user-images.githubusercontent.com/32820131/66718797-596caa00-ede8-11e9-81fd-ed2d3af4e1b2.png">
@@ -45,21 +60,26 @@ Labadmin aims to be a tool useful for IT teachers and computer lab sysadmins.
 You can see labadmin in action in short animations:
 
 
-
 &nbsp;  
-# Install and config
-## Admin install
-  * Admin must be installed in a Linux OS (Debian, Fedora and Ubuntu has been tested).
+## Installation
+### 1. Install Labadmin on the Linux administration workstation
 ```bash
-# Clone repository to /opt
 git clone https://github.com/leomarcov/labadmin /opt/labadmin
-
-# Install labadmin admin
 bash /opt/labadmin/install-linux-admin
 ```  
+### 2. Install Labadmin on each host to control
+```bash
+# LINUX HOST
+bash install-linux-host -k '<YOUR_PUBLIC_KEY>'
+```
+ ```powershell
+# WINDOWS HOST
+install-windows-agent.ps1 -sshPubKey '<YOUR_PUBLIC_KEY>'
+```
+Use the same public SSH key on managed hosts as the one associated with the administration workstation. Do not distribute the private key to hosts!.
 
-## Admin config
-### Global config
+## Configuration
+### Global settings
   * **Global config** settings are stored in file: `/opt/labadmin/conf/labadmin.conf`
   * When install admin default `labadmin.conf` is created (if file doesn't exist) and new **public/private SSH keys** are generated.
   * **IMPORTANT**
