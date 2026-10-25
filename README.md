@@ -30,15 +30,14 @@
 - **Examination management:** Apply restrictions, manage network access, and handle examination backups.
 - **File transfers:** Copy files and directories; selected actions also support multicast or torrent-based distribution.
 - **Full set of administrative actions ready to use** (currently 113 for Linux and 33 for Windows). Some key actions are:
-    * Configure a restricted environment during examinations: block all users, block usb drivers, set restrictive firewall rules, autobackup exam user data, block Virtualbox bridge mode, autorecord and save screen and others restrictions.
-    * Send heavy files using multiple protocols: unicast, torrent or multicast.
-    * Send and schedule messages to users.
-    * Config firewall settings.
-    * Virtualbox management (import ovas, play, delete, snapshots, etc.)
-    * Transfer and copy disk partition images using ''partclone'' and ''dd''.
-    * Show thumbnail screenshots of all hosts and save screenshots of selected.
-    * Other administrative tasks, like software installation, user accounts, process management, Windows activation, etc. 
-	* Much more!
+    * **Examination restrictions**: configure restricted environment rules such as block all users, block usb drivers, firewall rules, autobackup exam user data, block Virtualbox bridge mode, autorecord and save screen and others restrictions.
+    * **Send heavy files**: use multiple protocols such as unicast, torrent or multicast.
+    * **Send and schedule messages to users**
+    * **Config firewall settings**
+    * **Virtualbox management**: import ovas, play, delete, snapshots, etc.
+    * **Dump disk images and partition table**: use ''partclone'' and ''dd''.
+    * **Display managed hosts screen**: show thumbnail screenshots grid, save screen, etc.
+    * **Other administrative tasks**: software installation, user accounts, process management, Windows activation and more!
 
 <p align="center">
  <img src="https://github.com/user-attachments/assets/84b7a7f2-4c8e-444c-946c-ce9f39b3750d">
