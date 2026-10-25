@@ -25,7 +25,7 @@
 - **Flexible host selection:** Target all hosts, specific IDs, ranges, or odd/even machines.
 - **Linux and Windows administration:** Execute remote script actions using SSH in Linux (Bash) and Windows (PowerShell) machines.
 - **Sequential or concurrent execution:** Run an action across selected hosts and inspect its results.
-- **Action monitoring:** Check action status execution in each host.
+- **Action monitoring:** show action status execution for each host.
 - **Extensibility:** Add your own Bash or PowerShell actions.
 - **Examination management:** Apply restrictions, manage network access, and handle examination backups.
 - **File transfers:** Copy files and directories; selected actions also support multicast or torrent-based distribution.
@@ -36,7 +36,7 @@
     * **Config firewall settings**
     * **Virtualbox management**: import ovas, play, delete, snapshots, etc.
     * **Dump disk images and partition table**: use ''partclone'' and ''dd''.
-    * **Display managed hosts screen**: show thumbnail screenshots grid, save screen, etc.
+    * **Display managed hosts screen**: display screenshots thumbnails grid, save screen, etc.
     * **Other administrative tasks**: software installation, user accounts, process management, Windows activation and more!
 
 <p align="center">
@@ -119,10 +119,10 @@ vi /opt/labadmin/labs/<YOUR_LAB>
  lab_name="<YOUR_LAB_NAME>"                                        # Lab name showed in interface
  agent_os="linux"                                                  # Default agent operating system (linux or windows)
 
- # Map distritution for each host in lab
+ # MAP LAYOUT FOR EACH HOST IN LAB
  # Break line is used for row separator
  # Space is used for column separator
- # Each character not iqual a number is discarted
+ # Non-numeric chars are ignored
  map='
  56 55 54 53 52 51
  46 45 34 33 32 31
@@ -152,7 +152,7 @@ chown root:labadmin /opt/labadmin/labs/<YOUR_LAB>                    # Set file 
   * **Default lab** (defined in var `default_lab` in `labadmin.conf` file) is loaded with **default agent OS** (defined `agent_os` var in lab config) mode.
   * You can use parameters to change lab and OS mode when start:
 ```bash
-labadmin                # Start labadmin using defualt config lab
+labadmin                # Start labadmin using default config lab
 labadmin -l A15         # Start labadin using a15 lab file and default mode defined in a15
 labadmin -l A15 -W      # Start labadin using a15 lab file and Windows mode
 labadmin -l A15 -L      # Start labadin using a15 lab file and Linux mode
