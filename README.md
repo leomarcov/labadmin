@@ -71,7 +71,7 @@ bash /opt/labadmin/install-linux-admin
 # LINUX HOST
 install_dir=$(mktemp  -d -t labadmin_install.XXXXXX)
 git clone https://github.com/leomarcov/labadmin $install_dir
-bash ${install_dir}/install-linux-agent -k '<YOUR_PUBLIC_KEY>'
+bash ${install_dir}/install-linux-agent -k '<YOUR_PUBLIC_KEY>'     # PUBLIC KEY CONFIGURED IN ADMIN 
 rm -rf $install_dir
 ```
  ```powershell
@@ -80,7 +80,7 @@ $installDir = Join-Path $env:TEMP ([guid]::NewGuid().ToString())
 try {
     git clone https://github.com/leomarcov/labadmin.git $installDir
     if ($LASTEXITCODE -ne 0) { throw "Git clone failed" }
-    & "$installDir\install-windows-agent.ps1" -sshPubKey '<YOUR_PUBLIC_KEY>
+    & "$installDir\install-windows-agent.ps1" -sshPubKey '<YOUR_PUBLIC_KEY>     # PUBLIC KEY CONFIGURED IN ADMIN 
 } finally { Remove-Item -LiteralPath $installDir -Recurse -Force -ErrorAction SilentlyContinue }
 ```
 * `YOUR_PUBLIC_KEY`: Use the same public SSH key as the one configured in the administration workstation.
