@@ -57,6 +57,7 @@ All actions are executed synchronously. For asynchronously script execution, see
 
 ## Demos
 You can see labadmin in action in short animations:
+  * [Select hosts](https://github.com/user-attachments/assets/db856192-c537-45bf-ac8b-985c2f45070c)
 
 
 &nbsp;  
