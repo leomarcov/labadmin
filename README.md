@@ -87,15 +87,10 @@ rm -rf $install_dir
 ```
  ```powershell
 # WINDOWS HOST
-$installDir = Join-Path $env:TEMP ([guid]::NewGuid().ToString())
-try {
-    git clone https://github.com/leomarcov/labadmin.git $installDir
-    if ($LASTEXITCODE -ne 0) { throw "Git clone failed" }
-
-	# <YOUR_PUBLIC_KEY> -> SSH public key
-    & "$installDir\install-windows-agent.ps1" -sshPubKey '<YOUR_PUBLIC_KEY>
-
-} finally { Remove-Item -LiteralPath $installDir -Recurse -Force -ErrorAction SilentlyContinue }
+$sshPubKey="<YOUR-PUBLIC-KEY>"
+Set-ExecutionPolicy Bypass -Scope Process -Force
+[System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072
+& ([scriptblock]::Create((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/leomarcov/labadmin/refs/heads/master/install-windows-agent.ps1'))) -sshPubKey $sshPubKey
 ```
 
 ## Configuration
