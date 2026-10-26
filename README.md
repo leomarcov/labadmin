@@ -71,7 +71,7 @@ bash /opt/labadmin/install-linux-admin
 Agent install need the **SSH public key** to config authentication. 
   * Use the same public SSH key as the one configured in the administration workstation.
   * When install if no public key parameter is provided install will use public key from file: `<install_dir>/conf/labadmin.conf`. 
-  * **CAUTION**: Do not use the sample keys in default `labadmin.conf`: generate your own keys or use keys generated when install admin.
+  * **CAUTION**: Generate your own keys or use keys generated when install admin.
   * **CAUTION**: Do not distribute the **private key** to hosts!
 
 ```bash
