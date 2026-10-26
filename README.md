@@ -76,7 +76,7 @@ Agent install need the **SSH public key** to config authentication:
 
 #### Linux host
 ```bash
-# <YOUR_PUBLIC_KEY> -> SSH public key
+# <YOUR-PUBLIC-KEY> -> SSH public key
 $ssh_pubkey='<YOUR-PUBLIC-KEY>'
 
 install_dir=$(mktemp  -d -t labadmin_install.XXXXXX)
@@ -86,7 +86,7 @@ rm -rf $install_dir
 ```
 #### Windows hosts
  ```powershell
-# <YOUR_PUBLIC_KEY> -> SSH public key
+# <YOUR-PUBLIC-KEY> -> SSH public key
 $sshPubKey='<YOUR-PUBLIC-KEY>'
 
 Set-ExecutionPolicy Bypass -Scope Process -Force
@@ -105,14 +105,14 @@ If no **public key parameter** is provided when call installer it will use publi
     * Use the **same** `ssh_pubkey` to config each host agent.
 ```bash
 vi /opt/labadmin/conf/labadmin.conf
-  default_lab="<YOUR_LAB>"             # Default lab file to use if not lab specified with -l param
+  default_lab="<YOUR-LAB-ID>"          # Default lab file to use if not lab specified with -l param
   arpscan_timeout=500                  # Arp-scan timeout in miliseconds for get host status in map
   ssh_timeout=5                        # SSH host connection timeout in seconds
   autoscan_delay=60                    # Auto scan map delay in seconds
 
   ssh_port='58888'                     # SSH port to connect with Linux agents (Windows agents use ssh_port+1)
-  ssh_pubkey='<YOUR_PUBLIC_KEY>'       # SSH public key for host auth (GENERATION: ssh-keygen -t ed25519 -C labadmin)
-  ssh_privkey='<YOUR_PRIVATE_KEY>'     # SSH private key for host auth (GENERATION: ssh-keygen -t ed25519 -C labadmin)
+  ssh_pubkey='<YOUR-PUBLIC-KEY>'       # SSH public key for host auth (GENERATION: ssh-keygen -t ed25519 -C labadmin)
+  ssh_privkey='<YOUR-PRIVATE-KEY>'     # SSH private key for host auth (GENERATION: ssh-keygen -t ed25519 -C labadmin)
 ```
 
 ### Lab configuration settings
@@ -126,12 +126,12 @@ vi /opt/labadmin/conf/labadmin.conf
 When install admin default `lab.test` lab is created (if no labs files exists).
 
 ```bash
-# Rename lab.test to your <LAB_NAME>
-mv /opt/labadmin/labs/lab.test /opt/labadmin/labs/<YOUR-LAB_NAME>  # Set lab config filename to your lab ID name
+# Rename lab.test to your lab ID
+mv /opt/labadmin/labs/lab.test /opt/labadmin/labs/<YOUR-LAB-ID>    # Set lab config filename to your lab ID
 
-# Edit lab config <YOUR_LAB>:
-vi /opt/labadmin/labs/<YOUR_LAB>
- lab_name="<YOUR_LAB_NAME>"                                        # Lab name displayed in interface
+# Edit lab config <YOUR-LAB-ID>:
+vi /opt/labadmin/labs/<YOUR-LAB-ID>
+ lab_name="<YOUR-LAB-ID>"                                          # Lab name displayed in interface
  agent_os="linux"                                                  # Default agent operating system (linux or windows)
 
  # MAP LAYOUT FOR EACH HOST IN LAB
@@ -156,9 +156,9 @@ vi /opt/labadmin/labs/<YOUR_LAB>
 #### Create new lab files
 To create a new lab file copy template with sample lab config [templates/lab.test](templates/lab.test):
 ```
-cp /opt/labadmin/templates/lab.test /opt/labadmin/labs/<YOUR_LAB>    # Set lab config filename to your lab ID name
-chmod 640 /opt/labadmin/labs/<YOUR_LAB>                              # Set file permissions
-chown root:labadmin /opt/labadmin/labs/<YOUR_LAB>                    # Set file owner and groups
+cp /opt/labadmin/templates/lab.test /opt/labadmin/labs/<YOUR-LAB-ID>     # Set lab config filename to your lab ID name
+chmod 640 /opt/labadmin/labs/<YOUR-LAB-ID>                               # Set file permissions
+chown root:labadmin /opt/labadmin/labs/<YOUR-LAB-ID>                     # Set file owner and groups
 ```
 
 &nbsp;  
