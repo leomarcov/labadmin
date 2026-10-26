@@ -1,5 +1,5 @@
 # Labadmin
-
+**Manage your entire computer lab from one terminal**
 **Labadmin** is an open-source, shellscript-based tool for **managing multiple Linux and Windows computers** from a Linux administration workstation. Designed for **educational environments**, it helps teachers and system administrators discover classroom computers, select hosts visually, execute administrative actions such as transfer files, prepare machines for examinations and much more.
 
 ## Contents
@@ -34,7 +34,7 @@
     * **Other administrative tasks**: software installation, user accounts, process management, Windows activation and more!
 
 <p align="center">
-	
+	<img alt="image" src="https://github.com/user-attachments/assets/25cb9a19-11d7-44f7-bf2a-08cb6bcb0d1f" />
 </p>
 
 ## Architecture and requirements
@@ -47,8 +47,9 @@ All actions are executed synchronously. For asynchronously script execution, see
 **Network requirements:** MAC-based discovery depends on local Layer 2 visibility. Machines on other VLANs or routed networks might be reachable over SSH without being discoverable by ARP. SSH access, host firewalls, credentials, and any action-specific dependencies must also be configured.
 
 <p align="center">
-	<img alt="image" src="https://github.com/user-attachments/assets/25cb9a19-11d7-44f7-bf2a-08cb6bcb0d1f" />
+  <img src="https://user-images.githubusercontent.com/32820131/66718797-596caa00-ede8-11e9-81fd-ed2d3af4e1b2.png">
 </p>
+
 
 ## Demos
 You can see labadmin in action in short animations:
