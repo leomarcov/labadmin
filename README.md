@@ -1,5 +1,5 @@
 # Labadmin
-**Manage your entire computer lab from one terminal!**
+**Manage your entire computer lab from a single terminal!**
 
 **Labadmin** is an open-source, shellscript-based tool for **managing multiple Linux and Windows computers** from a Linux administration workstation. Designed for **educational environments**, it helps teachers and system administrators discover classroom computers, select hosts visually, execute administrative actions such as transfer files, prepare machines for examinations and much more.
 
