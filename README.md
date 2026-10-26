@@ -242,7 +242,7 @@ $ labadmin -h
 
 ```
 #### Usage Examples
-```
+```bash
 # Host range: 5,12,15-20
 # Action: exec/command
 # 1st param: du -sh /home/*
