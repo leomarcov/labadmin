@@ -91,7 +91,7 @@ try {
 
 ## Configuration
 ### Global settings
-  * **Global config** settings are stored in file: `/opt/labadmin/conf/labadmin.conf`
+  * **Global config** settings are stored in admin file: `/opt/labadmin/conf/labadmin.conf`
   * When install admin default `labadmin.conf` is created (if file doesn't exist) and new **public/private SSH keys** are generated.
   * **IMPORTANT**
     * Ensure variables `ssh_pubkey` and `ssh_privkey` stores your own public and private keys for SSH authentication.
@@ -111,8 +111,8 @@ vi /opt/labadmin/conf/labadmin.conf
 
 
 ### Lab configuration settings
-  * **Labs configuration** settings are stored in directory: `/opt/labadmin/labs/`
-  * The **filename** identifies the laboratory.
+  * **Labs configuration** settings are stored in admin directory: `/opt/labadmin/labs/`
+  * The **filename** must match the laboratory ID.
   * When install admin default `lab.test` lab is created (if no labs files exists).
   * **IMPORTANT**
     * Variable `map` must contain the layout of the hosts in your lab in a grid.
