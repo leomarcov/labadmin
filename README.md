@@ -71,7 +71,6 @@ bash /opt/labadmin/install-linux-admin
 ### 2. Install Labadmin agent on each managed host
 Agent install need the **SSH public key** to config authentication:
   * Use the same public SSH key as the one configured in the administration workstation.
-  * If no **public key parameter** is provided when call installer it will use public key from file: `<install_dir>/conf/labadmin.conf`. 
   * **CAUTION**: Generate your own keys or use keys generated when install admin.
   * **CAUTION**: Do not distribute the **private key** to hosts!
 
@@ -94,6 +93,8 @@ Set-ExecutionPolicy Bypass -Scope Process -Force
 [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072
 & ([scriptblock]::Create((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/leomarcov/labadmin/refs/heads/master/install-windows-agent.ps1'))) -sshPubKey $sshPubKey
 ```
+If no **public key parameter** is provided when call installer it will use public key from file: `<install_dir>/conf/labadmin.conf`. 
+
 
 ## Configuration
 ### Global settings
