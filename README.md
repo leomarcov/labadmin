@@ -76,7 +76,7 @@ Agent install need the **SSH public key** to config authentication:
 
 #### Linux host
 ```bash
-# <YOUR-PUBLIC-KEY> -> SSH public key
+# <YOUR-PUBLIC-KEY> -> SSH public key configured in admin labadmin.conf
 $ssh_pubkey='<YOUR-PUBLIC-KEY>'
 
 install_dir=$(mktemp  -d -t labadmin_install.XXXXXX)
@@ -86,7 +86,7 @@ rm -rf $install_dir
 ```
 #### Windows hosts
  ```powershell
-# <YOUR-PUBLIC-KEY> -> SSH public key
+# <YOUR-PUBLIC-KEY> -> SSH public key configured in admin labadmin.conf
 $sshPubKey='<YOUR-PUBLIC-KEY>'
 
 Set-ExecutionPolicy Bypass -Scope Process -Force
