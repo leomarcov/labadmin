@@ -25,8 +25,8 @@
 - **Action monitoring:** monitorice action execution status for each host.
 - **Extensibility:** add your own Bash or PowerShell actions.
 - **Full set of administrative actions ready to use** (currently 113 for Linux and 33 for Windows). Some key actions are:
-    * **Examination management**: configure restricted environment such as block all users, block usb devices, firewall rules, autobackup user data, block Virtualbox bridge mode, autorecord and save screen and others restrictions.
-    * **File transfers**: send heavy files using protocols unicast, torrent or multicast.
+    * **Examination management**: configure restricted environment such as block all users, block usb devices, firewall rules, autobackup user data, block Virtualbox bridge mode, autorecord user screen and more restrictions.
+    * **File transfers**: send heavy files using unicast, torrent or multicast.
     * **Send messages**: send and schedule messages to users.
     * **Firewall settings**: configure firewall rules, whitelists and blacklists.
     * **Virtualbox management**: import OVA files, start VM, delete VM, create snapshots, etc.
