@@ -71,7 +71,7 @@ bash /opt/labadmin/install-linux-admin
 ### 2. Install Labadmin agent on each managed host
 Agent install need the **SSH public key** to config authentication:
   * Use the same public SSH key as the one configured in the administration workstation.
-  * **CAUTION**: Generate your own keys or use keys generated when install admin.
+  * **IMPORTANT**: Generate your own keys or use keys generated when install admin.
   * **CAUTION**: Do not distribute the **private key** to hosts!
 
 #### Linux host
