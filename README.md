@@ -21,7 +21,7 @@
 - **MAC-based discovery:** find lab computers on the local network (support **DHCP** IP changes).
 - **Flexible host selection:** select all hosts, specific IDs, ranges, odd/even machines and some regex.
 - **Linux and Windows administration:** execute remote script actions over SSH on Linux and Windows machines.
-- **Sequential or concurrent execution:** run an actions one by one or all at once. 
+- **Sequential or concurrent execution:** run actions one by one or all at once. Concurrent mode can be exec all host in same tab or each host in individual tab. 
 - **Action monitoring:** monitorice action execution status for each host.
 - **Extensibility:** add your own Bash or PowerShell actions.
 - **Full set of administrative actions ready to use** (currently 113 for Linux and 33 for Windows). Some key actions are:
