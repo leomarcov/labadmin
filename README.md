@@ -204,6 +204,8 @@ $ labadmin -h
 ### Labadmin CLI
   * Exec `labadmin-cli` command to start Labadmin using CLI.
   * CLI execute only individual actions that can be parametrized: lab, host range, action to exec, action parameters, etc.
+
+#### Usage
 ```
   Labadmin CLI
    labadmin-cli [-l lab_config] [-i face] [-r range] [-a action] [-1|-2|-3|-4|-5|-6|-7|-8|-9 param] [-W|-L] [-F] [-M]
@@ -237,9 +239,21 @@ $ labadmin -h
    -M 
 	Show MAP with selected hosts
 
-  CLI SAMPLES
-    labadmin-cli -r 5,12,15-20 -a exec/com -1 "du -sh /home/*"
-    labadmin-cli -r all -a "software/packages/upgrade &" -1 y -2 y
+
+```
+#### Usage Examples
+```
+# Host range: 5,12,15-20
+# Action: exec/command
+# 1st param: du -sh /home/*
+labadmin-cli -r 5,12,15-20 -a exec/com -1 "du -sh /home/*"
+
+# Host range: all
+# Action: software/packages/upgrade
+# Exec concurrent mode: &
+# 1st param: y
+# 2nd param: y
+labadmin-cli -r all -a "software/packages/upgrade &" -1 y -2 y
 ```
 
 &nbsp;  
