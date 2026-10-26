@@ -68,11 +68,20 @@ git clone https://github.com/leomarcov/labadmin /opt/labadmin
 bash /opt/labadmin/install-linux-admin
 ```  
 ### 2. Install Labadmin agent on each managed host
+Agent install need the **SSH public key** to config authentication. 
+  * Use the same public SSH key as the one configured in the administration workstation.
+  * When install if no public key parameter is provided install will use public key from file: `<install_dir>/conf/labadmin.conf`. 
+  * **CAUTION**: Do not use the sample keys in default `labadmin.conf`: generate your own keys or use keys generated when install admin.
+  * **CAUTION**: Do not distribute the **private key** to hosts!
+
 ```bash
 # LINUX HOST
 install_dir=$(mktemp  -d -t labadmin_install.XXXXXX)
 git clone https://github.com/leomarcov/labadmin $install_dir
-bash ${install_dir}/install-linux-agent -k '<YOUR_PUBLIC_KEY>'     # YOUR_PUBLIC_KEY -> SAME PUBLIC KEY CONFIGURED IN ADMIN 
+
+# <YOUR_PUBLIC_KEY> -> SSH public key
+bash ${install_dir}/install-linux-agent -k '<YOUR_PUBLIC_KEY>'
+
 rm -rf $install_dir
 ```
  ```powershell
@@ -81,13 +90,12 @@ $installDir = Join-Path $env:TEMP ([guid]::NewGuid().ToString())
 try {
     git clone https://github.com/leomarcov/labadmin.git $installDir
     if ($LASTEXITCODE -ne 0) { throw "Git clone failed" }
-    & "$installDir\install-windows-agent.ps1" -sshPubKey '<YOUR_PUBLIC_KEY>     # YOUR_PUBLIC_KEY -> SAME PUBLIC KEY CONFIGURED IN ADMIN  
+
+	# <YOUR_PUBLIC_KEY> -> SSH public key
+    & "$installDir\install-windows-agent.ps1" -sshPubKey '<YOUR_PUBLIC_KEY>
+
 } finally { Remove-Item -LiteralPath $installDir -Recurse -Force -ErrorAction SilentlyContinue }
 ```
-* `YOUR_PUBLIC_KEY`: Use the same public SSH key as the one configured in the administration workstation.
-  * If no public key parameter is provided install will use public key from `<install_dir>/conf/labadmin.conf`. 
-  * Do not use the sample keys in default `labadmin.conf`: generate your own keys or use keys generated when install admin.
-  * Do not distribute the private key to hosts!
 
 ## Configuration
 ### Global settings
