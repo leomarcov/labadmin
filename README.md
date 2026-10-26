@@ -115,8 +115,6 @@ vi /opt/labadmin/conf/labadmin.conf
   ssh_pubkey='<YOUR_PUBLIC_KEY>'       # SSH public key for host auth (GENERATION: ssh-keygen -t ed25519 -C labadmin)
   ssh_privkey='<YOUR_PRIVATE_KEY>'     # SSH private key for host auth (GENERATION: ssh-keygen -t ed25519 -C labadmin)
 ```
-  * If do you need create a new `labadmin.conf` copy template with default config [templates/labadmin.conf](templates/labadmin.conf) to `/opt/labadmin/conf/` and set permissions (`640` and `root:labadmin`).
-
 
 ### Lab configuration settings
   * **Labs configuration** settings are stored in admin directory: `/opt/labadmin/labs/`
