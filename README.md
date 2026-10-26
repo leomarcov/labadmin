@@ -77,12 +77,13 @@ Agent install need the **SSH public key** to config authentication:
 
 ```bash
 # LINUX HOST
-install_dir=$(mktemp  -d -t labadmin_install.XXXXXX)
-git clone https://github.com/leomarcov/labadmin $install_dir
 
 # <YOUR_PUBLIC_KEY> -> SSH public key
-bash ${install_dir}/install-linux-agent -k '<YOUR_PUBLIC_KEY>'
+$ssh_pubkey='<YOUR-PUBLIC-KEY>'
 
+install_dir=$(mktemp  -d -t labadmin_install.XXXXXX)
+git clone https://github.com/leomarcov/labadmin $install_dir
+bash ${install_dir}/install-linux-agent -k "$ssh_pubkey"
 rm -rf $install_dir
 ```
  ```powershell
