@@ -56,7 +56,7 @@ You can see labadmin in action in short animations:
   * [Screenshots Grid](https://github.com/user-attachments/assets/c9434d50-4968-42d5-879f-fcb6ae45ac17)
   * [Exec action in sequential mode](https://github.com/user-attachments/assets/172c8d39-b8fc-41e3-a927-04d44e707fb3)
   * [Exec action in concurrent mode (all in one panel)](https://github.com/user-attachments/assets/38a8eca6-9107-4e86-b671-045f43bf61fd)
-  * [Exec actino in concurrent mode (in separate panels)](https://github.com/user-attachments/assets/c94870d4-b339-44c7-9f46-56ba2ef77def)
+  * [Exec action in concurrent mode (in separate panels)](https://github.com/user-attachments/assets/c94870d4-b339-44c7-9f46-56ba2ef77def)
 
 &nbsp;  
 ## Installation
