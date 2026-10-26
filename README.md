@@ -155,9 +155,9 @@ chown root:labadmin /opt/labadmin/labs/<YOUR_LAB>                    # Set file 
 &nbsp;  
 ## Usage
 ### Labadmin TUI
-  * Use `labadmin` command to start Labadmin using TUI with interactive mode and screen split into panels for map, log and action execution.
+  * Use `labadmin` command to start Labadmin using TUI interactive mode with screen split into panels for map, log and action execution.
   * **Default lab** (defined in var `default_lab` in `labadmin.conf` file) is loaded with **default agent OS** (defined `agent_os` var in lab config) mode.
-  * You can use parameters to change lab and OS mode when start:
+  * Use parameters to change lab and OS mode when start:
 ```bash
 labadmin                # Start labadmin using default config lab
 labadmin -l A15         # Start labadmin using a15 lab file and default mode defined in a15
