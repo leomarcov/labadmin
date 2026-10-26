@@ -75,9 +75,8 @@ Agent install need the **SSH public key** to config authentication:
   * **CAUTION**: Generate your own keys or use keys generated when install admin.
   * **CAUTION**: Do not distribute the **private key** to hosts!
 
+#### Linux host
 ```bash
-# LINUX HOST
-
 # <YOUR_PUBLIC_KEY> -> SSH public key
 $ssh_pubkey='<YOUR-PUBLIC-KEY>'
 
@@ -86,9 +85,8 @@ git clone https://github.com/leomarcov/labadmin $install_dir
 bash ${install_dir}/install-linux-agent -k "$ssh_pubkey"
 rm -rf $install_dir
 ```
+#### Windows hosts
  ```powershell
-# WINDOWS HOST
-
 # <YOUR_PUBLIC_KEY> -> SSH public key
 $sshPubKey='<YOUR-PUBLIC-KEY>'
 
