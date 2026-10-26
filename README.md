@@ -48,7 +48,7 @@ All actions are executed synchronously. For asynchronously script execution, see
 **Network requirements:** MAC-based discovery depends on local Layer 2 visibility. Machines on other VLANs or routed networks might be reachable over SSH without being discoverable by ARP. SSH access, host firewalls, credentials, and any action-specific dependencies must also be configured.
 
 <p align="center">
-<img width="1227" height="789" alt="image" src="https://github.com/user-attachments/assets/58c4a5f9-b80f-40ff-92dd-6a6d2442d5ec" />
+<img width="1225" height="787" alt="image" src="https://github.com/user-attachments/assets/25cb9a19-11d7-44f7-bf2a-08cb6bcb0d1f" />
 </p>
 
 ## Demos
