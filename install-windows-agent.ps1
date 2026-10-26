@@ -90,15 +90,15 @@ Write-Host "SSH PubKey: $sshPubkey"
 #===============================================================================
 #  CREATE LOCAL USER FOR SCRIPT EXECUTION
 #===============================================================================
-if (-not (Get-LocalUser -Name $agent_user -ErrorAction SilentlyContinue)) {
-	Write-Host "`nCreating local user $agent_user" -ForegroundColor Green
-	Write-Host "`nInsert $agent_user user credentials..." -ForegroundColor Green
-	while(!$agent_user_cred -OR $agent_user_cred.Username -ne $agent_user) { $agent_user_cred = Get-Credential -Credential $agent_user }
-	New-LocalUser -Name $agent_user -FullName "Labadmin Script Server Agent" -Password $agent_user_cred.Password
-    Set-LocalUser -Name $agent_user -PasswordNeverExpires:$true
-	Add-LocalGroupMember -Member $agent_user -SID "S-1-5-32-544"			# Add user to local Administrators group
+if (-not (Get-LocalUser -Name $agentUser -ErrorAction SilentlyContinue)) {
+	Write-Host "`nCreating local user $agentUser" -ForegroundColor Green
+	Write-Host "`nInsert $agentUser user credentials..." -ForegroundColor Green
+	while(!$agentUserCred -OR $agentUserCred.Username -ne $agentUser) { $agentUserCred = Get-Credential -Credential $agentUser }
+	New-LocalUser -Name $agentUser -FullName "Labadmin Script Server Agent" -Password $agentUserCred.Password
+    Set-LocalUser -Name $agentUser -PasswordNeverExpires:$true
+	Add-LocalGroupMember -Member $agentUser -SID "S-1-5-32-544"			# Add user to local Administrators group
 	# Hide user from login screen:
-	New-Item 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon\SpecialAccounts\UserList' -Force | New-ItemProperty -Name $agent_user -Value 0 -PropertyType DWord -Force
+	New-Item 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon\SpecialAccounts\UserList' -Force | New-ItemProperty -Name $agentUser -Value 0 -PropertyType DWord -Force
 } 
 
 
