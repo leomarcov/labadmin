@@ -87,7 +87,7 @@ rm -rf $install_dir
 ```
  ```powershell
 # WINDOWS HOST
-$sshPubKey="<YOUR-PUBLIC-KEY>"
+$sshPubKey="<YOUR-PUBLIC-KEY>"		# <YOUR_PUBLIC_KEY> -> SSH public key
 Set-ExecutionPolicy Bypass -Scope Process -Force
 [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072
 & ([scriptblock]::Create((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/leomarcov/labadmin/refs/heads/master/install-windows-agent.ps1'))) -sshPubKey $sshPubKey
