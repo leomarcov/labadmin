@@ -112,11 +112,14 @@ vi /opt/labadmin/conf/labadmin.conf
 
 ### Lab configuration settings
   * **Labs configuration** settings are stored in admin directory: `/opt/labadmin/labs/`
-  * The **filename** must match the laboratory ID.
-  * When install admin default `lab.test` lab is created (if no labs files exists).
+  * Each lab **filename** must match the laboratory ID.
   * **IMPORTANT**
     * Variable `map` must contain the layout of the hosts in your lab in a grid.
     * Variable `macs[]` must contain the MAC address for each host in your lab.
+
+#### Edit default lab.test 
+When install admin default `lab.test` lab is created (if no labs files exists).
+
 ```bash
 # Rename lab.test to your <LAB_NAME>
 mv /opt/labadmin/labs/lab.test /opt/labadmin/labs/<YOUR-LAB_NAME>  # Set lab config filename to your lab ID name
@@ -145,7 +148,8 @@ vi /opt/labadmin/labs/<YOUR_LAB>
  macs[13]="08:00:27:bb:07:9d"
 ...
 ```
-  * To create a new lab file copy template with sample lab config [templates/lab.test](templates/lab.test):
+#### Create new lab files
+To create a new lab file copy template with sample lab config [templates/lab.test](templates/lab.test):
 ```
 cp /opt/labadmin/templates/lab.test /opt/labadmin/labs/<YOUR_LAB>    # Set lab config filename to your lab ID name
 chmod 640 /opt/labadmin/labs/<YOUR_LAB>                              # Set file permissions
