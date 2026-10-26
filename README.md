@@ -43,13 +43,13 @@ Labadmin runs on a **Linux administration workstation**, usually teacher's compu
 
 Each laboratory is described by a configuration file (located in `labs/*`) containing host identifiers, MAC addresses, and a grid representing the classroom layout. Labadmin discovers the configured hosts in the network, displays their status, and executes actions remotely on selected hosts.
 
-All actions are executed synchronously. For asynchronously script execution, see [Labadmin Script Server](https://github.com/leomarcov/labadmin-script_server).
-
 **Network requirements:** MAC-based discovery depends on local Layer 2 visibility. Machines on other VLANs or routed networks might be reachable over SSH without being discoverable by ARP. SSH access, host firewalls, credentials, and any action-specific dependencies must also be configured.
 
 <p align="center">
   <img src="https://user-images.githubusercontent.com/32820131/66718797-596caa00-ede8-11e9-81fd-ed2d3af4e1b2.png">
 </p>
+
+All actions are executed synchronously. For **asynchronously** script execution, see [Labadmin Script Server](https://github.com/leomarcov/labadmin-script_server).
 
 
 ## Demos
