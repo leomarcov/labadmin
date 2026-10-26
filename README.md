@@ -18,11 +18,11 @@
 &nbsp; 
 ## Features
 - **MAC-based discovery:** find lab computers on the local network even when **DHCP** changes IP addresses.
-- **Classroom map:** display hosts in a grid matching their physical positions.
+- **Classroom map:** display hosts in a configuref grid matching their physical position.
 - **Flexible host selection:** select all hosts, specific IDs, ranges, or odd/even machines.
 - **Linux and Windows administration:** execute remote script actions over SSH on Linux and Windows.
 - **Sequential or concurrent execution:** run an action across selected hosts and inspect its results.
-- **Action monitoring:** monitor action execution status for each host.
+- **Action monitoring:** monitorice action execution status for each host.
 - **Extensibility:** add your own Bash or PowerShell actions.
 - **Full set of administrative actions ready to use** (currently 113 for Linux and 33 for Windows). Some key actions are:
     * **Examination management**: configure restricted environment such as block all users, block usb devices, firewall rules, autobackup user data, block Virtualbox bridge mode, autorecord and save screen and others restrictions.
