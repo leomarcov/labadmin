@@ -67,7 +67,7 @@ You can see labadmin in action in short animations:
 git clone https://github.com/leomarcov/labadmin /opt/labadmin
 bash /opt/labadmin/install-linux-admin
 ```  
-### 2. Install Labadmin on each managed host
+### 2. Install Labadmin agent on each managed host
 ```bash
 # LINUX HOST
 install_dir=$(mktemp  -d -t labadmin_install.XXXXXX)
