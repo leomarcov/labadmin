@@ -39,7 +39,7 @@
 </p>
 
 ## Architecture and requirements
-Labadmin runs on a **Linux administration workstation**, such as a teacher's computer or a dedicated management server. Managed computers can run **Linux or Windows**.
+Labadmin runs on a **Linux administration workstation**, usually teacher's computer or a dedicated server. Managed computers can run **Linux or Windows**.
 
 Each laboratory is described by a configuration file (located in `labs/*`) containing host identifiers, MAC addresses, and a grid representing the classroom layout. Labadmin discovers the configured hosts in the network, displays their status, and executes actions remotely on selected hosts.
 
