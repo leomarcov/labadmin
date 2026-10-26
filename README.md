@@ -24,7 +24,7 @@
 - **Sequential or concurrent execution:** run actions one by one or all at once. Concurrent mode can be exec all host in same tab or each host in individual tab. 
 - **Action monitoring:** monitorice action execution status for each host.
 - **Extensibility:** add your own Bash or PowerShell actions.
-- **Full set of administrative actions ready to use** (currently 113 for Linux and 33 for Windows). Some key actions are:
+- **Full set of administrative actions ready to use** (currently **113 for Linux** and **33 for Windows**). Some key actions are:
     * **Examination management**: configure restricted environment such as block all users, block usb devices, firewall rules, autobackup user data, block Virtualbox bridge mode, autorecord user screen and more restrictions.
     * **File transfers**: send heavy files using unicast, torrent or multicast.
     * **Send messages**: send and schedule messages to users.
