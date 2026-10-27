@@ -19,7 +19,7 @@
 ## Features
 - **Classroom map:** display hosts in a preconfigured grid matching their physical position.
 - **MAC-based discovery:** find lab computers on the local network (support **DHCP** IP changes).
-- **Flexible host selection:** select all hosts, specific IDs, ranges, odd/even machines and some regex.
+- **Flexible host selection:** select all, specific hosts, ranges or odd/even machines.
 - **Linux and Windows administration:** execute remote script actions over SSH on Linux and Windows machines.
 - **Sequential or concurrent execution:** run actions one by one or all at once. Concurrent mode can be exec all host in same tab or each host in individual tab. 
 - **Action monitoring:** monitorice action execution status for each host.
