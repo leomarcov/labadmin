@@ -90,10 +90,9 @@ Write-Host "SSH PubKey: $sshPubkey"
 #===============================================================================
 #  CREATE LOCAL USER FOR SCRIPT EXECUTION
 #===============================================================================
+Write-Host "`nCreating local user $agentUser" -ForegroundColor Green
 # labadmin user not exists
 if (-not (Get-LocalUser -Name $agentUser -ErrorAction SilentlyContinue)) {
-	Write-Host "`nCreating local user $agentUser" -ForegroundColor Green
-
 	# Generate random password
 	$bytes = New-Object byte[] 48
 	[System.Security.Cryptography.RandomNumberGenerator]::Create().GetBytes($bytes)
