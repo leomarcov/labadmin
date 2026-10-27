@@ -30,7 +30,7 @@
     * **Send messages**: send and schedule messages to users.
     * **Firewall settings**: configure firewall rules, whitelists and blacklists.
     * **Virtualbox management**: import OVA files, start VM, delete VM, create snapshots, etc.
-    * **Disk images**: dump disk and partition images and partition table  (using `partclone`  and `dd`).
+    * **Disk images**: dump partition images (unicast and multicast) and copy and save partition table  (using `partclone`  and `dd`).
     * **Display screens**: display hosts screenshots in a thumbnail grid and save screenshots.
     * **Other administrative tasks**: software installation, user accounts, process management, Windows activation and more!
 
