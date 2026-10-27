@@ -78,7 +78,7 @@ Agent install needs the **SSH public key** to config authentication:
 # <YOUR-PUBLIC-KEY> -> SSH public key configured in admin /opt/labadmin/conf/labadmin.conf
 ssh_pubkey='<YOUR-PUBLIC-KEY>'
 
-install_dir=$(mktemp  -d -t labadmin_install.XXXXXX)
+install_dir=$(mktemp -d -t labadmin_install.XXXXXX)
 git clone https://github.com/leomarcov/labadmin $install_dir
 bash ${install_dir}/install-linux-agent -k "$ssh_pubkey"
 rm -rf $install_dir
