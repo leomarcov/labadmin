@@ -247,7 +247,7 @@ function select_script() {
 		# If script is a file
 		else
 			local script_desc="${scripts_desc[$s_id]}"
-			[ "${dependence_errors[$s_id]}" ] && script_desc="${C_BR}${script_des} "'(!)'"${S_R}"	# Mark scripts with missing dependencies 
+			[ "${dependence_errors[$s_id]}" ] && script_desc="${C_BR}${script_desc} "'(!)'"${S_R}"	# Mark scripts with missing dependencies 
 			listf="${listf:+${listf}\n}${f} ${alert_dependence_start}${script_desc}${alert_dependence_end}"
 		fi
 	done
