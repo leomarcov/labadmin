@@ -110,6 +110,7 @@ if (-not (Get-LocalUser -Name $agentUser -ErrorAction SilentlyContinue)) {
 	    Write-Error "User $agentUser exists but is not a member of the Administrators group"
 		exit 1
 	}
+	Write-Host "User $agentUser exists and is a member of the Administrators group"
 }
 
 
