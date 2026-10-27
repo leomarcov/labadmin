@@ -90,17 +90,28 @@ Write-Host "SSH PubKey: $sshPubkey"
 #===============================================================================
 #  CREATE LOCAL USER FOR SCRIPT EXECUTION
 #===============================================================================
+# labadmin user not exists
 if (-not (Get-LocalUser -Name $agentUser -ErrorAction SilentlyContinue)) {
 	Write-Host "`nCreating local user $agentUser" -ForegroundColor Green
-	Write-Host "`nInsert $agentUser user credentials..." -ForegroundColor Green
-	while(!$agentUserCred -OR $agentUserCred.Username -ne $agentUser) { $agentUserCred = Get-Credential -Credential $agentUser }
-	New-LocalUser -Name $agentUser -FullName "Labadmin Script Server Agent" -Password $agentUserCred.Password
+
+	# Generate random password
+	$bytes = New-Object byte[] 48
+	[System.Security.Cryptography.RandomNumberGenerator]::Create().GetBytes($bytes)
+	$password = ConvertTo-SecureString ([Convert]::ToBase64String($bytes)) -AsPlainText -Force
+
+	# Create user
+	New-LocalUser -Name $agentUser -FullName "Labadmin Script Server Agent" -Password $password
     Set-LocalUser -Name $agentUser -PasswordNeverExpires:$true
 	Add-LocalGroupMember -Member $agentUser -SID "S-1-5-32-544"			# Add user to local Administrators group
 	# Hide user from login screen:
 	New-Item 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon\SpecialAccounts\UserList' -Force | New-ItemProperty -Name $agentUser -Value 0 -PropertyType DWord -Force
-} 
-
+# labadmin user exists
+} else {
+	if ((Get-LocalGroupMember -SID "S-1-5-32-544").SID.Value -notcontains (Get-LocalUser -Name $agentUser).SID.Value) {
+	    Write-Error "User $agentUser exists but is not a member of the Administrators group"
+		exit 1
+	}
+}
 
 
 #===============================================================================
