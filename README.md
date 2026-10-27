@@ -116,7 +116,7 @@ vi /opt/labadmin/conf/labadmin.conf
 
 ### Lab configuration settings
   * **Labs configuration** settings are stored in admin directory: `/opt/labadmin/labs/`
-  * Each lab **filename** must match the laboratory ID.
+  * Each lab **filename** must match the laboratory ID (short name, e.g.: LAB15, A15, etc.)
   * **IMPORTANT**
     * Variable `map` must contain the layout of the hosts in your lab in a grid.
     * Variable `macs[]` must contain the MAC address for each host in your lab.
