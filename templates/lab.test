@@ -17,7 +17,7 @@ lab_name="TEST LAB"
 #  Optional
 #  Default: linux
 #  Possible values: linux|windows
-#  Parameters -L (linux) or -W (windows) overrides this value
+#  labadmin parameters -L (linux) or -W (windows) overrides this value
 agent_os="linux"
 
 
