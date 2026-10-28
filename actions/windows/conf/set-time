@@ -8,7 +8,7 @@ script_id="$(echo ${BASH_SOURCE[0]} | sed 's\^'"$scripts_path"'/*\\g')"		# Scrip
 
 #=== LOAD INFO =====================================================================
 if [ "$1" = "--load-scriptinfo" ]; then
-	script_desc="Set system date/hour and show current time"
+	script_desc="Set system date-time"
 	script_type="ssh"
 	script_bg=""
 	script_interactive=""
