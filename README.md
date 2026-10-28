@@ -104,17 +104,6 @@ If no **public key parameter** is provided when installer is executed it will us
   * See comments in file [labadmin.conf](templates/labadmin.conf) to set global variables config.
     * Ensure mandatory variables `ssh_pubkey` and `ssh_privkey` stores your own public and private keys for SSH authentication.
     * Use the **same** `ssh_pubkey` to config each host agent.
-```bash
-vi /opt/labadmin/conf/labadmin.conf
-  default_lab="<YOUR-LAB-ID>"          # Default lab file to use if not lab specified with -l param
-  arpscan_timeout=500                  # Arp-scan timeout in miliseconds for get host status in map
-  ssh_timeout=5                        # SSH host connection timeout in seconds
-  autoscan_delay=60                    # Auto scan map delay in seconds
-
-  ssh_port='58888'                     # SSH port to connect with Linux agents (Windows agents use ssh_port+1)
-  ssh_pubkey='<YOUR-PUBLIC-KEY>'       # SSH public key for host auth (GENERATION: ssh-keygen -t ed25519 -C labadmin)
-  ssh_privkey='<YOUR-PRIVATE-KEY>'     # SSH private key for host auth (GENERATION: ssh-keygen -t ed25519 -C labadmin)
-```
 
 ### Lab configuration settings
   * **Labs configuration** settings are stored in admin directory: `/opt/labadmin/labs/*`
