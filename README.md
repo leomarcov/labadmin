@@ -69,14 +69,14 @@ You can see labadmin in action in short animations:
 git clone https://github.com/leomarcov/labadmin /opt/labadmin
 bash /opt/labadmin/install-linux-admin
 ```  
-SSH public/private keys will be generated and saved in: `/opt/labadmin/conf/labadmin.conf`
+  * SSH public/private keys will be generated and saved in: `/opt/labadmin/conf/labadmin.conf`
+  * **IMPORTANT**: generate your own keys or use keys generated during admin installation.
+  * **CAUTION**: do not distribute the **private key**!
 
 
 ### 2. Install Labadmin agent on each managed host
 The agent installer requieres the **SSH public key** to configure admin authentication:
-  * Use the same public SSH key as the one configured in the administration workstation.
-  * **IMPORTANT**: generate your own keys or use keys generated during admin installation.
-  * **CAUTION**: do not distribute the **private key**!
+  * Use the same **public SSH key** as the one configured in the administration workstation.
 
 #### Linux host install
 ```bash
