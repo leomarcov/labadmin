@@ -108,7 +108,7 @@ If no **public key parameter** is provided when then installer is executed it wi
     * Use the **same** `ssh_pubkey` to configure each host agent.
 
 ### Lab configuration settings
-Labadmin supports multiple labs. Each lab has its own configuration file, which defines layout of the computers and their respective MAC addresses.
+Labadmin supports multiple labs. Each lab has its own configuration file, which defines the physical layout of the computers and their respective MAC addresses.
   * **Lab configurations** are stored in `/opt/labadmin/labs/`, with one file per lab.
   * Each lab **configuration filename** must match its lab ID (lab short name, e.g.: `LAB15`, `A15`, etc.)
   * See the comments in [lab.test](templates/lab.test) for instructions on configuring a lab.
@@ -170,7 +170,7 @@ labadmin -l A15 -L      # Start labadmin using a15 lab file and Linux mode
 ```
 $ labadmin -h
   Labadmin TUI
-   labadmin [-l lab_config] [-i face] [-W|-L] [-F]
+   labadmin [-l lab_config] [-i iface] [-W|-L] [-F]
 
   OPTIONS
    -l lab_id
@@ -426,9 +426,9 @@ Labadmin has a lot of actions ready to use! Actions are categorized for better o
 ### Windows actions
 ```
 [conf/]               Windows configuration actions
-  [get-time]          Set system date/hour and show current time
+  [get-time]          Show current date-time
   [hostname]          Set hostname
-  [set-time]          Set system date/hour and show current time
+  [set-time]          Set system date-time
 
 [exec/]               Exec commands and scripts
   [cmd]               Exec CMD interpreter
@@ -481,11 +481,16 @@ Labadmin has a lot of actions ready to use! Actions are categorized for better o
 
 &nbsp;  
 ## Create custom actions
-The easiest way to execute your own scripts is use the actions ``exec/com`` (execute comands) and ``exec/script`` (execute external script). However creating your own Labadmin actions you can add permanent actions and use the labadmin interface options to obtain more powerful scripts.
+The easiest way to execute your own scripts is to use built-in  ``exec/com`` (execute comands) and ``exec/script`` (execute external script) actions. 
 
-To add a new Labadmin action only need:
-  * Create a action file following the labadmin interface. You can use template action located in [templates/action.template](templates/action.template).
-  * Save the action file in ``actions/linux`` or ``actions/windows`` directory, and labadmin will recognize the file automatically when starts.
+However, you can also create custom Labadmin actions to integrate your scripts directly into the interface, making them reusable and easier to execute across multiple hosts.
+
+To create a custom action:
+  * Create an action file using action template [templates/action.template](templates/action.template) as a start point.
+  * Implement your action following the Labadmin action interface.
+  * Save the file in ``actions/linux`` or ``actions/windows`` directory, according the target operating system.
+
+Labadmin will automatically discover the new action the next time it starts.
 
 For more info refer to:
   * Action template: [templates/action.template](templates/action.template)
