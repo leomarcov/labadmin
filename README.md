@@ -111,26 +111,26 @@ If parameter **public key** is not provided when then installer is executed it w
 Labadmin supports multiple labs. Each lab has its own configuration file, which defines the physical layout of the computers and their respective MAC addresses.
   * **Lab configurations** are stored in `/opt/labadmin/labs/`, with one file per lab.
   * Each lab **configuration filename** must match its lab ID (lab short name, e.g.: `LAB15`, `A15`, etc.)
-  * See the comments in [lab.test](templates/lab.test) for instructions on configuring a lab.
+  * See the comments in [lab.test](templates/lab.test) for instructions on configuring a lab file.
 
 #### Edit default lab.test 
-During installation a **default lab configuration file** is created in `/opt/labadmin/labs/lab.test` (if no lab configuration files are found).
+During installation a **default lab configuration file** is created in `/opt/labadmin/labs/lab.test` (if no lab configuration files are found in `<install_dir>\labs\`).
 
 ```bash
-# Rename lab.test to your lab ID
-mv /opt/labadmin/labs/lab.test /opt/labadmin/labs/<YOUR-LAB-ID>    # Set lab config filename to your lab ID
+# Rename lab.test to your lab ID (lab short name, e.g.: `LAB15`, `A15`, etc.)
+mv /opt/labadmin/labs/lab.test /opt/labadmin/labs/<YOUR-LAB-ID>
 
-# Edit lab config <YOUR-LAB-ID>:
+# Edit lab file and set config values:
 vi /opt/labadmin/labs/<YOUR-LAB-ID>
 ```
 
 #### Create additional lab files
 To create an additional lab configuration file copy [template](templates/lab.test) to `labs/` dir:
 ```
-cp /opt/labadmin/templates/lab.test /opt/labadmin/labs/<YOUR-LAB-ID>     # Set lab config filename to your lab ID name
-chmod 640 /opt/labadmin/labs/<YOUR-LAB-ID>                               # Set file permissions
-chown root:labadmin /opt/labadmin/labs/<YOUR-LAB-ID>                     # Set file owner and groups
-vi /opt/labadmin/labs/<YOUR-LAB-ID>                                      # Edit lab file and set config values
+cp /opt/labadmin/templates/lab.test /opt/labadmin/labs/<YOUR-LAB-ID>    # Set lab config filename to your lab ID name
+chmod 640 /opt/labadmin/labs/<YOUR-LAB-ID>                              # Set file permissions
+chown root:labadmin /opt/labadmin/labs/<YOUR-LAB-ID>                    # Set file owner and groups
+vi /opt/labadmin/labs/<YOUR-LAB-ID>                                     # Edit lab file and set config values
 ```
 
 &nbsp;  
