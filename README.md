@@ -106,12 +106,14 @@ If no **public key parameter** is provided when installer is executed it will us
     * Use the **same** `ssh_pubkey` to config each host agent.
 
 ### Lab configuration settings
+Labadmin supports multiple labs. Each lab has its own configuration file, which defines the layout of its computers and their respective MAC addresses.
   * **Lab configurations** are stored in `/opt/labadmin/labs/`, with one file per lab.
   * Each lab **configuration filename** must match its lab ID (lab short name, e.g.: `LAB15`, `A15`, etc.)
-  * During installation a **default lab config file** is created in `/opt/labadmin/labs/lab.test` (if no lab files config are found).
   * See the comments in [lab.test](templates/lab.test) for instructions on configuring a lab.
 
 #### Edit default lab.test 
+During installation a **default lab config file** is created in `/opt/labadmin/labs/lab.test` (if no lab files config are found).
+
 ```bash
 # Rename lab.test to your lab ID
 mv /opt/labadmin/labs/lab.test /opt/labadmin/labs/<YOUR-LAB-ID>    # Set lab config filename to your lab ID
