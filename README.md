@@ -122,34 +122,15 @@ mv /opt/labadmin/labs/lab.test /opt/labadmin/labs/<YOUR-LAB-ID>    # Set lab con
 
 # Edit lab config <YOUR-LAB-ID>:
 vi /opt/labadmin/labs/<YOUR-LAB-ID>
- lab_name="<YOUR-LAB-ID>"                                          # Lab name displayed in interface
- agent_os="linux"                                                  # Default agent operating system (linux or windows)
-
- # MAP LAYOUT FOR EACH HOST IN LAB
- # Break line is used for row separator
- # Space is used for column separator
- # Non-numeric chars are ignored
- map='
- 56 55 54 53 52 51
- 46 45 44 43 42 41
- 36 35 34 33 32 31
- __ __ 24 23 22 21
- __ __ 14 13 12 11
- ' 
-
- # List of MACs for each host in map
- # macs[<host_id>]=<MAC>
- macs[11]="08:00:27:B5:EE:E8"
- macs[12]="08:00:27:2a:f0:f2"
- macs[13]="08:00:27:bb:07:9d"
-...
 ```
+
 #### Create additional lab files
 To create an additional lab configuration file copy [template](templates/lab.test) to `labs/` dir:
 ```
 cp /opt/labadmin/templates/lab.test /opt/labadmin/labs/<YOUR-LAB-ID>     # Set lab config filename to your lab ID name
 chmod 640 /opt/labadmin/labs/<YOUR-LAB-ID>                               # Set file permissions
 chown root:labadmin /opt/labadmin/labs/<YOUR-LAB-ID>                     # Set file owner and groups
+vi /opt/labadmin/labs/<YOUR-LAB-ID>                                      # Edit lab file and set config values
 ```
 
 &nbsp;  
