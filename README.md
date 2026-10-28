@@ -142,7 +142,7 @@ adduser <YOUR-USER> labadmin
 
 ### Labadmin TUI
   * Run `labadmin` command to start Labadmin using TUI interactive mode with screen split into panels for map, log and action execution.
-  * **Default lab** (defined in var `default_lab` in `labadmin.conf` file) is loaded with **default agent OS** (defined `agent_os` var in lab config) mode.
+  * **Default lab** (defined in var `default_lab` in `labadmin.conf` file) is loaded with **default agent OS** mode (defined `agent_os` var in lab config).
   * Use parameters to change lab and OS mode when start:
 ```bash
 labadmin                # Start labadmin using default config lab
