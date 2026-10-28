@@ -101,8 +101,8 @@ If no **public key parameter** is provided when installer is executed it will us
 ## Configuration
 ### Global settings
   * **Global config** settings are stored in admin file: `/opt/labadmin/conf/labadmin.conf`
-  * **IMPORTANT**
-    * Ensure variables `ssh_pubkey` and `ssh_privkey` stores your own public and private keys for SSH authentication.
+  * See comments in file [templates/labadmin.conf](labadmin.conf) to set global variables config.
+    * Ensure mandatory variables `ssh_pubkey` and `ssh_privkey` stores your own public and private keys for SSH authentication.
     * Use the **same** `ssh_pubkey` to config each host agent.
 ```bash
 vi /opt/labadmin/conf/labadmin.conf
