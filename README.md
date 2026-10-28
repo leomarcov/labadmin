@@ -107,7 +107,7 @@ If parameter **public key** is not provided when then installer is executed it w
 ## Configuration
 ### Global settings
   * **Global config** settings are stored in file: `/opt/labadmin/conf/labadmin.conf`
-  * See the comments in [labadmin.conf](templates/labadmin.conf) for instructions on global configuration.
+  * See the comments in [labadmin.conf](templates/labadmin.conf) for more details about configuring global settings.
     * Ensure mandatory variables `ssh_pubkey` and `ssh_privkey` contain your public and private SSH keys for admin authentication.
     * Use the **same** `ssh_pubkey` to configure each host agent.
 
@@ -115,7 +115,7 @@ If parameter **public key** is not provided when then installer is executed it w
 Labadmin supports multiple labs. Each lab has its own configuration file, which defines the physical layout of the computers and their respective MAC addresses.
   * **Lab configurations** are stored in `/opt/labadmin/labs/`, with one file per lab.
   * Each lab **configuration filename** must match its lab ID (lab short name, e.g.: `LAB15`, `A15`, etc.)
-  * See the comments in [lab.test](templates/lab.test) for instructions on configuring a lab file.
+  * See the comments in [lab.test](templates/lab.test) for more details about configuring a lab file.
 
 #### Edit default lab.test 
 During installation a **default lab configuration file** is created in `/opt/labadmin/labs/lab.test`
