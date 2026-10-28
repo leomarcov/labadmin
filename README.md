@@ -108,13 +108,12 @@ If no **public key parameter** is provided when installer is executed it will us
 ### Lab configuration settings
   * **Labs configuration** settings are stored in admin directory: `/opt/labadmin/labs/*`
   * Each lab **filename** must match the laboratory ID (lab short name, e.g.: `LAB15`, `A15`, etc.)
-  * **IMPORTANT**
+  * When install admin default `lab.test` lab is created in `/opt/labadmin/labs/lab.test` (if no lab file configs are found).
+  * See comments in file [lab.test](templates/lab.test) to set lab config.
     * Variable `map` must contain the layout of the hosts in your lab in a grid.
     * Variable `macs[]` must contain the MAC address for each host in your lab.
 
 #### Edit default lab.test 
-When install admin default `lab.test` lab is created (if no labs files exists).
-
 ```bash
 # Rename lab.test to your lab ID
 mv /opt/labadmin/labs/lab.test /opt/labadmin/labs/<YOUR-LAB-ID>    # Set lab config filename to your lab ID
