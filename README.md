@@ -143,7 +143,7 @@ vi /opt/labadmin/labs/<YOUR-LAB-ID>
 ...
 ```
 #### Create additional lab files
-To create a additional lab file copy [lab config template](templates/lab.test) to `labs/` dir:
+To create a additional lab file copy lab config [template](templates/lab.test) to `labs/` dir:
 ```
 cp /opt/labadmin/templates/lab.test /opt/labadmin/labs/<YOUR-LAB-ID>     # Set lab config filename to your lab ID name
 chmod 640 /opt/labadmin/labs/<YOUR-LAB-ID>                               # Set file permissions
