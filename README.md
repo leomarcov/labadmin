@@ -1,7 +1,9 @@
 # Labadmin
 **Manage your entire computer lab from a single terminal!**
 
-**Labadmin** is an open-source, shellscript-based tool for **managing multiple Linux and Windows computers** from a Linux administration workstation. Designed for **educational environments**, it helps teachers and system administrators discover classroom computers, select hosts visually, execute administrative actions such as transfer files, prepare machines for examinations and much more.
+**Labadmin** is an open-source, shell script-based tool for **managing multiple Linux and Windows computers** from a Linux administration workstation. 
+
+Designed for **educational environments**, it helps teachers and system administrators discover classroom computers, select hosts visually, perform administrative tasks such as transfering files, prepare machines for examinations and much more.
 
 ## Contents
 - [Features](#features)
@@ -18,11 +20,11 @@
 &nbsp; 
 ## Features
 - **Classroom map:** display hosts in a preconfigured grid matching their physical position.
-- **MAC-based discovery:** find lab computers on the local network (support **DHCP** IP changes).
+- **MAC-based discovery:** find lab computers on the local network (supports **DHCP** address changes).
 - **Flexible host selection:** select all, specific hosts, ranges or odd/even machines.
 - **Linux and Windows administration:** execute remote script actions over SSH on Linux and Windows machines.
-- **Sequential or concurrent execution:** run actions one by one or all at once. Concurrent mode can be exec all host in same tab or each host in individual tab. 
-- **Action monitoring:** monitorice action execution status for each host.
+- **Sequential or concurrent execution:** run actions one by one or all at once. Concurrent mode can execute actions on all host in a single tab or each host in individual tab. 
+- **Action monitoring:** monitor the execution status of actions for each host.
 - **Extensibility:** add your own Bash or PowerShell actions.
 - **Full set of administrative actions ready to use** (currently **113 for Linux** and **36 for Windows**). Some key actions are:
     * **Examination management**: configure restricted environment such as block all users, block usb devices, firewall rules, autobackup user data, block Virtualbox bridge mode, autorecord user screen and more restrictions.
@@ -49,7 +51,7 @@ Each laboratory is described by a configuration file (located in `labs/*`) conta
   <img src="https://user-images.githubusercontent.com/32820131/66718797-596caa00-ede8-11e9-81fd-ed2d3af4e1b2.png">
 </p>
 
-All actions are executed synchronously on demand. For **asynchronously** script execution, see [Labadmin Script Server](https://github.com/leomarcov/labadmin-script_server).
+All actions are executed synchronously on demand. For **asynchronous** script execution, see [Labadmin Script Server](https://github.com/leomarcov/labadmin-script_server).
 
 
 ## Demos
@@ -71,7 +73,7 @@ SSH public/private keys will be generated and saved in: `/opt/labadmin/conf/laba
 
 
 ### 2. Install Labadmin agent on each managed host
-Agent installer needs the **SSH public key** to config admin authentication:
+The agent installer requieres the **SSH public key** to configure admin authentication:
   * Use the same public SSH key as the one configured in the administration workstation.
   * **IMPORTANT**: generate your own keys or use keys generated during install admin.
   * **CAUTION**: do not distribute the **private key** to hosts!
@@ -95,24 +97,24 @@ Set-ExecutionPolicy Bypass -Scope Process -Force
 [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072
 & ([scriptblock]::Create((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/leomarcov/labadmin/refs/heads/master/install-windows-agent.ps1'))) -sshPubKey $sshPubKey
 ```
-If no **public key parameter** is provided when installer is executed it will use public key from file: `<install_dir>/conf/labadmin.conf`. 
+If no **public key parameter** is provided when then installer is executed it will use public key from file: `<install_dir>/conf/labadmin.conf`. 
 
 
 ## Configuration
 ### Global settings
   * **Global config** settings are stored in admin file: `/opt/labadmin/conf/labadmin.conf`
   * See the comments in [labadmin.conf](templates/labadmin.conf) for instructions on global configuration.
-    * Ensure mandatory variables `ssh_pubkey` and `ssh_privkey` stores your own public and private keys for SSH authentication.
-    * Use the **same** `ssh_pubkey` to config each host agent.
+    * Ensure mandatory variables `ssh_pubkey` and `ssh_privkey` contain your public and private SSH keys for admin authentication.
+    * Use the **same** `ssh_pubkey` to configure each host agent.
 
 ### Lab configuration settings
-Labadmin supports multiple labs. Each lab has its own configuration file, which defines the computer layout and their respective MAC addresses.
+Labadmin supports multiple labs. Each lab has its own configuration file, which defines layout of the computers and their respective MAC addresses.
   * **Lab configurations** are stored in `/opt/labadmin/labs/`, with one file per lab.
   * Each lab **configuration filename** must match its lab ID (lab short name, e.g.: `LAB15`, `A15`, etc.)
   * See the comments in [lab.test](templates/lab.test) for instructions on configuring a lab.
 
 #### Edit default lab.test 
-During installation a **default lab config file** is created in `/opt/labadmin/labs/lab.test` (if no lab files config are found).
+During installation a **default lab configuration file** is created in `/opt/labadmin/labs/lab.test` (if no lab configuration files are found).
 
 ```bash
 # Rename lab.test to your lab ID
@@ -143,7 +145,7 @@ vi /opt/labadmin/labs/<YOUR-LAB-ID>
 ...
 ```
 #### Create additional lab files
-To create a additional lab file copy lab config [template](templates/lab.test) to `labs/` dir:
+To create an additional lab configuration file copy [template](templates/lab.test) to `labs/` dir:
 ```
 cp /opt/labadmin/templates/lab.test /opt/labadmin/labs/<YOUR-LAB-ID>     # Set lab config filename to your lab ID name
 chmod 640 /opt/labadmin/labs/<YOUR-LAB-ID>                               # Set file permissions
@@ -153,7 +155,7 @@ chown root:labadmin /opt/labadmin/labs/<YOUR-LAB-ID>                     # Set f
 &nbsp;  
 ## Usage
 ### Labadmin TUI
-  * Exec `labadmin` command to start Labadmin using TUI interactive mode with screen split into panels for map, log and action execution.
+  * Run `labadmin` command to start Labadmin using TUI interactive mode with screen split into panels for map, log and action execution.
   * **Default lab** (defined in var `default_lab` in `labadmin.conf` file) is loaded with **default agent OS** (defined `agent_os` var in lab config) mode.
   * Use parameters to change lab and OS mode when start:
 ```bash
@@ -191,8 +193,8 @@ $ labadmin -h
 </p></details>
 
 ### Labadmin CLI
-  * Exec `labadmin-cli` command to start Labadmin using CLI.
-  * CLI execute only individual actions that can be parametrized: lab, host range, action to exec, action parameters, etc.
+  * Run `labadmin-cli` command to start Labadmin using CLI.
+  * CLI executes individual actions that can be parametrized: lab, host range, action to exec, action parameters, etc.
 
 #### Usage
 ```
