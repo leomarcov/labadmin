@@ -38,7 +38,7 @@ agent_os="linux"
 
 
 # LIST OF MACS FOR EACH HOST 
-# macs[<host_id>]="<host_mac>""
+# macs[<host_id>]="<host_mac>"
 macs[11]="08:00:27:B5:EE:E8"
 macs[12]="08:00:27:2a:f0:f2"
 macs[13]="08:00:27:bb:07:9d"
