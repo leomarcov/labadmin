@@ -13,13 +13,11 @@
 # Lab name displayed in interface
 lab_name="TEST LAB"
 
-# Default agents operating system when Labadmin starts
+# Default agent operating system when Labadmin starts (labadmin parameters -L (linux) or -W (windows) overrides this value)
 #  Optional
 #  Default: linux
 #  Possible values: linux|windows
-#  labadmin parameters -L (linux) or -W (windows) overrides this value
 agent_os="linux"
-
 
 
 #===============================================================================
