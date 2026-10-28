@@ -73,11 +73,6 @@ SSH public/private keys will be generated and saved in: `/opt/labadmin/conf/laba
   * **IMPORTANT**: generate your own keys or use keys generated during admin installation.
   * **CAUTION**: do not distribute the **private key**!
 
-Add users to `labadmin` group to allow run `labadmin`.
-```bash
-adduser <YOUR-USER> labadmin
-```
-
 ### 2. Install Labadmin agent on each managed host
 The agent installer requieres the **SSH public key** to configure admin authentication:
   * Use the same **public SSH key** as the one configured in the administration workstation.
@@ -139,6 +134,10 @@ vi /opt/labadmin/labs/<YOUR-LAB-ID>                                     # Edit l
 
 &nbsp;  
 ## Usage
+Add users to `labadmin` group to allow run `labadmin`.
+```bash
+adduser <YOUR-USER> labadmin
+```
 ### Labadmin TUI
   * Run `labadmin` command to start Labadmin using TUI interactive mode with screen split into panels for map, log and action execution.
   * **Default lab** (defined in var `default_lab` in `labadmin.conf` file) is loaded with **default agent OS** (defined `agent_os` var in lab config) mode.
