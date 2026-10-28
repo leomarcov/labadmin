@@ -134,10 +134,12 @@ vi /opt/labadmin/labs/<YOUR-LAB-ID>                                     # Edit l
 
 &nbsp;  
 ## Usage
-Add users to `labadmin` group to allow run `labadmin`.
+Add users to `labadmin` group to allow run `labadmin` commands.
 ```bash
 adduser <YOUR-USER> labadmin
+# Reload user session to take new group effect
 ```
+
 ### Labadmin TUI
   * Run `labadmin` command to start Labadmin using TUI interactive mode with screen split into panels for map, log and action execution.
   * **Default lab** (defined in var `default_lab` in `labadmin.conf` file) is loaded with **default agent OS** (defined `agent_os` var in lab config) mode.
