@@ -142,8 +142,8 @@ vi /opt/labadmin/labs/<YOUR-LAB-ID>
  macs[13]="08:00:27:bb:07:9d"
 ...
 ```
-#### Create new lab files
-To create a new lab file copy template with sample lab config [templates/lab.test](templates/lab.test):
+#### Create additional lab files
+To create a additional lab file copy [template](templates/lab.test) with sample lab config to `labs/` dir:
 ```
 cp /opt/labadmin/templates/lab.test /opt/labadmin/labs/<YOUR-LAB-ID>     # Set lab config filename to your lab ID name
 chmod 640 /opt/labadmin/labs/<YOUR-LAB-ID>                               # Set file permissions
