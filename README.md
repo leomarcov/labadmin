@@ -69,7 +69,7 @@ You can see labadmin in action in short animations:
 git clone https://github.com/leomarcov/labadmin /opt/labadmin
 bash /opt/labadmin/install-linux-admin
 ```  
-SSH public/private keys will be generated and saved in: `/opt/labadmin/conf/labadmin.conf`.
+SSH public/private keys will be generated and saved in: `/opt/labadmin/conf/labadmin.conf`
 
 
 ### 2. Install Labadmin agent on each managed host
