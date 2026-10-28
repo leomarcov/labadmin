@@ -114,7 +114,7 @@ Labadmin supports multiple labs. Each lab has its own configuration file, which 
   * See the comments in [lab.test](templates/lab.test) for instructions on configuring a lab file.
 
 #### Edit default lab.test 
-During installation a **default lab configuration file** is created in `/opt/labadmin/labs/lab.test` (if no lab configuration files are found in `<install_dir>/labs/`).
+During installation a **default lab configuration file** is created in `/opt/labadmin/labs/lab.test`.
 
 ```bash
 # Rename lab.test to your lab ID (lab short name, e.g.: `LAB15`, `A15`, etc.)
