@@ -35,7 +35,7 @@ source "${lib_path}/labadmin_lib-install"									# LABADMIN INSTALL LIB
 #===============================================================================
 function help() {
 	echo -e "  Labadmin TUI
-   ${S_B}$(basename $0)${S_R} [-l ${S_U}lab_id${S_R}] [-i ${S_U}face${S_R}] [-W|-L] [-F]
+   ${S_B}$(basename $0)${S_R} [-l ${S_U}lab_id${S_R}] [-i ${S_U}iface${S_R}] [-W|-L] [-F]
 
   OPTIONS
    ${S_B}-l ${S_U}lab_id${S_R}
