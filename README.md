@@ -73,6 +73,10 @@ bash /opt/labadmin/install-linux-admin
   * **IMPORTANT**: generate your own keys or use keys generated during admin installation.
   * **CAUTION**: do not distribute the **private key**!
 
+Add user to `labadmin` group to allow run `labadmin`.
+```bash
+adduser <YOUR-USER> labadmin
+```
 
 ### 2. Install Labadmin agent on each managed host
 The agent installer requieres the **SSH public key** to configure admin authentication:
