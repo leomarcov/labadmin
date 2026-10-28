@@ -101,17 +101,15 @@ If no **public key parameter** is provided when installer is executed it will us
 ## Configuration
 ### Global settings
   * **Global config** settings are stored in admin file: `/opt/labadmin/conf/labadmin.conf`
-  * See comments in file [labadmin.conf](templates/labadmin.conf) to set global variables config.
+  * See the comments in [labadmin.conf](templates/labadmin.conf) for instructions on global configuration.
     * Ensure mandatory variables `ssh_pubkey` and `ssh_privkey` stores your own public and private keys for SSH authentication.
     * Use the **same** `ssh_pubkey` to config each host agent.
 
 ### Lab configuration settings
-  * **Labs configuration** settings are stored in admin directory: `/opt/labadmin/labs/*`
-  * Each lab **filename** must match the laboratory ID (lab short name, e.g.: `LAB15`, `A15`, etc.)
-  * When install admin default `lab.test` lab is created in `/opt/labadmin/labs/lab.test` (if no lab file configs are found).
-  * See comments in file [lab.test](templates/lab.test) to set lab config.
-    * Variable `map` must contain the layout of the hosts in your lab in a grid.
-    * Variable `macs[]` must contain the MAC address for each host in your lab.
+  * **Lab configurations** are stored in `/opt/labadmin/labs/`, with one file per lab.
+  * Each lab **configuration filename** must match its lab ID (lab short name, e.g.: `LAB15`, `A15`, etc.)
+  * During installation a **default lab config file** is created in `/opt/labadmin/labs/lab.test` (if no lab files config are found).
+  * See the comments in [lab.test](templates/lab.test) for instructions on configuring a lab.
 
 #### Edit default lab.test 
 ```bash
