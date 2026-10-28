@@ -97,7 +97,7 @@ Set-ExecutionPolicy Bypass -Scope Process -Force
 [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072
 & ([scriptblock]::Create((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/leomarcov/labadmin/refs/heads/master/install-windows-agent.ps1'))) -sshPubKey $sshPubKey
 ```
-If no **public key parameter** is provided when then installer is executed it will use public key from file: `<install_dir>/conf/labadmin.conf`. 
+If parameter **public key** is not provided when then installer is executed it will use public key from file: `<install_dir>/conf/labadmin.conf`. 
 
 
 ## Configuration
