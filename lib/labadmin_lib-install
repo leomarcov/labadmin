@@ -380,7 +380,7 @@ function install_admin() {
 		final_msg="${final_msg}\n  - To add more labs copy template file: ${C_N}cp ${dir_install}templates/lab.test ${labs_path}<YOUR-LABNAME>${S_R} and set permissions"
 	fi
 	final_msg="${final_msg}${S_B}\n\n${S_B}USER PERMISSIONS${S_R}"
-	final_msg="${final_msg}\n  - Add users to ${S_B}${labadmin_group}${S_R} group for allow users execute labadmin: ${C_N}adduser <YOUR-USER> labadmin${S_R}"
+	final_msg="${final_msg}\n  - Add users to ${S_B}${labadmin_group}${S_R} group to allow run labadmin: ${C_N}adduser <YOUR-USER> labadmin${S_R}"
 	final_msg="${final_msg}\n"
 
 	labadmin_draw-box 0 1 "$final_msg" "${S_B}${C_LB}HOW TO CONFIGURE LABADMIN" 
