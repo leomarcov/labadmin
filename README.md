@@ -73,7 +73,7 @@ SSH public/private keys will be generated and saved in: `/opt/labadmin/conf/laba
   * **IMPORTANT**: generate your own keys or use keys generated during admin installation.
   * **CAUTION**: do not distribute the **private key**!
 
-Add user to `labadmin` group to allow run `labadmin`.
+Add users to `labadmin` group to allow run `labadmin`.
 ```bash
 adduser <YOUR-USER> labadmin
 ```
