@@ -51,7 +51,7 @@ Each laboratory is described by a configuration file (located in `labs/*`) conta
   <img src="https://user-images.githubusercontent.com/32820131/66718797-596caa00-ede8-11e9-81fd-ed2d3af4e1b2.png">
 </p>
 
-All actions are executed synchronously on demand. For **asynchronous** script execution, see [Labadmin Script Server](https://github.com/leomarcov/labadmin-script_server).
+*All actions are executed synchronously on demand. For **asynchronous** script execution, see [Labadmin Script Server](https://github.com/leomarcov/labadmin-script_server).*
 
 
 ## Demos
