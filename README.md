@@ -3,7 +3,7 @@
 
 **Labadmin** is an open-source, shell script-based tool for **managing multiple Linux and Windows computers** from a Linux administration workstation. 
 
-Designed for **educational environments**, it helps teachers and system administrators discover classroom computers, select hosts visually, perform administrative tasks such as transfering files, prepare machines for examinations and much more.
+Designed for **educational environments**, it helps teachers and system administrators discover classroom computers, select hosts visually and perform administrative tasks such as transfering files, prepare machines for examinations and much more.
 
 ## Contents
 - [Features](#features)
