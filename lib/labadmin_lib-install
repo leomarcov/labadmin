@@ -363,7 +363,7 @@ function install_admin() {
 		final_msg="${final_msg}\n  - Copy template config: ${C_N}cp ${dir_install}templates/labadmin.conf ${dir_install}conf/labadmin.conf${S_R}"
 		final_msg="${final_msg}\n  - Set permissions: ${C_N}chown root:labadmin ${labadmin_config_path}; chmod 640 ${labadmin_config_path}${S_R}"
 		final_msg="${final_msg}\n  - Edit ${S_B}${labadmin_config_path}${S_R} file and set config variables:"
-		final_msg="${final_msg}\n    * Mandatory: ${S_B}ssh_pubkey${S_R} and ${S_B}ssh_privkey${S_R}"
+		final_msg="${final_msg}\n    * Required: ${S_B}ssh_pubkey${S_R} and ${S_B}ssh_privkey${S_R}"
 		final_msg="${final_msg}\n    * Optional:  default_lab autoscan_delay ssh_port iface ssh_timeout, arpscan_timeout"		
 		final_msg="${final_msg}\n  - When ${S_B}install labadmin agents${S_R} use this config file or the public key configured in ${S_B}ssh_pubkey${S_R} variable"
 	fi
