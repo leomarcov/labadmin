@@ -2,15 +2,16 @@
 
 ## [26.1015]
  * [**Added**] Windows scripts are executed using SSH (WinRM conection is removed from Labadmin)
- * [**Added**] New action type `scp` to copy file from/to hosts
- * [**Added**] New action attribute `script_interactive` to set interactive action mode
- * [**Added**] Action `windows/file/copyto` and `windows/file/copyfrom`
- * [**Added**] Script `update` to force update local Labadmin repository from GitHub
- * [**Added**] Script `install-windows-agent.ps1` to manage Windows agent installation
- * [**Added**] Script `install-linux-admin` autogenerate `labadmin.conf` file and public/private keys
- * [**Remov**] File `lab.default` is replaced with `default_lab` variable defined in `labadmin.conf`
- * [**Added**] If only 1 lab file exists (and no `-l lab` or `default_lab` is defined) use this lab automatically
- * [**Remov**] Deep Freeze actions
+ * [**Added**] new action type `scp` to copy file from/to hosts
+ * [**Added**] new action attribute `script_interactive` to set interactive action mode
+ * [**Added**] action `windows/file/copyto` and `windows/file/copyfrom`
+ * [**Added**] script `update` to force update local Labadmin repository from GitHub
+ * [**Added**] script `install-windows-agent.ps1` to manage Windows agent installation
+ * [**Added**] script `install-linux-admin` autogenerate `labadmin.conf` file and public/private keys
+ * [**Remov**] file `lab.default` is replaced with `default_lab` variable defined in `labadmin.conf`
+ * [**Added**] if only 1 lab file exists (and no `-l lab` or `default_lab` is defined) use this lab automatically
+ * [**Remov**] deep Freeze actions
+ * [**Fixed**] ctrl+C when reading params cancel only reading params and go back to main menu
 
 
 ## [26.1010]
