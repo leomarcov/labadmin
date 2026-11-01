@@ -257,6 +257,7 @@ function select_script() {
 	while [ ! "$script_id" ]; do
 		regex=".*"
 		cd "${labadmin_tmp_path}/actions/$agent_os/${script_current}"
+		unset p0
 		read_param "${script_current:-/}" "0" "$list" "" "$regex" ""
 
 		# P0: remove starting cd
@@ -267,7 +268,7 @@ function select_script() {
 		# ACTION EMPTY: show prompt again
 		if [ ! "$p0" ]; then
 			unset script_id
-			list="Action"
+			list="Select"
 			continue
 
 		# ACTION n: new extra script panel
@@ -284,7 +285,7 @@ function select_script() {
 		elif [[ "${p0,,}" = @(r?( )|refresh-map?( )) ]]; then
 			[ ! "$map_PID" ] && labadmin_tmp-vars-load map_PID
 			kill -USR1 "$map_PID"
-			unset script_id; list="Action"; continue			
+			unset script_id; list="Select"; continue			
 
 		# ACTION s: select range in map panel
 		elif [[ "${p0,,}" = @(s *|select-hosts *) ]]; then
@@ -294,27 +295,27 @@ function select_script() {
 			sleep 0.3
 			labadmin_tmp-vars-load shosts_listen
 			echo -e "    ${S_B}HOSTS${S_R}($(echo "$shosts_listen" | wc -w)): ${C_BG}$(echo "$shosts_listen" | xargs)${S_R}${S_R}\n"
-			unset script_id; list="Action"; continue			
+			unset script_id; list="Select"; continue			
 
 		# ACTION l: list selected hosts
 		elif [[ "${p0,,}" = @(s?( )|select-hosts?( )) ]]; then
 			labadmin_tmp-vars-load shosts_listen
 			echo -e "    ${S_B}HOSTS${S_R}($(echo "$shosts_listen" | wc -w)): ${C_BG}$(echo "$shosts_listen" | xargs)${S_R}\n"
-			unset script_id; list="Action"; continue
+			unset script_id; list="Select"; continue
 
 		# ACTION a: show labs
 		elif [[ "${p0,,}" = @(l?( )|lab?( )) ]]; then
 			l=$(ls "${labs_path}" | tr "\n" " ")
 			echo -e "    ${S_B}LABS${S_R}($(echo "$l" | wc -w)): ${l}\n"
-			unset script_id; list="Action"; continue	
+			unset script_id; list="Select"; continue	
 
 		# ACTION a: change lab
 		elif [[ "${p0,,}" = @(l *|lab *) ]]; then
 			l=$(echo "$p0" | cut -f2- -d" " | xargs); lf="${labs_path}/${l}"			
 			# lab not found
-			[ ! -r "$lf" ] && { labadmin_error "    Lab $l not found"; echo -e "    LABS: $(ls "${labs_path}" | tr "\n" " " | sed 's/ask//')\n"; unset script_id; list="Action"; continue; }
+			[ ! -r "$lf" ] && { labadmin_error "    Lab $l not found"; echo -e "    LABS: $(ls "${labs_path}" | tr "\n" " " | sed 's/ask//')\n"; unset script_id; list="Select"; continue; }
 			# lab is current lab
-			[ "$l" = "$lab_id" ] && { unset script_id; list="Action"; continue; }
+			[ "$l" = "$lab_id" ] && { unset script_id; list="Select"; continue; }
 
 			[ ! "$map_PID" ] && labadmin_tmp-vars-load map_PID
 			lab_file="$lf"; lab_id="$l"; rhosts=""; labadmin_tmp-vars-save lab_file lab_id rhosts
@@ -325,10 +326,10 @@ function select_script() {
 		# ACTION m: change agent_os
 		elif [[ "${p0,,}" = @(m *|mode *) ]]; then
 			m=$(echo "$p0" | cut -f2- -d" " | xargs); [[ "${m,,}" = win ]] && m="windows"; [[ "${m,,}" == @(lin|linux) ]] && m="linux"; 
-			[[ "$m" != @(linux|windows) ]] && { labadmin_error "    Incorrect mode $m"; unset script_id; list="Action"; continue; }
+			[[ "$m" != @(linux|windows) ]] && { labadmin_error "    Incorrect mode $m"; unset script_id; list="Select"; continue; }
 
 			# mode is current mode -> no change
-			[ "$m" = "$agent_os" ] && { unset script_id; list="Action"; continue; }
+			[ "$m" = "$agent_os" ] && { unset script_id; list="Select"; continue; }
 
 			[ ! "$map_PID" ] && labadmin_tmp-vars-load map_PID
 			agent_os="$m"; unset rhosts Lparam Wparam; labadmin_tmp-vars-save agent_os rhosts Lparam Wparam
@@ -374,13 +375,13 @@ function select_script() {
 		if [ ! "${scripts_file[$script_id]}" ]; then
 			labadmin_error "    ! Script ${script_id} not found"
 			unset script_id
-			list="Action"
+			list="Select"
 			continue
 		fi
 
 		# Check script_bg deny
 		if [ "$exec_bg" ] && [ "${scripts_bg[$script_id]}" = "deny" ]; then
-			labadmin_error "   Action ${script_id} can't be runned in background\n"
+			labadmin_error "   Script ${script_id} can't be runned in background\n"
 			unset script_id exec_bg
 			continue
 		fi
@@ -413,10 +414,7 @@ function select_script() {
 #===============================================================================
 function read_params() {
 	# Set reading_params mode to allow cancel read params with ctrl+c
-	if [ "$tmuxmode" ]; then
-		reading_params=1
-		trap "reading_params='ctrlc'; return;" INT 
-	fi
+	reading_params=1
 
 	# Reset params
 	[ ! "$p1param" ] && unset p1
@@ -434,11 +432,8 @@ function read_params() {
 
 
 	# Reset reading_params mode
-	if [ "$tmuxmode" ]; then
-		trap tmux_ctrlc_action INT
-		[ "$reading_params" = "ctrlc" ] && local ec=1
-		unset reading_params
-	fi
+	[ "$reading_params" = "ctrlc" ] && local ec=1
+	unset reading_params
 	return $ec
 }
 
@@ -504,6 +499,7 @@ function read_param() {
 	local regexp="$5"
 	local help="$6"
 
+	# Exit if ctrl+c pressed when reading params
 	[ "$reading_params" = "ctrlc" ] && return
 
 	# Param desc multiline: show as menu list
@@ -512,7 +508,7 @@ function read_param() {
 			show_menulist "$desc"
 			echo
 		fi
-		desc="Action"
+		desc="Select"
 	fi
 
 	local vp cursor_col
@@ -529,7 +525,7 @@ function read_param() {
 			ps_read="$(echo -e "$ps_read")"
 
 			# Read param from keyboard
-            read -r -e -p "$(echo -en "$ps_read") " p				# read -e allow TAB completion, read -r avoid delete \x in special chars
+            read -r -e -p "$(clear_line; echo -en "$ps_read") " p	# read -e allow TAB completion, read -r avoid delete \x in special chars
             [ "$p" ] &&  history -s -- "$p"							# save p in history
             printf -v "p${np}" '%s' "$p"							# p${np}=p, including special chars
         fi
