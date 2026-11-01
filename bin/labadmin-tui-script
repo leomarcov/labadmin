@@ -71,10 +71,10 @@ labadmin_info " Connecting agents OS: ${S_R}${S_B}${agent_os^^}${S_R} (${ssh_por
 #===============================================================================
 # MAIN LOOP
 #===============================================================================
-#clear
-echo -e "\n${S_B}SCRIPT EXECUTION${S_R}"
 
 while true; do
+	echo -e "\n${S_B}SCRIPT MENU${S_R}"
+
 	# RESET VALUES
 	unset script_id exec_bg shosts
 
