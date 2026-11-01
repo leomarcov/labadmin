@@ -120,12 +120,6 @@ function tmux_ctrlc_action() {
 		return
 	fi
 
-	# If reading params and ctrl+c restart script panel
-	if [ "$reading_params" ]; then
-		tmux respawn-pane -k -t $tmux_pid_script
-		return
-	fi
-
 	# 2 consecutive CTRL+C -> kill session
 	local t=$(date +%s)
 	if [ $((t-tmux_last_ctrlc)) -le 1 ]; then
