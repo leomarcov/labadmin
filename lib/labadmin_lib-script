@@ -412,7 +412,11 @@ function select_script() {
 #	script_id
 #===============================================================================
 function read_params() {
-	reading_params=1
+	# Set reading_params mode to allow cancel read params with ctrl+c
+	if [ "$tmuxmode" ]; then
+		reading_params=1
+		trap "reading_params='ctrlc'; return;" INT 
+	fi
 
 	# Reset params
 	[ ! "$p1param" ] && unset p1
@@ -428,7 +432,14 @@ function read_params() {
 	# READ SCRIPT PARAMS
 	source "${scripts_file["$script_id"]}" --readparams
 
-	unset reading_params
+
+	# Reset reading_params mode
+	if [ "$tmuxmode" ]; then
+		trap tmux_ctrlc_action INT
+		[ "$reading_params" = "ctrlc" ] && local ec=1
+		unset reading_params
+	fi
+	return $ec
 }
 
 
@@ -492,6 +503,8 @@ function read_param() {
 	local default="$4"
 	local regexp="$5"
 	local help="$6"
+
+	[ "$reading_params" = "ctrlc" ] && return
 
 	# Param desc multiline: show as menu list
 	if [ "$(echo -e "$desc" | wc -l)" -gt 1 ]; then
