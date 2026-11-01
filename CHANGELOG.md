@@ -1,7 +1,7 @@
 # LABADMIN CHANGELOG
 
 ## [26.1015]
- * [`**ADDED**`] Windows scripts are executed using SSH (WinRM conection is removed from Labadmin)
+ * [**`ADDED`**] Windows scripts are executed using SSH (WinRM conection is removed from Labadmin)
  * [**ADD**] new action type `scp` to copy file from/to hosts
  * [**ADD**] new action attribute `script_interactive` to set interactive action mode
  * [**Added**] action `windows/file/copyto` and `windows/file/copyfrom`
