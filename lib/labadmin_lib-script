@@ -69,7 +69,7 @@ function help_labadmin-tui() {
  ${C_N}${S_U}d${S_R}ir                      List scripts of current dir
 
 ${S_D}Map commands${S_R}
- ${C_N}${S_U}r${S_R}efresh-map              Refresh map $([ "$autoscan_delay" ] && echo "(auto refresh is performed every $autoscan_delay seconds)")
+ ${C_N}${S_U}r${S_R}efresh-map              Refresh map $([ "$autoscan_delay" ] && echo "(auto refresh every $autoscan_delay seconds)")
  ${C_N}${S_U}s${S_R}elect-hosts [range]     Select new host range and show current host selected
 
 ${S_D}Internal commands${S_R}
@@ -86,6 +86,10 @@ ${S_D}Internal commands${S_R}
 
 		declare -A help_actions
 
+   		help_actions["refresh-map"]="Refresh map accroding current network IPs state
+ - Map automatically refreshes every: ${C_LY}${autoscan_delay:-none}${S_R} seconds 
+ - Autoscan can be configured setting ${C_N}\$autoscan_delay${S_R} in ${C_N}labadmin.conf${S_R}"
+
 		help_actions["select-hosts"]="Use: ${C_Y}${S_U}s${S_R}${C_Y}elect-hosts${S_R} [range]
   Select new host range on MAP panel
   If no range is provided show list of current selected hosts
@@ -100,10 +104,6 @@ ${S_D}Internal commands${S_R}
    select-host ${S_B}* !31-34${S_R}         Select all except 31 32 33 34
    select-host ${S_B}* /odd${S_R}           Select all odds
    select-host ${S_B}11-20 /even${S_R}      Select 12 14 16 18 20"
-
-   		help_actions["refresh-map"]="Refresh map accroding current hosts IPs state
-${S_B}Autorefresh${S_R} is performed every ${C_N}\$autoscan_delay${S_R} seconds (configured in ${C_N}labadmin.conf${S_R})
- - Current ${C_N}\$autosca_delay${S_R}: ${C_LY}${autoscan_delay:-none}${S_R}"
 
  		help_actions["&"]="Exec action in ${S_B}background${S_R} on single tab:
   - New tab panel named as <${C_LY}action${S_R}> executed is opened
