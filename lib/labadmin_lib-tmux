@@ -110,22 +110,31 @@ function tmux_list-windows() {
 # DESCRIPTION: ctrl+c tmux action exit
 #===============================================================================
 function tmux_ctrlc_action() {
-    # TMUX WIN PANEL-> CLOSE WINDOW
-    local aw=$(tmux list-window -t "$tmux_sid" -F '#{window_active} #{window_name}' | awk '$1 == "1" {print $2}')
-    [[ "$aw" != @(LABADMIN|MAP|EXEC|LOG) ]] && { tmux kill-window -t "$tmux_sid"; return; }
-
-
 	# If executing script no exit, send ctrl+c to process
 	if [[ "$shosts" ]]; then
 		return
 	fi
 
-	# 2 consecutive CTRL+C -> kill session
+	# If reading_params mode cancel reading parameters
+	if [ "$reading_params" ]; then
+		reading_params="ctrlc"
+		return
+	fi
+
+	# 2 CONSECUTIVE CTRL+C -> EXIT
 	local t=$(date +%s)
 	if [ $((t-tmux_last_ctrlc)) -le 1 ]; then
-		tmux_kill-session
+    	# TMUX WIN PANEL-> CLOSE WINDOW
+		local aw=$(tmux list-window -t "$tmux_sid" -F '#{window_active} #{window_name}' | awk '$1 == "1" {print $2}')
+		if [[ "$aw" != @(LABADMIN|MAP|EXEC|LOG) ]]; then
+			tmux kill-window -t "$tmux_sid"
+		
+		# LABADMIN MAIN PANEL -> EXIT LABADMIN
+		else			
+			tmux_kill-session
+		fi
 
-	# Only 1 CTRL+c -> show tmux message
+	# ONLY 1 CTRL+C -> show tmux message
 	else
 		tmux_last_ctrlc="$t"
 		tmux display-message -t ${tmux_sid} " Exit? Press CTRL+C again"
@@ -276,7 +285,7 @@ function tmux_init-panel() {
 	fi
 
 	# SETS
-    trap tmux_ctrlc_action INT                                      # Capture CTRL+C to tmux_ctrlc_action function
+    trap "tmux_ctrlc_action; return;" INT             				# Capture CTRL+C to tmux_ctrlc_action function
     trap '' SIGTSTP                                                 # Disable CTRL+Z
     stty -echoctl                                                   # Hide control output like ^C
     tmux bind-key -n MouseDown3Pane select-pane -t ${tmux_sid}      # Disable tmux right clic panel
