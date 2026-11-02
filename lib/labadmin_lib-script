@@ -60,10 +60,10 @@ function help_labadmin-tui() {
 "
 		fi
 
-		echo -e "${S_D}Exec actions${S_R}
- <${C_LY}action${S_R}>                 Exec action
- <${C_LY}action${S_R}> &               Exec action in background (all in new panel)
- <${C_LY}action${S_R}> &&              Exec action in background (each one in separate panel)
+		echo -e "${S_D}Exec scripts${S_R}
+ <${C_LY}script${S_R}>                 Exec script
+ <${C_LY}script${S_R}> &               Exec script in background (all in new panel)
+ <${C_LY}script${S_R}> &&              Exec script in background (each one in separate panel)
  <${C_LB}dir${S_R}>                    Enter to dir menu     
  cd ..                    Up to parent menu
  ${C_N}${S_U}d${S_R}ir                      List scripts of current dir
@@ -79,7 +79,7 @@ ${S_D}Internal commands${S_R}
  ${C_N}${S_U}m${S_R}ode lin|win             Set agents OS: linux or windows
  ${C_N}${S_U}e${S_R}xit                     Exit labadmin session
 
- Use ${S_B}help${S_R} <${C_LY}action${S_R}>${S_R} for details of specific actions
+ Use ${S_B}help${S_R} <${C_LY}command${S_R}>${S_R} for specific details
  "
 	else 
 		#ACTION HELP
@@ -105,12 +105,12 @@ ${S_D}Internal commands${S_R}
    select-host ${S_B}* /odd${S_R}           Select all odds
    select-host ${S_B}11-20 /even${S_R}      Select 12 14 16 18 20"
 
- 		help_actions["&"]="Exec action in ${S_B}background${S_R} on single tab:
-  - New tab panel named as <${C_LY}action${S_R}> executed is opened
+ 		help_actions["&"]="Exec script in ${S_B}background${S_R} on single tab:
+  - New tab panel named as <${C_LY}script${S_R}> executed is opened
   - All hosts are executed simultaneously on this panel
   - Some actions are configured to automatically executed using &"
 
- 		help_actions["&&"]="Exec action in ${S_B}background${S_R} on multiple tabs:
+ 		help_actions["&&"]="Exec script in ${S_B}background${S_R} on multiple tabs:
   - New tab panel named as host number is opened
   - Each host is executed on his individual panel"
 
