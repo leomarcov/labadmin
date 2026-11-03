@@ -31,7 +31,7 @@
 * [**`FIXED`**] Action `screen/grid` autodelete folder for old grids executed and current grid executing
 * [**`REMOV`**] Action `screen/grid` parameters delay and image quiality from `screen/grid` 
 * [**`FIXED`**] `CTRL+C` when script execution not exit, sends `ctrl+c` to script process
-* [**`ADDED`**] Action `sub` execution mode is executed in new tab
+* [**`ADDED`**] Action `sub` execution mode is executed in new panel
 
 ## [25.0400]
 * [**`ADDED`**] New interface based on tmux with separated panels for MAP, LOG and EXECUTION
