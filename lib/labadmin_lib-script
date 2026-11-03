@@ -105,13 +105,13 @@ ${S_D}Internal commands${S_R}
    select-host ${S_B}* /odd${S_R}           Select all odds
    select-host ${S_B}11-20 /even${S_R}      Select 12 14 16 18 20"
 
- 		help_actions["&"]="Exec script in ${S_B}background${S_R} on single tab:
-  - New tab panel named as <${C_LY}script${S_R}> executed is opened
+ 		help_actions["&"]="Exec script in ${S_B}background${S_R} on single panel:
+  - New panel in tab named <${C_LY}script${S_R}> is opened
   - All hosts are executed simultaneously on this panel
-  - Some actions are configured to automatically executed using &"
+  - Note: some actions are configured to automatically be executed using &"
 
- 		help_actions["&&"]="Exec script in ${S_B}background${S_R} on multiple tabs:
-  - New tab panel named as host number is opened
+ 		help_actions["&&"]="Exec script in ${S_B}background${S_R} on multiple panels:
+  - New panel in tabs named as host number is opened
   - Each host is executed on his individual panel"
 
 	    if [ "${help_actions["$action"]}" ] &>/dev/null; then
