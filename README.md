@@ -295,7 +295,7 @@ Labadmin has a lot of actions ready to use! Actions are categorized for better o
     [wipe]             Wipe all exam backups!
 
   [check]              Check if host is blocked for exam
-  [end]                Come back host to normal config when exam ends
+  [end]                Restore host to normal config when exam ends
   [start]              Config host for restrictive exam environment
 
 [exec/]                Exec commands in hosts
