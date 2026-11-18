@@ -287,15 +287,35 @@ fi
 ### POWEROFF
 if [ "$dpoweroff" ]; then
     labadmin_info "Locking poweroff for $euser user"
-    if [ -d "/var/lib/polkit-1/localauthority/50-local.d/" ]; then
-        echo '[Disable poweroff]
-Identity=unix-user:*
-Action=org.freedesktop.login1.reboot;org.freedesktop.login1.reboot-multiple-sessions;org.freedesktop.login1.power-off;org.freedesktop.login1.power-off-multiple-sessions;org.freedesktop.login1.suspend;org.freedesktop.login1.suspend-multiple-sessions;org.freedesktop.login1.hibernate;org.freedesktop.login1.hibernate;org.freedesktop.login1.hibernate-multiple-sessions;org.freedesktop.upower.hibernate;org.freedesktop.upower.hibernate-multiple-sessions;org.freedesktop.upower.reboot;org.freedesktop.upower.reboot-multiple-sessions;org.freedesktop.upower.power-off;org.freedesktop.upower.power-off-multiple-sessions;org.freedesktop.upower.suspend;org.freedesktop.upower.suspend-multiple-sessions;
-ResultAny=no
-ResultInactive=no
-ResultActive=no' > "/var/lib/polkit-1/localauthority/50-local.d/labadmin_poweroff.pkla"
+    if [ -d "/etc/polkit-1/rules.d/" ]; then
+		cat > /etc/polkit-1/rules.d/49-labadmin-poweroff.rules <<EOF
+polkit.addRule(function(action, subject) {
+    if (
+        subject.user == "$euser" &&
+        [
+            "org.freedesktop.login1.power-off",
+            "org.freedesktop.login1.power-off-multiple-sessions",
+            "org.freedesktop.login1.power-off-ignore-inhibit",
+            "org.freedesktop.login1.reboot",
+            "org.freedesktop.login1.reboot-multiple-sessions",
+            "org.freedesktop.login1.reboot-ignore-inhibit",
+            "org.freedesktop.login1.suspend",
+            "org.freedesktop.login1.suspend-multiple-sessions",
+            "org.freedesktop.login1.suspend-ignore-inhibit",
+            "org.freedesktop.login1.hibernate",
+            "org.freedesktop.login1.hibernate-multiple-sessions",
+            "org.freedesktop.login1.hibernate-ignore-inhibit",
+            "org.freedesktop.login1.hybrid-sleep",
+            "org.freedesktop.login1.hybrid-sleep-multiple-sessions",
+            "org.freedesktop.login1.hybrid-sleep-ignore-inhibit"
+        ].indexOf(action.id) !== -1
+    ) {
+        return polkit.Result.NO;
+    }
+});
+EOF
     else
-         labadmin_error "ERROR: cant config locking poweroff policies in /var/lib/polkit-1/localauthority/50-local.d/"
+         labadmin_error "ERROR: cant config locking poweroff policies in /etc/polkit-1/rules.d/"
 		 ecode=1
     fi
 fi
@@ -504,7 +524,7 @@ fi
 
 ### RESTORE POWEROFF
 labadmin_info "Restoring poweroff permissions"
-rm -f "/var/lib/polkit-1/localauthority/50-local.d/labadmin_poweroff.pkla"
+rm -f "/etc/polkit-1/rules.d/49-labadmin-poweroff.rules"
 
 
 ### KILL ALL USERS (AGAIN)
