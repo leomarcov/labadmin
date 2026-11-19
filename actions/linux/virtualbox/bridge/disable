@@ -31,4 +31,9 @@ persis="$1"
 ! which virtualbox &>/dev/null && labadmin_error "Virtualbox not installed" 1
 
 [ "${persis,,}" = "y" ] && echo "install vboxnetflt /bin/false" > /etc/modprobe.d/labadmin-vboxnetflt.conf
-modprobe -r vboxnetflt
+out=$(modprobe -r vboxnetflt 2>&1)
+if [ $? -ne 0 ] && [[ "$out" == *"in use"* ]]; then
+	labadmin_info "WARNING: Virtualbox bridge in use! Killing all Virtualbox running machines"
+	pkill -x VirtualBoxVM
+	modprobe -r vboxnetflt
+fi
