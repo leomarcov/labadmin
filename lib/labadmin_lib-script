@@ -264,6 +264,7 @@ function select_script() {
 		p0="$(echo "$p0" | sed 's/^cd *//')"
 		# SCRIPT_ID: curret path + p0 removing final space or /
 		script_id="$(echo "${script_current:+${script_current}/}${p0}" | sed "s/[/ ]$//")"
+		script_file="${scripts_file[$script_id]}"
 
 		# ACTION EMPTY: show prompt again
 		if [ ! "$p0" ]; then
