@@ -589,7 +589,6 @@ function read_param() {
 function exec_script() {
 	local nhost="$1"
 	local host_ip=${ips["$nhost"]}   
-	local script_file="${scripts_file[$script_id]}"
 	local script_type="${scripts_type[$script_id]}"
 
 	# SHOW HEADER
@@ -601,7 +600,6 @@ function exec_script() {
 
 	#### EXEC WIN
 	if [ "$exec_bg" = "win" ]; then
-		labadmin_tmp-vars-save-1file execbg-win script_id script_file p0 p1 p2 p3 p4 p5 p6 p7 p8 p9
 		exec_script_win "$nhost"
 		return $?
 	#### EXEC LOCAL
@@ -638,7 +636,7 @@ function exec_script() {
 		exec_script_scp "$nhost"
 		out=$?	
 	else
-		labadmin_error "Incorrect script type $script_type for $script_file" 
+		labadmin_error "Incorrect script type $script_type for $script_id" 
 		out=1
 	fi
 
