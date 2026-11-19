@@ -264,7 +264,6 @@ function select_script() {
 		p0="$(echo "$p0" | sed 's/^cd *//')"
 		# SCRIPT_ID: curret path + p0 removing final space or /
 		script_id="$(echo "${script_current:+${script_current}/}${p0}" | sed "s/[/ ]$//")"
-		script_file="${scripts_file[$script_id]}"
 
 		# ACTION EMPTY: show prompt again
 		if [ ! "$p0" ]; then
@@ -397,7 +396,8 @@ function select_script() {
 	# If found dependence errors in selected script show warning
 	[ "${dependence_errors[$script_id]}" ] && labadmin_error "    WARNING: Selected script has missing dependencies: ${dependence_errors[$script_id]}"
 	# Prevent recursive loop when call another instance of labadmin
-
+	
+	script_file="${scripts_file[$script_id]}"
 	return 0
 }
 
