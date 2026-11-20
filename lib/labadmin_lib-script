@@ -257,7 +257,6 @@ function select_script() {
 	while [ ! "$script_id" ]; do
 		regex=".*"
 		cd "${labadmin_tmp_path}/actions/$agent_os/${script_current}"
-		unset p0
 		read_param "${script_current:-/}" "0" "$list" "" "$regex" ""
 
 		# P0: remove starting cd
