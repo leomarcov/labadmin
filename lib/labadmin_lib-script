@@ -537,7 +537,6 @@ function read_param() {
         	eval p${np}=\""$default"\"
         	vp="$default"
         	cursor_move-up 1
-        	echo -n "$ps_read" > /tmp/hola
 			cursor_col=$(printf '%s' "$ps_read" | sed -E $'s/\x01|\x02|\x1B\\[[0-9;]*m//g' | wc -m) 		 # sed remove colors and wc count horizontal space
 			cursor_move-right "$((cursor_col+1))"
         	echo "$default"
