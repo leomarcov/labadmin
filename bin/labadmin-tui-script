@@ -76,7 +76,7 @@ while true; do
 	echo -e "\n${S_B}SCRIPT MENU${S_R}"
 
 	# RESET VALUES
-	unset script_id exec_bg shosts
+	unset script_id script_file exec_bg shosts p0 p1 p2 p3 p4 p5 p6 p7 p8 p9
 
 	# SHOW SCRIPT LIST
 	select_script "$script_id" || continue
